@@ -9,6 +9,10 @@ public class VarNode extends FormulaNode{
         this.name = name;
     }
 
+    public String getName(){
+        return this.name;
+    }
+
     @Override
     public <TRes> TRes apply(ILtlFormulaVisitor<TRes> visitor) {
         return visitor.visitVar(this);

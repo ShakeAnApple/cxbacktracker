@@ -1,14 +1,23 @@
 plugins {
     id 'antlr'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.8'
 }
 
 apply plugin: 'antlr'
 apply plugin: 'idea'
 apply plugin: 'java'
 
+javafx {
+    version = "11.0.2"
+    modules = [ 'javafx.controls' ]
+}
+
 repositories {
     jcenter()
+    mavenCentral()
 }
+
 dependencies {
     compile 'org.antlr:antlr4-runtime:4.7.2'
     antlr("org.antlr:antlr4:4.7.2")
@@ -37,8 +46,4 @@ idea {
     }
 }
 
-/* idea {
-    module {
-        sourceDirs += file("generated-src/antlr/main")
-    }
-} */
+mainClassName = 'shakeanapple.backtracker.ui.MainFx'

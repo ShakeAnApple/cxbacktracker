@@ -9,6 +9,10 @@ public class IntNode extends FormulaNode{
         this.value = value;
     }
 
+    public int getValue(){
+        return this.value;
+    }
+
     @Override
     public <TRes> TRes apply(ILtlFormulaVisitor<TRes> visitor) {
         return visitor.visitInt(this);

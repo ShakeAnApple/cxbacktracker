@@ -8,4 +8,12 @@ public abstract class BinFormulaNode extends FormulaNode{
         this.left = left;
         this.right = right;
     }
+
+    public FormulaNode getLeft(){
+        return this.left;
+    }
+
+    public FormulaNode getRight(){
+        return this.right;
+    }
 }

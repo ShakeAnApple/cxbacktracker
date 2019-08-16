@@ -2,8 +2,6 @@ package shakeanapple.backtracker.parser.ltlformula;
 
 import shakeanapple.backtracker.core.model.ltlformula.model.tree.FormulaNode;
 import shakeanapple.backtracker.core.model.ltlformula.model.LtlFormula;
-import shakeanapple.backtracker.core.model.ltlformula.parser.rule.*;
-import shakeanapple.backtracker.parser.ltlformula.parser.rule.*;
 import shakeanapple.backtracker.parser.ltlformula.rule.*;
 import shakeanapple.backtracker.parser.ltlformula.tree.Node;
 

@@ -1,6 +1,6 @@
 package shakeanapple.backtracker.core.model.variable;
 
 public interface Variable<TValue extends AbstractValueHolder> {
-    TValue getValue();
-    VariableInfo getInfo();
+    public TValue getValue();
+    public VariableInfo getInfo();
 }

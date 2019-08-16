@@ -1,6 +1,6 @@
 package shakeanapple.backtracker.core.calculation;
 
-public enum Result {
+public enum LogicalResultKind {
     // if it's variable or const
     NONE,
 

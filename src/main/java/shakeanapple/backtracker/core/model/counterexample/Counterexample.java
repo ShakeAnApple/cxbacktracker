@@ -15,4 +15,8 @@ public class Counterexample {
     public Counterexample(List<State> path) {
         this.path = path.stream().collect(Collectors.toMap(State::getOrder, (s) -> s ));
     }
+
+    public int length() {
+        return this.path.keySet().size();
+    }
 }
