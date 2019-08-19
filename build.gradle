@@ -21,6 +21,7 @@ repositories {
 dependencies {
     compile 'org.antlr:antlr4-runtime:4.7.2'
     antlr("org.antlr:antlr4:4.7.2")
+    compile 'com.google.code.gson:gson:2.8.2'
 }
 
 generateGrammarSource {
@@ -47,3 +48,4 @@ idea {
 }
 
 mainClassName = 'shakeanapple.backtracker.ui.MainFx'
+//mainClassName = 'shakeanapple.backtracker.infrastructure.visfx.examples.ComplexGraph'

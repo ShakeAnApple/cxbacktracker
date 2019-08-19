@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.core.calculation;
+package shakeanapple.backtracker.core.ltlcalculation;
 
 import shakeanapple.backtracker.core.model.counterexample.Counterexample;
 import shakeanapple.backtracker.core.model.counterexample.State;
@@ -34,6 +34,15 @@ public class CounterexampleWalker implements ILtlFormulaVisitor<CalculationResul
             res = this.ltlFormula.applyVisitor(this);
         }
         return this.cursor.getCurState();
+    }
+
+    public History getHistory(){
+        return this.history;
+    }
+
+    public void applyNextState(){
+        this.cursor.moveNext();
+        this.ltlFormula.applyVisitor(this);
     }
 
     private void registerNodeInHistory(FormulaNode node) {

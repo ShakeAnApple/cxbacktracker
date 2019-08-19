@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+
+<?import shakeanapple.backtracker.ui.controls.VisGraphControl?>
+<?import javafx.scene.control.Button?>
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="shakeanapple.backtracker.ui.mainview.MainController">
+    <children>
+        <VisGraphControl fx:id="visGraph" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="411.0"/>
+        <Button text="update" onAction="#updateGraph"></Button>
+    </children>
+</AnchorPane>

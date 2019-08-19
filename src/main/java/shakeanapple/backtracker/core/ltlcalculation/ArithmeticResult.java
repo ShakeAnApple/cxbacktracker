@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.core.calculation;
+package shakeanapple.backtracker.core.ltlcalculation;
 
 import shakeanapple.backtracker.core.model.variable.AbstractValueHolder;
 import shakeanapple.backtracker.core.model.variable.IntegerValueHolder;
@@ -17,5 +17,10 @@ public class ArithmeticResult extends CalculationResult<AbstractValueHolder> {
     @Override
     public AbstractValueHolder getValue() {
         return this.result;
+    }
+
+    @Override
+    public String toString() {
+        return result.getValue().toString();
     }
 }

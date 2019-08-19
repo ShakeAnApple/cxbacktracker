@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.core.calculation;
+package shakeanapple.backtracker.core.ltlcalculation;
 
 public class LogicalResult extends CalculationResult<LogicalResultKind> {
     private LogicalResultKind result;
@@ -10,5 +10,10 @@ public class LogicalResult extends CalculationResult<LogicalResultKind> {
     @Override
     public LogicalResultKind getValue() {
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return result.name();
     }
 }

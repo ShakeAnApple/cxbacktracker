@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.core.calculation;
+package shakeanapple.backtracker.core.ltlcalculation;
 
 import shakeanapple.backtracker.core.model.counterexample.Counterexample;
 import shakeanapple.backtracker.core.model.counterexample.State;
