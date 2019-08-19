@@ -12,4 +12,9 @@ public class DivNode extends BinFormulaNode{
     public <TRes> TRes apply(ILtlFormulaVisitor<TRes> visitor) {
         return visitor.visitDiv(this);
     }
+
+    @Override
+    public String getName() {
+        return "Div";
+    }
 }

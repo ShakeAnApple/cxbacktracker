@@ -5,6 +5,7 @@ import shakeanapple.backtracker.infrastructure.visfx.graph.VisEdge;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 public class VisEdgeAdapter implements JsonSerializer<VisEdge>{
 
@@ -14,7 +15,7 @@ public class VisEdgeAdapter implements JsonSerializer<VisEdge>{
 
     }
 
-    public static JsonArray getAsJsonArray(ArrayList<VisEdge> edges){
+    public static JsonArray getAsJsonArray(List<VisEdge> edges){
         JsonArray jsonArray = new JsonArray();
         for(VisEdge visEdge : edges){
             jsonArray.add(getAsJsonObject(visEdge));

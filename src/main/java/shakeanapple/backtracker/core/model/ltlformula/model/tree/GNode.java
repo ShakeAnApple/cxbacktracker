@@ -12,4 +12,9 @@ public class GNode extends UnFormulaNode{
     public <TRes> TRes apply(ILtlFormulaVisitor<TRes> visitor) {
         return visitor.visitG(this);
     }
+
+    @Override
+    public String getName() {
+        return "G";
+    }
 }

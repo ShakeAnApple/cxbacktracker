@@ -12,4 +12,9 @@ public class LessEqNode extends BinFormulaNode{
     public <TRes> TRes apply(ILtlFormulaVisitor<TRes> visitor) {
         return visitor.visitLessEq(this);
     }
+
+    @Override
+    public String getName() {
+        return "<=";
+    }
 }

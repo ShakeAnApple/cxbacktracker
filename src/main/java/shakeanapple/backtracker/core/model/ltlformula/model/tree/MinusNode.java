@@ -12,4 +12,9 @@ public class MinusNode extends BinFormulaNode{
     public <TRes> TRes apply(ILtlFormulaVisitor<TRes> visitor) {
         return visitor.visitMinus(this);
     }
+
+    @Override
+    public String getName() {
+        return "-";
+    }
 }

@@ -29,8 +29,8 @@ public class CounterexampleCursor {
         return this.counterexample.getPath().get(this.curStep + 1);
     }
 
-    public boolean isEndOfPath() {
-        return this.curStep == this.counterexample.length();
+    public boolean hasNext() {
+        return this.curStep < this.counterexample.length();
     }
 
     public int getCurStateNum() {

@@ -12,4 +12,9 @@ public class AndNode extends BinFormulaNode{
     public <TRes> TRes apply(ILtlFormulaVisitor<TRes> visitor) {
         return visitor.visitAnd(this);
     }
+
+    @Override
+    public String getName() {
+        return "And";
+    }
 }

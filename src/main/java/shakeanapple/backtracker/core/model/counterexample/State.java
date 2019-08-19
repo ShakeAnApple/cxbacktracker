@@ -13,7 +13,7 @@ public class State {
 
     public State(List<Variable> variableValues, int order) {
         this.variableValues = variableValues;
-        this.variablesByNames = variableValues.stream().collect(Collectors.toMap((v) -> v.getInfo().getName(), (v) -> v));
+        this.variablesByNames = variableValues.stream().collect(Collectors.toMap((v) -> v.getName(), (v) -> v));
         this.order = order;
     }
 

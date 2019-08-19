@@ -1,16 +1,11 @@
-package shakeanapple.backtracker.ui.controls;
+package shakeanapple.backtracker.ui.control;
 
-import javafx.concurrent.Worker;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.layout.Region;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import shakeanapple.backtracker.infrastructure.visfx.graph.VisGraph;
-
-import java.io.IOException;
 
 public class VisGraphControl extends Region {
     private final WebView browser = new WebView();

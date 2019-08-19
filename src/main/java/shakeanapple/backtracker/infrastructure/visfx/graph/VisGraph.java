@@ -5,33 +5,31 @@ import shakeanapple.backtracker.infrastructure.visfx.jsonutils.VisEdgeAdapter;
 
 import javax.management.relation.Relation;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 
 public class VisGraph {
 
-    private HashMap<Long,VisNode> nodes;
-    private ArrayList<VisEdge> edges;
+    private Map<Long,VisNode> nodes;
+    private List<VisEdge> edges;
 
     public VisGraph(){
         nodes = new HashMap<>();
         edges = new ArrayList<>();
     }
 
-    public VisGraph(ArrayList<VisNode> nodes, ArrayList<VisEdge> edges){
+    public VisGraph(List<VisNode> nodes, List<VisEdge> edges){
         this.edges = edges;
         for(VisNode node : nodes)
             this.nodes.put(node.getId(),node);
     }
 
-    public void addNodes(VisNode ... nodes){
+    public void addNodes(List<VisNode> nodes){
         for(VisNode node : nodes)
             this.nodes.put(node.getId(),node);
     }
 
-    public void addEdges(VisEdge ... edges){
-        this.edges.addAll(Arrays.asList(edges));
+    public void addEdges(List<VisEdge> edges){
+        this.edges.addAll(edges);
     }
 
     public ArrayList<VisNode> nodesAsList(){

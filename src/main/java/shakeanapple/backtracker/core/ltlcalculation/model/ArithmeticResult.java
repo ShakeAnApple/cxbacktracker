@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.core.ltlcalculation;
+package shakeanapple.backtracker.core.ltlcalculation.model;
 
 import shakeanapple.backtracker.core.model.variable.AbstractValueHolder;
 import shakeanapple.backtracker.core.model.variable.IntegerValueHolder;

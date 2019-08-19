@@ -12,4 +12,9 @@ public class UNode extends BinFormulaNode{
     public <TRes> TRes apply(ILtlFormulaVisitor<TRes> visitor) {
         return visitor.visitU(this);
     }
+
+    @Override
+    public String getName() {
+        return "U";
+    }
 }

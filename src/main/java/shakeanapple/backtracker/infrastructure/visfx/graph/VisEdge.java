@@ -9,10 +9,15 @@ public class VisEdge {
     private String arrows;
     private String label;
 
-    public VisEdge(VisNode from, VisNode to, String arrows, String label) {
+    public VisEdge(VisNode from, VisNode to, String arrows){
         this.from = from;
         this.to = to;
         this.arrows = arrows;
+        this.label = "";
+    }
+
+    public VisEdge(VisNode from, VisNode to, String arrows, String label) {
+        this(from, to, arrows);
         this.label = label;
     }
 

@@ -12,4 +12,9 @@ public class FNode extends UnFormulaNode{
     public <TRes> TRes apply(ILtlFormulaVisitor<TRes> visitor) {
         return visitor.visitF(this);
     }
+
+    @Override
+    public String getName() {
+        return "F";
+    }
 }

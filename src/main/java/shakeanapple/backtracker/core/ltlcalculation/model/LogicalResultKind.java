@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.core.ltlcalculation;
+package shakeanapple.backtracker.core.ltlcalculation.model;
 
 public enum LogicalResultKind {
     // if it's variable or const

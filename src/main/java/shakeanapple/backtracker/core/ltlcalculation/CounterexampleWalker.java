@@ -1,49 +1,70 @@
 package shakeanapple.backtracker.core.ltlcalculation;
 
+import shakeanapple.backtracker.core.ltlcalculation.model.*;
 import shakeanapple.backtracker.core.model.counterexample.Counterexample;
-import shakeanapple.backtracker.core.model.counterexample.State;
 import shakeanapple.backtracker.core.model.ltlformula.model.ILtlFormulaVisitor;
 import shakeanapple.backtracker.core.model.ltlformula.model.LtlFormula;
 import shakeanapple.backtracker.core.model.ltlformula.model.tree.*;
+import shakeanapple.backtracker.core.model.variable.AbstractValueHolder;
+import shakeanapple.backtracker.core.model.variable.BooleanValueHolder;
 import shakeanapple.backtracker.core.model.variable.IntegerValueHolder;
 
-public class CounterexampleWalker implements ILtlFormulaVisitor<CalculationResult> {
+public class CounterexampleWalker implements ILtlFormulaVisitor<CalculationResult>, ICalculationWalker {
 
-    private CounterexampleCursor cursor;
-    private LtlFormula ltlFormula;
+    private final CounterexampleCursor cursor;
+    private final LtlFormula ltlFormula;
 
-    private History history;
+    private final History history;
+    private final CalculatedFormula calculatedFormula;
 
     public CounterexampleWalker(Counterexample counterexample, LtlFormula ltlFormula) {
         this.cursor = new CounterexampleCursor(counterexample);
         this.ltlFormula = ltlFormula;
 
         this.history = new History();
+        this.calculatedFormula = CalculatedFormula.fromBasicLtl(this.ltlFormula);
     }
 
     private CounterexampleWalker(History history, CounterexampleCursor cursor, LtlFormula ltlFormula){
         this.cursor = cursor;
         this.history = history;
         this.ltlFormula = ltlFormula;
+        this.calculatedFormula = CalculatedFormula.fromBasicLtl(ltlFormula);
     }
 
-    public State getStateFalsified() {
-        CalculationResult res = this.ltlFormula.applyVisitor(this);
-        while (res.getValue() != LogicalResultKind.FALSE) {
+    @Override
+    public ICalculatedFormula moveNext() {
+        if (this.cursor.hasNext()) {
             this.cursor.moveNext();
-            res = this.ltlFormula.applyVisitor(this);
+            this.ltlFormula.applyVisitor(this);
+            this.calculatedFormula.applyHistory(history, this.cursor.getCurStateNum());
         }
-        return this.cursor.getCurState();
+        return this.calculatedFormula;
     }
 
-    public History getHistory(){
-        return this.history;
+    @Override
+    public ICalculatedFormula getForStep(int stepNum) {
+        if (this.cursor.getCurStateNum() >= stepNum){
+            this.calculatedFormula.applyHistory(this.history, stepNum);
+        }
+        else {
+            while (this.cursor.getCurStateNum() < stepNum) {
+                this.cursor.moveNext();
+                this.ltlFormula.applyVisitor(this);
+                this.calculatedFormula.applyHistory(this.history, this.cursor.getCurStateNum());
+            }
+        }
+        return this.calculatedFormula;
     }
 
-    public void applyNextState(){
-        this.cursor.moveNext();
-        this.ltlFormula.applyVisitor(this);
-    }
+//    public State getStateFalsified() {
+//        CalculationResult res = this.ltlFormula.applyVisitor(this);
+//        while (res.getValue() != LogicalResultKind.FALSE) {
+//            this.cursor.moveNext();
+//            res = this.ltlFormula.applyVisitor(this);
+//        }
+//        return this.cursor.getCurState();
+//    }
 
     private void registerNodeInHistory(FormulaNode node) {
         this.history.registerNode(node);
@@ -129,7 +150,7 @@ public class CounterexampleWalker implements ILtlFormulaVisitor<CalculationResul
         }
 
         if (child.getValue().equals(LogicalResultKind.FALSE)) {
-            if (this.cursor.isEndOfPath()) {
+            if (!this.cursor.hasNext()) {
                 return addResToHistoryAndReturn(fNode, new LogicalResult(LogicalResultKind.FALSE));
             } else {
                 return addResToHistoryAndReturn(fNode, new LogicalResult(LogicalResultKind.UNKNOWN));
@@ -144,9 +165,11 @@ public class CounterexampleWalker implements ILtlFormulaVisitor<CalculationResul
 
         LogicalResult child = (LogicalResult) gNode.getChild().apply(this);
 
-        LogicalResultKind prevRes = ((LogicalResult) this.history.getResultForNodeByStep(gNode, this.cursor.getCurStateNum() - 1)).getValue();
-        if (prevRes.equals(LogicalResultKind.FALSE)) {
-            return addResToHistoryAndReturn(gNode, new LogicalResult(prevRes));
+        if (this.cursor.getCurStateNum() > 1) {
+            LogicalResultKind prevRes = ((LogicalResult) this.history.getResultForNodeByStep(gNode, this.cursor.getCurStateNum() - 1)).getValue();
+            if (prevRes.equals(LogicalResultKind.FALSE)) {
+                return addResToHistoryAndReturn(gNode, new LogicalResult(prevRes));
+            }
         }
         return addResToHistoryAndReturn(gNode, new LogicalResult(child.getValue()));
     }
@@ -158,7 +181,14 @@ public class CounterexampleWalker implements ILtlFormulaVisitor<CalculationResul
     public CalculationResult visitVar(VarNode varNode) {
         this.registerNodeInHistory(varNode);
 
-        return addResToHistoryAndReturn(varNode, new ArithmeticResult(this.cursor.getCurState().getVarByName(varNode.getName()).getValue()));
+        CalculationResult res = null;
+        AbstractValueHolder valueHolder = this.cursor.getCurState().getVarByName(varNode.getName()).getValue();
+        if (valueHolder instanceof BooleanValueHolder){
+            res = new LogicalResult(((BooleanValueHolder)valueHolder).getValue() ? LogicalResultKind.TRUE : LogicalResultKind.FALSE);
+        } else if (valueHolder instanceof IntegerValueHolder){
+            res = new ArithmeticResult(((IntegerValueHolder)valueHolder).getValue());
+        }
+        return addResToHistoryAndReturn(varNode, res);
     }
 
     @Override
@@ -181,19 +211,19 @@ public class CounterexampleWalker implements ILtlFormulaVisitor<CalculationResul
             return addResToHistoryAndReturn(implNode, new LogicalResult(LogicalResultKind.UNKNOWN));
         }
 
-        if (left.getValue().equals(LogicalResultKind.TRUE) || right.getValue().equals(LogicalResultKind.TRUE)){
+        if (left.getValue().equals(LogicalResultKind.TRUE) && right.getValue().equals(LogicalResultKind.TRUE)){
             return addResToHistoryAndReturn(implNode, new LogicalResult(LogicalResultKind.TRUE));
         }
 
-        if (left.getValue().equals(LogicalResultKind.TRUE) || right.getValue().equals(LogicalResultKind.FALSE)){
+        if (left.getValue().equals(LogicalResultKind.TRUE) && right.getValue().equals(LogicalResultKind.FALSE)){
             return addResToHistoryAndReturn(implNode, new LogicalResult(LogicalResultKind.FALSE));
         }
 
-        if (left.getValue().equals(LogicalResultKind.FALSE) || right.getValue().equals(LogicalResultKind.TRUE)){
+        if (left.getValue().equals(LogicalResultKind.FALSE) && right.getValue().equals(LogicalResultKind.TRUE)){
             return addResToHistoryAndReturn(implNode, new LogicalResult(LogicalResultKind.TRUE));
         }
 
-        if (left.getValue().equals(LogicalResultKind.FALSE) || right.getValue().equals(LogicalResultKind.FALSE)){
+        if (left.getValue().equals(LogicalResultKind.FALSE) && right.getValue().equals(LogicalResultKind.FALSE)){
             return addResToHistoryAndReturn(implNode, new LogicalResult(LogicalResultKind.TRUE));
         }
 
@@ -409,5 +439,6 @@ public class CounterexampleWalker implements ILtlFormulaVisitor<CalculationResul
     public CalculationResult visitM(MNode mNode) {
         throw new RuntimeException("M not implemented");
     }
+
 
 }

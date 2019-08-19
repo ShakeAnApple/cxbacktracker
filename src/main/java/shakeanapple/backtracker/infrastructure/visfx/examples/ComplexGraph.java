@@ -29,8 +29,8 @@ public class ComplexGraph extends Application {
         VisEdge edge5 = new VisEdge(mother,firstSon,"to","mother_to");
         VisEdge edge6 = new VisEdge(mother,secondSon,"to","mother_to");
         VisEdge edge7 = new VisEdge(mother,firstDaughter,"to","mother_to");
-        graph.addNodes(father,mother,firstSon,secondSon,firstDaughter,firstSonSon);
-        graph.addEdges(edge1,edge2,edge3,edge4,edge5,edge6,edge7);
+//        graph.addNodes(father,mother,firstSon,secondSon,firstDaughter,firstSonSon);
+//        graph.addEdges(edge1,edge2,edge3,edge4,edge5,edge6,edge7);
         return graph;
     }
 }

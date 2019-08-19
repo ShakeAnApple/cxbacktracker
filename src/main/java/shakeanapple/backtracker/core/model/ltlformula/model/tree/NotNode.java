@@ -12,4 +12,9 @@ public class NotNode extends UnFormulaNode{
     public <TRes> TRes apply(ILtlFormulaVisitor<TRes> visitor) {
         return visitor.visitNot(this);
     }
+
+    @Override
+    public String getName() {
+        return "!";
+    }
 }

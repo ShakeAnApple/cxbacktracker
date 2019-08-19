@@ -12,4 +12,9 @@ public class OrNode extends BinFormulaNode{
     public <TRes> TRes apply(ILtlFormulaVisitor<TRes> visitor) {
         return visitor.visitOr(this);
     }
+
+    @Override
+    public String getName() {
+        return "Or";
+    }
 }

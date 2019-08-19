@@ -12,4 +12,9 @@ public class MulNode extends BinFormulaNode{
     public <TRes> TRes apply(ILtlFormulaVisitor<TRes> visitor) {
         return visitor.visitMul(this);
     }
+
+    @Override
+    public String getName() {
+        return "*";
+    }
 }

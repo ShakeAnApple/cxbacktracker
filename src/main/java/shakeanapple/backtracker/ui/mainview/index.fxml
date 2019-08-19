@@ -2,12 +2,26 @@
 
 <?import javafx.scene.layout.AnchorPane?>
 
-<?import shakeanapple.backtracker.ui.controls.VisGraphControl?>
+<?import shakeanapple.backtracker.ui.control.VisGraphControl?>
 <?import javafx.scene.control.Button?>
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea"
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
+<AnchorPane  xmlns="http://javafx.com/javafx/8.0.172-ea"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="shakeanapple.backtracker.ui.mainview.MainController">
-    <children>
-        <VisGraphControl fx:id="visGraph" layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="411.0"/>
-        <Button text="update" onAction="#updateGraph"></Button>
-    </children>
+
+    <GridPane>
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="80.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" percentHeight="100.0" vgrow="SOMETIMES"/>
+        </rowConstraints>
+
+        <VisGraphControl fx:id="visGraph" layoutX="0.0" layoutY="0.0" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+
+        <Button text="update" onAction="#updateGraph" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+    </GridPane>
+
 </AnchorPane>

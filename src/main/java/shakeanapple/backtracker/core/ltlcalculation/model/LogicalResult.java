@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.core.ltlcalculation;
+package shakeanapple.backtracker.core.ltlcalculation.model;
 
 public class LogicalResult extends CalculationResult<LogicalResultKind> {
     private LogicalResultKind result;
@@ -9,7 +9,7 @@ public class LogicalResult extends CalculationResult<LogicalResultKind> {
 
     @Override
     public LogicalResultKind getValue() {
-        return null;
+        return this.result;
     }
 
     @Override

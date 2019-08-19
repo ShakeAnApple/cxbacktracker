@@ -12,4 +12,9 @@ public class GreaterNode extends BinFormulaNode{
     public <TRes> TRes apply(ILtlFormulaVisitor<TRes> visitor) {
         return visitor.visitGreater(this);
     }
+
+    @Override
+    public String getName() {
+        return ">";
+    }
 }
