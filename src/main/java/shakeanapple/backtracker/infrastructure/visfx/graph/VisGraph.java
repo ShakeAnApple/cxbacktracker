@@ -6,6 +6,7 @@ import shakeanapple.backtracker.infrastructure.visfx.jsonutils.VisEdgeAdapter;
 import javax.management.relation.Relation;
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class VisGraph {
 
@@ -19,8 +20,7 @@ public class VisGraph {
 
     public VisGraph(List<VisNode> nodes, List<VisEdge> edges){
         this.edges = edges;
-        for(VisNode node : nodes)
-            this.nodes.put(node.getId(),node);
+        this.nodes = nodes.stream().collect(Collectors.toMap(VisNode::getId, n -> n));
     }
 
     public void addNodes(List<VisNode> nodes){

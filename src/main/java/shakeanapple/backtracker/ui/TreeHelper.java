@@ -1,7 +1,6 @@
 package shakeanapple.backtracker.ui;
 
-import shakeanapple.backtracker.core.ltlcalculation.model.ICalculatedFormula;
-import shakeanapple.backtracker.core.ltlcalculation.model.ICalculatedNode;
+import shakeanapple.backtracker.core.ltlcalculation.model.*;
 import shakeanapple.backtracker.infrastructure.visfx.graph.VisEdge;
 import shakeanapple.backtracker.infrastructure.visfx.graph.VisGraph;
 import shakeanapple.backtracker.infrastructure.visfx.graph.VisNode;
@@ -11,7 +10,13 @@ import java.util.*;
 public class TreeHelper {
 
     public static void flatten(VisNode parent, ICalculatedNode child, Random r, List<VisNode> nodes, List<VisEdge> edges){
-        VisNode visChild = new VisNode(r.nextLong(), child.getNode().getName());
+        VisNode visChild = null;
+        try {
+            visChild = new VisNode(r.nextLong(), child.getNode().getName() + " " + child.getResult() + " for step: " + child.getResult().forStep(), getColorFor(child.getResult()));
+        }
+        catch (Exception e){
+            int a = 1;
+        }
         nodes.add(visChild);
 
         if (parent != null) {
@@ -35,5 +40,19 @@ public class TreeHelper {
 
         VisGraph graph = new VisGraph(nodes, edges);
         return graph;
+    }
+
+    public static String getColorFor(CalculationResult res){
+        if (res instanceof LogicalResult){
+            LogicalResult lr = (LogicalResult)res;
+            switch (lr.getValue()) {
+                case FALSE: return "#FF9999";
+                case TRUE: return "#CCFF99";
+                // dark gray for unknown
+                default: return "#A0A0A0";
+            }
+        }
+        // light gray for arithmetic res
+        return "#E0E0E0";
     }
 }

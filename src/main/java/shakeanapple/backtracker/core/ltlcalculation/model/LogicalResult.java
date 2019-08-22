@@ -3,7 +3,8 @@ package shakeanapple.backtracker.core.ltlcalculation.model;
 public class LogicalResult extends CalculationResult<LogicalResultKind> {
     private LogicalResultKind result;
 
-    public LogicalResult(LogicalResultKind result) {
+    public LogicalResult(LogicalResultKind result, int forStep) {
+        super(forStep);
         this.result = result;
     }
 

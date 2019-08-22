@@ -3,6 +3,7 @@ package shakeanapple.backtracker.infrastructure.visfx.graph;
 import com.google.gson.Gson;
 
 public class VisNode {
+    private String color;
     private long id;
     private String label;
 
@@ -14,6 +15,19 @@ public class VisNode {
     public VisNode(long id, String label) {
         this.id = id;
         this.label = label;
+    }
+
+    public VisNode(long id, String label, String color) {
+        this(id, label);
+        this.color = color;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public long getId() {

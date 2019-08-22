@@ -16,7 +16,15 @@ public class History {
     }
 
     public CalculationResult getResultForNodeByStep(FormulaNode node, int step){
-        return this.history.get(node).get(step);
+        if (!this.history.containsKey(node)){
+            return null;
+        }
+
+        if (this.history.get(node).size() < step){
+            return null;
+        }
+
+        return this.history.get(node).get(step - 1);
     }
 
     public void registerNode(FormulaNode node) {

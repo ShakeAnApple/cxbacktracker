@@ -6,11 +6,13 @@ import shakeanapple.backtracker.core.model.variable.IntegerValueHolder;
 public class ArithmeticResult extends CalculationResult<AbstractValueHolder> {
     private AbstractValueHolder result;
 
-    public ArithmeticResult(AbstractValueHolder result) {
+    public ArithmeticResult(AbstractValueHolder result, int forStep) {
+        super(forStep);
         this.result = result;
     }
 
-    public ArithmeticResult(int res){
+    public ArithmeticResult(int res, int forStep){
+        super(forStep);
         this.result = new IntegerValueHolder(res);
     }
 
