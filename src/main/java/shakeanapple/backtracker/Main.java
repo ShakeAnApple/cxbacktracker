@@ -1,6 +1,6 @@
 package shakeanapple.backtracker;
 
-import shakeanapple.backtracker.core.model.ltlformula.model.LtlFormula;
+import shakeanapple.backtracker.core.ltlcalculation.model.ltlformula.model.LtlFormula;
 
 public class Main {
 

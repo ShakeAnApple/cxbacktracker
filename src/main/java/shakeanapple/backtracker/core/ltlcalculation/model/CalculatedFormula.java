@@ -1,7 +1,7 @@
 package shakeanapple.backtracker.core.ltlcalculation.model;
 
 import shakeanapple.backtracker.core.ltlcalculation.History;
-import shakeanapple.backtracker.core.model.ltlformula.model.LtlFormula;
+import shakeanapple.backtracker.core.ltlcalculation.model.ltlformula.model.LtlFormula;
 
 public class CalculatedFormula implements ICalculatedFormula {
     private final CalculatedNode root;

@@ -1,9 +1,9 @@
 package shakeanapple.backtracker.ui;
 
 import shakeanapple.backtracker.core.ltlcalculation.model.*;
-import shakeanapple.backtracker.infrastructure.visfx.graph.VisEdge;
-import shakeanapple.backtracker.infrastructure.visfx.graph.VisGraph;
-import shakeanapple.backtracker.infrastructure.visfx.graph.VisNode;
+import shakeanapple.backtracker.ui.infrasructure.visfx.graph.VisEdge;
+import shakeanapple.backtracker.ui.infrasructure.visfx.graph.VisGraph;
+import shakeanapple.backtracker.ui.infrasructure.visfx.graph.VisNode;
 
 import java.util.*;
 

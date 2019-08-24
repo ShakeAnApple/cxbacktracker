@@ -1,13 +1,13 @@
 package shakeanapple.backtracker.core.ltlcalculation;
 
 import shakeanapple.backtracker.core.ltlcalculation.model.*;
-import shakeanapple.backtracker.core.model.counterexample.Counterexample;
-import shakeanapple.backtracker.core.model.ltlformula.model.ILtlFormulaVisitor;
-import shakeanapple.backtracker.core.model.ltlformula.model.LtlFormula;
-import shakeanapple.backtracker.core.model.ltlformula.model.tree.*;
-import shakeanapple.backtracker.core.model.variable.AbstractValueHolder;
-import shakeanapple.backtracker.core.model.variable.BooleanValueHolder;
-import shakeanapple.backtracker.core.model.variable.IntegerValueHolder;
+import shakeanapple.backtracker.core.ltlcalculation.model.counterexample.Counterexample;
+import shakeanapple.backtracker.core.ltlcalculation.model.ltlformula.model.ILtlFormulaVisitor;
+import shakeanapple.backtracker.core.ltlcalculation.model.ltlformula.model.LtlFormula;
+import shakeanapple.backtracker.core.ltlcalculation.model.ltlformula.model.tree.*;
+import shakeanapple.backtracker.common.variable.AbstractValueHolder;
+import shakeanapple.backtracker.common.variable.BooleanValueHolder;
+import shakeanapple.backtracker.common.variable.IntegerValueHolder;
 
 public class CounterexampleWalker implements ILtlFormulaVisitor<CalculationResult>, ICalculationWalker {
 

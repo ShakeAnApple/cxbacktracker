@@ -5,7 +5,7 @@ import javafx.geometry.VPos;
 import javafx.scene.layout.Region;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import shakeanapple.backtracker.infrastructure.visfx.graph.VisGraph;
+import shakeanapple.backtracker.ui.infrasructure.visfx.graph.VisGraph;
 
 public class VisGraphControl extends Region {
     private final WebView browser = new WebView();

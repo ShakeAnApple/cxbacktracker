@@ -1,7 +1,7 @@
 package shakeanapple.backtracker.core.ltlcalculation.model;
 
-import shakeanapple.backtracker.core.model.variable.AbstractValueHolder;
-import shakeanapple.backtracker.core.model.variable.IntegerValueHolder;
+import shakeanapple.backtracker.common.variable.AbstractValueHolder;
+import shakeanapple.backtracker.common.variable.IntegerValueHolder;
 
 public class ArithmeticResult extends CalculationResult<AbstractValueHolder> {
     private AbstractValueHolder result;

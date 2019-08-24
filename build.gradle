@@ -48,4 +48,4 @@ idea {
 }
 
 mainClassName = 'shakeanapple.backtracker.ui.MainFx'
-//mainClassName = 'shakeanapple.backtracker.infrastructure.visfx.examples.ComplexGraph'
+//mainClassName = 'shakeanapple.backtracker.ui.infrasructure.visfx.examples.ComplexGraph'

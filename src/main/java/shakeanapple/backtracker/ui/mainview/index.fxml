@@ -16,19 +16,23 @@
 <!--</AnchorPane>-->
 <GridPane minWidth="1000" minHeight="1000" xmlns="http://javafx.com/javafx/8.0.172-ea"
           xmlns:fx="http://javafx.com/fxml/1" fx:controller="shakeanapple.backtracker.ui.mainview.MainController">
-<columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="80.0"/>
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0"/>
-</columnConstraints>
-<rowConstraints>
-    <RowConstraints vgrow="ALWAYS" />
-</rowConstraints>
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints percentHeight="95.0" vgrow="ALWAYS"/>
+        <RowConstraints percentHeight="5.0" vgrow="ALWAYS"/>
+    </rowConstraints>
 
-<VBox GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
-    <VisGraphControl fx:id="visGraph" VBox.vgrow="ALWAYS" prefHeight="1000" />
-</VBox>
-<VBox GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
-    <Button text="update" onAction="#updateGraph"/>
-</VBox>
+    <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+        <VisGraphControl fx:id="ltlGraph" VBox.vgrow="ALWAYS" prefHeight="1000"/>
+    </VBox>
+    <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+        <VisGraphControl fx:id="blockDiagram" VBox.vgrow="ALWAYS" prefHeight="1000"/>
+    </VBox>
+    <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+        <Button text="update" onAction="#updateGraph"/>
+    </VBox>
 
 </GridPane>

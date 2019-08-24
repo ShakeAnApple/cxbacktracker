@@ -4,13 +4,13 @@ import javafx.fxml.FXML;
 import shakeanapple.backtracker.core.ltlcalculation.CounterexampleWalker;
 import shakeanapple.backtracker.core.ltlcalculation.ICalculationWalker;
 import shakeanapple.backtracker.core.ltlcalculation.model.ICalculatedFormula;
-import shakeanapple.backtracker.core.model.counterexample.Counterexample;
-import shakeanapple.backtracker.core.model.counterexample.State;
-import shakeanapple.backtracker.core.model.ltlformula.model.LtlFormula;
-import shakeanapple.backtracker.core.model.variable.BooleanValueHolder;
-import shakeanapple.backtracker.core.model.variable.BooleanVariable;
-import shakeanapple.backtracker.core.model.variable.Variable;
-import shakeanapple.backtracker.infrastructure.visfx.graph.VisGraph;
+import shakeanapple.backtracker.core.ltlcalculation.model.counterexample.Counterexample;
+import shakeanapple.backtracker.core.ltlcalculation.model.counterexample.State;
+import shakeanapple.backtracker.core.ltlcalculation.model.ltlformula.model.LtlFormula;
+import shakeanapple.backtracker.common.variable.BooleanValueHolder;
+import shakeanapple.backtracker.common.variable.BooleanVariable;
+import shakeanapple.backtracker.common.variable.Variable;
+import shakeanapple.backtracker.ui.infrasructure.visfx.graph.VisGraph;
 import shakeanapple.backtracker.ui.TreeHelper;
 import shakeanapple.backtracker.ui.control.VisGraphControl;
 
@@ -20,7 +20,7 @@ import java.util.List;
 public class MainController {
 
     @FXML
-    private VisGraphControl visGraph;
+    private VisGraphControl ltlGraph;
 
     private final ICalculationWalker calculationWalker;
 
@@ -81,6 +81,6 @@ public class MainController {
     protected void updateGraph() {
         ICalculatedFormula formula = this.calculationWalker.moveNext();
         VisGraph graph = TreeHelper.convertToGraph(formula);
-        this.visGraph.updateGraph(graph);
+        this.ltlGraph.updateGraph(graph);
     }
 }

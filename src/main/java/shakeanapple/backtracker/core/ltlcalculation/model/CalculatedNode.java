@@ -1,7 +1,7 @@
 package shakeanapple.backtracker.core.ltlcalculation.model;
 
 import shakeanapple.backtracker.core.ltlcalculation.History;
-import shakeanapple.backtracker.core.model.ltlformula.model.tree.FormulaNode;
+import shakeanapple.backtracker.core.ltlcalculation.model.ltlformula.model.tree.FormulaNode;
 
 import java.util.ArrayList;
 import java.util.List;
