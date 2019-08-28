@@ -13,10 +13,13 @@ import java.util.regex.Pattern;
 
 public class FunctionBlockDiagram {
     private final List<FunctionBlock> fblocks;
+    private List<Connection> connections;
 
-    public FunctionBlockDiagram(List<FunctionBlock> fblocks) {
+    public FunctionBlockDiagram(List<FunctionBlock> fblocks, List<Connection> connections) {
         this.fblocks = fblocks;
+        this.connections = connections;
     }
+
 
     public static FunctionBlockDiagram load(String path){
         try {

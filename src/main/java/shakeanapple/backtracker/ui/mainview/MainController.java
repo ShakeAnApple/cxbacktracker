@@ -1,8 +1,8 @@
 package shakeanapple.backtracker.ui.mainview;
 
 import javafx.fxml.FXML;
-import shakeanapple.backtracker.core.ltlcalculation.CounterexampleWalker;
-import shakeanapple.backtracker.core.ltlcalculation.ICalculationWalker;
+import shakeanapple.backtracker.core.ltlcalculation.LtlOnCounterexampleEvaluator;
+import shakeanapple.backtracker.core.ltlcalculation.LtlSequentialEvaluator;
 import shakeanapple.backtracker.core.ltlcalculation.model.ICalculatedFormula;
 import shakeanapple.backtracker.core.ltlcalculation.model.counterexample.Counterexample;
 import shakeanapple.backtracker.core.ltlcalculation.model.counterexample.State;
@@ -22,13 +22,13 @@ public class MainController {
     @FXML
     private VisGraphControl ltlGraph;
 
-    private final ICalculationWalker calculationWalker;
+    private final LtlSequentialEvaluator calculationWalker;
 
     public MainController()  {
         this.calculationWalker = dummyInitialise();
     }
 
-    private ICalculationWalker dummyInitialise() {
+    private LtlSequentialEvaluator dummyInitialise() {
         List<State> states = new ArrayList<>();
 
         List<Variable> variablesValues = new ArrayList<>();
@@ -74,7 +74,7 @@ public class MainController {
         Counterexample cx = new Counterexample(states);
         LtlFormula formula = LtlFormula.parse("G(((!(alarm) & !(criteria)) & X (criteria & !(ack_button))) -> X (alarm))");
 
-        return new CounterexampleWalker(cx, formula);
+        return new LtlOnCounterexampleEvaluator(cx, formula);
     }
 
     @FXML

@@ -9,7 +9,7 @@ import shakeanapple.backtracker.common.variable.AbstractValueHolder;
 import shakeanapple.backtracker.common.variable.BooleanValueHolder;
 import shakeanapple.backtracker.common.variable.IntegerValueHolder;
 
-public class CounterexampleWalker implements ILtlFormulaVisitor<CalculationResult>, ICalculationWalker {
+public class LtlOnCounterexampleEvaluator implements ILtlFormulaVisitor<CalculationResult>, LtlSequentialEvaluator {
 
     private final CounterexampleCursor cursor;
     private final LtlFormula ltlFormula;
@@ -17,7 +17,7 @@ public class CounterexampleWalker implements ILtlFormulaVisitor<CalculationResul
     private final History history;
     private final CalculatedFormula calculatedFormula;
 
-    public CounterexampleWalker(Counterexample counterexample, LtlFormula ltlFormula) {
+    public LtlOnCounterexampleEvaluator(Counterexample counterexample, LtlFormula ltlFormula) {
         this.cursor = new CounterexampleCursor(counterexample);
         this.ltlFormula = ltlFormula;
 
@@ -25,7 +25,7 @@ public class CounterexampleWalker implements ILtlFormulaVisitor<CalculationResul
         this.calculatedFormula = CalculatedFormula.fromBasicLtl(this.ltlFormula);
     }
 
-    private CounterexampleWalker(History history, CounterexampleCursor cursor, LtlFormula ltlFormula){
+    private LtlOnCounterexampleEvaluator(History history, CounterexampleCursor cursor, LtlFormula ltlFormula){
         this.cursor = cursor;
         this.history = history;
         this.ltlFormula = ltlFormula;
@@ -75,8 +75,8 @@ public class CounterexampleWalker implements ILtlFormulaVisitor<CalculationResul
         return res;
     }
 
-    private CounterexampleWalker branch() {
-        return new CounterexampleWalker(this.history, this.cursor.branch(), this.ltlFormula);
+    private LtlOnCounterexampleEvaluator branch() {
+        return new LtlOnCounterexampleEvaluator(this.history, this.cursor.branch(), this.ltlFormula);
     }
 
     /////////////////////////////////////// implementation ////////////////////////////////////////////////////
@@ -127,7 +127,7 @@ public class CounterexampleWalker implements ILtlFormulaVisitor<CalculationResul
 //        LogicalResult curStep = (LogicalResult) xNode.getChild().apply(this);
 //        CalculationResult res = this.addResToHistoryAndReturn(xNode, new LogicalResult(LogicalResultKind.UNKNOWN));
 
-        CounterexampleWalker timeBranch = this.branch();
+        LtlOnCounterexampleEvaluator timeBranch = this.branch();
         timeBranch.cursor.moveNext();
         LogicalResult nextStep = (LogicalResult) xNode.getChild().apply(timeBranch);
         //this.addResToHistoryAndReturn(xNode, new LogicalResult(nextStep.getValue(), this.cursor.getCurStateNum()));

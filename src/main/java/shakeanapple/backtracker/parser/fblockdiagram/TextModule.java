@@ -1,21 +1,27 @@
 package shakeanapple.backtracker.parser.fblockdiagram;
 
-import java.util.List;
+import shakeanapple.backtracker.core.fblockmapping.model.FunctionBlock;
+import shakeanapple.backtracker.core.fblockmapping.model.FunctionBlockInfo;
 
 public class TextModule {
-    private final String name;
-    private List<TextVariable> inputs;
-    private List<TextVariable> outputs;
-    private List<TextVariable> internals;
+    private String name;
+    private TextModuleDescription description;
 
-    public TextModule(String name, List<TextVariable> inputs, List<TextVariable> outputs, List<TextVariable> internals) {
+    public TextModule(String name, TextModuleDescription description) {
         this.name = name;
-        this.inputs = inputs;
-        this.outputs = outputs;
-        this.internals = internals;
+        this.description = description;
     }
 
     public String getName() {
-        return this.getName();
+        return this.name;
+    }
+
+    public TextModuleDescription getDescription() {
+        return this.description;
+    }
+
+    public FunctionBlock translate() {
+        FunctionBlockInfo info = this.description.translate();
+        return new FunctionBlock(this.getName(), info);
     }
 }

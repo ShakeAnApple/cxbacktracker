@@ -14,29 +14,41 @@ public class ModuleBuilder {
         this.contents = contents;
     }
 
-    public TextModule build() {
+    public TextModuleDescription build() {
         String name = readName();
         List<TextVariable> inputs = readInputs();
         List<TextVariable> internals = readInternals();
 
         List<TextVariable> outputs = readOutputs();
-        List<TextVariable> outPutsTypeByVar = outputs.stream().filter(o -> o.getTypeFromVarName() != null).collect(Collectors.toList());
-        for (TextVariable var: outPutsTypeByVar) {
+
+        List<TextVariable> outPutsTypeByVar = outputs.stream().filter(
+                var ->
+                        var.getType().getTypeSpec() == VarType.OTHER &&
+                        var.getType().getClue().isDefinedFromVarName()
+        ).collect(Collectors.toList());
+
+        for (TextVariable var : outPutsTypeByVar) {
             boolean isTypeDefined = false;
             boolean typeDefinesByInput = false;
             TextVariable curCandidate = var;
-            while (!isTypeDefined && !typeDefinesByInput){
-                String inferFrom = curCandidate.getTypeFromVarName();
+            while (!isTypeDefined && !typeDefinesByInput) {
+                String inferFrom = curCandidate.getType().getClue().getStringClue();
                 curCandidate = internals.stream().filter(v -> v.getName().equals(inferFrom)).findFirst().orElse(null);
-                if (curCandidate == null){
+                if (curCandidate == null) {
                     curCandidate = inputs.stream().filter(v -> v.getName().equals(inferFrom)).findFirst().orElse(null);
                     typeDefinesByInput = true;
                 }
-                if (curCandidate.getType() != null){
+                if (curCandidate.getType().getTypeSpec() != VarType.OTHER) {
                     isTypeDefined = true;
                 }
             }
-            var.defineType(curCandidate.getType());
+            if (typeDefinesByInput) {
+                var.getType().getClue().isDefinedByInput(true);
+            } else {
+                var.defineType(curCandidate.getType().getTypeSpec());
+            }
+
+            return new TextModuleDescription(name, inputs, outputs, internals);
         }
 
         return null;
@@ -48,10 +60,12 @@ public class ModuleBuilder {
                 .filter(str -> !this.isCommentOrEmpty(str) && str.contains(":="))
                 .map(str -> {
                     String[] parts = str.trim().split(" := ");
-                    String type = this.inferType(parts);
-                    if (type.equals("boolean") || type.equals("integer"))
+                    Type type = this.inferType(parts);
+                    if (type.getTypeSpec() != VarType.OTHER) {
                         return new TextVariable(parts[0], type);
-                    return new TextVariable(parts[0], type, true);
+                    }
+                    type.getClue().isDefinedFromVarName(true);
+                    return new TextVariable(parts[0], type);
                 }).collect(Collectors.toList());
         return res;
     }
@@ -66,24 +80,28 @@ public class ModuleBuilder {
                 .filter(str -> !this.isCommentOrEmpty(str))
                 .map(str -> {
                     String[] parts = str.trim().replace(";", "").split(": ");
-                    return new TextVariable(parts[0], parts[1]);
+                    Type type = this.inferType(parts);
+                    if (type.getTypeSpec() == VarType.OTHER){
+                        type.defineType(VarType.MODULE);
+                    }
+                    return new TextVariable(parts[0], type);
                 })
                 .collect(Collectors.toList());
 
         return res;
     }
 
-    private String inferType(String[] parts) {
+    private Type inferType(String[] parts) {
         if (parts.length < 2) {
             return this.inferFromCase(parts[0]);
         }
         if (this.isTypeBoolean(parts[1])) {
-            return "boolean";
+            return new Type(VarType.BOOLEAN);
         }
         if (this.isTypeInteger(parts[1])) {
-            return "integer";
+            return new Type(VarType.INTEGER);
         }
-        return parts[1];
+        return new Type(VarType.OTHER, new TypeClue(false,false, parts[1]));
     }
 
     private boolean isTypeInteger(String clue) {
@@ -105,7 +123,7 @@ public class ModuleBuilder {
         return false;
     }
 
-    private String inferFromCase(String varName) {
+    private Type inferFromCase(String varName) {
         int idxOfVar = this.contents.indexOf(
                 this.contents.stream().filter(str -> str.contains(varName) && str.contains(":=")).findFirst()
         );
@@ -122,12 +140,12 @@ public class ModuleBuilder {
                 .collect(Collectors.toList());
 
         if (typeClues.stream().anyMatch(this::isTypeBoolean)) {
-            return "boolean";
+            return new Type(VarType.BOOLEAN);
         }
         if (typeClues.stream().anyMatch(this::isTypeInteger)) {
-            return "integer";
+            return new Type(VarType.INTEGER);
         }
-        return typeClues.get(1);
+        return new Type(VarType.OTHER, new TypeClue(false, false, typeClues.get(1)));
     }
 
     private List<TextVariable> readInputs() {
