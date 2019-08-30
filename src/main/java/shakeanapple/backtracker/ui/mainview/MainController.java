@@ -1,6 +1,8 @@
 package shakeanapple.backtracker.ui.mainview;
 
 import javafx.fxml.FXML;
+import shakeanapple.backtracker.core.fblockmapping.model.FunctionBlock;
+import shakeanapple.backtracker.core.fblockmapping.model.FunctionBlockDiagram;
 import shakeanapple.backtracker.core.ltlcalculation.LtlOnCounterexampleEvaluator;
 import shakeanapple.backtracker.core.ltlcalculation.LtlSequentialEvaluator;
 import shakeanapple.backtracker.core.ltlcalculation.model.ICalculatedFormula;
@@ -26,6 +28,7 @@ public class MainController {
 
     public MainController()  {
         this.calculationWalker = dummyInitialise();
+        FunctionBlockDiagram fd = FunctionBlockDiagram.load("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\m.smv");
     }
 
     private LtlSequentialEvaluator dummyInitialise() {

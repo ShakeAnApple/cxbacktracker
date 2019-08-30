@@ -1,6 +1,6 @@
 package shakeanapple.backtracker.core.fblockmapping.model;
 
-public class Connection {
+public class ConnectionTemplate {
     private final FunctionBlock from;
     private final FunctionBlockVariableInfo fromVar;
 
@@ -8,7 +8,7 @@ public class Connection {
     private final FunctionBlockVariableInfo toVar;
 
 
-    public Connection(FunctionBlock from, FunctionBlockVariableInfo fromVar, FunctionBlock to, FunctionBlockVariableInfo toVar) {
+    public ConnectionTemplate(FunctionBlock from, FunctionBlockVariableInfo fromVar, FunctionBlock to, FunctionBlockVariableInfo toVar) {
         this.from = from;
         this.fromVar = fromVar;
         this.to = to;
