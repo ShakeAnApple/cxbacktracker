@@ -1,5 +1,11 @@
 package shakeanapple.backtracker.parser.fblockdiagram.model;
 
+import shakeanapple.backtracker.core.fblockmapping.model.FunctionBlock;
+import shakeanapple.backtracker.core.fblockmapping.model.variable.FBVariable;
+import shakeanapple.backtracker.core.fblockmapping.model.variable.InputVariable;
+import shakeanapple.backtracker.core.fblockmapping.model.variable.OutputVariable;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -75,5 +81,26 @@ public class ParsingModule {
 
     public Map<String, ParsingOutput> getOutputsMap() {
         return this.outputsMap;
+    }
+
+    public FunctionBlock translate() {
+
+        Map<String, InputVariable> inputs = new HashMap<>();
+        Map<String, OutputVariable> outputs = new HashMap<>();
+        Map<String, FBVariable> internals = new HashMap<>();
+
+        for (ParsingInput input : this.inputs) {
+            inputs.put(input.getInfo().getName(), (InputVariable) input.translate());
+        }
+
+        for (ParsingOutput output : this.outputs) {
+            outputs.put(output.getInfo().getName(), (OutputVariable) output.translate());
+        }
+
+        for (ParsingModuleVariable internal : this.internals) {
+            internals.put(internal.getInfo().getName(), internal.translate());
+        }
+
+        return new FunctionBlock(this.name, this.info.getTypeName(), inputs, outputs, internals);
     }
 }

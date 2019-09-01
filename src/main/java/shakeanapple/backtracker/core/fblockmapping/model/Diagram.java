@@ -4,17 +4,17 @@ import shakeanapple.backtracker.parser.fblockdiagram.Parser;
 
 import java.util.List;
 
-public class FunctionBlockDiagram {
+public class Diagram {
     private final List<FunctionBlock> fblocks;
-    private List<ConnectionTemplate> connectionTemplates;
 
-    public FunctionBlockDiagram(List<FunctionBlock> fblocks, List<ConnectionTemplate> connectionTemplates) {
+    private final FunctionBlock root;
+
+    public Diagram(List<FunctionBlock> fblocks, FunctionBlock root) {
         this.fblocks = fblocks;
-        this.connectionTemplates = connectionTemplates;
+        this.root = root;
     }
 
-
-    public static FunctionBlockDiagram load(String path){
+    public static Diagram load(String path){
         try {
             Parser p = new Parser(path);
             return p.parse();

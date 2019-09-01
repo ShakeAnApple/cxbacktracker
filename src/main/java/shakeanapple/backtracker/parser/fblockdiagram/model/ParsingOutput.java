@@ -15,4 +15,8 @@ public class ParsingOutput extends ParsingModuleVariable {
     public void connect(ParsingInput toVar, ParsingModule from, ParsingModule to, boolean isInverted){
         this.connectedTo.add(new ParsingConnection(from, this, to, toVar, isInverted));
     }
+
+    public List<ParsingConnection> getIncommingConnections() {
+        return this.connectedTo;
+    }
 }

@@ -33,4 +33,8 @@ public class ParsingConnection {
     public ParsingModuleVariable toVar() {
         return toVar;
     }
+
+    public boolean isInverted() {
+        return this.isInverted;
+    }
 }

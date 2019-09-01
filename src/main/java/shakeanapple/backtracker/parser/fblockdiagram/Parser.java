@@ -1,6 +1,6 @@
 package shakeanapple.backtracker.parser.fblockdiagram;
 
-import shakeanapple.backtracker.core.fblockmapping.model.FunctionBlockDiagram;
+import shakeanapple.backtracker.core.fblockmapping.model.Diagram;
 import shakeanapple.backtracker.parser.fblockdiagram.model.ParsingDiagram;
 
 import java.io.IOException;
@@ -19,7 +19,7 @@ public class Parser {
     }
 
 
-    public FunctionBlockDiagram parse() throws IOException {
+    public Diagram parse() throws IOException {
         List<String> contents = this.readLines();
 
         ModuleBuilder mb = new ModuleBuilder(contents);
