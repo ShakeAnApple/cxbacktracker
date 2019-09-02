@@ -12,13 +12,17 @@ public class FunctionBlock {
     private Map<String, OutputVariable> outputs;
     private Map<String, FBVariable> internals;
 
-    public FunctionBlock(String name, String type,
+    private boolean isRoot;
+
+    public FunctionBlock(String name, String type, boolean isRoot,
                          Map<String, InputVariable> inputs, Map<String, OutputVariable> outputs, Map<String, FBVariable> internals) {
         this.name = name;
         this.type = type;
         this.inputs = inputs;
         this.outputs = outputs;
         this.internals = internals;
+
+        this.isRoot = isRoot;
     }
 
     public String getName() {

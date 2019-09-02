@@ -46,7 +46,7 @@ class Browser extends Region {
         getStyleClass().add("browser");
 
         // load the web page
-        webEngine.load((getClass().getClassLoader().getResource("baseGraph.html")).toString());
+        webEngine.load((getClass().getClassLoader().getResource("ltlGraph.html")).toString());
 
         //add the web view to the scene
         getChildren().add(browser);

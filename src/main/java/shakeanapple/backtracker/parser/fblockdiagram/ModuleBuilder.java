@@ -1,5 +1,6 @@
 package shakeanapple.backtracker.parser.fblockdiagram;
 
+import shakeanapple.backtracker.core.fblockmapping.model.variable.InputVariable;
 import shakeanapple.backtracker.parser.fblockdiagram.model.*;
 import shakeanapple.backtracker.parser.fblockdiagram.typepropagation.TypePropagationConstantNode;
 import shakeanapple.backtracker.parser.fblockdiagram.typepropagation.TypePropagationNode;
@@ -159,10 +160,12 @@ public class ModuleBuilder {
             }
         }
 
+        Map<String, String> rootInputConnections = new HashMap<>();
         List<ParsingVariableInfo> inputVars = this.readOutputs(moduleContents).stream().filter(str -> str.contains(":="))
                 .map(str -> {
                     String[] parts = str.trim().replace(";", "").split(" := ");
                     ParsingVariableInfo in = new ParsingVariableInfo(parts[0], ParsingVariableType.UNKNOWN);
+                    rootInputConnections.put(in.getName(), parts[1]);
 
                     String[] ownerVarParts = parts[1].split("\\.");
                     String ownerType = modules.get(ownerVarParts[0]).getTypeInfo().getTypeName();
@@ -176,11 +179,13 @@ public class ModuleBuilder {
         }
 
         ParsingModule rootModule = new ParsingModule("main", true, new ParsingModuleType("main", inputVars, outputVars, new ArrayList<>()));
-        this.establishConnections(rootModule, modules, moduleDeclarations);
+        modules.put("main", rootModule);
+
+        this.establishConnections(rootModule, modules, moduleDeclarations, rootInputConnections);
         return new ParsingDiagram(rootModule, modules);
     }
 
-    private void establishConnections(ParsingModule rootModule, Map<String, ParsingModule> modules, Map<String, TextDeclaration> moduleDeclarations) {
+    private void establishConnections(ParsingModule rootModule, Map<String, ParsingModule> modules, Map<String, TextDeclaration> moduleDeclarations, Map<String, String> rootInputConnectionsMap) {
         for (TextDeclaration declaration : moduleDeclarations.values()) {
 
             ParsingModule moduleTo = modules.get(declaration.getName());
@@ -209,6 +214,17 @@ public class ModuleBuilder {
                     toVar.connect(outVar, moduleFrom, moduleTo, isInverted);
                 }
             }
+        }
+
+        for (String varStr: rootInputConnectionsMap.keySet()){
+            ParsingInput toVar = rootModule.getInputsMap().get(varStr);
+            String[] fromVarParts = rootInputConnectionsMap.get(varStr).split("\\.");
+            boolean isInverted = fromVarParts[0].startsWith("!");
+            ParsingModule fromModule = modules.get(fromVarParts[0].replace("!", ""));
+            ParsingOutput fromVar = fromModule.getOutputsMap().get(fromVarParts[1]);
+
+            toVar.connect(fromVar, fromModule, rootModule, isInverted);
+            fromVar.connect(toVar, fromModule, rootModule, isInverted);
         }
     }
 

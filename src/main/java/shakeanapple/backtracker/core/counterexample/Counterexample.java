@@ -1,4 +1,7 @@
-package shakeanapple.backtracker.core.ltlcalculation.model.counterexample;
+package shakeanapple.backtracker.core.counterexample;
+
+import org.w3c.dom.css.Counter;
+import shakeanapple.backtracker.parser.counterexample.Parser;
 
 import java.util.List;
 import java.util.Map;
@@ -18,5 +21,15 @@ public class Counterexample {
 
     public int length() {
         return this.path.keySet().size();
+    }
+
+    public static Counterexample load(String path){
+        try {
+            Parser p = new Parser(path);
+            return p.parse();
+        }
+        catch (Exception e){
+            throw new RuntimeException("Can't load counterexample");
+        }
     }
 }

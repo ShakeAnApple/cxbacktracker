@@ -1,11 +1,11 @@
 package shakeanapple.backtracker.parser.fblockdiagram.model;
 
-import shakeanapple.backtracker.core.fblockmapping.model.Connection;
 import shakeanapple.backtracker.core.fblockmapping.model.Diagram;
 import shakeanapple.backtracker.core.fblockmapping.model.FunctionBlock;
 import shakeanapple.backtracker.core.fblockmapping.model.variable.InputVariable;
 import shakeanapple.backtracker.core.fblockmapping.model.variable.OutputVariable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,9 +28,11 @@ public class ParsingDiagram {
             blocks.put(module.getName(), module.translate());
         }
 
+        blocks.put("main", root);
+
         for (ParsingModule module : modules.values()) {
             for (ParsingOutput output: module.getOutputsMap().values()) {
-                for (ParsingConnection connection: output.getIncommingConnections()){
+                for (ParsingConnection connection: output.getOutgoingConnections()){
 
                     FunctionBlock from = blocks.get(connection.from().getName());
                     OutputVariable fromVar = from.getOutputs().get(connection.fromVar().getInfo().getName());
@@ -43,6 +45,6 @@ public class ParsingDiagram {
             }
         }
 
-        return new Diagram((List<FunctionBlock>) blocks.values(), root);
+        return new Diagram(new ArrayList<>(blocks.values()), root);
     }
 }

@@ -1,18 +1,20 @@
 package shakeanapple.backtracker.ui.mainview;
 
 import javafx.fxml.FXML;
-import shakeanapple.backtracker.core.fblockmapping.model.Diagram;
-import shakeanapple.backtracker.core.ltlcalculation.LtlOnCounterexampleEvaluator;
+import shakeanapple.backtracker.core.fblockmapping.DiagramSequentialEvaluator;
+import shakeanapple.backtracker.core.fblockmapping.DiagramWithCounterexampleEvaluator;
+import shakeanapple.backtracker.core.fblockmapping.model.snapshot.DiagramSnapshot;
+import shakeanapple.backtracker.core.ltlcalculation.LtlWithCounterexampleEvaluator;
 import shakeanapple.backtracker.core.ltlcalculation.LtlSequentialEvaluator;
 import shakeanapple.backtracker.core.ltlcalculation.model.ICalculatedFormula;
-import shakeanapple.backtracker.core.ltlcalculation.model.counterexample.Counterexample;
-import shakeanapple.backtracker.core.ltlcalculation.model.counterexample.State;
+import shakeanapple.backtracker.core.counterexample.Counterexample;
+import shakeanapple.backtracker.core.counterexample.State;
 import shakeanapple.backtracker.core.ltlcalculation.model.ltlformula.model.LtlFormula;
 import shakeanapple.backtracker.common.variable.BooleanValueHolder;
 import shakeanapple.backtracker.common.variable.BooleanVariable;
 import shakeanapple.backtracker.common.variable.Variable;
 import shakeanapple.backtracker.ui.infrasructure.visfx.graph.VisGraph;
-import shakeanapple.backtracker.ui.TreeHelper;
+import shakeanapple.backtracker.ui.GraphHelper;
 import shakeanapple.backtracker.ui.control.VisGraphControl;
 
 import java.util.ArrayList;
@@ -23,14 +25,22 @@ public class MainController {
     @FXML
     private VisGraphControl ltlGraph;
 
+    @FXML
+    private VisGraphControl functionBlocksGraph;
+
     private final LtlSequentialEvaluator calculationWalker;
+    private final DiagramSequentialEvaluator diagramEvaluator;
 
     public MainController()  {
-        this.calculationWalker = dummyInitialise();
-        Diagram fd = Diagram.load("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\m.smv");
+//        Counterexample cx = this.hardcodedCounterexample();
+        Counterexample cx = Counterexample.load("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\cx");
+        LtlFormula formula = LtlFormula.parse("G(((!(alarm) & !(criteria)) & X (criteria & !(ack_button))) -> X (alarm))");
+        this.calculationWalker = new LtlWithCounterexampleEvaluator(cx, formula);
+
+        this.diagramEvaluator = new DiagramWithCounterexampleEvaluator("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\m.smv", cx );
     }
 
-    private LtlSequentialEvaluator dummyInitialise() {
+    private Counterexample hardcodedCounterexample() {
         List<State> states = new ArrayList<>();
 
         List<Variable> variablesValues = new ArrayList<>();
@@ -73,16 +83,17 @@ public class MainController {
         s = new State(variablesValues, 4);
         states.add(s);
 
-        Counterexample cx = new Counterexample(states);
-        LtlFormula formula = LtlFormula.parse("G(((!(alarm) & !(criteria)) & X (criteria & !(ack_button))) -> X (alarm))");
-
-        return new LtlOnCounterexampleEvaluator(cx, formula);
+        return new Counterexample(states);
     }
 
     @FXML
     protected void updateGraph() {
         ICalculatedFormula formula = this.calculationWalker.moveNext();
-        VisGraph graph = TreeHelper.convertToGraph(formula);
+        VisGraph graph = GraphHelper.convertToGraph(formula);
         this.ltlGraph.updateGraph(graph);
+
+        DiagramSnapshot snapshot = this.diagramEvaluator.moveNext();
+        VisGraph blocksGraph = GraphHelper.convertToGraph(snapshot);
+        this.functionBlocksGraph.updateGraph(blocksGraph);
     }
 }

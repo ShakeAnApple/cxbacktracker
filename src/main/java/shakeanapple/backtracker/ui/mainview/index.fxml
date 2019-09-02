@@ -26,10 +26,10 @@
     </rowConstraints>
 
     <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
-        <VisGraphControl fx:id="ltlGraph" VBox.vgrow="ALWAYS" prefHeight="1000"/>
+        <VisGraphControl resource="ltlGraph.html" fx:id="ltlGraph" VBox.vgrow="ALWAYS" prefHeight="1000"/>
     </VBox>
     <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
-        <VisGraphControl fx:id="blockDiagram" VBox.vgrow="ALWAYS" prefHeight="1000"/>
+        <VisGraphControl resource="diagramGraph.html" fx:id="functionBlocksGraph" VBox.vgrow="ALWAYS" prefHeight="1000"/>
     </VBox>
     <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
         <Button text="update" onAction="#updateGraph"/>

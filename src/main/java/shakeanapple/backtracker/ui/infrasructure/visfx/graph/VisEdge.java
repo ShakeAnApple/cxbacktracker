@@ -8,6 +8,7 @@ public class VisEdge {
     private VisNode to;
     private String arrows;
     private String label;
+    private String color;
 
     public VisEdge(VisNode from, VisNode to, String arrows){
         this.from = from;
@@ -19,6 +20,11 @@ public class VisEdge {
     public VisEdge(VisNode from, VisNode to, String arrows, String label) {
         this(from, to, arrows);
         this.label = label;
+    }
+
+    public VisEdge(VisNode from, VisNode to, String arrows, String label, String color) {
+        this(from, to, arrows, label);
+        this.color = color;
     }
 
     public String toJson(){
@@ -59,4 +65,11 @@ public class VisEdge {
         this.label = label;
     }
 
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
 }

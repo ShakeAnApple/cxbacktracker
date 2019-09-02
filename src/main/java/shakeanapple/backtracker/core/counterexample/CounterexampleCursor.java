@@ -1,7 +1,4 @@
-package shakeanapple.backtracker.core.ltlcalculation;
-
-import shakeanapple.backtracker.core.ltlcalculation.model.counterexample.Counterexample;
-import shakeanapple.backtracker.core.ltlcalculation.model.counterexample.State;
+package shakeanapple.backtracker.core.counterexample;
 
 public class CounterexampleCursor {
     private final Counterexample counterexample;

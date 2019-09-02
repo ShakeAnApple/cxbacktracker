@@ -14,6 +14,14 @@ public class Diagram {
         this.root = root;
     }
 
+    public List<FunctionBlock> getFblocks() {
+        return this.fblocks;
+    }
+
+    public FunctionBlock getRoot() {
+        return this.root;
+    }
+
     public static Diagram load(String path){
         try {
             Parser p = new Parser(path);

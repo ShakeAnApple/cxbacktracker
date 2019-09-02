@@ -101,6 +101,10 @@ public class ParsingModule {
             internals.put(internal.getInfo().getName(), internal.translate());
         }
 
-        return new FunctionBlock(this.name, this.info.getTypeName(), inputs, outputs, internals);
+        return new FunctionBlock(this.name, this.info.getTypeName(), this.isRoot, inputs, outputs, internals);
+    }
+
+    public Map<String, ParsingInput> getInputsMap() {
+        return this.inputsMap;
     }
 }

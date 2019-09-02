@@ -1,5 +1,6 @@
 package shakeanapple.backtracker.ui.control;
 
+import javafx.beans.NamedArg;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.layout.Region;
@@ -11,26 +12,11 @@ public class VisGraphControl extends Region {
     private final WebView browser = new WebView();
     private final WebEngine webEngine = browser.getEngine();
 
+    private final String resource;
 
-    public VisGraphControl(VisGraph g) {
-        this();
-        updateGraph(g);
-    }
-
-    public VisGraphControl() {
+    public VisGraphControl(@NamedArg("resource") String resource) {
+        this.resource = resource;
         initialize();
-
-//        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
-//                "visgraph.fxml"));
-//        fxmlLoader.setRoot(this);
-//        fxmlLoader.setController(this);
-//        System.out.println("VisGraph started");
-//        try {
-//            fxmlLoader.load();
-//            System.out.println("VisGraph done");
-//        } catch (IOException exception) {
-//            throw new RuntimeException(exception);
-//        }
     }
 
     private void initialize() {
@@ -38,7 +24,7 @@ public class VisGraphControl extends Region {
         super.getStyleClass().add("browser");
 
         // load the web page
-        this.webEngine.load((getClass().getClassLoader().getResource("baseGraph.html")).toString());
+        this.webEngine.load((getClass().getClassLoader().getResource(resource)).toString());
 
         //add the web view to the scene
         super.getChildren().add(browser);

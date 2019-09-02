@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.core.ltlcalculation.model.counterexample;
+package shakeanapple.backtracker.core.counterexample;
 
 import shakeanapple.backtracker.common.variable.Variable;
 

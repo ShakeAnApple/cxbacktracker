@@ -1,7 +1,8 @@
 package shakeanapple.backtracker.core.ltlcalculation;
 
+import shakeanapple.backtracker.core.counterexample.CounterexampleCursor;
 import shakeanapple.backtracker.core.ltlcalculation.model.*;
-import shakeanapple.backtracker.core.ltlcalculation.model.counterexample.Counterexample;
+import shakeanapple.backtracker.core.counterexample.Counterexample;
 import shakeanapple.backtracker.core.ltlcalculation.model.ltlformula.model.ILtlFormulaVisitor;
 import shakeanapple.backtracker.core.ltlcalculation.model.ltlformula.model.LtlFormula;
 import shakeanapple.backtracker.core.ltlcalculation.model.ltlformula.model.tree.*;
@@ -9,7 +10,7 @@ import shakeanapple.backtracker.common.variable.AbstractValueHolder;
 import shakeanapple.backtracker.common.variable.BooleanValueHolder;
 import shakeanapple.backtracker.common.variable.IntegerValueHolder;
 
-public class LtlOnCounterexampleEvaluator implements ILtlFormulaVisitor<CalculationResult>, LtlSequentialEvaluator {
+public class LtlWithCounterexampleEvaluator implements ILtlFormulaVisitor<CalculationResult>, LtlSequentialEvaluator {
 
     private final CounterexampleCursor cursor;
     private final LtlFormula ltlFormula;
@@ -17,7 +18,7 @@ public class LtlOnCounterexampleEvaluator implements ILtlFormulaVisitor<Calculat
     private final History history;
     private final CalculatedFormula calculatedFormula;
 
-    public LtlOnCounterexampleEvaluator(Counterexample counterexample, LtlFormula ltlFormula) {
+    public LtlWithCounterexampleEvaluator(Counterexample counterexample, LtlFormula ltlFormula) {
         this.cursor = new CounterexampleCursor(counterexample);
         this.ltlFormula = ltlFormula;
 
@@ -25,7 +26,7 @@ public class LtlOnCounterexampleEvaluator implements ILtlFormulaVisitor<Calculat
         this.calculatedFormula = CalculatedFormula.fromBasicLtl(this.ltlFormula);
     }
 
-    private LtlOnCounterexampleEvaluator(History history, CounterexampleCursor cursor, LtlFormula ltlFormula){
+    private LtlWithCounterexampleEvaluator(History history, CounterexampleCursor cursor, LtlFormula ltlFormula){
         this.cursor = cursor;
         this.history = history;
         this.ltlFormula = ltlFormula;
@@ -75,8 +76,8 @@ public class LtlOnCounterexampleEvaluator implements ILtlFormulaVisitor<Calculat
         return res;
     }
 
-    private LtlOnCounterexampleEvaluator branch() {
-        return new LtlOnCounterexampleEvaluator(this.history, this.cursor.branch(), this.ltlFormula);
+    private LtlWithCounterexampleEvaluator branch() {
+        return new LtlWithCounterexampleEvaluator(this.history, this.cursor.branch(), this.ltlFormula);
     }
 
     /////////////////////////////////////// implementation ////////////////////////////////////////////////////
@@ -127,7 +128,7 @@ public class LtlOnCounterexampleEvaluator implements ILtlFormulaVisitor<Calculat
 //        LogicalResult curStep = (LogicalResult) xNode.getChild().apply(this);
 //        CalculationResult res = this.addResToHistoryAndReturn(xNode, new LogicalResult(LogicalResultKind.UNKNOWN));
 
-        LtlOnCounterexampleEvaluator timeBranch = this.branch();
+        LtlWithCounterexampleEvaluator timeBranch = this.branch();
         timeBranch.cursor.moveNext();
         LogicalResult nextStep = (LogicalResult) xNode.getChild().apply(timeBranch);
         //this.addResToHistoryAndReturn(xNode, new LogicalResult(nextStep.getValue(), this.cursor.getCurStateNum()));
