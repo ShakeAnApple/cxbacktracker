@@ -32,17 +32,31 @@
 
     var options = {
     interaction: {
-        hover:true,
-        tooltipDelay: 300
+        hover:false,
     },
-    edges: { smooth: true, shadow: true},
+     nodes: {
+      shape: 'box',
+      margin: 10,
+      widthConstraint: {
+        maximum: 100
+      }
+    },
+    edges: {
+         font: {
+        size: 12
+      },
+     widthConstraint: {
+        minimum: 150
+      }
+
+    },
     layout: {
-        randomSeed: 1,
-        improvedLayout: true,
+        // improvedLayout: true,
         hierarchical: {
-            enabled: false, //change to true to see the other graph
-            direction: 'UD',
-            sortMethod: 'directed'
+            enabled: true, //change to true to see the other graph
+            direction: 'LR',
+            sortMethod: 'directed',
+            levelSeparation: 500
         }
     },
     physics: {

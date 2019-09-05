@@ -6,5 +6,5 @@ public abstract class AbstractValueHolder<VType> {
     @Override
     public abstract String toString();
 
-    public abstract void invert();
+    public abstract AbstractValueHolder<VType> invert();
 }

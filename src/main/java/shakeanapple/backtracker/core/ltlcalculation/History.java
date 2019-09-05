@@ -24,7 +24,7 @@ public class History {
             return null;
         }
 
-        return this.history.get(node).get(step - 1);
+        return this.history.get(node).get(step);
     }
 
     public void registerNode(FormulaNode node) {

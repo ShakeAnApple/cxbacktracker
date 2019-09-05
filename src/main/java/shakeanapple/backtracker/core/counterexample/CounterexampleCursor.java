@@ -6,6 +6,7 @@ public class CounterexampleCursor {
 
     public CounterexampleCursor(Counterexample counterexample) {
         this.counterexample = counterexample;
+        this.curStep = -1;
     }
 
     private CounterexampleCursor(Counterexample counterexample, int curStep){

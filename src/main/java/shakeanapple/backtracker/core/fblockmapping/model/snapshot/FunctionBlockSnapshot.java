@@ -13,16 +13,20 @@ public class FunctionBlockSnapshot {
     private final List<String> outputs;
     private final List<String> internals;
 
-    public FunctionBlockSnapshot(String name, String type, List<String> inputs, List<String> outputs, List<String> internals) {
+    private final boolean isRoot;
+
+    public FunctionBlockSnapshot(boolean isRoot, String name, String type, List<String> inputs, List<String> outputs, List<String> internals) {
         this.name = name;
         this.type = type;
         this.inputs = inputs;
         this.outputs = outputs;
         this.internals = internals;
+
+        this.isRoot = isRoot;
     }
 
     public static FunctionBlockSnapshot fromFunctionBlock(FunctionBlock functionBlock) {
-        return new FunctionBlockSnapshot(functionBlock.getName(), functionBlock.getType(),
+        return new FunctionBlockSnapshot(functionBlock.isRoot(), functionBlock.getName(), functionBlock.getType(),
                 functionBlock.getInputs().values().stream().map(v -> v.getName()).collect(Collectors.toList()),
                 functionBlock.getOutputs().values().stream().map(v -> v.getName()).collect(Collectors.toList()),
                 functionBlock.getInternals().values().stream().map(v -> v.getName()).collect(Collectors.toList()));
@@ -34,5 +38,17 @@ public class FunctionBlockSnapshot {
 
     public String getType() {
         return this.type;
+    }
+
+    public boolean isRoot() {
+        return this.isRoot;
+    }
+
+    public List<String> getInputs() {
+        return this.inputs;
+    }
+
+    public List<String> getOutputs() {
+        return this.outputs;
     }
 }

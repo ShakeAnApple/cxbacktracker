@@ -18,8 +18,8 @@ public class BooleanValueHolder extends AbstractValueHolder<Boolean> {
     }
 
     @Override
-    public void invert() {
-        _value = !_value;
+    public BooleanValueHolder invert() {
+        return new BooleanValueHolder(!_value);
     }
 
     @Override

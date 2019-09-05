@@ -44,4 +44,8 @@ public class FunctionBlock {
     public Map<String, FBVariable> getInternals() {
         return this.internals;
     }
+
+    public boolean isRoot() {
+        return this.isRoot;
+    }
 }

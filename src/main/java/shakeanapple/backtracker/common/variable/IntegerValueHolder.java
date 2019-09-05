@@ -18,7 +18,9 @@ public class IntegerValueHolder extends AbstractValueHolder<Integer> {
     }
 
     @Override
-    public void invert() {}
+    public IntegerValueHolder invert() {
+        return new IntegerValueHolder(value);
+    }
 
     @Override
     public boolean equals(Object obj) {
