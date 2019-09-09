@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.ui.infrasructure.visfx.graph;
+package shakeanapple.backtracker.ui.control.visgraph.visfx.graph;
 
 import com.google.gson.Gson;
 

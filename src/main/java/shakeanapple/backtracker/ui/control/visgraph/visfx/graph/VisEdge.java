@@ -1,7 +1,7 @@
-package shakeanapple.backtracker.ui.infrasructure.visfx.graph;
+package shakeanapple.backtracker.ui.control.visgraph.visfx.graph;
 
 import com.google.gson.GsonBuilder;
-import shakeanapple.backtracker.ui.infrasructure.visfx.jsonutils.VisEdgeAdapter;
+import shakeanapple.backtracker.ui.control.visgraph.visfx.graph.jsonutils.VisEdgeAdapter;
 
 public class VisEdge {
     private VisNode from;

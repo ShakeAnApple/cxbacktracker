@@ -1,9 +1,9 @@
-package shakeanapple.backtracker.ui.infrasructure.visfx.examples;
+package shakeanapple.backtracker.ui.control.visgraph.visfx.examples;
 
-import shakeanapple.backtracker.ui.infrasructure.visfx.api.VisFx;
-import shakeanapple.backtracker.ui.infrasructure.visfx.graph.VisEdge;
-import shakeanapple.backtracker.ui.infrasructure.visfx.graph.VisGraph;
-import shakeanapple.backtracker.ui.infrasructure.visfx.graph.VisNode;
+import shakeanapple.backtracker.ui.control.visgraph.visfx.api.VisFx;
+import shakeanapple.backtracker.ui.control.visgraph.visfx.graph.VisEdge;
+import shakeanapple.backtracker.ui.control.visgraph.visfx.graph.VisGraph;
+import shakeanapple.backtracker.ui.control.visgraph.visfx.graph.VisNode;
 import javafx.application.Application;
 import javafx.stage.Stage;
 

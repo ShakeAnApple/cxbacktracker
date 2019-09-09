@@ -1,6 +1,7 @@
 package shakeanapple.backtracker.ui.mainview;
 
 import javafx.fxml.FXML;
+import javafx.scene.paint.Color;
 import shakeanapple.backtracker.core.fblockmapping.DiagramSequentialEvaluator;
 import shakeanapple.backtracker.core.fblockmapping.DiagramWithCounterexampleEvaluator;
 import shakeanapple.backtracker.core.fblockmapping.model.snapshot.DiagramSnapshot;
@@ -13,12 +14,16 @@ import shakeanapple.backtracker.core.ltlcalculation.model.ltlformula.model.LtlFo
 import shakeanapple.backtracker.common.variable.BooleanValueHolder;
 import shakeanapple.backtracker.common.variable.BooleanVariable;
 import shakeanapple.backtracker.common.variable.Variable;
-import shakeanapple.backtracker.ui.infrasructure.visfx.graph.VisGraph;
+import shakeanapple.backtracker.ui.control.diagram.DiagramControl;
+import shakeanapple.backtracker.ui.control.diagram.ViewGraph;
+import shakeanapple.backtracker.ui.control.diagram.model.Cell;
+import shakeanapple.backtracker.ui.control.diagram.Connection;
+import shakeanapple.backtracker.ui.control.diagram.model.RectangleCell;
+import shakeanapple.backtracker.ui.control.visgraph.visfx.graph.VisGraph;
 import shakeanapple.backtracker.ui.GraphHelper;
-import shakeanapple.backtracker.ui.control.VisGraphControl;
+import shakeanapple.backtracker.ui.control.visgraph.VisGraphControl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class MainController {
 
@@ -27,6 +32,9 @@ public class MainController {
 
     @FXML
     private VisGraphControl functionBlocksGraph;
+
+    @FXML
+    private DiagramControl diagram;
 
     private final LtlSequentialEvaluator calculationWalker;
     private final DiagramSequentialEvaluator diagramEvaluator;
@@ -93,7 +101,36 @@ public class MainController {
         this.ltlGraph.updateGraph(graph);
 
         DiagramSnapshot snapshot = this.diagramEvaluator.moveNext();
-        VisGraph blocksGraph = GraphHelper.convertToGraph(snapshot);
-        this.functionBlocksGraph.updateGraph(blocksGraph);
+        //VisGraph blocksGraph = GraphHelper.convertToGraph(snapshot);
+        //this.diagram.draw();updateGraph(blocksGraph);
+        ViewGraph diagram = GraphHelper.convertToDiagramGraph(snapshot);
+        this.diagram.draw(diagram);
+    }
+
+    @FXML
+    private void updateGraph1(){
+        List<Cell> cells = new ArrayList<>();
+        cells.add(new RectangleCell(1, "Cell A"));
+        cells.add(new RectangleCell(2, "Cell B"));
+        cells.add(new RectangleCell(3, "Cell C"));
+        cells.add(new RectangleCell(4, "Cell D"));
+        cells.add(new RectangleCell(5, "Cell E"));
+        cells.add(new RectangleCell(6, "Cell F"));
+        cells.add(new RectangleCell(7, "Cell G"));
+
+        List<Connection> edges = new ArrayList<>();
+
+        edges.add(new Connection(1, 2, "A -> B", Color.AZURE));
+        edges.add(new Connection(1, 3, "A -> C", Color.RED));
+        edges.add(new Connection(2, 3, "B -> C", Color.GRAY));
+        edges.add(new Connection(3, 4, "C -> D", Color.ALICEBLUE));
+        edges.add(new Connection(3, 4, "C -> D (1)", Color.BISQUE));
+        edges.add(new Connection(3, 4, "C -> D (2)", Color.BISQUE));
+        edges.add(new Connection(3, 4, "C -> D (3)", Color.RED));
+        edges.add(new Connection(2, 5, "B -> E", Color.ROSYBROWN));
+        edges.add(new Connection(4, 6, "D -> F", Color.ROYALBLUE));
+        edges.add(new Connection(4, 7, "D -> G", Color.LAVENDER));
+
+//        this.diagram.draw(cells, edges);
     }
 }

@@ -1,7 +1,7 @@
-package shakeanapple.backtracker.ui.infrasructure.visfx.api;
+package shakeanapple.backtracker.ui.control.visgraph.visfx.api;
 
-import shakeanapple.backtracker.ui.infrasructure.visfx.graph.VisGraph;
-import shakeanapple.backtracker.ui.infrasructure.visfx.gui.GraphView;
+import shakeanapple.backtracker.ui.control.visgraph.visfx.graph.VisGraph;
+import shakeanapple.backtracker.ui.control.visgraph.visfx.gui.GraphView;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 

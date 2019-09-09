@@ -1,6 +1,6 @@
-package shakeanapple.backtracker.ui.infrasructure.visfx.gui;
+package shakeanapple.backtracker.ui.control.visgraph.visfx.gui;
 
-import shakeanapple.backtracker.ui.infrasructure.visfx.graph.VisGraph;
+import shakeanapple.backtracker.ui.control.visgraph.visfx.graph.VisGraph;
 import javafx.application.Application;
 import javafx.concurrent.Worker;
 import javafx.geometry.HPos;
@@ -60,8 +60,6 @@ class Browser extends Region {
                 webEngine.executeScript(script);
         });
     }
-
-
 
     @Override
     protected void layoutChildren() {

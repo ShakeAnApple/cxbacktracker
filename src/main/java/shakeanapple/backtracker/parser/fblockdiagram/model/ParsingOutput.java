@@ -33,10 +33,18 @@ public class ParsingOutput extends ParsingModuleVariable {
         DynamicVariable var;
         switch (this.getInfo().getType()) {
             case BOOLEAN:
-                var = new BooleanDynamicVariable(new BooleanValueHolder(false), this.getInfo().getName());
+                if (this instanceof ParsingOutputConstant){
+                    var = new BooleanDynamicVariable(new BooleanValueHolder(((ParsingOutputConstant<Boolean>) this).getValue()), this.getInfo().getName());
+                } else {
+                    var = new BooleanDynamicVariable(new BooleanValueHolder(false), this.getInfo().getName());
+                }
                 break;
             case INTEGER:
-                var = new IntegerDynamicVariable(new IntegerValueHolder(Integer.MIN_VALUE), this.getInfo().getName());
+                if (this instanceof ParsingOutputConstant){
+                    var = new IntegerDynamicVariable(new IntegerValueHolder(((ParsingOutputConstant<Integer>) this).getValue()), this.getInfo().getName());
+                } else {
+                    var = new IntegerDynamicVariable(new IntegerValueHolder(Integer.MIN_VALUE), this.getInfo().getName());
+                }
                 break;
             default:
                 throw new RuntimeException("Unsupported var type: " + this.getInfo().getType().name());

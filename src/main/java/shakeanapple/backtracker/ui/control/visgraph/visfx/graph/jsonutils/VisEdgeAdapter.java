@@ -1,7 +1,7 @@
-package shakeanapple.backtracker.ui.infrasructure.visfx.jsonutils;
+package shakeanapple.backtracker.ui.control.visgraph.visfx.graph.jsonutils;
 
 import com.google.gson.*;
-import shakeanapple.backtracker.ui.infrasructure.visfx.graph.VisEdge;
+import shakeanapple.backtracker.ui.control.visgraph.visfx.graph.VisEdge;
 
 import java.lang.reflect.Type;
 import java.util.List;
