@@ -51,6 +51,14 @@ public class Cell extends Pane {
 
     }
 
+    public void setView(Node view, List<Node> children) {
+        this.view = view;
+        super.getChildren().add(view);
+        for(Node ch: children) {
+            super.getChildren().add(ch  );
+        }
+    }
+
     public Node getView() {
         return this.view;
     }

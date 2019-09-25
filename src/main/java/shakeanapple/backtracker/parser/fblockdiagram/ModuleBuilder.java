@@ -1,6 +1,5 @@
 package shakeanapple.backtracker.parser.fblockdiagram;
 
-import shakeanapple.backtracker.core.fblockmapping.model.variable.InputVariable;
 import shakeanapple.backtracker.parser.fblockdiagram.model.*;
 import shakeanapple.backtracker.parser.fblockdiagram.typepropagation.TypePropagationConstantNode;
 import shakeanapple.backtracker.parser.fblockdiagram.typepropagation.TypePropagationNode;

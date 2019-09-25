@@ -1,6 +1,6 @@
 package shakeanapple.backtracker.parser.fblockdiagram;
 
-import shakeanapple.backtracker.core.fblockmapping.model.Diagram;
+import shakeanapple.backtracker.core.diagramexplanation.model.Diagram;
 import shakeanapple.backtracker.parser.fblockdiagram.model.ParsingDiagram;
 
 import java.io.IOException;

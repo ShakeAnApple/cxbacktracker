@@ -1,8 +1,8 @@
 package shakeanapple.backtracker.parser.ltlformula.tree;
 
-import shakeanapple.backtracker.core.ltlcalculation.model.ltlformula.model.tree.FormulaNode;
-import shakeanapple.backtracker.core.ltlcalculation.model.ltlformula.model.tree.IntNode;
-import shakeanapple.backtracker.core.ltlcalculation.model.ltlformula.model.tree.VarNode;
+import shakeanapple.backtracker.core.ltlexplanation.model.ltlformula.model.tree.FormulaNode;
+import shakeanapple.backtracker.core.ltlexplanation.model.ltlformula.model.tree.IntNode;
+import shakeanapple.backtracker.core.ltlexplanation.model.ltlformula.model.tree.VarNode;
 
 public class IdNode extends Node{
     private final String value;

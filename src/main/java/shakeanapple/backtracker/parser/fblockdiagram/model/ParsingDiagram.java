@@ -1,13 +1,12 @@
 package shakeanapple.backtracker.parser.fblockdiagram.model;
 
-import shakeanapple.backtracker.core.fblockmapping.model.Diagram;
-import shakeanapple.backtracker.core.fblockmapping.model.FunctionBlock;
-import shakeanapple.backtracker.core.fblockmapping.model.variable.InputVariable;
-import shakeanapple.backtracker.core.fblockmapping.model.variable.OutputVariable;
+import shakeanapple.backtracker.core.diagramexplanation.model.Diagram;
+import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlock;
+import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
+import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ParsingDiagram {

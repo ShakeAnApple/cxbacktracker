@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<FlowPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="shakeanapple.backtracker.ui.basiccomponentsconstructor.component.input.AddInputDialogController"
+            prefHeight="200.0" prefWidth="300.0">
+    <Label>Output:</Label>
+    <HBox spacing="5">
+        <TextField fx:id="inputName" promptText="name"/>
+        <ComboBox fx:id="inputTypeComboBox"/>
+        <Label>is constant:</Label>
+        <CheckBox fx:id="isConstant"/>
+        <TextField fx:id="constantValue" promptText="constant value" visible="${isConstant.selected}"/>
+    </HBox>
+    <Button text="Add input" onAction="#add"/>
+</FlowPane>

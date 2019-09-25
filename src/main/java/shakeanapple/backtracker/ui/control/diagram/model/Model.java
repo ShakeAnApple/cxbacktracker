@@ -88,11 +88,13 @@ public class Model {
     }
 
     public void addCell(Cell cell) {
+        if (this.allCells.stream().anyMatch(c -> c.getCellId() == cell.getCellId())){
+            return;
+        }
 
         addedCells.add(cell);
 
         cellMap.put(cell.getCellId(), cell);
-
     }
 
     public void addEdge(Connection conn) {

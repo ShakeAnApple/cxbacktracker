@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="shakeanapple.backtracker.ui.basiccomponentsconstructor.component.choice.AddChoiceDialogController"
+            prefHeight="400.0" prefWidth="600.0">
+    <VBox>
+        <Label>Input:</Label>
+        <HBox spacing="5">
+            <TextField fx:id="inputName" promptText="name"/>
+            <ComboBox fx:id="inputTypeComboBox"/>
+            <Label>is constant:</Label>
+            <CheckBox fx:id="isConstant"/>
+            <TextField fx:id="constantValue" promptText="constant value" visible="${isConstant.selected}"/>
+        </HBox>
+        <Label>Output:</Label>
+        <HBox spacing="5">
+            <TextField fx:id="outputName" promptText="name"/>
+            <ComboBox fx:id="outputTypeComboBox"/>
+            <Label>is constant:</Label>
+            <TextField fx:id="defaultValue" promptText="default value"/>
+        </HBox>
+        <Button text="Add choice" onAction="#add"/>
+    </VBox>
+
+</AnchorPane>

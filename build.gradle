@@ -2,15 +2,31 @@ plugins {
     id 'antlr'
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.8'
+    /* Generate Java code from XSD */
+    id 'org.unbroken-dome.xjc' version '1.4.3'
 }
 
 apply plugin: 'antlr'
 apply plugin: 'idea'
 apply plugin: 'java'
+apply plugin: 'org.unbroken-dome.xjc'
 
 javafx {
     version = "11.0.2"
     modules = [ 'javafx.controls' ]
+}
+
+xjc {
+    includeInMainCompilation = false
+}
+
+sourceSets {
+    main { java { srcDir xjcGenerate.outputDirectory } }
+}
+
+xjcGenerate {
+    source = fileTree('src/main/schema') { include '*.xsd' }
+    outputDirectory = file('src/main/java')
 }
 
 repositories {
@@ -22,6 +38,10 @@ dependencies {
     compile 'org.antlr:antlr4-runtime:4.7.2'
     antlr("org.antlr:antlr4:4.7.2")
     compile 'com.google.code.gson:gson:2.8.2'
+
+    implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
+    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.9.0'
+    compile 'com.sun.xml.bind:jaxb-osgi:2.4.0-b180830.0438'
 }
 
 generateGrammarSource {
@@ -48,4 +68,5 @@ idea {
 }
 
 mainClassName = 'shakeanapple.backtracker.ui.MainFx'
+//mainClassName = 'shakeanapple.backtracker.Main'
 //mainClassName = 'shakeanapple.backtracker.ui.control.visgraph.visfx.examples.ComplexGraph'

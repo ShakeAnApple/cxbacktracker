@@ -5,8 +5,7 @@ import shakeanapple.backtracker.common.variable.IntegerValueHolder;
 import shakeanapple.backtracker.common.variable.dynamic.BooleanDynamicVariable;
 import shakeanapple.backtracker.common.variable.dynamic.DynamicVariable;
 import shakeanapple.backtracker.common.variable.dynamic.IntegerDynamicVariable;
-import shakeanapple.backtracker.core.fblockmapping.model.variable.FBVariable;
-import shakeanapple.backtracker.core.fblockmapping.model.variable.InputVariable;
+import shakeanapple.backtracker.core.diagramexplanation.model.variable.FBVariable;
 
 public class ParsingModuleVariable {
     private ParsingVariableInfo info;

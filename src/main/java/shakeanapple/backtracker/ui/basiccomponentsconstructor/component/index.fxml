@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import shakeanapple.backtracker.ui.infrasructure.FxmlListCellFactory?>
+<VBox xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="shakeanapple.backtracker.ui.basiccomponentsconstructor.component.AddComponentDialogController"
+          prefHeight="400.0" prefWidth="600.0">
+    <HBox spacing="5">
+        <Label>Block type:</Label>
+        <ComboBox fx:id="componentTypeComboBox"/>
+    </HBox>
+    <HBox spacing="5">
+        <Button text="Add Input" onAction="#showAddInputDialog"/>
+        <Button text="Add Output" onAction="#showAddOutputDialog"/>
+        <Button text="Add Choice" onAction="#showAddChoiceDialog"/>
+    </HBox>
+    <Button text="Create" onAction="#create"/>
+
+    <GridPane>
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="33.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="33.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="33"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints percentHeight="100.0" vgrow="ALWAYS"/>
+        </rowConstraints>
+
+        <ListView fx:id="inputsList" GridPane.columnIndex="0"/>
+
+        <ListView fx:id="outputsList" GridPane.columnIndex="1"/>
+
+        <ListView fx:id="choicesList" GridPane.columnIndex="2">
+            <cellFactory>
+                <FxmlListCellFactory fxmlSource="@choicesListCell.fxml"/>
+            </cellFactory>
+        </ListView>
+    </GridPane>
+
+
+
+</VBox>
