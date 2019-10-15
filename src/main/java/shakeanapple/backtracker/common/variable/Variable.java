@@ -1,6 +1,6 @@
 package shakeanapple.backtracker.common.variable;
 
-public abstract class Variable<TValue extends AbstractValueHolder> {
+public abstract class Variable<TValue extends ValueHolder> {
     private final String name;
 
     protected Variable(String name) {

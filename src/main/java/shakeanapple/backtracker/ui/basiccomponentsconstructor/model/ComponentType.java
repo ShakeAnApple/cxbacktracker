@@ -13,5 +13,6 @@ public enum ComponentType {
     LESS,
     LESS_EQ,
     INT_CHOICE,
-    BOOL_CHOICE
+    BOOL_CHOICE,
+    COUNT
 }

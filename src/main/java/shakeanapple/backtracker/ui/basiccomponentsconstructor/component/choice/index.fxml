@@ -26,6 +26,7 @@
             <Label>is constant:</Label>
             <TextField fx:id="defaultValue" promptText="default value"/>
         </HBox>
+        <TextField fx:id="order"/>
         <Button text="Add choice" onAction="#add"/>
     </VBox>
 

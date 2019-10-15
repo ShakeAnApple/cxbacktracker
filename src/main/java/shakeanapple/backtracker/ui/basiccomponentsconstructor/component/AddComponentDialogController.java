@@ -11,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import shakeanapple.backtracker.ui.basiccomponentsconstructor.component.choice.AddChoiceDialogController;
@@ -22,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 public class AddComponentDialogController implements Initializable {
@@ -37,11 +39,20 @@ public class AddComponentDialogController implements Initializable {
     @FXML
     private ListView<Choice> choicesList;
 
+    @FXML
+    private TextField delay;
+
     private ObservableList<BasicComponentAbstract> components;
+
+    private Random rand;
 
     private ObservableList<InputVariable> inputs = FXCollections.observableArrayList();
     private ObservableList<OutputVariable> outputs = FXCollections.observableArrayList();
     private ObservableList<Choice> choices = FXCollections.observableArrayList();
+
+    public AddComponentDialogController() {
+        this.rand = new Random();
+    }
 
     public void showAddInputDialog(ActionEvent actionEvent) throws IOException {
         URL url = new File("src\\main\\java\\shakeanapple\\backtracker\\ui\\basiccomponentsconstructor\\component\\input\\index.fxml").toURI().toURL();
@@ -76,9 +87,15 @@ public class AddComponentDialogController implements Initializable {
     public void create(ActionEvent actionEvent) {
         BasicComponentAbstract component;
         if (this.componentTypeComboBox.getValue() == ComponentType.BOOL_CHOICE || this.componentTypeComboBox.getValue() == ComponentType.INT_CHOICE) {
-            component = new ChoiceComponent(this.componentTypeComboBox.getValue(), this.choices, this.outputs.get(0));
+            component = new ChoiceComponent(this.componentTypeComboBox.getValue(), this.rand.nextLong(), this.choices, this.outputs.get(0));
+        } else if (!this.delay.getText().isEmpty()) {
+            if (this.inputs.size() == 2){
+                component = new DelayComponent(this.rand.nextLong(), this.inputs.get(0), this.inputs.get(1), this.outputs.get(0), Integer.parseInt(this.delay.getText()));
+            } else {
+                component = new DelayComponent(this.rand.nextLong(), this.inputs.get(0), this.outputs.get(0), Integer.parseInt(this.delay.getText()));
+            }
         } else {
-            component = new BasicComponent(this.componentTypeComboBox.getValue(), this.inputs, this.outputs);
+            component = new BasicComponent(this.componentTypeComboBox.getValue(), this.rand.nextLong(), this.inputs, this.outputs);
         }
         this.components.add(component);
 

@@ -16,6 +16,10 @@
         <ComboBox fx:id="componentTypeComboBox"/>
     </HBox>
     <HBox spacing="5">
+        <Label>Delay:</Label>
+        <TextField fx:id="delay"/>
+    </HBox>
+    <HBox spacing="5">
         <Button text="Add Input" onAction="#showAddInputDialog"/>
         <Button text="Add Output" onAction="#showAddOutputDialog"/>
         <Button text="Add Choice" onAction="#showAddChoiceDialog"/>

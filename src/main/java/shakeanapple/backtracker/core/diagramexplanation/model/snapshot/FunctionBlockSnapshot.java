@@ -1,7 +1,9 @@
 package shakeanapple.backtracker.core.diagramexplanation.model.snapshot;
 
-import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlock;
+import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockBase;
+import shakeanapple.backtracker.core.diagramexplanation.model.Gate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,27 +11,23 @@ public class FunctionBlockSnapshot {
     private final String name;
     private final String type;
 
-    private final List<String> inputs;
-    private final List<String> outputs;
-    private final List<String> internals;
+    private final FBInterfaceSnapshot fbInterface;
 
-    private final boolean isRoot;
-
-    public FunctionBlockSnapshot(boolean isRoot, String name, String type, List<String> inputs, List<String> outputs, List<String> internals) {
+    public FunctionBlockSnapshot(String name, String type, List<String> inputs, List<String> outputs) {
         this.name = name;
         this.type = type;
-        this.inputs = inputs;
-        this.outputs = outputs;
-        this.internals = internals;
 
-        this.isRoot = isRoot;
+        this.fbInterface = new FBInterfaceSnapshot(inputs, outputs);
     }
 
-    public static FunctionBlockSnapshot fromFunctionBlock(FunctionBlock functionBlock) {
-        return new FunctionBlockSnapshot(functionBlock.isRoot(), functionBlock.getName(), functionBlock.getType(),
-                functionBlock.getInputs().values().stream().map(v -> v.getName()).collect(Collectors.toList()),
-                functionBlock.getOutputs().values().stream().map(v -> v.getName()).collect(Collectors.toList()),
-                functionBlock.getInternals().values().stream().map(v -> v.getName()).collect(Collectors.toList()));
+    public static FunctionBlockSnapshot fromFunctionBlock(FunctionBlockBase functionBlock) {
+        return new FunctionBlockSnapshot(functionBlock.getName(), functionBlock.getType(),
+                functionBlock.fbInterface().getInputs().values().stream().map(in -> in.input().getName()).collect(Collectors.toList()),
+                functionBlock.fbInterface().getOutputs().values().stream().map(out -> out.output().getName()).collect(Collectors.toList()));
+    }
+
+    public static FunctionBlockSnapshot fromGate(Gate gate) {
+        return new FunctionBlockSnapshot(gate.getName(), gate.getType(), new ArrayList<>(){{add(gate.input().getName());}}, new ArrayList<>(){{add(gate.output().getName());}});
     }
 
     public String getName() {
@@ -40,15 +38,7 @@ public class FunctionBlockSnapshot {
         return this.type;
     }
 
-    public boolean isRoot() {
-        return this.isRoot;
-    }
-
-    public List<String> getInputs() {
-        return this.inputs;
-    }
-
-    public List<String> getOutputs() {
-        return this.outputs;
+    public FBInterfaceSnapshot getFbInterface() {
+        return this.fbInterface;
     }
 }

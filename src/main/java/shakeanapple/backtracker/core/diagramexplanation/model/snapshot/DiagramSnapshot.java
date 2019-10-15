@@ -1,41 +1,63 @@
 package shakeanapple.backtracker.core.diagramexplanation.model.snapshot;
 
-import shakeanapple.backtracker.core.diagramexplanation.model.Connection;
-import shakeanapple.backtracker.core.diagramexplanation.model.Diagram;
-import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlock;
-import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
+import shakeanapple.backtracker.core.diagramexplanation.model.InputGate;
+import shakeanapple.backtracker.core.diagramexplanation.model.OutputGate;
+import shakeanapple.backtracker.core.diagramexplanation.model.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class DiagramSnapshot {
-    private final FunctionBlockSnapshot root;
 
     private final List<FunctionBlockSnapshot> blocks;
     private final List<ConnectionSnapshot> connections;
 
-    private DiagramSnapshot(FunctionBlockSnapshot root, List<FunctionBlockSnapshot> blocks, List<ConnectionSnapshot> connections) {
-        this.root = root;
+    private final FBInterfaceSnapshot diagramInterface;
+
+    private DiagramSnapshot(List<String> inputs, List<String> outputs, List<FunctionBlockSnapshot> blocks, List<ConnectionSnapshot> connections) {
         this.blocks = blocks;
         this.connections = connections;
+
+        this.diagramInterface = new FBInterfaceSnapshot(inputs, outputs);
     }
 
-    public static DiagramSnapshot fromDiagram(Diagram diagram){
-
-        FunctionBlockSnapshot root = FunctionBlockSnapshot.fromFunctionBlock(diagram.getRoot());
+    public static DiagramSnapshot fromDiagram(FunctionBlockComplex diagram) {
 
         Map<String, FunctionBlockSnapshot> blockSnapshots = new HashMap<>();
 
-        for (FunctionBlock fblock : diagram.getFblocks()){
-            blockSnapshots.put(fblock.getName(), FunctionBlockSnapshot.fromFunctionBlock(fblock));
+        List<String> inputs = diagram.fbInterface().getInputs().values().stream().map(in -> in.input().getName()).collect(Collectors.toList());
+        List<String> outputs = diagram.fbInterface().getOutputs().values().stream().map(out -> out.output().getName()).collect(Collectors.toList());
+
+        for (DiagramElement fblock : diagram.getInternalDiagram().getFunctionBlocks()) {
+            blockSnapshots.put(fblock.getName(), FunctionBlockSnapshot.fromFunctionBlock((FunctionBlockBase) fblock));
+        }
+
+        for (DiagramElement gate: diagram.fbInterface().getInputs().values()){
+            blockSnapshots.put(gate.getName(), FunctionBlockSnapshot.fromGate((Gate)gate));
+        }
+
+        for (DiagramElement gate: diagram.fbInterface().getOutputs().values()){
+            blockSnapshots.put(gate.getName(), FunctionBlockSnapshot.fromGate((Gate)gate));
         }
 
         List<ConnectionSnapshot> connections = new ArrayList<>();
-        for (FunctionBlock fblock : diagram.getFblocks()) {
-            for (OutputVariable output: fblock.getOutputs().values()) {
-                for (Object connectionObj: output.getOutcomingConnections()){
+        for(InputGate inGate: diagram.fbInterface().getInputs().values()){
+            for (Object con: inGate.output().getOutgoingConnections()){
+                Connection connection = (Connection) con;
+
+                FunctionBlockSnapshot from = blockSnapshots.get(connection.from().getName());
+                FunctionBlockSnapshot to = blockSnapshots.get(connection.to().getName());
+
+                connections.add(new ConnectionSnapshot(from, connection.fromVar().getName(), to, connection.toVar().getName(), connection.isInverted(), connection.fromVar().getValue()));
+            }
+        }
+
+        for (DiagramElement fblock : diagram.getInternalDiagram().getFunctionBlocks()) {
+            for (OutputGate outputGate : ((FunctionBlockComplex)fblock).fbInterface().getOutputs().values()) {
+                for (Object connectionObj : outputGate.output().getOutgoingConnections()) {
 
                     Connection connection = (Connection) connectionObj;
 
@@ -47,11 +69,7 @@ public class DiagramSnapshot {
             }
         }
 
-        return new DiagramSnapshot(root, new ArrayList<>(blockSnapshots.values()), connections);
-    }
-
-    public FunctionBlockSnapshot getRoot() {
-        return this.root;
+        return new DiagramSnapshot(inputs, outputs, new ArrayList<>(blockSnapshots.values()), connections);
     }
 
     public List<FunctionBlockSnapshot> getBlocks() {
@@ -60,5 +78,9 @@ public class DiagramSnapshot {
 
     public List<ConnectionSnapshot> getConnections() {
         return this.connections;
+    }
+
+    public FBInterfaceSnapshot getDiagramInterface() {
+        return this.diagramInterface;
     }
 }

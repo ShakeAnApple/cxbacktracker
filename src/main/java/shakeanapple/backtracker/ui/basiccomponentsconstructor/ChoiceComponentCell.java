@@ -11,7 +11,6 @@ import shakeanapple.backtracker.ui.control.diagram.model.Cell;
 import shakeanapple.backtracker.ui.infrasructure.FunctionTwo;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -68,7 +67,7 @@ public class ChoiceComponentCell extends Cell {
             condition.minHeight(PIN_HEIGHT);
             condition.minWidth(PIN_HEIGHT);
             condition.onActionProperty().setValue(
-                    actionEvent -> isInvertedCheckboxPressHandler.apply(choice.getInput().getId()));
+                    actionEvent -> isInvertedCheckboxPressHandler.apply(choice.getCondition().getId()));
             conditionChBxs.add(condition);
 
             CheckBox response = new CheckBox();
@@ -109,11 +108,11 @@ public class ChoiceComponentCell extends Cell {
         List<Button> responseButtons = new ArrayList<>();
         List<Button> conditionButtons = new ArrayList<>();
         for (Choice choice : inputs) {
-            Button condition = new Button(choice.getInput().getName());
+            Button condition = new Button(choice.getCondition().getName());
             condition.minHeight(PIN_HEIGHT);
             condition.minWidth(PIN_HEIGHT);
             condition.onActionProperty().setValue(
-                    actionEvent -> pinPressHandler.apply(condition, choice.getInput().getId()));
+                    actionEvent -> pinPressHandler.apply(condition, choice.getCondition().getId()));
             conditionButtons.add(condition);
 
             Button response = new Button(choice.getOutput().getName());

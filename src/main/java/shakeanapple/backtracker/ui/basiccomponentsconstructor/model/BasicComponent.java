@@ -12,8 +12,8 @@ public class BasicComponent extends BasicComponentAbstract {
 
     private List<OutputVariable> outputs;
 
-    public BasicComponent(ComponentType type, List<InputVariable> inputs, List<OutputVariable> outputs) {
-        super(type);
+    public BasicComponent(ComponentType type, long id, List<InputVariable> inputs, List<OutputVariable> outputs) {
+        super(type, id);
         this.inputs = inputs;
         this.outputs = outputs;
     }
@@ -31,6 +31,6 @@ public class BasicComponent extends BasicComponentAbstract {
         List<shakeanapple.backtracker.parser.basiccomponents.xmlmodel.InputVariable> inputsXml = this.inputs.stream().map(InputVariable::translate).collect(Collectors.toList());
         List<shakeanapple.backtracker.parser.basiccomponents.xmlmodel.OutputVariable> outputsXml = this.outputs.stream().map(OutputVariable::translate).collect(Collectors.toList());
 
-        return new shakeanapple.backtracker.parser.basiccomponents.xmlmodel.BasicComponent(shakeanapple.backtracker.parser.basiccomponents.xmlmodel.ComponentType.valueOf(super.getType().name()), inputsXml, outputsXml);
+        return new shakeanapple.backtracker.parser.basiccomponents.xmlmodel.BasicComponent(shakeanapple.backtracker.parser.basiccomponents.xmlmodel.ComponentType.valueOf(super.getType().name()), this.getId(), inputsXml, outputsXml);
     }
 }

@@ -1,6 +1,7 @@
 package shakeanapple.backtracker.parser.basiccomponents.xmlmodel;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import shakeanapple.backtracker.core.diagramexplanation.model.complexblockdefinition.ConnectionDefinition;
 
 public class Connection {
     @JacksonXmlProperty(isAttribute=true)
@@ -46,5 +47,9 @@ public class Connection {
 
     public void setInverted(String inverted) {
         this.isInverted = inverted;
+    }
+
+    public ConnectionDefinition translate() {
+        return new ConnectionDefinition(this.fromVarId, this.toVarId, this.isInverted);
     }
 }

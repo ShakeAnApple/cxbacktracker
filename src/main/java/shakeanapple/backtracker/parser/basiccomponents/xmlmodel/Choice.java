@@ -1,32 +1,36 @@
 package shakeanapple.backtracker.parser.basiccomponents.xmlmodel;
 
-import com.ibm.icu.impl.TextTrieMap;
+import shakeanapple.backtracker.core.diagramexplanation.model.complexblockdefinition.ChoiceDefinition;
 
 public class Choice {
-    private InputVariable input;
-    private OutputVariable output;
+    private InputVariable condition;
+    private InputVariable output;
 
     public Choice() {
     }
 
-    public Choice(InputVariable input, OutputVariable output) {
-        this.input = input;
+    public Choice(InputVariable condition, InputVariable output) {
+        this.condition = condition;
         this.output = output;
     }
 
-    public InputVariable getInput() {
-        return this.input;
+    public InputVariable getCondition() {
+        return this.condition;
     }
 
-    public void setInput(InputVariable input) {
-        this.input = input;
+    public void setCondition(InputVariable condition) {
+        this.condition = condition;
     }
 
-    public OutputVariable getOutput() {
+    public InputVariable getOutput() {
         return this.output;
     }
 
-    public void setOutput(OutputVariable output) {
+    public void setOutput(InputVariable output) {
         this.output = output;
+    }
+
+    public ChoiceDefinition translate() {
+        return new ChoiceDefinition(this.condition.translate(), this.output.translate());
     }
 }

@@ -32,6 +32,9 @@ public class AddInputDialogController implements Initializable {
     private TextField constantValue;
 
     @FXML
+    private TextField order;
+
+    @FXML
     private CheckBox isConstant;
 
     private ObservableList<InputVariable> inputs;
@@ -46,9 +49,9 @@ public class AddInputDialogController implements Initializable {
         Random r = new Random();
         InputVariable input;
         if (this.isConstant.isSelected()){
-            input = new ConstantInput(r.nextLong(), this.inputTypeComboBox.getValue(), this.inputName.getText(), this.constantValue.getText());
+            input = new ConstantInput(r.nextLong(), this.inputTypeComboBox.getValue(), this.inputName.getText(), this.constantValue.getText(), Integer.valueOf(this.order.getText()));
         } else{
-            input = new InputVariable(r.nextLong(), this.inputTypeComboBox.getValue(), this.inputName.getText());
+            input = new InputVariable(r.nextLong(), this.inputTypeComboBox.getValue(), this.inputName.getText(), Integer.valueOf(this.order.getText()));
         }
         this.inputs.add(input);
 

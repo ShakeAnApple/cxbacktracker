@@ -1,9 +1,19 @@
 package shakeanapple.backtracker.parser.fblockdiagram;
 
-import shakeanapple.backtracker.parser.fblockdiagram.model.*;
-import shakeanapple.backtracker.parser.fblockdiagram.typepropagation.TypePropagationConstantNode;
-import shakeanapple.backtracker.parser.fblockdiagram.typepropagation.TypePropagationNode;
-import shakeanapple.backtracker.parser.fblockdiagram.typepropagation.TypePropagationVariableNode;
+import shakeanapple.backtracker.common.variable.BooleanValueHolder;
+import shakeanapple.backtracker.common.variable.IntegerValueHolder;
+import shakeanapple.backtracker.common.variable.ValueHolder;
+import shakeanapple.backtracker.common.variable.dynamic.BooleanDynamicVariable;
+import shakeanapple.backtracker.common.variable.dynamic.IntegerDynamicVariable;
+import shakeanapple.backtracker.core.diagramexplanation.model.FBInterface;
+import shakeanapple.backtracker.core.diagramexplanation.model.InputGate;
+import shakeanapple.backtracker.core.diagramexplanation.model.OutputGate;
+import shakeanapple.backtracker.core.diagramexplanation.model.Diagram;
+import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockBase;
+import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockComplex;
+import shakeanapple.backtracker.core.diagramexplanation.model.complexblockdefinition.BlockDefinition;
+import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
+import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -13,11 +23,8 @@ import java.util.stream.Collectors;
 public class ModuleBuilder {
     private final List<String> contents;
 
-    private Map<String, TypePropagationNode> typeConnectedVars;
-
     public ModuleBuilder(List<String> contents) {
         this.contents = contents;
-        this.typeConnectedVars = new HashMap<>();
     }
 
     public List<String> extractModule(String moduleType) {
@@ -38,156 +45,69 @@ public class ModuleBuilder {
         return res;
     }
 
-    public ParsingModuleType parseModule(String moduleTypeName, List<String> moduleContents) {
-        List<String> inputs = this.readInputs(moduleContents.get(0));
-        List<String> internals = this.readInternals(moduleContents);
-        List<String> outputs = this.readOutputs(moduleContents);
+    public FunctionBlockComplex parseRoot(List<String> moduleContents, Map<String, BlockDefinition> blockDefinitions) {
+        // root internals -> inputs
+        // root outputs -> outputs
 
-        List<ParsingVariableInfo> internalVariables = this.parseInternals(internals);
-        for (ParsingVariableInfo var : internalVariables) {
-            this.typeConnectedVars.put(moduleTypeName + "." + var.getName(), new TypePropagationVariableNode(var));
-        }
-
-        List<ParsingVariableInfo> inputVariables = inputs.stream()
-                .map(str -> {
-                    ParsingVariableInfo info = new ParsingVariableInfo(str, ParsingVariableType.UNKNOWN);
-                    this.typeConnectedVars.put(moduleTypeName + "." + info.getName(), new TypePropagationVariableNode(info));
-                    return info;
-                }).collect(Collectors.toList());
-
-        List<ParsingVariableInfo> outputVariables = this.parseOutputs(outputs, moduleTypeName);
-        return new ParsingModuleType(moduleTypeName, inputVariables, outputVariables, internalVariables);
-    }
-
-    private List<ParsingVariableInfo> parseOutputs(List<String> outputs, String moduleTypeName) {
-        return outputs
-                .stream()
-                .filter(str -> str.contains(":="))
-                .map(str -> {
-                    String[] parts = str.trim().replace(";", "").split(" := ");
-                    if (parts.length < 2) {
-                        String varName = parts[0].replace(":=", "").trim();
-                        List<String> caseDefs = this.extractCase(varName, outputs);
-                        String lastDef = caseDefs.get(caseDefs.size() - 1).trim().split(": ")[0].trim();
-                        ParsingVariableType type = this.defineType(lastDef);
-                        ParsingVariableInfo out = new ParsingVariableInfo(varName, type);
-                        this.typeConnectedVars.put(moduleTypeName + "." + out.getName(), new TypePropagationVariableNode(out));
-                        return out;
-                    }
-                    ParsingVariableType type = this.defineType(parts[1]);
-                    ParsingVariableInfo out = new ParsingVariableInfo(parts[0], type);
-                    if (type == null) {
-                        this.typeConnectedVars.get(moduleTypeName + "." + parts[1].replace("!", "")).connect(out, moduleTypeName);
-                    } else {
-                        this.typeConnectedVars.put(moduleTypeName + "." + parts[0].replace("!", ""), new TypePropagationVariableNode(out));
-                    }
-                    return out;
-                }).collect(Collectors.toList());
-    }
-
-    private List<String> extractCase(String varName, List<String> contents) {
-        String startStr = contents.stream().filter(str -> str.contains(varName)).findFirst().get();
-        return contents.subList(contents.indexOf(startStr) + 2, contents.size())
-                .stream()
-                .takeWhile(str -> !str.contains("esac"))
-                .collect(Collectors.toList());
-    }
-
-    public ParsingDiagram parseRoot(List<String> moduleContents) {
-        // root internals -> outputs
-        // root outputs -> inputs
-
-        List<String> outputs = this.readInternals(moduleContents);
+        List<String> inputs = this.readInternals(moduleContents);
 
         Map<String, TextDeclaration> moduleDeclarations = new HashMap<>();
-        List<ParsingVariableInfo> outputVars = new ArrayList<>();
+        Map<String, InputGate> inputGates = new HashMap<>();
 
-        for (String outputStr : outputs) {
-            String[] parts = outputStr.replace(";", "").trim().split(": ");
+        int order = 1;
+        for (String inputStr : inputs) {
+            String[] parts = inputStr.replace(";", "").trim().split(": ");
             ParsingVariableType type = this.defineType(parts[1]);
             String name = parts[0].trim();
             if (type == null) {
                 moduleDeclarations.put(name, new TextDeclaration(name, parts[1]));
             } else {
-                ParsingVariableInfo output = new ParsingVariableInfo(name, type);
-                outputVars.add(output);
-                this.typeConnectedVars.put(output.getName(), new TypePropagationVariableNode(output));
+                InputVariable input = new InputVariable(type == ParsingVariableType.BOOLEAN ?
+                        new BooleanDynamicVariable(new BooleanValueHolder(false), name)
+                        : new IntegerDynamicVariable(new IntegerValueHolder(Integer.MIN_VALUE), name), order);
+                InputGate inGate = new InputGate(input);
+                inputGates.put(name, inGate);
+                order ++;
             }
         }
 
-        Map<String, ParsingModuleType> modulesTypes = new HashMap<>();
-        Map<String, ParsingModule> modules = new HashMap<>();
+        Map<String, FunctionBlockComplex> modules = new HashMap<>();
         for (TextDeclaration declaration : moduleDeclarations.values()) {
             String moduleName = declaration.getName();
             String moduleTypeName = this.readModuleTypeName(declaration.getValue());
 
-            if (!modulesTypes.containsKey(moduleTypeName)) {
-                List<String> contents = this.extractModule(moduleTypeName);
-                ParsingModuleType moduleType = this.parseModule(moduleTypeName, contents);
-                modulesTypes.put(moduleTypeName, moduleType);
-            }
-            modules.put(moduleName, new ParsingModule(moduleName, modulesTypes.get(moduleTypeName)));
+            FunctionBlockComplex block = blockDefinitions.get(moduleTypeName).instance(moduleName);
+            modules.put(moduleName, block);
         }
 
-
-        Set<String> modulesTypesProcessed = new HashSet<>();
-        for (ParsingModule module : modules.values()) {
-            boolean isNew = modulesTypesProcessed.add(module.getTypeInfo().getTypeName());
-            if (!isNew) {
-                continue;
-            }
-            TextDeclaration declaration = moduleDeclarations.get(module.getName());
-            List<String> moduleCallInputs = this.readInputs(declaration.getValue());
-            for (int i = 0; i < moduleCallInputs.size(); i++) {
-                String moduleCallInput = moduleCallInputs.get(i);
-                String inputName = moduleCallInput.replace("!", "");
-                TypePropagationNode varNode = this.typeConnectedVars.get(inputName);
-                if (varNode == null) {
-                    ParsingVariableType type = this.defineType(inputName);
-                    if (type != null) {
-                        varNode = new TypePropagationConstantNode(type);
-                        this.typeConnectedVars.put(inputName, varNode);
-                    } else {
-                        String[] varNameParts = inputName.split(".");
-                        ParsingModuleType moduleOwner = modules.get(varNameParts[0]).getTypeInfo();
-                        // TODO may not be the root, rework later
-                        varNode = this.typeConnectedVars.get(moduleOwner.getTypeName() + "." + varNameParts[1]);
-                    }
-                }
-
-                varNode.connect(module.getTypeInfo().getInputs().get(i), module.getTypeInfo().getTypeName());
-            }
-        }
-
-        Map<String, String> rootInputConnections = new HashMap<>();
-        List<ParsingVariableInfo> inputVars = this.readOutputs(moduleContents).stream().filter(str -> str.contains(":="))
+        List<OutputVariable> diagramOutputs = new ArrayList<>();
+        List<OutputGate> outputGates = this.readOutputs(moduleContents).stream().filter(str -> str.contains(":="))
                 .map(str -> {
                     String[] parts = str.trim().replace(";", "").split(" := ");
-                    ParsingVariableInfo in = new ParsingVariableInfo(parts[0], ParsingVariableType.UNKNOWN);
-                    rootInputConnections.put(in.getName(), parts[1]);
-
                     String[] ownerVarParts = parts[1].split("\\.");
-                    String ownerType = modules.get(ownerVarParts[0]).getTypeInfo().getTypeName();
-                    this.typeConnectedVars.get(ownerType + "." + ownerVarParts[1]).connect(in, "");
-                    return in;
+                    OutputVariable blockOutput = modules.get(ownerVarParts[0]).fbInterface().getOutputs().values()
+                            .stream().filter(out -> out.getName().equals(ownerVarParts[1])).map(OutputGate::output).findFirst().orElse(null);
+                    OutputVariable systemOutput = new OutputVariable(blockOutput.getValue() instanceof BooleanValueHolder
+                            ? new BooleanDynamicVariable(new BooleanValueHolder(false), parts[0])
+                            : new IntegerDynamicVariable(new IntegerValueHolder(Integer.MIN_VALUE), parts[0]));
+                    OutputGate outGate = new OutputGate(systemOutput);
+                    blockOutput.connect(outGate.input(), modules.get(ownerVarParts[0]), outGate, false);
+                    diagramOutputs.add(blockOutput);
+                    return outGate;
                 })
                 .collect(Collectors.toList());
 
-        for (TypePropagationNode node : this.typeConnectedVars.values()) {
-            node.propagateType();
-        }
-
-        ParsingModule rootModule = new ParsingModule("main", true, new ParsingModuleType("main", inputVars, outputVars, new ArrayList<>()));
-        modules.put("main", rootModule);
-
-        this.establishConnections(rootModule, modules, moduleDeclarations, rootInputConnections);
-        return new ParsingDiagram(rootModule, modules);
+        List<InputVariable> diagraminputs = this.establishConnections(modules, moduleDeclarations, inputGates);
+        return new FunctionBlockComplex("root", "DIAGRAM",
+                new FBInterface(new ArrayList<>(inputGates.values()), outputGates),
+                new Diagram(modules.values().stream().map(m -> (FunctionBlockBase) m).collect(Collectors.toList()), diagraminputs, diagramOutputs));
     }
 
-    private void establishConnections(ParsingModule rootModule, Map<String, ParsingModule> modules, Map<String, TextDeclaration> moduleDeclarations, Map<String, String> rootInputConnectionsMap) {
+    private List<InputVariable> establishConnections(Map<String, FunctionBlockComplex> modules, Map<String, TextDeclaration> moduleDeclarations, Map<String, InputGate> inputGates) {
+        List<InputVariable> diagramInputs = new ArrayList<>();
         for (TextDeclaration declaration : moduleDeclarations.values()) {
 
-            ParsingModule moduleTo = modules.get(declaration.getName());
+            FunctionBlockComplex moduleTo = modules.get(declaration.getName());
 
             List<String> inputs = this.readInputs(declaration.getValue());
             for (int i = 0; i < inputs.size(); i++) {
@@ -197,42 +117,38 @@ public class ModuleBuilder {
                 boolean isInverted = varNameParts[0].startsWith("!");
                 if (varNameParts.length == 1) {
                     String varName = varNameParts[0].replace("!", "");
-                    ParsingOutput output = rootModule.getOutputsMap().get(varName);
-                    if (output == null) {
-                        output = this.parseConstant(varName);
-                        rootModule.addOutput(output);
+
+                    InputGate inGate = inputGates.get(varName);
+                    InputVariable toVar = moduleTo.fbInterface().getOrderedInputs().get(i).input();
+
+                    if (inGate == null) {
+                        toVar.setValue(this.parseConstant(varName, isInverted));
+                    } else {
+                        diagramInputs.add(toVar);
+                        toVar.connect(inGate.output(), inGate, moduleTo, isInverted);
+                        inGate.output().connect(toVar, inGate, moduleTo, isInverted);
                     }
-                    ParsingInput toVar = moduleTo.getInputs().get(i);
-                    toVar.connect(output, rootModule, moduleTo, isInverted);
-                    output.connect(toVar, rootModule, moduleTo, isInverted);
                 } else {
-                    ParsingModule moduleFrom = modules.get(varNameParts[0]);
-                    ParsingOutput outVar = moduleFrom.getOutputsMap().get(varNameParts[1]);
-                    ParsingInput toVar = moduleTo.getInputs().get(i);
+                    FunctionBlockComplex moduleFrom = modules.get(varNameParts[0]);
+                    OutputVariable outVar = moduleFrom.fbInterface().getOutputs().get(varNameParts[1]).output();
+                    InputVariable toVar = moduleTo.fbInterface().getOrderedInputs().get(i).input();
                     outVar.connect(toVar, moduleFrom, moduleTo, isInverted);
                     toVar.connect(outVar, moduleFrom, moduleTo, isInverted);
                 }
             }
         }
-
-        for (String varStr: rootInputConnectionsMap.keySet()){
-            ParsingInput toVar = rootModule.getInputsMap().get(varStr);
-            String[] fromVarParts = rootInputConnectionsMap.get(varStr).split("\\.");
-            boolean isInverted = fromVarParts[0].startsWith("!");
-            ParsingModule fromModule = modules.get(fromVarParts[0].replace("!", ""));
-            ParsingOutput fromVar = fromModule.getOutputsMap().get(fromVarParts[1]);
-
-            toVar.connect(fromVar, fromModule, rootModule, isInverted);
-            fromVar.connect(toVar, fromModule, rootModule, isInverted);
-        }
+        return diagramInputs;
     }
 
-    private ParsingOutputConstant parseConstant(String varName) {
+    private ValueHolder parseConstant(String varName, boolean isInverted) {
         if (this.isBoolean(varName)) {
-            return new ParsingOutputConstant<Boolean>(new ParsingVariableInfo(varName, ParsingVariableType.BOOLEAN), varName.toLowerCase().equals("true"));
+            if (isInverted){
+                return new BooleanValueHolder(varName.toLowerCase().equals("false"));
+            }
+            return new BooleanValueHolder(varName.toLowerCase().equals("true"));
         }
         if (this.isInteger(varName)) {
-            return new ParsingOutputConstant<Integer>(new ParsingVariableInfo(varName, ParsingVariableType.INTEGER), Integer.valueOf(varName));
+            return new IntegerValueHolder(Integer.valueOf(varName));
         }
         return null;
     }
@@ -252,15 +168,6 @@ public class ModuleBuilder {
             next = moduleSpec.charAt(nextIdx);
         }
         return name.toString();
-    }
-
-    private List<ParsingVariableInfo> parseInternals(List<String> internals) {
-        return internals.stream().map(str -> {
-            String[] parts = str.replace(";", "").trim().split(": ");
-            ParsingVariableType type = this.isBoolean(parts[1]) ? ParsingVariableType.BOOLEAN :
-                    (this.isInteger(parts[1]) ? ParsingVariableType.INTEGER : null);
-            return new ParsingVariableInfo(parts[0], type);
-        }).collect(Collectors.toList());
     }
 
     private boolean isInteger(String clue) {

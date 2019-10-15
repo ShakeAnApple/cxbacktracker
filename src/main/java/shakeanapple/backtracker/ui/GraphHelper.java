@@ -1,7 +1,7 @@
 package shakeanapple.backtracker.ui;
 
 import javafx.scene.paint.Color;
-import shakeanapple.backtracker.common.variable.AbstractValueHolder;
+import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.common.variable.BooleanValueHolder;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.ConnectionSnapshot;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.DiagramSnapshot;
@@ -72,44 +72,40 @@ public class GraphHelper {
         Map<String, Cell> nodes = new HashMap<>();
         List<Connection> edges = new ArrayList<>();
 
-        long id;
-        for (FunctionBlockSnapshot fblock : diagram.getBlocks()) {
-            if (fblock.isRoot()) {
-                for (String input : fblock.getInputs()) {
-                    id = r.nextLong();
-                    nodes.put(input, new OutputCell(id, "output: " + input));
-                }
-            } else {
-                id = r.nextLong();
-                nodes.put(fblock.getName(), new RectangleCell(id, fblock.getName() + " " + fblock.getType()));
-            }
+        for (String input : diagram.getDiagramInterface().getInputs()) {
+            long id = r.nextLong();
+            nodes.put(input, new InputCell(id, "input: " + input));
         }
 
-//        for (String output: fblock.getOutputs()){
-//            id = r.nextLong();
-//            nodes.put(output, new RectangleCell(id, "input: " + output));
-//        }
+        for (String output : diagram.getDiagramInterface().getOutputs()) {
+            long id = r.nextLong();
+            nodes.put(output, new InputCell(id, "output: " + output));
+        }
 
+        for (FunctionBlockSnapshot fblock : diagram.getBlocks()) {
+            long id = r.nextLong();
+            nodes.put(fblock.getName(), new RectangleCell(id, fblock.getName() + " " + fblock.getType()));
+        }
 
         for (ConnectionSnapshot connection : diagram.getConnections()) {
             String blockNameFrom = connection.from().getName();
-            Cell from = null;
-            if (blockNameFrom.equals("main")) {
-                id = r.nextLong();
-                Cell cell = new InputCell(id, connection.fromVarName());
-                nodes.put(connection.fromVarName() + connection.toVarName() + connection.to().getName(), cell);
-                from = cell;
-            } else {
-                from = nodes.get(blockNameFrom);
-            }
+            Cell from = nodes.get(blockNameFrom);
+//            if (diagram.getDiagramInterface().getInputs().contains(blockNameFrom)) {
+//                long id = r.nextLong();
+//                Cell cell = new InputCell(id, connection.fromVarName());
+//                nodes.put(connection.fromVarName() + connection.toVarName() + connection.to().getName(), cell);
+//                from = nodes.get(blockNameFrom);
+//            } else {
+//                from = nodes.get(blockNameFrom);
+//            }
 
             String blockNameTo = connection.to().getName();
-            Cell to = null;
-            if (blockNameTo.equals("main")) {
-                to = nodes.get(connection.toVarName());
-            } else {
-                to = nodes.get(blockNameTo);
-            }
+            Cell to = nodes.get(blockNameTo);
+//            if (blockNameTo.equals("main")) {
+//                to = nodes.get(connection.toVarName());
+//            } else {
+//                to = nodes.get(blockNameTo);
+//            }
 
             edges.add(new Connection(from.getCellId(), to.getCellId(), connection.fromVarName() + " -> " + connection.toVarName() + (connection.isInverted() ? " (inverted)" : ""),
                     getDiagramColorFor(connection.getValue())
@@ -121,93 +117,94 @@ public class GraphHelper {
     }
 
     public static VisGraph convertToGraph(DiagramSnapshot diagram) {
-        Random r = new Random();
-
-        Map<String, VisNode> nodes = new HashMap<>();
-        List<VisEdge> edges = new ArrayList<>();
-
-        long id;
-        for (FunctionBlockSnapshot fblock : diagram.getBlocks()) {
-            if (fblock.isRoot()) {
-                for (String input : fblock.getInputs()) {
-                    id = r.nextLong();
-                    nodes.put(input, new VisNode(id, "output: " + input));
-                }
-                for (String output : fblock.getOutputs()) {
-                    id = r.nextLong();
-                    nodes.put(output, new VisNode(id, "input: " + output));
-                }
-            } else {
-                id = r.nextLong();
-                nodes.put(fblock.getName(), new VisNode(id, fblock.getName() + " " + fblock.getType()));
-            }
-        }
-
-        Map<String, List<ConnectionSnapshot>> connectionsByFromTo = new HashMap<>();
-        for (ConnectionSnapshot c : diagram.getConnections()) {
-            String fromName = "";
-            if (c.from().isRoot()) {
-                fromName = c.fromVarName();
-            } else {
-                fromName = c.from().getName();
-            }
-
-            String toName = "";
-            if (c.to().isRoot()) {
-                toName = c.toVarName();
-            } else {
-                toName = c.to().getName();
-            }
-
-            String key = fromName + toName;
-            if (!connectionsByFromTo.containsKey(key)) {
-                connectionsByFromTo.put(key, new ArrayList<>());
-            }
-            connectionsByFromTo.get(key).add(c);
-        }
-
-        for (List<ConnectionSnapshot> connectionsGroup : connectionsByFromTo.values()) {
-            //double roundness = 0.2;
-            String newLine = "";
-            for (ConnectionSnapshot connection : connectionsGroup) {
-                String blockNameFrom = connection.from().getName();
-                VisNode from = null;
-                if (blockNameFrom.equals("main")) {
-                    from = nodes.get(connection.fromVarName());
-                } else {
-                    from = nodes.get(blockNameFrom);
-                }
-
-                String blockNameTo = connection.to().getName();
-                VisNode to = null;
-                if (blockNameTo.equals("main")) {
-                    to = nodes.get(connection.toVarName());
-                } else {
-                    to = nodes.get(blockNameTo);
-                }
-
-                edges.add(new VisEdge(from, to, "to",
-                        newLine + connection.fromVarName() + " -> " + connection.toVarName() + (connection.isInverted() ? " (inverted)" : ""),
-                        getColorFor(connection.getValue())
-                ));
-                newLine += "\n\n\n";
-//                edges.add(new VisEdge(from, to, "to",
-//                        connection.fromVarName() + " -> " + connection.toVarName() + (connection.isInverted() ? " (inverted)" : ""),
-//                        getColorFor(connection.getValue()), roundness
-//                ));
-//                if (roundness > 0){
-//                    roundness = 0 - roundness;
-//                } else if (roundness < 0){
-//                    roundness = (0 - roundness) + 0.2;
+//        Random r = new Random();
+//
+//        Map<String, VisNode> nodes = new HashMap<>();
+//        List<VisEdge> edges = new ArrayList<>();
+//
+//        long id;
+//        for (FunctionBlockSnapshot fblock : diagram.getBlocks()) {
+//            if (fblock.isRoot()) {
+//                for (String input : fblock.getInputs()) {
+//                    id = r.nextLong();
+//                    nodes.put(input, new VisNode(id, "output: " + input));
 //                }
-            }
-        }
-
-        VisGraph graph = new VisGraph(new ArrayList<>(nodes.values()), edges);
-        return graph;
+//                for (String output : fblock.getOutputs()) {
+//                    id = r.nextLong();
+//                    nodes.put(output, new VisNode(id, "input: " + output));
+//                }
+//            } else {
+//                id = r.nextLong();
+//                nodes.put(fblock.getName(), new VisNode(id, fblock.getName() + " " + fblock.getType()));
+//            }
+//        }
+//
+//        Map<String, List<ConnectionSnapshot>> connectionsByFromTo = new HashMap<>();
+//        for (ConnectionSnapshot c : diagram.getConnections()) {
+//            String fromName = "";
+//            if (c.from().isRoot()) {
+//                fromName = c.fromVarName();
+//            } else {
+//                fromName = c.from().getName();
+//            }
+//
+//            String toName = "";
+//            if (c.to().isRoot()) {
+//                toName = c.toVarName();
+//            } else {
+//                toName = c.to().getName();
+//            }
+//
+//            String key = fromName + toName;
+//            if (!connectionsByFromTo.containsKey(key)) {
+//                connectionsByFromTo.put(key, new ArrayList<>());
+//            }
+//            connectionsByFromTo.get(key).add(c);
+//        }
+//
+//        for (List<ConnectionSnapshot> connectionsGroup : connectionsByFromTo.values()) {
+//            //double roundness = 0.2;
+//            String newLine = "";
+//            for (ConnectionSnapshot connection : connectionsGroup) {
+//                String blockNameFrom = connection.from().getName();
+//                VisNode from = null;
+//                if (blockNameFrom.equals("main")) {
+//                    from = nodes.get(connection.fromVarName());
+//                } else {
+//                    from = nodes.get(blockNameFrom);
+//                }
+//
+//                String blockNameTo = connection.to().getName();
+//                VisNode to = null;
+//                if (blockNameTo.equals("main")) {
+//                    to = nodes.get(connection.toVarName());
+//                } else {
+//                    to = nodes.get(blockNameTo);
+//                }
+//
+//                edges.add(new VisEdge(from, to, "to",
+//                        newLine + connection.fromVarName() + " -> " + connection.toVarName() + (connection.isInverted() ? " (inverted)" : ""),
+//                        getColorFor(connection.getValue())
+//                ));
+//                newLine += "\n\n\n";
+////                edges.add(new VisEdge(from, to, "to",
+////                        connection.fromVarName() + " -> " + connection.toVarName() + (connection.isInverted() ? " (inverted)" : ""),
+////                        getColorFor(connection.getValue()), roundness
+////                ));
+////                if (roundness > 0){
+////                    roundness = 0 - roundness;
+////                } else if (roundness < 0){
+////                    roundness = (0 - roundness) + 0.2;
+////                }
+//            }
+//        }
+//
+//        VisGraph graph = new VisGraph(new ArrayList<>(nodes.values()), edges);
+//        return graph;
+        return null;
     }
 
-    private static String getColorFor(AbstractValueHolder valueHolder) {
+    private static String getColorFor(ValueHolder valueHolder) {
         if (valueHolder instanceof BooleanValueHolder) {
             BooleanValueHolder bvh = (BooleanValueHolder) valueHolder;
             return bvh.getValue() ? "green" : "red";
@@ -215,7 +212,7 @@ public class GraphHelper {
         return "#E0E0E0";
     }
 
-    private static Color getDiagramColorFor(AbstractValueHolder valueHolder) {
+    private static Color getDiagramColorFor(ValueHolder valueHolder) {
         if (valueHolder instanceof BooleanValueHolder) {
             BooleanValueHolder bvh = (BooleanValueHolder) valueHolder;
             return bvh.getValue() ? Color.GREEN : Color.RED;

@@ -18,5 +18,6 @@
         <CheckBox fx:id="isConstant"/>
         <TextField fx:id="constantValue" promptText="constant value" visible="${isConstant.selected}"/>
     </HBox>
+    <TextField fx:id="order"/>
     <Button text="Add input" onAction="#add"/>
 </FlowPane>

@@ -40,6 +40,9 @@ public class AddChoiceDialogController implements Initializable {
     @FXML
     private TextField defaultValue;
 
+    @FXML
+    private TextField order;
+
     private ObservableList<Choice> choices;
 
     @Override
@@ -53,12 +56,12 @@ public class AddChoiceDialogController implements Initializable {
         Random r = new Random();
         InputVariable input;
         if (this.isConstant.isSelected()){
-            input = new ConstantInput(r.nextLong(), this.inputTypeComboBox.getValue(), this.inputName.getText(), this.constantValue.getText());
+            input = new ConstantInput(r.nextLong(), this.inputTypeComboBox.getValue(), this.inputName.getText(), this.constantValue.getText(), Integer.parseInt(this.order.getText()));
         } else{
-            input = new InputVariable(r.nextLong(), this.inputTypeComboBox.getValue(), this.inputName.getText());
+            input = new InputVariable(r.nextLong(), this.inputTypeComboBox.getValue(), this.inputName.getText(), Integer.parseInt(this.order.getText()));
         }
         Choice choice = new Choice(input,
-                new OutputVariable(r.nextLong(), this.outputTypeComboBox.getValue(), this.outputName.getText(), this.defaultValue.getText()));
+                new InputVariable(r.nextLong(), this.outputTypeComboBox.getValue(), this.outputName.getText(), Integer.parseInt(this.order.getText())));
         this.choices.add(choice);
 
         this.closeDialog(event);

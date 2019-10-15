@@ -1,6 +1,6 @@
 package shakeanapple.backtracker.common.variable;
 
-public class BooleanValueHolder extends AbstractValueHolder<Boolean> {
+public class BooleanValueHolder extends ValueHolder<Boolean> {
     private boolean _value;
 
     public BooleanValueHolder(boolean value) {

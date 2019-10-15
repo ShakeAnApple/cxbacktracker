@@ -6,7 +6,7 @@ import shakeanapple.backtracker.core.counterexample.Counterexample;
 import shakeanapple.backtracker.core.ltlexplanation.model.ltlformula.model.ILtlFormulaVisitor;
 import shakeanapple.backtracker.core.ltlexplanation.model.ltlformula.model.LtlFormula;
 import shakeanapple.backtracker.core.ltlexplanation.model.ltlformula.model.tree.*;
-import shakeanapple.backtracker.common.variable.AbstractValueHolder;
+import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.common.variable.BooleanValueHolder;
 import shakeanapple.backtracker.common.variable.IntegerValueHolder;
 
@@ -189,7 +189,7 @@ public class LtlWithCounterexampleEvaluator implements ILtlFormulaVisitor<Calcul
         this.registerNodeInHistory(varNode);
 
         CalculationResult res = null;
-        AbstractValueHolder valueHolder = this.cursor.getCurState().getVarByName(varNode.getName()).getValue();
+        ValueHolder valueHolder = this.cursor.getCurState().getVarByName(varNode.getName()).getValue();
         if (valueHolder instanceof BooleanValueHolder){
             res = new LogicalResult(((BooleanValueHolder)valueHolder).getValue() ? LogicalResultKind.TRUE : LogicalResultKind.FALSE, this.cursor.getCurStateNum());
         } else if (valueHolder instanceof IntegerValueHolder){

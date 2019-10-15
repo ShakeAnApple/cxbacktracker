@@ -119,10 +119,10 @@ public class MainController implements Initializable {
         this.components.addListener((ListChangeListener<BasicComponentAbstract>) change -> {
             change.next();
             BasicComponentAbstract newComponent = change.getAddedSubList().get(0);
-            if (newComponent instanceof BasicComponent){
-                graph.addCell(new BasicComponentCell(r.nextLong(), (BasicComponent) newComponent, pressHandler, checkHandler));
-            } else{
+            if (newComponent instanceof ChoiceComponent){
                 graph.addCell(new ChoiceComponentCell(r.nextLong(), (ChoiceComponent) newComponent, pressHandler, checkHandler));
+            } else{
+                graph.addCell(new BasicComponentCell(r.nextLong(), (BasicComponent) newComponent, pressHandler, checkHandler));
             }
             diagramControl.draw(graph);
         });
@@ -173,6 +173,6 @@ public class MainController implements Initializable {
         List<shakeanapple.backtracker.parser.basiccomponents.xmlmodel.OutputVariable> outputsXml = this.outputs.stream().map(OutputVariable::translate).collect(Collectors.toList());
 
         Block block = new Block(this.blockName.getText(), inputsXml, outputsXml, compsXml, connectionsXml);
-        XmlSerializer.serializeToXML(block, "C:\\Users\\ovsianp1\\tmp\\" + this.blockName.getText() + ".xml");
+        XmlSerializer.serializeToXML(block, "C:\\Users\\ovsianp1\\projects\\SEARCH\\basic-components\\" + this.blockName.getText() + ".xml");
     }
 }

@@ -1,5 +1,6 @@
 package shakeanapple.backtracker.common;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import shakeanapple.backtracker.parser.basiccomponents.xmlmodel.Block;
 
@@ -18,6 +19,7 @@ public class XmlSerializer {
     public static void serializeToXML (Block block, String path) throws IOException, JAXBException {
         FileOutputStream fos = new FileOutputStream(path);
         XmlMapper xmlMapper = new XmlMapper();
+        xmlMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         xmlMapper.writeValue(fos, block);
         fos.close();
     }

@@ -1,34 +1,37 @@
 package shakeanapple.backtracker.core.diagramexplanation.model;
 
-import shakeanapple.backtracker.parser.fblockdiagram.Parser;
+import shakeanapple.backtracker.common.variable.Variable;
+import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.FunctionBlockBasic;
+import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
+import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
 import java.util.List;
 
 public class Diagram {
-    private final List<FunctionBlock> fblocks;
+    private List<DiagramElement> functionBlocks;
 
-    private final FunctionBlock root;
+    private List<InputVariable> inputs;
+    private List<OutputVariable> outputs;
 
-    public Diagram(List<FunctionBlock> fblocks, FunctionBlock root) {
-        this.fblocks = fblocks;
-        this.root = root;
+    public Diagram(List<DiagramElement> functionBlocks, List<InputVariable> inputs, List<OutputVariable> outputs) {
+        this.functionBlocks = functionBlocks;
+        this.inputs = inputs;
+        this.outputs = outputs;
     }
 
-    public List<FunctionBlock> getFblocks() {
-        return this.fblocks;
+    public List<DiagramElement> getFunctionBlocks() {
+        return this.functionBlocks;
     }
 
-    public FunctionBlock getRoot() {
-        return this.root;
+    public List<InputVariable> getInputs() {
+        return this.inputs;
     }
 
-    public static Diagram load(String path){
-        try {
-            Parser p = new Parser(path);
-            return p.parse();
-        }
-        catch (Exception e){
-            throw new RuntimeException("Can't load diagram");
-        }
+    public List<OutputVariable> getOutputs() {
+        return this.outputs;
+    }
+
+    public void evaluate() {
+
     }
 }

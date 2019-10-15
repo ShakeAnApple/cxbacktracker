@@ -3,8 +3,10 @@ package shakeanapple.backtracker.parser.basiccomponents.xmlmodel;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import shakeanapple.backtracker.core.diagramexplanation.model.complexblockdefinition.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Block {
     @JacksonXmlElementWrapper(localName = "inputs")
@@ -23,7 +25,7 @@ public class Block {
     @JacksonXmlProperty(localName = "connection")
     private List<Connection> connections;
 
-    @JacksonXmlProperty(isAttribute=true)
+    @JacksonXmlProperty(isAttribute = true)
     private String name;
 
     public Block() {
@@ -75,5 +77,14 @@ public class Block {
 
     public void setConnections(List<Connection> connections) {
         this.connections = connections;
+    }
+
+    public BlockDefinition translate() {
+        return new BlockDefinition(this.name,
+                this.inputs.stream().map(InputVariable::translate).collect(Collectors.toList()),
+                this.outputs.stream().map(OutputVariable::translate).collect(Collectors.toList()),
+                this.components.stream().map(BasicComponentAbstract::translate).collect(Collectors.toList()),
+                this.connections.stream().map(Connection::translate).collect(Collectors.toList())
+        );
     }
 }

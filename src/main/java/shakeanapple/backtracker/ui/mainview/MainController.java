@@ -40,12 +40,12 @@ public class MainController {
     private final DiagramSequentialEvaluator diagramEvaluator;
 
     public MainController()  {
-//        Counterexample cx = this.hardcodedCounterexample();
         Counterexample cx = Counterexample.load("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\cx");
         LtlFormula formula = LtlFormula.parse("G(((!(alarm) & !(criteria)) & X (criteria & !(ack_button))) -> X (alarm))");
         this.calculationWalker = new LtlWithCounterexampleEvaluator(cx, formula);
 
-        this.diagramEvaluator = new DiagramWithCounterexampleEvaluator("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\m.smv", cx );
+        this.diagramEvaluator = new DiagramWithCounterexampleEvaluator("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\m.smv",
+                "C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\basics", cx );
     }
 
     private Counterexample hardcodedCounterexample() {

@@ -2,7 +2,7 @@ package shakeanapple.backtracker.common.variable;
 
 import java.util.Set;
 
-public abstract class AbstractVariableInfo<VHolderType extends AbstractValueHolder> {
+public abstract class AbstractVariableInfo<VHolderType extends ValueHolder> {
     private String name;
     protected Set<VHolderType> valuesSet;
 

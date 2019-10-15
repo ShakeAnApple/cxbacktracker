@@ -6,8 +6,8 @@ public class ConstantInput extends InputVariable {
     @JacksonXmlProperty(isAttribute=true)
     private String value;
 
-    public ConstantInput(long id, VarType type, String name, String value) {
-        super(id, type, name);
+    public ConstantInput(long id, VarType type, String name, String value, int order) {
+        super(id, type, name, order);
         this.value = value;
     }
 
@@ -26,6 +26,6 @@ public class ConstantInput extends InputVariable {
 
     @Override
     public shakeanapple.backtracker.parser.basiccomponents.xmlmodel.InputVariable translate() {
-        return new shakeanapple.backtracker.parser.basiccomponents.xmlmodel.ConstantInput(super.getId(), shakeanapple.backtracker.parser.basiccomponents.xmlmodel.VarType.valueOf(super.getType().name()), super.getName(), this.value);
+        return new shakeanapple.backtracker.parser.basiccomponents.xmlmodel.ConstantInput(super.getId(), shakeanapple.backtracker.parser.basiccomponents.xmlmodel.VarType.valueOf(super.getType().name()), super.getName(), this.value, super.getOrder());
     }
 }

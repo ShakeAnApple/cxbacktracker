@@ -1,6 +1,6 @@
 package shakeanapple.backtracker.common.variable;
 
-public class IntegerValueHolder extends AbstractValueHolder<Integer> {
+public class IntegerValueHolder extends ValueHolder<Integer> {
     private int value;
 
     public IntegerValueHolder(int value) {

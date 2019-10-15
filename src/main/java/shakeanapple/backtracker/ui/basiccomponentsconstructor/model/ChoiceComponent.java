@@ -12,8 +12,8 @@ public class ChoiceComponent extends BasicComponentAbstract {
 
     private OutputVariable output;
 
-    public ChoiceComponent(ComponentType type, List<Choice> choices, OutputVariable output) {
-        super(type);
+    public ChoiceComponent(ComponentType type, long id, List<Choice> choices, OutputVariable output) {
+        super(type, id);
 
         this.choices = choices;
         this.output = output;
@@ -32,6 +32,6 @@ public class ChoiceComponent extends BasicComponentAbstract {
         List<shakeanapple.backtracker.parser.basiccomponents.xmlmodel.Choice> choicesXml = this.choices.stream().map(Choice::translate).collect(Collectors.toList());
 
         return new shakeanapple.backtracker.parser.basiccomponents.xmlmodel.ChoiceComponent(
-                shakeanapple.backtracker.parser.basiccomponents.xmlmodel.ComponentType.valueOf(super.getType().name()), choicesXml, this.output.translate());
+                shakeanapple.backtracker.parser.basiccomponents.xmlmodel.ComponentType.valueOf(super.getType().name()), this.getId(), choicesXml, this.output.translate());
     }
 }

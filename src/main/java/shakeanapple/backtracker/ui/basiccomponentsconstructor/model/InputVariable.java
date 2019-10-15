@@ -8,11 +8,13 @@ public class InputVariable {
     private long id;
     private VarType type;
     private String name;
+    private int order;
 
-    public InputVariable(long id, VarType type, String name) {
+    public InputVariable(long id, VarType type, String name, int order) {
         this.id = id;
         this.type = type;
         this.name = name;
+        this.order = order;
     }
 
     public long getId() {
@@ -27,12 +29,16 @@ public class InputVariable {
         return this.name;
     }
 
+    public int getOrder() {
+        return this.order;
+    }
+
     @Override
     public String toString() {
         return String.format("%s; %s; %s", this.id, this.name, this.type);
     }
 
     public shakeanapple.backtracker.parser.basiccomponents.xmlmodel.InputVariable translate() {
-        return new shakeanapple.backtracker.parser.basiccomponents.xmlmodel.InputVariable(this.id, shakeanapple.backtracker.parser.basiccomponents.xmlmodel.VarType.valueOf(this.type.name()), this.name);
+        return new shakeanapple.backtracker.parser.basiccomponents.xmlmodel.InputVariable(this.id, shakeanapple.backtracker.parser.basiccomponents.xmlmodel.VarType.valueOf(this.type.name()), this.name, this.order);
     }
 }

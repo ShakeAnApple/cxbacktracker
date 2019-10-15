@@ -1,8 +1,8 @@
 package shakeanapple.backtracker.core.diagramexplanation.model.snapshot;
 
-import shakeanapple.backtracker.common.variable.AbstractValueHolder;
+import shakeanapple.backtracker.common.variable.ValueHolder;
 
-public class ConnectionSnapshot<TValue extends AbstractValueHolder> {
+public class ConnectionSnapshot<TValue extends ValueHolder> {
     private final FunctionBlockSnapshot from;
     private final String fromVarName;
 

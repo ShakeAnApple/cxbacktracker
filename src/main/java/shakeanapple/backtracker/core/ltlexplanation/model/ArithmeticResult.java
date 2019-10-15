@@ -1,12 +1,12 @@
 package shakeanapple.backtracker.core.ltlexplanation.model;
 
-import shakeanapple.backtracker.common.variable.AbstractValueHolder;
+import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.common.variable.IntegerValueHolder;
 
-public class ArithmeticResult extends CalculationResult<AbstractValueHolder> {
-    private AbstractValueHolder result;
+public class ArithmeticResult extends CalculationResult<ValueHolder> {
+    private ValueHolder result;
 
-    public ArithmeticResult(AbstractValueHolder result, int forStep) {
+    public ArithmeticResult(ValueHolder result, int forStep) {
         super(forStep);
         this.result = result;
     }
@@ -17,7 +17,7 @@ public class ArithmeticResult extends CalculationResult<AbstractValueHolder> {
     }
 
     @Override
-    public AbstractValueHolder getValue() {
+    public ValueHolder getValue() {
         return this.result;
     }
 

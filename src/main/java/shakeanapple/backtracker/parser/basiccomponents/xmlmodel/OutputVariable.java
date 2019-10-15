@@ -1,6 +1,8 @@
 package shakeanapple.backtracker.parser.basiccomponents.xmlmodel;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import shakeanapple.backtracker.core.diagramexplanation.model.complexblockdefinition.OutputDefinition;
+import shakeanapple.backtracker.core.diagramexplanation.model.complexblockdefinition.VarDefinitionType;
 
 public class OutputVariable {
     @JacksonXmlProperty(isAttribute=true)
@@ -56,5 +58,9 @@ public class OutputVariable {
 
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
+    }
+
+    public OutputDefinition translate() {
+        return new OutputDefinition(this.id, VarDefinitionType.valueOf(this.type.name()), this.name, this.defaultValue);
     }
 }

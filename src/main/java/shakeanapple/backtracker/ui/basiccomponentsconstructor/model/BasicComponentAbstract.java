@@ -6,9 +6,15 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 public abstract class BasicComponentAbstract {
     private ComponentType type;
+    private long id;
 
-    public BasicComponentAbstract(ComponentType type) {
+    public BasicComponentAbstract(ComponentType type, long id) {
         this.type = type;
+        this.id = id;
+    }
+
+    public long getId() {
+        return this.id;
     }
 
     public ComponentType getType() {
