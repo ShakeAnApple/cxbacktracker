@@ -87,20 +87,23 @@ public class ModuleBuilder {
                     String[] ownerVarParts = parts[1].split("\\.");
                     OutputVariable blockOutput = modules.get(ownerVarParts[0]).fbInterface().getOutputs().values()
                             .stream().filter(out -> out.getName().equals(ownerVarParts[1])).map(OutputGate::output).findFirst().orElse(null);
+                    OutputGate blockOutputGate = modules.get(ownerVarParts[0]).fbInterface().getOutputs().values()
+                            .stream().filter(out -> out.getName().equals(ownerVarParts[1])).findFirst().orElse(null);
                     OutputVariable systemOutput = new OutputVariable(blockOutput.getValue() instanceof BooleanValueHolder
                             ? new BooleanDynamicVariable(new BooleanValueHolder(false), parts[0])
                             : new IntegerDynamicVariable(new IntegerValueHolder(Integer.MIN_VALUE), parts[0]));
                     OutputGate outGate = new OutputGate(systemOutput);
-                    blockOutput.connect(outGate.input(), modules.get(ownerVarParts[0]), outGate, false);
+                    outGate.makeIncomingConnection(blockOutputGate, modules.get(ownerVarParts[0]), outGate, false);
+                    blockOutputGate.makeOutgoingConnection(outGate, modules.get(ownerVarParts[0]), outGate, false);
                     diagramOutputs.add(blockOutput);
                     return outGate;
                 })
                 .collect(Collectors.toList());
 
-        List<InputVariable> diagraminputs = this.establishConnections(modules, moduleDeclarations, inputGates);
+        List<InputVariable> diagramInputs = this.establishConnections(modules, moduleDeclarations, inputGates);
         return new FunctionBlockComplex("root", "DIAGRAM",
                 new FBInterface(new ArrayList<>(inputGates.values()), outputGates),
-                new Diagram(modules.values().stream().map(m -> (FunctionBlockBase) m).collect(Collectors.toList()), diagraminputs, diagramOutputs));
+                new Diagram(modules.values().stream().map(m -> (FunctionBlockBase) m).collect(Collectors.toList()), diagramInputs, diagramOutputs));
     }
 
     private List<InputVariable> establishConnections(Map<String, FunctionBlockComplex> modules, Map<String, TextDeclaration> moduleDeclarations, Map<String, InputGate> inputGates) {
@@ -118,22 +121,22 @@ public class ModuleBuilder {
                 if (varNameParts.length == 1) {
                     String varName = varNameParts[0].replace("!", "");
 
-                    InputGate inGate = inputGates.get(varName);
-                    InputVariable toVar = moduleTo.fbInterface().getOrderedInputs().get(i).input();
+                    InputGate inSystemGate = inputGates.get(varName);
+                    InputGate inModuleGate = moduleTo.fbInterface().getOrderedInputs().get(i);
 
-                    if (inGate == null) {
-                        toVar.setValue(this.parseConstant(varName, isInverted));
+                    if (inSystemGate == null) {
+                        inModuleGate.input().setValue(this.parseConstant(varName, isInverted));
                     } else {
-                        diagramInputs.add(toVar);
-                        toVar.connect(inGate.output(), inGate, moduleTo, isInverted);
-                        inGate.output().connect(toVar, inGate, moduleTo, isInverted);
+                        diagramInputs.add(inModuleGate.input());
+                        inModuleGate.makeIncomingConnection(inSystemGate, inSystemGate, moduleTo, isInverted);
+                        inSystemGate.makeOutgoingConnection(inModuleGate, inSystemGate, moduleTo, isInverted);
                     }
                 } else {
                     FunctionBlockComplex moduleFrom = modules.get(varNameParts[0]);
-                    OutputVariable outVar = moduleFrom.fbInterface().getOutputs().get(varNameParts[1]).output();
-                    InputVariable toVar = moduleTo.fbInterface().getOrderedInputs().get(i).input();
-                    outVar.connect(toVar, moduleFrom, moduleTo, isInverted);
-                    toVar.connect(outVar, moduleFrom, moduleTo, isInverted);
+                    OutputGate outGate = moduleFrom.fbInterface().getOutputs().get(varNameParts[1]);
+                    InputGate toGate = moduleTo.fbInterface().getOrderedInputs().get(i);
+                    outGate.makeOutgoingConnection(toGate, moduleFrom, moduleTo, isInverted);
+                    toGate.makeIncomingConnection(outGate, moduleFrom, moduleTo, isInverted);
                 }
             }
         }

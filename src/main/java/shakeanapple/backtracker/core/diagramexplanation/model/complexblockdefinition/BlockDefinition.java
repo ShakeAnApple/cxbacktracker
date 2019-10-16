@@ -11,6 +11,7 @@ import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVari
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
 import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class BlockDefinition {
@@ -59,8 +60,8 @@ public class BlockDefinition {
         Map<Long, List<Long>> blockInputIds = new HashMap<>();
         Map<Long, List<Long>> blockOutputIds = new HashMap<>();
 
-        Map<Long, InputVariable> compInputs = new HashMap<>();
-        Map<Long, OutputVariable> compOutputs = new HashMap<>();
+        Map<Long, InputGate> compInputs = new HashMap<>();
+        Map<Long, OutputGate> compOutputs = new HashMap<>();
 
         Map<Long, DiagramElement> blocks = new HashMap<>();
 
@@ -71,46 +72,41 @@ public class BlockDefinition {
             FunctionBlockBasic block;
             if (def instanceof ChoiceComponentDefinition) {
                 ChoiceComponentDefinition choiceDef = (ChoiceComponentDefinition) def;
-                List<Choice> choices = new ArrayList<>();
-                for (ChoiceDefinition chDef : choiceDef.getChoices()) {
-                    InputVariable condition = chDef.getCondition().translate();
-                    compInputs.put(chDef.getCondition().getId(), condition);
+                List<Choice> choices = choiceDef.getChoices().stream()
+                        .map(chDef -> new Choice(chDef.getCondition().translate(), chDef.getOutput().translate())).collect(Collectors.toList());
 
-                    InputVariable output = chDef.getOutput().translate();
-                    compInputs.put(chDef.getOutput().getId(), output);
+                block = FunctionBlockBasic.choiceInstance(choices, choiceDef.getOutput().translate());
 
-                    choices.add(new Choice(condition, output));
+                for(ChoiceDefinition chDef : choiceDef.getChoices()){
+                    compInputs.put(chDef.getCondition().getId(), block.fbInterface().getInputs().get(chDef.getCondition().getName()));
+                    compInputs.put(chDef.getOutput().getId(), block.fbInterface().getInputs().get(chDef.getOutput().getName()));
                 }
-                OutputVariable output = choiceDef.getOutput().translate();
-                compOutputs.put(choiceDef.getOutput().getId(), output);
 
-                block = FunctionBlockBasic.choiceInstance(choices, output);
+                compOutputs.put(choiceDef.getOutput().getId(), block.fbInterface().getOutputs().values().stream().findFirst().get());
 
             } else if (def instanceof DelayComponentDefinition) {
                 DelayComponentDefinition delayDef = (DelayComponentDefinition) def;
                 InputVariable input = delayDef.getInput().translate();
-                compInputs.put(delayDef.getInput().getId(), input);
-
                 InputVariable defValue = delayDef.getDefValue() != null ? delayDef.getDefValue().translate() : null;
-                if (defValue != null){
-                    compInputs.put(delayDef.getDefValue().getId(), defValue);
-                }
-
                 OutputVariable output = delayDef.getOutput().translate();
-                compOutputs.put(delayDef.getOutput().getId(), output);
-
 
                 block = FunctionBlockBasic.delayInstance(input, defValue, output, delayDef.getDelay());
 
+                if (defValue != null){
+                    compInputs.put(delayDef.getDefValue().getId(), block.fbInterface().getInputs().get(delayDef.getDefValue().getName()));
+                }
+                compInputs.put(delayDef.getInput().getId(), block.fbInterface().getInputs().get(delayDef.getInput().getName()));
+                compOutputs.put(delayDef.getOutput().getId(), block.fbInterface().getOutputs().values().stream().findFirst().get());
             } else {
                 BasicComponentDefinition basicDef = (BasicComponentDefinition) def;
-                Map<Long, InputVariable> inputs = basicDef.getInputs().stream().collect(Collectors.toMap(InputDefinition::getId, InputDefinition::translate));
-                Map<Long, OutputVariable> outputs = basicDef.getOutputs().stream().collect(Collectors.toMap(OutputDefinition::getId, OutputDefinition::translate));
+                List<InputVariable> inputs = basicDef.getInputs().stream().map(InputDefinition::translate)
+                        .sorted(Comparator.comparing(InputVariable::getOrder)).collect(Collectors.toList());
+                List<OutputVariable> outputs = basicDef.getOutputs().stream().map(OutputDefinition::translate).collect(Collectors.toList());
 
-                compInputs.putAll(inputs);
-                compOutputs.putAll(outputs);
+                block = FunctionBlockBasic.instance(basicDef.getType(), inputs, outputs);
 
-                block = FunctionBlockBasic.instance(basicDef.getType(), inputs.values().stream().sorted(Comparator.comparing(InputVariable::getOrder)).collect(Collectors.toList()), new ArrayList<>(outputs.values()));
+                compInputs.putAll(basicDef.getInputs().stream().collect(Collectors.toMap(InputDefinition::getId, in -> block.fbInterface().getInputs().get(in.getName()))));
+                compOutputs.putAll(basicDef.getOutputs().stream().collect(Collectors.toMap(OutputDefinition::getId, out -> block.fbInterface().getOutputs().get(out.getName()))));
             }
             blocks.put(def.getId(), block);
         }
@@ -126,41 +122,41 @@ public class BlockDefinition {
             DiagramElement fbFrom;
             DiagramElement fbTo;
 
-            OutputVariable fromVar;
-            InputVariable toVar;
+            Gate fromGate;
+            Gate toGate;
 
             if (inInterfaceVars.containsKey(conn.getFromVarId())){
                 fbFrom = inVarsGates.get(conn.getFromVarId());
-                fromVar = ((InputGate)fbFrom).output();
+                fromGate = ((InputGate)fbFrom);
             } else{
                 Long fromBlockId = blockOutputIds.entrySet().stream().filter(bi -> bi.getValue().contains(conn.getFromVarId()))
                         .map(Map.Entry::getKey).findFirst()
                         .orElseThrow(() -> new RuntimeException("Can't find block for output " + conn.getFromVarId()));
                 fbFrom = blocks.get(fromBlockId);
-                fromVar = compOutputs.get(conn.getFromVarId());
+                fromGate = compOutputs.get(conn.getFromVarId());
             }
 
             if ((outInterfaceVars.containsKey(conn.getToVarId()))){
                 fbTo = outVarsGates.get(conn.getToVarId());
-                toVar = ((OutputGate)fbTo).input();
+                toGate = ((OutputGate)fbTo);
             } else {
                 Long toBlockId = blockInputIds.entrySet().stream().filter(bi -> bi.getValue().contains(conn.getToVarId()))
                         .map(Map.Entry::getKey).findFirst()
                         .orElseThrow(() -> new RuntimeException("Can't find block for input " + conn.getToVarId()));
                 fbTo = blocks.get(toBlockId);
-                toVar = compInputs.get(conn.getToVarId());
+                toGate = compInputs.get(conn.getToVarId());
             }
 
             if (fbFrom instanceof InputGate){
-                diagramInputs.add(toVar);
+                diagramInputs.add(toGate.input());
             }
 
             if (fbTo instanceof OutputGate){
-                diagramOutputs.add(fromVar);
+                diagramOutputs.add(fromGate.output());
             }
 
-            fromVar.connect(toVar, fbFrom, fbTo, conn.isInverted());
-            toVar.connect(fromVar, fbFrom, fbTo, conn.isInverted());
+            fromGate.makeOutgoingConnection(toGate, fbFrom, fbTo, conn.isInverted());
+            toGate.makeIncomingConnection(fromGate, fbFrom, fbTo, conn.isInverted());
         }
 
         FBInterface fbInterface = new FBInterface(inVarsGates.values().stream().sorted(Comparator.comparing(in -> in.input().getOrder())).collect(Collectors.toList()), new ArrayList<>(outVarsGates.values()));

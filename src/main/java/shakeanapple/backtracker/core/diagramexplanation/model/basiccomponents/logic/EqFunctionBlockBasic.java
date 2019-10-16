@@ -14,7 +14,7 @@ public class EqFunctionBlockBasic extends BinOpFunctionBlockBasic {
 
     @Override
     public void evaluate() {
-        super.getOutput().assignValue(
+        super.fbInterface().getOutputs().get(0).assignValue(
                 new BooleanValueHolder(((IntegerValueHolder)super.getLeft().getValue()).getValue().equals(((IntegerValueHolder)super.getRight().getValue()).getValue()))
         );
     }

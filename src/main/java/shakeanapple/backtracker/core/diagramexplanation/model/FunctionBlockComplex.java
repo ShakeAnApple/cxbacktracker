@@ -2,6 +2,8 @@ package shakeanapple.backtracker.core.diagramexplanation.model;
 
 import shakeanapple.backtracker.parser.fblockdiagram.Parser;
 
+import java.io.IOException;
+
 public class FunctionBlockComplex extends FunctionBlockBase {
 
     private Diagram internalDiagram;
@@ -25,9 +27,9 @@ public class FunctionBlockComplex extends FunctionBlockBase {
         try {
             Parser p = new Parser(path, blockDefsPath);
             return p.parse();
-        }
-        catch (Exception e){
-            throw new RuntimeException("Can't load diagram");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 }

@@ -19,7 +19,7 @@ public class CountFunctionBlockBasic extends FunctionBlockBasic {
 
     @Override
     public void evaluate() {
-        this.output.assignValue(new IntegerValueHolder(
+        super.fbInterface().getOutputs().get(0).assignValue(new IntegerValueHolder(
                 (int)super.getInputs().stream().filter(in -> ((BooleanValueHolder)in.getValue()).getValue()).count()
         ));
     }

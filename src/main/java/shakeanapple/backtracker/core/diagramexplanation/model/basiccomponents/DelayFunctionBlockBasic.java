@@ -17,9 +17,24 @@ public class DelayFunctionBlockBasic extends FunctionBlockBasic {
 
     private int ticksPassed;
 
+    public DelayFunctionBlockBasic(InputVariable input, OutputVariable output, int delay) {
+        super(new ArrayList<>() {{
+            add(input);
+        }}, new ArrayList<>() {{
+            add(output);
+        }});
+
+        this.input = input;
+        this.output = output;
+        this.delay = delay;
+        this.defValue = null;
+        this.ticksPassed = 0;
+    }
+
     public DelayFunctionBlockBasic(InputVariable input, InputVariable defValue, OutputVariable output, int delay) {
         super(new ArrayList<>() {{
             add(input);
+            add(defValue);
         }}, new ArrayList<>() {{
             add(output);
         }});
@@ -36,12 +51,12 @@ public class DelayFunctionBlockBasic extends FunctionBlockBasic {
     public void evaluate() {
         if (this.ticksPassed < this.delay){
             ValueHolder defValHolder = this.defValue != null ? this.defValue.getValue() : this.output.getDefaultValue();
-            this.output.assignValue(defValHolder);
+            super.fbInterface().getOutputs().get(0).assignValue(defValHolder);
             this.ticksPassed ++;
         }
         // TODO save prev value of input and assign it, NOT current value of input
         if (this.ticksPassed == this.delay){
-            this.output.assignValue(input.getValue());
+            super.fbInterface().getOutputs().get(0).assignValue(input.getValue());
             this.ticksPassed = 0;
         }
     }

@@ -9,7 +9,7 @@ import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.DiagramSn
 
 public class DiagramWithCounterexampleEvaluator implements DiagramSequentialEvaluator {
 
-    private FunctionBlockComplex diagram;
+    private final FunctionBlockComplex diagram;
     private final CounterexampleCursor cursor;
 
     public DiagramWithCounterexampleEvaluator(String diagramPath, String blockDefsPath, Counterexample counterexample) {
@@ -39,7 +39,7 @@ public class DiagramWithCounterexampleEvaluator implements DiagramSequentialEval
                 String cxVarName = fblock.getName() + "." + outputGate.getName();
                 Variable var = curState.getVarByName(cxVarName);
                 if (var != null) {
-                    outputGate.output().assignValue(var.getValue());
+                    outputGate.assignValue(var.getValue());
                 }
             }
         }

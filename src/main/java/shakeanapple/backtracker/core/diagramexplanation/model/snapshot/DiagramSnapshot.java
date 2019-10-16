@@ -45,26 +45,23 @@ public class DiagramSnapshot {
 
         List<ConnectionSnapshot> connections = new ArrayList<>();
         for(InputGate inGate: diagram.fbInterface().getInputs().values()){
-            for (Object con: inGate.output().getOutgoingConnections()){
-                Connection connection = (Connection) con;
+            for (Connection connection: inGate.getOutgoingConnections()){
 
                 FunctionBlockSnapshot from = blockSnapshots.get(connection.from().getName());
                 FunctionBlockSnapshot to = blockSnapshots.get(connection.to().getName());
 
-                connections.add(new ConnectionSnapshot(from, connection.fromVar().getName(), to, connection.toVar().getName(), connection.isInverted(), connection.fromVar().getValue()));
+                connections.add(new ConnectionSnapshot(from, connection.fromGate().getName(), to, connection.toGate().getName(), connection.isInverted(), connection.fromGate().getValue()));
             }
         }
 
         for (DiagramElement fblock : diagram.getInternalDiagram().getFunctionBlocks()) {
             for (OutputGate outputGate : ((FunctionBlockComplex)fblock).fbInterface().getOutputs().values()) {
-                for (Object connectionObj : outputGate.output().getOutgoingConnections()) {
-
-                    Connection connection = (Connection) connectionObj;
+                for (Connection connection : outputGate.getOutgoingConnections()) {
 
                     FunctionBlockSnapshot from = blockSnapshots.get(connection.from().getName());
                     FunctionBlockSnapshot to = blockSnapshots.get(connection.to().getName());
 
-                    connections.add(new ConnectionSnapshot(from, connection.fromVar().getName(), to, connection.toVar().getName(), connection.isInverted(), connection.fromVar().getValue()));
+                    connections.add(new ConnectionSnapshot(from, connection.fromGate().getName(), to, connection.toGate().getName(), connection.isInverted(), connection.fromGate().getValue()));
                 }
             }
         }

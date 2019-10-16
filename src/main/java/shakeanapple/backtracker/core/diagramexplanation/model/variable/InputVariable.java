@@ -8,7 +8,6 @@ import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockBase;
 
 public class InputVariable<TVal extends ValueHolder> extends FBVariable<TVal> {
 
-    private Connection<TVal> incomingConnection;
     private int order;
 
     public InputVariable(DynamicVariable<TVal> variable, int order) {
@@ -16,15 +15,16 @@ public class InputVariable<TVal extends ValueHolder> extends FBVariable<TVal> {
         this.order = order;
     }
 
+    private InputVariable(OutputVariable output){
+        super(output);
+        this.order = 0;
+    }
+
     public int getOrder() {
         return this.order;
     }
 
-    public void connect(OutputVariable fromVar, DiagramElement from, DiagramElement to, boolean isInverted){
-        this.incomingConnection = new Connection<TVal>(isInverted, from, fromVar, to, this);
-    }
-
-    public Connection<TVal> getIncomingConnection() {
-        return this.incomingConnection;
+    public static InputVariable createSharedWithOutput(OutputVariable output){
+        return new InputVariable(output);
     }
 }

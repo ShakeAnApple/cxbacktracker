@@ -20,7 +20,7 @@ public class InputGate extends Gate {
         super(input.getName(), "INPUT_GATE");
         this.input = input;
 
-        this.output = new OutputVariable(DynamicVariable.of(input.getName(), input.getValue()));
+        this.output = OutputVariable.createSharedWithInput(this.input);
     }
 
     public OutputVariable output() {
@@ -31,14 +31,5 @@ public class InputGate extends Gate {
         return this.input;
     }
 
-    public void populateInput(ValueHolder value) {
-        this.input = new InputVariable(DynamicVariable.of(this.output.getName(), value), this.input.getOrder());
-    }
 
-    @Override
-    public void evaluate() {
-        this.output.assignValue(
-                this.input.getValue()
-        );
-    }
 }

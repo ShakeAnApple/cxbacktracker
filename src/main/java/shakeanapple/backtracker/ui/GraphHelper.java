@@ -72,15 +72,15 @@ public class GraphHelper {
         Map<String, Cell> nodes = new HashMap<>();
         List<Connection> edges = new ArrayList<>();
 
-        for (String input : diagram.getDiagramInterface().getInputs()) {
-            long id = r.nextLong();
-            nodes.put(input, new InputCell(id, "input: " + input));
-        }
-
-        for (String output : diagram.getDiagramInterface().getOutputs()) {
-            long id = r.nextLong();
-            nodes.put(output, new InputCell(id, "output: " + output));
-        }
+//        for (String input : diagram.getDiagramInterface().getInputs()) {
+//            long id = r.nextLong();
+//            nodes.put(input, new InputCell(id, "input: " + input));
+//        }
+//
+//        for (String output : diagram.getDiagramInterface().getOutputs()) {
+//            long id = r.nextLong();
+//            nodes.put(output, new OutputCell(id, "output: " + output));
+//        }
 
         for (FunctionBlockSnapshot fblock : diagram.getBlocks()) {
             long id = r.nextLong();
@@ -90,22 +90,9 @@ public class GraphHelper {
         for (ConnectionSnapshot connection : diagram.getConnections()) {
             String blockNameFrom = connection.from().getName();
             Cell from = nodes.get(blockNameFrom);
-//            if (diagram.getDiagramInterface().getInputs().contains(blockNameFrom)) {
-//                long id = r.nextLong();
-//                Cell cell = new InputCell(id, connection.fromVarName());
-//                nodes.put(connection.fromVarName() + connection.toVarName() + connection.to().getName(), cell);
-//                from = nodes.get(blockNameFrom);
-//            } else {
-//                from = nodes.get(blockNameFrom);
-//            }
 
             String blockNameTo = connection.to().getName();
             Cell to = nodes.get(blockNameTo);
-//            if (blockNameTo.equals("main")) {
-//                to = nodes.get(connection.toVarName());
-//            } else {
-//                to = nodes.get(blockNameTo);
-//            }
 
             edges.add(new Connection(from.getCellId(), to.getCellId(), connection.fromVarName() + " -> " + connection.toVarName() + (connection.isInverted() ? " (inverted)" : ""),
                     getDiagramColorFor(connection.getValue())

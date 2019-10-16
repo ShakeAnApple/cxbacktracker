@@ -1,13 +1,8 @@
 package shakeanapple.backtracker.core.diagramexplanation.model;
 
-import shakeanapple.backtracker.common.variable.dynamic.DynamicVariable;
-import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockBase;
-import shakeanapple.backtracker.core.diagramexplanation.model.Gate;
-import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.FunctionBlockBasic;
+import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
-
-import java.util.ArrayList;
 
 public class OutputGate extends Gate {
     private InputVariable input;
@@ -18,8 +13,7 @@ public class OutputGate extends Gate {
         super(output.getName(), "OUTPUT_GATE");
 
         this.output = output;
-
-        this.input = new InputVariable(DynamicVariable.of(output.getName(), output.getValue()), Integer.MIN_VALUE);
+        this.input = InputVariable.createSharedWithOutput(this.output);
     }
 
     public InputVariable input() {
@@ -30,10 +24,13 @@ public class OutputGate extends Gate {
         return this.output;
     }
 
-    @Override
-    public void evaluate() {
-        this.output.assignValue(
-                this.input.getValue()
-        );
+    public void assignValue(ValueHolder value){
+        this.output.setValue(value);
+        for (Connection connection: super.getOutgoingConnections()) {
+            if (connection.isInverted()){
+                value.invert();
+            }
+            connection.toGate().input().setValue(value);
+        }
     }
 }

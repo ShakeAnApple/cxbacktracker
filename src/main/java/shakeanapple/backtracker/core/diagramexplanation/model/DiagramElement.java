@@ -9,8 +9,6 @@ public abstract class DiagramElement {
         this.type = type;
     }
 
-    public abstract void evaluate();
-
     public String getName() {
         return this.name;
     }

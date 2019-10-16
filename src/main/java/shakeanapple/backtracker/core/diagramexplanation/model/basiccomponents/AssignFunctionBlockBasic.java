@@ -24,7 +24,7 @@ public class AssignFunctionBlockBasic extends FunctionBlockBasic {
 
     @Override
     public void evaluate() {
-        this.output.assignValue(
+        super.fbInterface().getOutputs().get(0).assignValue(
                 this.input.getValue()
         );
     }

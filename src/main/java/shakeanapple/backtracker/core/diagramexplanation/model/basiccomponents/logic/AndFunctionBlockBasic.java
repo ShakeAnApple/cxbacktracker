@@ -29,7 +29,7 @@ public class AndFunctionBlockBasic extends FunctionBlockBasic {
             if (!res)
                 break;
         }
-        this.result.assignValue(
+        super.fbInterface().getOutputs().get(0).assignValue(
                 new BooleanValueHolder(res)
         );
     }

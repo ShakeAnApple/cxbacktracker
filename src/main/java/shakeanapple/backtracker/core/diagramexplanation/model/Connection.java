@@ -1,27 +1,23 @@
 package shakeanapple.backtracker.core.diagramexplanation.model;
 
-import shakeanapple.backtracker.common.variable.ValueHolder;
-import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
-import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
-
-public class Connection<TVal extends ValueHolder> {
+public class Connection {
     private final DiagramElement from;
-    private final OutputVariable<TVal> fromVar;
+    private final Gate fromGate;
 
     private final DiagramElement to;
-    private final InputVariable<TVal> toVar;
+    private final Gate toGate;
 
     private boolean isInverted;
 
-    public Connection(DiagramElement from, OutputVariable<TVal> fromVar, DiagramElement to, InputVariable<TVal> toVar) {
+    public Connection(DiagramElement from, Gate fromGate, DiagramElement to, Gate toGate) {
         this.from = from;
-        this.fromVar = fromVar;
+        this.fromGate = fromGate;
         this.to = to;
-        this.toVar = toVar;
+        this.toGate = toGate;
     }
 
-    public Connection(boolean isInverted, DiagramElement from, OutputVariable<TVal> fromVar, DiagramElement to, InputVariable<TVal> toVar) {
-        this(from, fromVar, to, toVar);
+    public Connection(boolean isInverted, DiagramElement from, Gate fromGate, DiagramElement to, Gate toGate) {
+        this(from, fromGate, to, toGate);
         this.isInverted = isInverted;
     }
 
@@ -29,16 +25,16 @@ public class Connection<TVal extends ValueHolder> {
         return this.from;
     }
 
-    public OutputVariable<TVal> fromVar() {
-        return this.fromVar;
+    public Gate fromGate() {
+        return this.fromGate;
     }
 
     public DiagramElement to() {
         return this.to;
     }
 
-    public InputVariable<TVal> toVar() {
-        return this.toVar;
+    public Gate toGate() {
+        return this.toGate;
     }
 
     public boolean isInverted() {

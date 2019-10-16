@@ -33,7 +33,7 @@ public class ChoiceFunctionBlockBasic  extends FunctionBlockBasic {
     public void evaluate() {
         for (Choice choice : this.choices){
             if (((BooleanValueHolder)choice.getCondition().getValue()).getValue()){
-                this.output.assignValue(choice.getOutput().getValue());
+                super.fbInterface().getOutputs().get(0).assignValue(choice.getOutput().getValue());
                 break;
             }
         }

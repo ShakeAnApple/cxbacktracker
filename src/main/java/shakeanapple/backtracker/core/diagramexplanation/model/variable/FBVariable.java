@@ -4,7 +4,7 @@ import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.common.variable.dynamic.DynamicVariable;
 
 public class FBVariable<TVal extends ValueHolder> extends DynamicVariable<TVal> {
-    private DynamicVariable<TVal> variable;
+    private final DynamicVariable<TVal> variable;
     private boolean isUnset;
 
     public FBVariable(DynamicVariable variable) {

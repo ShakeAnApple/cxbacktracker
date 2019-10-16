@@ -72,6 +72,9 @@ public abstract class FunctionBlockBasic extends FunctionBlockBase {
     }
 
     public static FunctionBlockBasic delayInstance(InputVariable input, InputVariable defValue, OutputVariable output, int delay){
+        if (defValue == null){
+            return new DelayFunctionBlockBasic(input, output, delay);
+        }
         return new DelayFunctionBlockBasic(input, defValue, output, delay);
     }
 
