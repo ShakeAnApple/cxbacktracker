@@ -14,7 +14,7 @@ public class AndFunctionBlockBasic extends FunctionBlockBasic {
     private final OutputVariable result;
 
     public AndFunctionBlockBasic(List<InputVariable> inputs, OutputVariable res) {
-        super(inputs, new ArrayList<OutputVariable>() {{
+        super("And", inputs, new ArrayList<OutputVariable>() {{
             add(res);
         }});
 
@@ -22,14 +22,14 @@ public class AndFunctionBlockBasic extends FunctionBlockBasic {
     }
 
     @Override
-    public void evaluate() {
+    public void execute() {
         boolean res = true;
         for (InputVariable in : super.getInputs()){
             res = res && ((BooleanValueHolder)in.getValue()).getValue();
             if (!res)
                 break;
         }
-        super.fbInterface().getOutputs().get(0).assignValue(
+        super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(
                 new BooleanValueHolder(res)
         );
     }

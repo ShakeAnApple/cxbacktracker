@@ -15,7 +15,7 @@ public class ChoiceFunctionBlockBasic  extends FunctionBlockBasic {
     private final OutputVariable output;
 
     public ChoiceFunctionBlockBasic(List<Choice> choices, OutputVariable output) {
-        super(
+        super("Choice",
                 inferInputs(choices),
                 new ArrayList<>() {{add(output);}}
                 );
@@ -30,10 +30,10 @@ public class ChoiceFunctionBlockBasic  extends FunctionBlockBasic {
     }
 
     @Override
-    public void evaluate() {
+    public void execute() {
         for (Choice choice : this.choices){
             if (((BooleanValueHolder)choice.getCondition().getValue()).getValue()){
-                super.fbInterface().getOutputs().get(0).assignValue(choice.getOutput().getValue());
+                super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(choice.getOutput().getValue());
                 break;
             }
         }

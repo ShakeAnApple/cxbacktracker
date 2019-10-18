@@ -4,6 +4,7 @@ import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
+// TODO if input and output are shared and connections now belong to gates, why do we need input and output at all?
 public class OutputGate extends Gate {
     private InputVariable input;
 
@@ -26,11 +27,6 @@ public class OutputGate extends Gate {
 
     public void assignValue(ValueHolder value){
         this.output.setValue(value);
-        for (Connection connection: super.getOutgoingConnections()) {
-            if (connection.isInverted()){
-                value.invert();
-            }
-            connection.toGate().input().setValue(value);
-        }
+        super.propagateValue();
     }
 }

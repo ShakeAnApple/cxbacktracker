@@ -1,10 +1,12 @@
 package shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents;
 
 import shakeanapple.backtracker.common.variable.ValueHolder;
+import shakeanapple.backtracker.core.diagramexplanation.Clocks;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 //TODO introduce time into system?
 public class DelayFunctionBlockBasic extends FunctionBlockBasic {
@@ -17,8 +19,10 @@ public class DelayFunctionBlockBasic extends FunctionBlockBasic {
 
     private int ticksPassed;
 
+    private List<ValueHolder> inputsSeq = new ArrayList<>();
+
     public DelayFunctionBlockBasic(InputVariable input, OutputVariable output, int delay) {
-        super(new ArrayList<>() {{
+        super("Delay", new ArrayList<>() {{
             add(input);
         }}, new ArrayList<>() {{
             add(output);
@@ -32,7 +36,7 @@ public class DelayFunctionBlockBasic extends FunctionBlockBasic {
     }
 
     public DelayFunctionBlockBasic(InputVariable input, InputVariable defValue, OutputVariable output, int delay) {
-        super(new ArrayList<>() {{
+        super("Delay", new ArrayList<>() {{
             add(input);
             add(defValue);
         }}, new ArrayList<>() {{
@@ -46,17 +50,17 @@ public class DelayFunctionBlockBasic extends FunctionBlockBasic {
         this.ticksPassed = 0;
     }
 
-    // TODO ask Igor
+    // TODO ask Igor (what? oO)
     @Override
-    public void evaluate() {
-        if (this.ticksPassed < this.delay){
+    public void execute() {
+        this.inputsSeq.add(this.input.getValue());
+        if (Clocks.instance().currentTime() <= this.delay){
             ValueHolder defValHolder = this.defValue != null ? this.defValue.getValue() : this.output.getDefaultValue();
-            super.fbInterface().getOutputs().get(0).assignValue(defValHolder);
+            super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(defValHolder);
             this.ticksPassed ++;
         }
-        // TODO save prev value of input and assign it, NOT current value of input
-        if (this.ticksPassed == this.delay){
-            super.fbInterface().getOutputs().get(0).assignValue(input.getValue());
+        if (Clocks.instance().currentTime() > this.delay){
+            super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(this.inputsSeq.get(Clocks.instance().currentTime() - this.delay));
             this.ticksPassed = 0;
         }
     }

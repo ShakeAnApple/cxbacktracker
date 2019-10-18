@@ -12,7 +12,7 @@ public class AssignFunctionBlockBasic extends FunctionBlockBasic {
 
 
     protected AssignFunctionBlockBasic(InputVariable input, OutputVariable output) {
-        super(new ArrayList<>() {{
+        super("Assign", new ArrayList<>() {{
             add(input);
         }}, new ArrayList<>() {{
             add(output);
@@ -23,8 +23,8 @@ public class AssignFunctionBlockBasic extends FunctionBlockBasic {
     }
 
     @Override
-    public void evaluate() {
-        super.fbInterface().getOutputs().get(0).assignValue(
+    public void execute() {
+        super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(
                 this.input.getValue()
         );
     }

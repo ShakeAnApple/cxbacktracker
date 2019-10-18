@@ -9,12 +9,12 @@ import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVar
 public class EqFunctionBlockBasic extends BinOpFunctionBlockBasic {
 
     public EqFunctionBlockBasic(InputVariable left, InputVariable right, OutputVariable res) {
-        super(left, right, res);
+        super("Eq", left, right, res);
     }
 
     @Override
-    public void evaluate() {
-        super.fbInterface().getOutputs().get(0).assignValue(
+    public void execute() {
+        super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(
                 new BooleanValueHolder(((IntegerValueHolder)super.getLeft().getValue()).getValue().equals(((IntegerValueHolder)super.getRight().getValue()).getValue()))
         );
     }

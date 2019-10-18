@@ -7,12 +7,12 @@ import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVar
 
 public class PlusFunctionBlockBasic extends BinOpFunctionBlockBasic {
     public PlusFunctionBlockBasic(InputVariable<IntegerValueHolder> left, InputVariable<IntegerValueHolder> right, OutputVariable<IntegerValueHolder> output) {
-        super(left, right, output);
+        super("Plus", left, right, output);
     }
 
     @Override
-    public void evaluate() {
-        super.fbInterface().getOutputs().get(0).assignValue(
+    public void execute() {
+        super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(
                 new IntegerValueHolder(((IntegerValueHolder)super.getLeft().getValue()).getValue() + ((IntegerValueHolder)super.getRight().getValue()).getValue())
         );
     }

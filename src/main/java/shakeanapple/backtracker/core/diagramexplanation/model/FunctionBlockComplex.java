@@ -19,8 +19,8 @@ public class FunctionBlockComplex extends FunctionBlockBase {
     }
 
     @Override
-    public void evaluate(){
-        this.internalDiagram.evaluate();
+    public void execute(){
+        this.internalDiagram.execute();
     }
 
     public static FunctionBlockComplex parse(String path, String blockDefsPath){

@@ -11,8 +11,8 @@ public abstract class BinOpFunctionBlockBasic extends FunctionBlockBasic {
 
     private final OutputVariable output;
 
-    protected BinOpFunctionBlockBasic(InputVariable left, InputVariable right, OutputVariable output) {
-        super(new ArrayList<>() {{
+    protected BinOpFunctionBlockBasic(String name, InputVariable left, InputVariable right, OutputVariable output) {
+        super(name, new ArrayList<>() {{
             add(left);
             add(right);
         }}, new ArrayList<>() {{

@@ -1,5 +1,7 @@
 package shakeanapple.backtracker.core.counterexample;
 
+import shakeanapple.backtracker.core.diagramexplanation.Clocks;
+
 public class CounterexampleCursor {
     private final Counterexample counterexample;
     private int curStep;

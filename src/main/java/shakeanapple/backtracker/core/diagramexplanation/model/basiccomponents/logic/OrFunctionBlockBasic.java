@@ -14,7 +14,7 @@ public class OrFunctionBlockBasic extends FunctionBlockBasic {
     private final OutputVariable result;
 
     public OrFunctionBlockBasic(List<InputVariable> inputs, OutputVariable res) {
-        super(inputs, new ArrayList<>() {{
+        super("Or", inputs, new ArrayList<>() {{
             add(res);
         }});
 
@@ -22,14 +22,14 @@ public class OrFunctionBlockBasic extends FunctionBlockBasic {
     }
 
     @Override
-    public void evaluate() {
+    public void execute() {
         boolean res = false;
         for (InputVariable in : super.getInputs()){
             res = res || ((BooleanValueHolder)in.getValue()).getValue();
             if (res)
                 break;
         }
-        super.fbInterface().getOutputs().get(0).assignValue(
+        super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(
                 new BooleanValueHolder(res)
         );
     }

@@ -12,14 +12,14 @@ public class CountFunctionBlockBasic extends FunctionBlockBasic {
     private OutputVariable output;
 
     protected CountFunctionBlockBasic(List<InputVariable> inputs, OutputVariable output) {
-        super("count","basic", inputs, new ArrayList<>(){{add(output);}});
+        super("count", inputs, new ArrayList<>(){{add(output);}});
 
         this.output = output;
     }
 
     @Override
-    public void evaluate() {
-        super.fbInterface().getOutputs().get(0).assignValue(new IntegerValueHolder(
+    public void execute() {
+        super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(new IntegerValueHolder(
                 (int)super.getInputs().stream().filter(in -> ((BooleanValueHolder)in.getValue()).getValue()).count()
         ));
     }

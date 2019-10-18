@@ -2,6 +2,7 @@ package shakeanapple.backtracker.ui.mainview;
 
 import javafx.fxml.FXML;
 import javafx.scene.paint.Color;
+import shakeanapple.backtracker.core.diagramexplanation.DiagramCounterexampleExecutor;
 import shakeanapple.backtracker.core.diagramexplanation.DiagramSequentialEvaluator;
 import shakeanapple.backtracker.core.diagramexplanation.DiagramWithCounterexampleEvaluator;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.DiagramSnapshot;
@@ -37,7 +38,8 @@ public class MainController {
     private DiagramControl diagram;
 
     private final LtlSequentialEvaluator calculationWalker;
-    private final DiagramSequentialEvaluator diagramEvaluator;
+    private DiagramSequentialEvaluator diagramEvaluator;
+    private DiagramCounterexampleExecutor diagramExecutor;
 
     public MainController()  {
         Counterexample cx = Counterexample.load("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\cx");
@@ -46,6 +48,10 @@ public class MainController {
 
         this.diagramEvaluator = new DiagramWithCounterexampleEvaluator("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\m.smv",
                 "C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\basics", cx );
+
+        this.diagramExecutor = new DiagramCounterexampleExecutor("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\m.smv",
+                "C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\basics", cx );
+
     }
 
     private Counterexample hardcodedCounterexample() {
@@ -100,7 +106,8 @@ public class MainController {
         VisGraph graph = GraphHelper.convertToGraph(formula);
         this.ltlGraph.updateGraph(graph);
 
-        DiagramSnapshot snapshot = this.diagramEvaluator.moveNext();
+//        DiagramSnapshot snapshot = this.diagramEvaluator.moveNext();
+        DiagramSnapshot snapshot = this.diagramExecutor.moveNext();
         //VisGraph blocksGraph = GraphHelper.convertToGraph(snapshot);
         //this.diagram.draw();updateGraph(blocksGraph);
         ViewGraph diagram = GraphHelper.convertToDiagramGraph(snapshot);

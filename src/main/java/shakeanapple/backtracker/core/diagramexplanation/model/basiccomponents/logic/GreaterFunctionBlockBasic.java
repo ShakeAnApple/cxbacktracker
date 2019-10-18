@@ -8,12 +8,12 @@ import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVar
 
 public class GreaterFunctionBlockBasic extends BinOpFunctionBlockBasic {
     public GreaterFunctionBlockBasic(InputVariable left, InputVariable right, OutputVariable res) {
-        super(left, right, res);
+        super("Greater", left, right, res);
     }
 
     @Override
-    public void evaluate() {
-        super.fbInterface().getOutputs().get(0).assignValue(
+    public void execute() {
+        super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(
                 new BooleanValueHolder(((IntegerValueHolder)super.getLeft().getValue()).getValue() > ((IntegerValueHolder)super.getRight().getValue()).getValue())
         );
     }

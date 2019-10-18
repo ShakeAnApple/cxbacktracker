@@ -20,8 +20,8 @@ public abstract class FunctionBlockBasic extends FunctionBlockBase {
     private final List<InputVariable> inputs;
     private final List<OutputVariable> outputs;
 
-    protected FunctionBlockBasic(List<InputVariable> inputs, List<OutputVariable> outputs) {
-        super("basic", "BASIC", inferInterface(inputs, outputs));
+    protected FunctionBlockBasic(String name, List<InputVariable> inputs, List<OutputVariable> outputs) {
+        super(name, "BASIC", inferInterface(inputs, outputs));
         this.inputs = inputs;
         this.outputs = outputs;
     }
@@ -30,12 +30,6 @@ public abstract class FunctionBlockBasic extends FunctionBlockBase {
         List<InputGate> inGates = inputs.stream().map(InputGate::new).collect(Collectors.toList());
         List<OutputGate> outGates = outputs.stream().map(OutputGate::new).collect(Collectors.toList());
         return new FBInterface(inGates, outGates);
-    }
-
-    protected FunctionBlockBasic(String name, String type, List<InputVariable> inputs, List<OutputVariable> outputs) {
-        super(name, type, inferInterface(inputs, outputs));
-        this.inputs = inputs;
-        this.outputs = outputs;
     }
 
     public static FunctionBlockBasic instance(ComponentDefinitionType type, List<InputVariable> inputs, List<OutputVariable> outputs) {
@@ -78,7 +72,7 @@ public abstract class FunctionBlockBasic extends FunctionBlockBase {
         return new DelayFunctionBlockBasic(input, defValue, output, delay);
     }
 
-    public abstract void evaluate();
+    public abstract void execute();
 
     public List<InputVariable> getInputs(){
         return this.inputs;
@@ -88,10 +82,3 @@ public abstract class FunctionBlockBasic extends FunctionBlockBase {
         return this.outputs;
     }
 }
-
-// BooleanComponent
-
-// ArithmeticComponent
-
-// Delay
-

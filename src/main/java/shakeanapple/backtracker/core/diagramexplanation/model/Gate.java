@@ -1,6 +1,7 @@
 package shakeanapple.backtracker.core.diagramexplanation.model;
 
 import shakeanapple.backtracker.common.variable.ValueHolder;
+import shakeanapple.backtracker.core.diagramexplanation.Clocks;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
@@ -14,9 +15,16 @@ public abstract class Gate extends DiagramElement {
 
     private List<Connection> outgoingConnections;
 
+    private int gateTime;
+
+    private InputUpdatedEvent inputUpdatedEvent;
+
     public Gate(String name, String type) {
         super(name, type);
+
+        this.gateTime = 0;
         this.outgoingConnections = new ArrayList<>();
+        this.inputUpdatedEvent = new InputUpdatedEvent();
     }
 
     public abstract InputVariable input();
@@ -35,16 +43,29 @@ public abstract class Gate extends DiagramElement {
         return Collections.unmodifiableList(this.outgoingConnections);
     }
 
+    public Event inputUpdatedEvent(){
+        return this.inputUpdatedEvent;
+    }
+
     public void populateInput(ValueHolder value) {
-        this.input().setValue(value);
-        this.propagateValue();
+        if (this.gateTime < Clocks.instance().currentTime()){
+            this.input().setValue(value);
+            this.inputUpdatedEvent.fire(this);
+            this.gateTime = Clocks.instance().currentTime();
+            this.propagateValue();
+        } else{
+            this.delayPropagation(value);
+        }
+    }
+
+    private void delayPropagation(ValueHolder value) {
+        Clocks.instance().onNextTick(() -> this.populateInput(value));
     }
 
     public ValueHolder getValue(){
         return this.output().getValue();
     }
 
-    //TODO cycles!! (work \w time?)
     public void propagateValue(){
         for (Connection connection: this.getOutgoingConnections()) {
             if (connection.isInverted()){
@@ -53,5 +74,9 @@ public abstract class Gate extends DiagramElement {
                 connection.toGate().populateInput(this.output().getValue());
             }
         }
+    }
+
+    public Connection getIncomingConnection() {
+        return this.incomingConnection;
     }
 }
