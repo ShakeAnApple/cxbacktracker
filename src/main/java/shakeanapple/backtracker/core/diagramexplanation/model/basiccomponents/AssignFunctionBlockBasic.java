@@ -1,9 +1,12 @@
 package shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents;
 
+import shakeanapple.backtracker.core.diagramexplanation.Cause;
+import shakeanapple.backtracker.core.diagramexplanation.model.OutputGate;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AssignFunctionBlockBasic extends FunctionBlockBasic {
 
@@ -23,9 +26,14 @@ public class AssignFunctionBlockBasic extends FunctionBlockBasic {
     }
 
     @Override
-    public void execute() {
+    public void executeImpl() {
         super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(
                 this.input.getValue()
         );
+    }
+
+    @Override
+    protected List<Cause> explainImpl(OutputGate output, Integer timestamp) {
+        return null;
     }
 }

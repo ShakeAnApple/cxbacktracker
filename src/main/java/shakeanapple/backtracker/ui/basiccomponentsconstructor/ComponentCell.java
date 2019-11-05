@@ -4,9 +4,9 @@ import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import shakeanapple.backtracker.ui.basiccomponentsconstructor.model.BasicComponentAbstract;
-import shakeanapple.backtracker.ui.control.diagram.model.Cell;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Cell;
 
-public class ComponentCell extends Cell {
+public abstract class ComponentCell extends Cell {
     private String name;
 
     public ComponentCell(long id, BasicComponentAbstract component) {

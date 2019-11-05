@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+
+<?import shakeanapple.backtracker.ui.infrasructure.control.visgraph.VisGraphControl?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<!--<AnchorPane minWidth="1000" minHeight="1000" xmlns="http://javafx.com/javafx/8.0.172-ea"-->
+<!--            xmlns:fx="http://javafx.com/fxml/1" fx:controller="shakeanapple.backtracker.ui.explainer.MainController">-->
+
+<!--   -->
+
+<!--</AnchorPane>-->
+<?import shakeanapple.backtracker.ui.infrasructure.control.diagram.DiagramControl?>
+<GridPane minWidth="1000" minHeight="1000" maxWidth="1600" xmlns="http://javafx.com/javafx/8.0.172-ea"
+          xmlns:fx="http://javafx.com/fxml/1" fx:controller="shakeanapple.backtracker.ui.explainer.MainController">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="80.0"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints percentHeight="95.0" vgrow="ALWAYS"/>
+        <RowConstraints percentHeight="5.0" vgrow="ALWAYS"/>
+    </rowConstraints>
+
+    <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+        <VisGraphControl resource="ltlGraph.html" fx:id="ltlGraph" VBox.vgrow="ALWAYS" prefHeight="1000"/>
+    </VBox>
+    <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+        <DiagramControl fx:id="diagram" VBox.vgrow="ALWAYS" prefHeight="1000"/>
+    </VBox>
+<!--    <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">-->
+<!--        <VisGraphControl resource="diagramGraph.html" fx:id="functionBlocksGraph" VBox.vgrow="ALWAYS" prefHeight="1000"/>-->
+<!--    </VBox>-->
+    <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+        <Button text="update" onAction="#updateGraph"/>
+    </VBox>
+
+</GridPane>

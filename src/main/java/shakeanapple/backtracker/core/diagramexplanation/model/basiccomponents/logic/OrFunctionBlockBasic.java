@@ -1,7 +1,9 @@
 package shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.logic;
 
 import shakeanapple.backtracker.common.variable.BooleanValueHolder;
+import shakeanapple.backtracker.core.diagramexplanation.Cause;
 import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockBase;
+import shakeanapple.backtracker.core.diagramexplanation.model.OutputGate;
 import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.FunctionBlockBasic;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
@@ -22,7 +24,7 @@ public class OrFunctionBlockBasic extends FunctionBlockBasic {
     }
 
     @Override
-    public void execute() {
+    public void executeImpl() {
         boolean res = false;
         for (InputVariable in : super.getInputs()){
             res = res || ((BooleanValueHolder)in.getValue()).getValue();
@@ -32,5 +34,10 @@ public class OrFunctionBlockBasic extends FunctionBlockBasic {
         super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(
                 new BooleanValueHolder(res)
         );
+    }
+
+    @Override
+    protected List<Cause> explainImpl(OutputGate output, Integer timestamp) {
+        return null;
     }
 }

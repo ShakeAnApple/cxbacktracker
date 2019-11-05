@@ -1,8 +1,10 @@
 package shakeanapple.backtracker.core.diagramexplanation.model;
 
+import shakeanapple.backtracker.core.diagramexplanation.Cause;
 import shakeanapple.backtracker.parser.fblockdiagram.Parser;
 
 import java.io.IOException;
+import java.util.List;
 
 public class FunctionBlockComplex extends FunctionBlockBase {
 
@@ -19,8 +21,13 @@ public class FunctionBlockComplex extends FunctionBlockBase {
     }
 
     @Override
-    public void execute(){
+    public void executeImpl(){
         this.internalDiagram.execute();
+    }
+
+    @Override
+    protected List<Cause> explainImpl(OutputGate output, Integer timestamp) {
+        return null;
     }
 
     public static FunctionBlockComplex parse(String path, String blockDefsPath){

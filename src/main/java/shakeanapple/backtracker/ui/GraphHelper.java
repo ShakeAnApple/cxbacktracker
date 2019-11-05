@@ -1,5 +1,6 @@
 package shakeanapple.backtracker.ui;
 
+import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.common.variable.BooleanValueHolder;
@@ -7,17 +8,21 @@ import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.Connectio
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.DiagramSnapshot;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.FunctionBlockSnapshot;
 import shakeanapple.backtracker.core.ltlexplanation.model.*;
-import shakeanapple.backtracker.ui.control.diagram.Connection;
-import shakeanapple.backtracker.ui.control.diagram.ViewGraph;
-import shakeanapple.backtracker.ui.control.diagram.model.Cell;
-import shakeanapple.backtracker.ui.control.diagram.model.InputCell;
-import shakeanapple.backtracker.ui.control.diagram.model.OutputCell;
-import shakeanapple.backtracker.ui.control.diagram.model.RectangleCell;
-import shakeanapple.backtracker.ui.control.visgraph.visfx.graph.VisEdge;
-import shakeanapple.backtracker.ui.control.visgraph.visfx.graph.VisGraph;
-import shakeanapple.backtracker.ui.control.visgraph.visfx.graph.VisNode;
+import shakeanapple.backtracker.ui.explainer.model.Connection;
+import shakeanapple.backtracker.ui.explainer.model.graphcell.BasicComponentCell;
+import shakeanapple.backtracker.ui.explainer.model.graphcell.ExplainerCell;
+import shakeanapple.backtracker.ui.explainer.model.graphcell.Pin;
+import shakeanapple.backtracker.ui.infrasructure.FunctionTwo;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.ViewGraph;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Cell;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.DiagramConnection;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.RectangleCell;
+import shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.graph.VisEdge;
+import shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.graph.VisGraph;
+import shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.graph.VisNode;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class GraphHelper {
 
@@ -66,11 +71,11 @@ public class GraphHelper {
         return "#E0E0E0";
     }
 
-    public static ViewGraph convertToDiagramGraph(DiagramSnapshot diagram) {
+    public static ViewGraph convertToDiagramGraph(DiagramSnapshot diagram, Function<Pin, Boolean> pinPressHandler) {
         Random r = new Random();
 
-        Map<String, Cell> nodes = new HashMap<>();
-        List<Connection> edges = new ArrayList<>();
+        Map<String, ExplainerCell> nodes = new HashMap<>();
+        List<DiagramConnection> edges = new ArrayList<>();
 
 //        for (String input : diagram.getDiagramInterface().getInputs()) {
 //            long id = r.nextLong();
@@ -84,19 +89,17 @@ public class GraphHelper {
 
         for (FunctionBlockSnapshot fblock : diagram.getBlocks()) {
             long id = r.nextLong();
-            nodes.put(fblock.getName(), new RectangleCell(id, fblock.getName() + " " + fblock.getType()));
+            nodes.put(fblock.getName(), new BasicComponentCell(id, fblock, pinPressHandler));
         }
 
         for (ConnectionSnapshot connection : diagram.getConnections()) {
             String blockNameFrom = connection.from().getName();
-            Cell from = nodes.get(blockNameFrom);
+            ExplainerCell from = nodes.get(blockNameFrom);
 
             String blockNameTo = connection.to().getName();
-            Cell to = nodes.get(blockNameTo);
+            ExplainerCell to = nodes.get(blockNameTo);
 
-            edges.add(new Connection(from.getCellId(), to.getCellId(), connection.fromVarName() + " -> " + connection.toVarName() + (connection.isInverted() ? " (inverted)" : ""),
-                    getDiagramColorFor(connection.getValue())
-            ));
+            edges.add(new Connection(from.getOutputPins().get(connection.fromVarName()), to.getInputPins().get(connection.toVarName()), connection.getValue(), connection.isInverted()));
         }
 
         ViewGraph graph = new ViewGraph(new ArrayList<>(nodes.values()), edges);

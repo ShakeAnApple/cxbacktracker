@@ -72,7 +72,7 @@ public abstract class FunctionBlockBasic extends FunctionBlockBase {
         return new DelayFunctionBlockBasic(input, defValue, output, delay);
     }
 
-    public abstract void execute();
+    public abstract void executeImpl();
 
     public List<InputVariable> getInputs(){
         return this.inputs;

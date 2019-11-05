@@ -8,7 +8,7 @@
 
 <?import javafx.scene.text.Font?>
 <?import shakeanapple.backtracker.ui.infrasructure.FxmlListCellFactory?>
-<?import shakeanapple.backtracker.ui.control.diagram.DiagramControl?>
+<?import shakeanapple.backtracker.ui.infrasructure.control.diagram.DiagramControl?>
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="shakeanapple.backtracker.ui.basiccomponentsconstructor.MainController"

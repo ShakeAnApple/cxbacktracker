@@ -1,6 +1,8 @@
 package shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.choice;
 
 import shakeanapple.backtracker.common.variable.BooleanValueHolder;
+import shakeanapple.backtracker.core.diagramexplanation.Cause;
+import shakeanapple.backtracker.core.diagramexplanation.model.OutputGate;
 import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.FunctionBlockBasic;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
@@ -30,12 +32,17 @@ public class ChoiceFunctionBlockBasic  extends FunctionBlockBasic {
     }
 
     @Override
-    public void execute() {
+    public void executeImpl() {
         for (Choice choice : this.choices){
             if (((BooleanValueHolder)choice.getCondition().getValue()).getValue()){
                 super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(choice.getOutput().getValue());
                 break;
             }
         }
+    }
+
+    @Override
+    protected List<Cause> explainImpl(OutputGate output, Integer timestamp) {
+        return null;
     }
 }

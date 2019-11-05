@@ -1,7 +1,9 @@
 package shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents;
 
 import shakeanapple.backtracker.common.variable.ValueHolder;
+import shakeanapple.backtracker.core.diagramexplanation.Cause;
 import shakeanapple.backtracker.core.diagramexplanation.Clocks;
+import shakeanapple.backtracker.core.diagramexplanation.model.OutputGate;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
@@ -52,7 +54,7 @@ public class DelayFunctionBlockBasic extends FunctionBlockBasic {
 
     // TODO ask Igor (what? oO)
     @Override
-    public void execute() {
+    public void executeImpl() {
         this.inputsSeq.add(this.input.getValue());
         if (Clocks.instance().currentTime() <= this.delay){
             ValueHolder defValHolder = this.defValue != null ? this.defValue.getValue() : this.output.getDefaultValue();
@@ -63,5 +65,10 @@ public class DelayFunctionBlockBasic extends FunctionBlockBasic {
             super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(this.inputsSeq.get(Clocks.instance().currentTime() - this.delay));
             this.ticksPassed = 0;
         }
+    }
+
+    @Override
+    protected List<Cause> explainImpl(OutputGate output, Integer timestamp) {
+        return null;
     }
 }

@@ -5,11 +5,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import shakeanapple.backtracker.ui.basiccomponentsconstructor.model.BasicComponent;
 import shakeanapple.backtracker.ui.basiccomponentsconstructor.model.InputVariable;
 import shakeanapple.backtracker.ui.basiccomponentsconstructor.model.OutputVariable;
-import shakeanapple.backtracker.ui.control.diagram.model.Cell;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Cell;
 import shakeanapple.backtracker.ui.infrasructure.FunctionTwo;
 //import shakeanapple.backtracker.ui.infrasructure.Function;
 
@@ -122,4 +123,24 @@ public class BasicComponentCell extends Cell {
     public String toString() {
         return this.name;
     }
+
+//    @Override
+//    public void bindEdgeStart(Line line) {
+//        double sourceHeightPos = (super.getBoundsInParent().getHeight() / super.getOutcomingEdgesCount()) * (super.getBoundOutcomingEdgesCount() + 1);
+//
+//        line.startXProperty()
+//                .bind(super.layoutXProperty().add(super.getBoundsInParent().getWidth()));
+//        line.startYProperty()
+//                .bind(super.layoutYProperty().add(sourceHeightPos));
+//    }
+//
+//    @Override
+//    public void bindEdgeEnd(Line line) {
+//        double targetHeightPos = (super.getBoundsInParent().getHeight() / super.getIncomingEdgesCount()) * (super.getBoundIncomingEdgesCount() + 1);
+//
+//        line.endXProperty()
+//                .bind(super.layoutXProperty());
+//        line.endYProperty()
+//                .bind(super.layoutYProperty().add(targetHeightPos));
+//    }
 }

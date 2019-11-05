@@ -1,11 +1,11 @@
 package shakeanapple.backtracker.ui.basiccomponentsconstructor;
 
 import javafx.scene.control.Button;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
-import shakeanapple.backtracker.ui.control.diagram.model.Cell;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Cell;
 import shakeanapple.backtracker.ui.infrasructure.FunctionTwo;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ComponentVarCell extends Cell {
@@ -15,17 +15,19 @@ public class ComponentVarCell extends Cell {
 
     private static final double PIN_HEIGHT = 30;
 
+    private Button pin;
+
     public ComponentVarCell(long id, String name, FunctionTwo<Button, Long, Boolean> pinPressHandler) {
         super(id);
         this.name = name;
         this.pinPressHandler = pinPressHandler;
         Rectangle view = new Rectangle(10, 10);
 
-        Button button = createPin(id, name);
-        button.layoutXProperty().bind(view.xProperty().add(10));
-        button.layoutYProperty().bind(view.yProperty());
+        this.pin = createPin(id, name);
+        this.pin.layoutXProperty().bind(view.xProperty().add(10));
+        this.pin.layoutYProperty().bind(view.yProperty());
 
-        setView(view, Arrays.asList(button));
+        setView(view, Arrays.asList(this.pin));
     }
 
     private Button createPin(long id, String name) {
@@ -41,4 +43,20 @@ public class ComponentVarCell extends Cell {
     public String toString() {
         return this.name;
     }
+
+//    @Override
+//    public void bindEdgeStart(Line line) {
+//        line.startXProperty()
+//                .bind(this.pin.layoutXProperty().add(this.pin.widthProperty()));
+//        line.startYProperty()
+//                .bind(this.pin.layoutYProperty().add(this.pin.heightProperty().divide(2)));
+//    }
+//
+//    @Override
+//    public void bindEdgeEnd(Line line) {
+//        line.startXProperty()
+//                .bind(this.pin.layoutXProperty());
+//        line.startYProperty()
+//                .bind(this.pin.layoutYProperty().add(this.pin.heightProperty().divide(2)));
+//    }
 }
