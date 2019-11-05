@@ -15,6 +15,8 @@ public class Connection implements DiagramConnection {
 
     private boolean isInverted;
 
+    private Edge edge;
+
     public Connection(OutputPin from, InputPin to, ValueHolder value, boolean isInverted) {
         this.from = from;
         this.to = to;
@@ -47,12 +49,13 @@ public class Connection implements DiagramConnection {
         return this.isInverted;
     }
 
-    public void update(ValueHolder value) {
+    public void updateValue(ValueHolder value) {
         if (this.isInverted) {
             this.value = value.invert();
         } else {
             this.value = value;
         }
+        this.edge.updateValue(this.value);
     }
 
     public String getId() {
@@ -63,22 +66,22 @@ public class Connection implements DiagramConnection {
     @Override
     public Edge inferEdge() {
 //        Edge edge = new Edge(this.from.getOwner(), this.to.getOwner(), this.value.toString(), Color.GRAY);
-        Edge edge = new Edge(this.from, this.to, this.value.toString(), Color.GRAY);
+        this.edge = new Edge(this.from, this.to, this.value.toString(), Color.GRAY);
         this.from.getOwner().addCellChild(this.to.getOwner());
         this.from.getOwner().addEdgeFrom(edge);
 
         this.to.getOwner().addCellParent(this.from.getOwner());
         this.to.getOwner().addEdgeTo(edge);
 
-        edge.bindStartX(this.from.getOwner().layoutXProperty().add(this.from.getOwner().getBoundsInParent().getWidth()));
-        edge.bindStartY(this.from.getOwner().layoutYProperty().add(this.from.getMinHeight() / 2 + this.from.getMinHeight() * this.from.getOrder()));
-        edge.bindEndX(this.to.getOwner().layoutXProperty().subtract(this.from.getMinWidth()));
-        edge.bindEndY(this.to.getOwner().layoutYProperty().add(this.to.getMinHeight() / 2 + this.to.getMinHeight() * this.to.getOrder()));
+        this.edge.bindStartX(this.from.getOwner().layoutXProperty().add(this.from.getOwner().getBoundsInParent().getWidth()));
+        this.edge.bindStartY(this.from.getOwner().layoutYProperty().add(this.from.getMinHeight() / 2 + this.from.getMinHeight() * this.from.getOrder()));
+        this.edge.bindEndX(this.to.getOwner().layoutXProperty().subtract(this.from.getMinWidth()));
+        this.edge.bindEndY(this.to.getOwner().layoutYProperty().add(this.to.getMinHeight() / 2 + this.to.getMinHeight() * this.to.getOrder()));
 
 //        edge.bindStartX(this.from.layoutXProperty().add(this.from.getWidth()));
 //        edge.bindStartY(this.from.layoutYProperty().add(this.from.getHeight() / 2));
 //        edge.bindEndX(this.to.layoutXProperty());
 //        edge.bindEndY(this.to.layoutYProperty().add(this.to.getHeight() / 2));
-        return edge;
+        return this.edge;
     }
 }

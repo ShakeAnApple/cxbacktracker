@@ -5,6 +5,7 @@ import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Cell;
 
 public class Edge extends Group {
@@ -155,5 +156,9 @@ public class Edge extends Group {
 
     public boolean isBound() {
         return this.isBound;
+    }
+
+    public void updateValue(ValueHolder value) {
+        this.label.setText(value.toString());
     }
 }

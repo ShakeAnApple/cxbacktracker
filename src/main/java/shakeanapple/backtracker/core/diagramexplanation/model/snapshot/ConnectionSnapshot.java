@@ -3,6 +3,8 @@ package shakeanapple.backtracker.core.diagramexplanation.model.snapshot;
 import shakeanapple.backtracker.common.variable.ValueHolder;
 
 public class ConnectionSnapshot<TValue extends ValueHolder> {
+    private String id;
+
     private final FunctionBlockSnapshot from;
     private final String fromVarName;
 
@@ -20,6 +22,8 @@ public class ConnectionSnapshot<TValue extends ValueHolder> {
         this.toVarName = toVarName;
         this.isInverted = isInverted;
         this.value = value;
+
+        this.id = this.from.getName() + this.fromVarName + this.to.getName() + this.toVarName;
     }
 
     public FunctionBlockSnapshot from() {
@@ -44,5 +48,9 @@ public class ConnectionSnapshot<TValue extends ValueHolder> {
 
     public TValue getValue() {
         return value;
+    }
+
+    public String getId(){
+        return this.id;
     }
 }

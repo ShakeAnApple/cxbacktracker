@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 public class BasicComponentCell extends ExplainerCell {
     private String name;
+    private String type;
 
     private Function<Pin, Boolean> pinPressHandler;
 
@@ -36,7 +37,8 @@ public class BasicComponentCell extends ExplainerCell {
 
     public BasicComponentCell(long id, FunctionBlockSnapshot component, Function<Pin, Boolean> pinPressHandler) {
         super(id);
-        this.name = component.getName() + System.lineSeparator() + component.getType();
+        this.name = component.getName();
+        this.type = component.getType();
         this.pinPressHandler = pinPressHandler;
 
         this.inputPins = createInputPins(component.getFbInterface().getInputs()).stream().collect(Collectors.toMap(Pin::getName, in -> in));
@@ -50,7 +52,7 @@ public class BasicComponentCell extends ExplainerCell {
         bindInputPins(view, new ArrayList<>(inputPins.values()));
         bindOutputPins(view, new ArrayList<>(outputPins.values()));
 
-        Label label = new Label(name);
+        Label label = new Label(this.name + System.lineSeparator() + this.type);
 
         label.layoutXProperty().bind(view.xProperty().add(view.getWidth() / 2).subtract(label.widthProperty().divide(2)));
         label.layoutYProperty().bind(view.yProperty().add(view.getHeight() / 2).subtract(label.heightProperty().divide(2)));

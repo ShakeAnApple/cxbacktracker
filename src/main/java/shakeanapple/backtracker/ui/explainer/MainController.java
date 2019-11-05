@@ -5,6 +5,7 @@ import javafx.scene.paint.Color;
 import shakeanapple.backtracker.core.diagramexplanation.DiagramCounterexampleExecutor;
 import shakeanapple.backtracker.core.diagramexplanation.DiagramSequentialEvaluator;
 import shakeanapple.backtracker.core.diagramexplanation.DiagramWithCounterexampleEvaluator;
+import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.ConnectionSnapshot;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.DiagramSnapshot;
 import shakeanapple.backtracker.core.ltlexplanation.LtlWithCounterexampleEvaluator;
 import shakeanapple.backtracker.core.ltlexplanation.LtlSequentialEvaluator;
@@ -15,17 +16,19 @@ import shakeanapple.backtracker.core.ltlexplanation.model.ltlformula.model.LtlFo
 import shakeanapple.backtracker.common.variable.BooleanValueHolder;
 import shakeanapple.backtracker.common.variable.BooleanVariable;
 import shakeanapple.backtracker.common.variable.Variable;
+import shakeanapple.backtracker.ui.explainer.model.Connection;
 import shakeanapple.backtracker.ui.explainer.model.graphcell.Pin;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.DiagramControl;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.ViewGraph;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Cell;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.Connection;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.DiagramConnection;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.RectangleCell;
 import shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.graph.VisGraph;
 import shakeanapple.backtracker.ui.GraphHelper;
 import shakeanapple.backtracker.ui.infrasructure.control.visgraph.VisGraphControl;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MainController {
 
@@ -41,6 +44,8 @@ public class MainController {
     private final LtlSequentialEvaluator calculationWalker;
     private DiagramSequentialEvaluator diagramEvaluator;
     private DiagramCounterexampleExecutor diagramExecutor;
+
+    private Map<String, DiagramConnection> connections = new HashMap<>();
 
     public MainController()  {
         Counterexample cx = Counterexample.load("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\cx");
@@ -65,12 +70,23 @@ public class MainController {
         DiagramSnapshot snapshot = this.diagramExecutor.moveNext();
         //VisGraph blocksGraph = GraphHelper.convertToGraph(snapshot);
         //this.diagram.draw();updateGraph(blocksGraph);
-        ViewGraph diagram = GraphHelper.convertToDiagramGraph(snapshot, this::pinPressHandler);
         if (this.diagram.isClear()) {
+            ViewGraph diagram = GraphHelper.convertToDiagramGraph(snapshot, this::pinPressHandler);
             this.diagram.draw(diagram);
+            this.recordConnections(diagram.getConnections());
         } else{
-            this.diagram.update(diagram);
+            this.updateConnections(snapshot.getConnections());
         }
+    }
+
+    private void updateConnections(List<ConnectionSnapshot> connections) {
+        for (ConnectionSnapshot snap: connections){
+            this.connections.get(snap.getId()).updateValue(snap.getValue());
+        }
+    }
+
+    private void recordConnections(List<DiagramConnection> connections){
+        this.connections = connections.stream().collect(Collectors.toMap(DiagramConnection::getId, c -> c));
     }
 
     private Boolean pinPressHandler(Pin pin){
