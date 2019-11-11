@@ -1,0 +1,16 @@
+MODULE dummy(IN)
+VAR
+    x: boolean;
+    y: boolean;
+    z: boolean;
+ASSIGN
+    init(x) := !IN;
+    next(x) := x & next(y);
+    init(y) := TRUE;
+    next(y) := x | y | next(IN);
+    init(z) := FALSE;
+    next(z) := IN;
+VAR
+    test1: -2..10;
+    test2: { -1, 2, 3 };
+    test2: { TRUE, FALSE };
