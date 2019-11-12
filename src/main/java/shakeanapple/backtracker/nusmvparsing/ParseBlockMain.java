@@ -35,7 +35,7 @@ public class ParseBlockMain {
             final byte[] bytes = Files.readAllBytes(Paths.get(dirName, filename));
             final List<String> errors = new ArrayList<>();
             final List<String> warnings = new ArrayList<>();
-            Module result;
+            NuSMVModule result;
             try (InputStream in = new ByteArrayInputStream(bytes)) {
                 final nusmvLexer lexer = new nusmvLexer(new ANTLRInputStream(in));
                 final CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -70,6 +70,9 @@ public class ParseBlockMain {
             } catch (NullPointerException | RecognitionException e) {
                 System.err.println("Parse error with " + filename);
                 return;
+            } catch (TypeInferenceException e) {
+                e.printStackTrace();
+                return;
             }
             if (!errors.isEmpty()) {
                 System.err.println("Parse error(s) with " + filename + ": " + errors);
@@ -79,6 +82,7 @@ public class ParseBlockMain {
                 System.err.println("Parse warning(s) with " + filename + ": " + warnings);
             }
             System.out.println(result);
+            System.out.println(result.toFunctionBlockNetwork());
             try (PrintWriter pw = new PrintWriter(Paths.get(dirName, filename + ".preprocessed").toFile())) {
                 pw.println(result);
             }

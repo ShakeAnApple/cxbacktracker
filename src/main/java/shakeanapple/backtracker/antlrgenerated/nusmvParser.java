@@ -27,7 +27,8 @@ public class nusmvParser extends Parser {
 		T__17=18, T__18=19, T__19=20, T__20=21, T__21=22, T__22=23, T__23=24, 
 		T__24=25, T__25=26, T__26=27, T__27=28, T__28=29, T__29=30, T__30=31, 
 		WS=32, LINE_COMMENT=33, INT_CONST=34, TRUE=35, FALSE=36, INIT=37, NEXT=38, 
-		MODULE=39, ASSIGN=40, VAR=41, BOOLEAN=42, CASE=43, ESAC=44, ID=45;
+		MODULE=39, VAR=40, ASSIGN=41, DEFINE=42, BOOLEAN=43, CASE=44, ESAC=45, 
+		ID=46;
 	public static final int
 		RULE_constant = 0, RULE_composite_id = 1, RULE_atom = 2, RULE_unary_operator_sign = 3, 
 		RULE_unary_operator = 4, RULE_binary_operator7 = 5, RULE_binary_operator6 = 6, 
@@ -51,14 +52,14 @@ public class nusmvParser extends Parser {
 		"'/'", "'mod'", "'+'", "'='", "'!='", "'>'", "'>='", "'<'", "'<='", "'&'", 
 		"'|'", "'xnor'", "'xor'", "'?'", "'<->'", "'->'", "':='", "'..'", "'{'", 
 		"','", "'}'", null, null, null, "'TRUE'", "'FALSE'", "'init'", "'next'", 
-		"'MODULE'", "'ASSIGN'", "'VAR'", "'boolean'", "'case'", "'esac'"
+		"'MODULE'", "'VAR'", "'ASSIGN'", "'DEFINE'", "'boolean'", "'case'", "'esac'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
 		null, null, null, null, null, null, null, null, null, null, null, null, 
 		null, null, null, null, null, null, null, null, null, null, null, null, 
 		null, null, null, null, null, null, null, null, "WS", "LINE_COMMENT", 
-		"INT_CONST", "TRUE", "FALSE", "INIT", "NEXT", "MODULE", "ASSIGN", "VAR", 
-		"BOOLEAN", "CASE", "ESAC", "ID"
+		"INT_CONST", "TRUE", "FALSE", "INIT", "NEXT", "MODULE", "VAR", "ASSIGN", 
+		"DEFINE", "BOOLEAN", "CASE", "ESAC", "ID"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -1560,7 +1561,7 @@ public class nusmvParser extends Parser {
 	}
 
 	public static class ModuleContext extends ParserRuleContext {
-		public Module m;
+		public NuSMVModule m;
 		public Token ID;
 		public Input_var_declarationContext v1;
 		public Input_var_declarationContext v2;
@@ -1571,6 +1572,10 @@ public class nusmvParser extends Parser {
 		public List<TerminalNode> ASSIGN() { return getTokens(nusmvParser.ASSIGN); }
 		public TerminalNode ASSIGN(int i) {
 			return getToken(nusmvParser.ASSIGN, i);
+		}
+		public List<TerminalNode> DEFINE() { return getTokens(nusmvParser.DEFINE); }
+		public TerminalNode DEFINE(int i) {
+			return getToken(nusmvParser.DEFINE, i);
 		}
 		public List<TerminalNode> VAR() { return getTokens(nusmvParser.VAR); }
 		public TerminalNode VAR(int i) {
@@ -1587,6 +1592,18 @@ public class nusmvParser extends Parser {
 		}
 		public AssignmentContext assignment(int i) {
 			return getRuleContext(AssignmentContext.class,i);
+		}
+		public List<Composite_idContext> composite_id() {
+			return getRuleContexts(Composite_idContext.class);
+		}
+		public Composite_idContext composite_id(int i) {
+			return getRuleContext(Composite_idContext.class,i);
+		}
+		public List<Binary_operator1Context> binary_operator1() {
+			return getRuleContexts(Binary_operator1Context.class);
+		}
+		public Binary_operator1Context binary_operator1(int i) {
+			return getRuleContext(Binary_operator1Context.class,i);
 		}
 		public List<Internal_var_declarationContext> internal_var_declaration() {
 			return getRuleContexts(Internal_var_declarationContext.class);
@@ -1664,12 +1681,12 @@ public class nusmvParser extends Parser {
 				}
 			}
 
-			setState(299);
+			setState(310);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==ASSIGN || _la==VAR) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << VAR) | (1L << ASSIGN) | (1L << DEFINE))) != 0)) {
 				{
-				setState(297);
+				setState(308);
 				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case ASSIGN:
@@ -1695,25 +1712,53 @@ public class nusmvParser extends Parser {
 					}
 					}
 					break;
-				case VAR:
+				case DEFINE:
 					{
 					{
 					setState(287);
-					match(VAR);
-					setState(294);
+					match(DEFINE);
+					setState(295);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 					while (_la==ID) {
 						{
 						{
 						setState(288);
-						((ModuleContext)_localctx).internal_var_declaration = internal_var_declaration();
+						composite_id();
 						setState(289);
+						match(T__26);
+						setState(290);
+						binary_operator1();
+						setState(291);
+						match(T__6);
+						}
+						}
+						setState(297);
+						_errHandler.sync(this);
+						_la = _input.LA(1);
+					}
+					}
+					}
+					break;
+				case VAR:
+					{
+					{
+					setState(298);
+					match(VAR);
+					setState(305);
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+					while (_la==ID) {
+						{
+						{
+						setState(299);
+						((ModuleContext)_localctx).internal_var_declaration = internal_var_declaration();
+						setState(300);
 						match(T__6);
 						 internalVariables.add(((ModuleContext)_localctx).internal_var_declaration.v); 
 						}
 						}
-						setState(296);
+						setState(307);
 						_errHandler.sync(this);
 						_la = _input.LA(1);
 					}
@@ -1724,11 +1769,11 @@ public class nusmvParser extends Parser {
 					throw new NoViableAltException(this);
 				}
 				}
-				setState(301);
+				setState(312);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			 ((ModuleContext)_localctx).m =  new Module((((ModuleContext)_localctx).ID!=null?((ModuleContext)_localctx).ID.getText():null), inputVariables, internalVariables, assignments); 
+			 ((ModuleContext)_localctx).m =  new NuSMVModule((((ModuleContext)_localctx).ID!=null?((ModuleContext)_localctx).ID.getText():null), inputVariables, internalVariables, assignments); 
 			}
 		}
 		catch (RecognitionException re) {
@@ -1743,9 +1788,9 @@ public class nusmvParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3/\u0133\4\2\t\2\4"+
-		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
-		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\60\u013e\4\2\t\2"+
+		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
+		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\3\2\3\2\3"+
 		"\3\3\3\3\3\7\3\66\n\3\f\3\16\39\13\3\3\3\3\3\3\3\7\3>\n\3\f\3\16\3A\13"+
 		"\3\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4"+
@@ -1765,32 +1810,33 @@ public class nusmvParser extends Parser {
 		"\5\27\u0103\n\27\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\7\30"+
 		"\u010f\n\30\f\30\16\30\u0112\13\30\5\30\u0114\n\30\3\30\5\30\u0117\n\30"+
 		"\3\30\3\30\3\30\3\30\7\30\u011d\n\30\f\30\16\30\u0120\13\30\3\30\3\30"+
-		"\3\30\3\30\3\30\7\30\u0127\n\30\f\30\16\30\u012a\13\30\7\30\u012c\n\30"+
-		"\f\30\16\30\u012f\13\30\3\30\3\30\3\30\2\2\31\2\4\6\b\n\f\16\20\22\24"+
-		"\26\30\32\34\36 \"$&(*,.\2\6\3\2$&\3\2\n\13\3\2\20\25\3\2\27\31\u013a"+
+		"\3\30\3\30\3\30\3\30\7\30\u0128\n\30\f\30\16\30\u012b\13\30\3\30\3\30"+
+		"\3\30\3\30\3\30\7\30\u0132\n\30\f\30\16\30\u0135\13\30\7\30\u0137\n\30"+
+		"\f\30\16\30\u013a\13\30\3\30\3\30\3\30\2\2\31\2\4\6\b\n\f\16\20\22\24"+
+		"\26\30\32\34\36 \"$&(*,.\2\6\3\2$&\3\2\n\13\3\2\20\25\3\2\27\31\u0147"+
 		"\2\60\3\2\2\2\4\62\3\2\2\2\6c\3\2\2\2\be\3\2\2\2\nn\3\2\2\2\fp\3\2\2\2"+
 		"\16\u0082\3\2\2\2\20\u0092\3\2\2\2\22\u0094\3\2\2\2\24\u009c\3\2\2\2\26"+
 		"\u009e\3\2\2\2\30\u00a9\3\2\2\2\32\u00ab\3\2\2\2\34\u00b6\3\2\2\2\36\u00c0"+
 		"\3\2\2\2 \u00c2\3\2\2\2\"\u00cd\3\2\2\2$\u00cf\3\2\2\2&\u00d7\3\2\2\2"+
 		"(\u00f5\3\2\2\2*\u00f7\3\2\2\2,\u0102\3\2\2\2.\u0104\3\2\2\2\60\61\t\2"+
-		"\2\2\61\3\3\2\2\2\62\67\7/\2\2\63\64\7\3\2\2\64\66\7/\2\2\65\63\3\2\2"+
-		"\2\669\3\2\2\2\67\65\3\2\2\2\678\3\2\2\28?\3\2\2\29\67\3\2\2\2:;\7\4\2"+
-		"\2;<\7$\2\2<>\7\5\2\2=:\3\2\2\2>A\3\2\2\2?=\3\2\2\2?@\3\2\2\2@\5\3\2\2"+
-		"\2A?\3\2\2\2BC\7\6\2\2CD\5$\23\2DE\7\7\2\2EF\b\4\1\2Fd\3\2\2\2GH\5\2\2"+
-		"\2HI\b\4\1\2Id\3\2\2\2JK\5\4\3\2KL\b\4\1\2Ld\3\2\2\2MN\7(\2\2NO\7\6\2"+
-		"\2OP\5\4\3\2PQ\7\7\2\2QR\b\4\1\2Rd\3\2\2\2ST\7-\2\2T\\\b\4\1\2UV\5$\23"+
-		"\2VW\b\4\1\2WX\7\b\2\2XY\5$\23\2YZ\b\4\1\2Z[\7\t\2\2[]\3\2\2\2\\U\3\2"+
-		"\2\2]^\3\2\2\2^\\\3\2\2\2^_\3\2\2\2_`\3\2\2\2`a\7.\2\2ab\b\4\1\2bd\3\2"+
-		"\2\2cB\3\2\2\2cG\3\2\2\2cJ\3\2\2\2cM\3\2\2\2cS\3\2\2\2d\7\3\2\2\2ef\t"+
-		"\3\2\2f\t\3\2\2\2gh\5\6\4\2hi\b\6\1\2io\3\2\2\2jk\5\b\5\2kl\5\n\6\2lm"+
-		"\b\6\1\2mo\3\2\2\2ng\3\2\2\2nj\3\2\2\2o\13\3\2\2\2pq\5\n\6\2q\177\b\7"+
-		"\1\2rs\7\f\2\2sy\b\7\1\2tu\7\r\2\2uy\b\7\1\2vw\7\16\2\2wy\b\7\1\2xr\3"+
-		"\2\2\2xt\3\2\2\2xv\3\2\2\2yz\3\2\2\2z{\5\n\6\2{|\b\7\1\2|~\3\2\2\2}x\3"+
-		"\2\2\2~\u0081\3\2\2\2\177}\3\2\2\2\177\u0080\3\2\2\2\u0080\r\3\2\2\2\u0081"+
-		"\177\3\2\2\2\u0082\u0083\5\f\7\2\u0083\u008f\b\b\1\2\u0084\u0085\7\17"+
-		"\2\2\u0085\u0089\b\b\1\2\u0086\u0087\7\13\2\2\u0087\u0089\b\b\1\2\u0088"+
-		"\u0084\3\2\2\2\u0088\u0086\3\2\2\2\u0089\u008a\3\2\2\2\u008a\u008b\5\f"+
-		"\7\2\u008b\u008c\b\b\1\2\u008c\u008e\3\2\2\2\u008d\u0088\3\2\2\2\u008e"+
+		"\2\2\61\3\3\2\2\2\62\67\7\60\2\2\63\64\7\3\2\2\64\66\7\60\2\2\65\63\3"+
+		"\2\2\2\669\3\2\2\2\67\65\3\2\2\2\678\3\2\2\28?\3\2\2\29\67\3\2\2\2:;\7"+
+		"\4\2\2;<\7$\2\2<>\7\5\2\2=:\3\2\2\2>A\3\2\2\2?=\3\2\2\2?@\3\2\2\2@\5\3"+
+		"\2\2\2A?\3\2\2\2BC\7\6\2\2CD\5$\23\2DE\7\7\2\2EF\b\4\1\2Fd\3\2\2\2GH\5"+
+		"\2\2\2HI\b\4\1\2Id\3\2\2\2JK\5\4\3\2KL\b\4\1\2Ld\3\2\2\2MN\7(\2\2NO\7"+
+		"\6\2\2OP\5\4\3\2PQ\7\7\2\2QR\b\4\1\2Rd\3\2\2\2ST\7.\2\2T\\\b\4\1\2UV\5"+
+		"$\23\2VW\b\4\1\2WX\7\b\2\2XY\5$\23\2YZ\b\4\1\2Z[\7\t\2\2[]\3\2\2\2\\U"+
+		"\3\2\2\2]^\3\2\2\2^\\\3\2\2\2^_\3\2\2\2_`\3\2\2\2`a\7/\2\2ab\b\4\1\2b"+
+		"d\3\2\2\2cB\3\2\2\2cG\3\2\2\2cJ\3\2\2\2cM\3\2\2\2cS\3\2\2\2d\7\3\2\2\2"+
+		"ef\t\3\2\2f\t\3\2\2\2gh\5\6\4\2hi\b\6\1\2io\3\2\2\2jk\5\b\5\2kl\5\n\6"+
+		"\2lm\b\6\1\2mo\3\2\2\2ng\3\2\2\2nj\3\2\2\2o\13\3\2\2\2pq\5\n\6\2q\177"+
+		"\b\7\1\2rs\7\f\2\2sy\b\7\1\2tu\7\r\2\2uy\b\7\1\2vw\7\16\2\2wy\b\7\1\2"+
+		"xr\3\2\2\2xt\3\2\2\2xv\3\2\2\2yz\3\2\2\2z{\5\n\6\2{|\b\7\1\2|~\3\2\2\2"+
+		"}x\3\2\2\2~\u0081\3\2\2\2\177}\3\2\2\2\177\u0080\3\2\2\2\u0080\r\3\2\2"+
+		"\2\u0081\177\3\2\2\2\u0082\u0083\5\f\7\2\u0083\u008f\b\b\1\2\u0084\u0085"+
+		"\7\17\2\2\u0085\u0089\b\b\1\2\u0086\u0087\7\13\2\2\u0087\u0089\b\b\1\2"+
+		"\u0088\u0084\3\2\2\2\u0088\u0086\3\2\2\2\u0089\u008a\3\2\2\2\u008a\u008b"+
+		"\5\f\7\2\u008b\u008c\b\b\1\2\u008c\u008e\3\2\2\2\u008d\u0088\3\2\2\2\u008e"+
 		"\u0091\3\2\2\2\u008f\u008d\3\2\2\2\u008f\u0090\3\2\2\2\u0090\17\3\2\2"+
 		"\2\u0091\u008f\3\2\2\2\u0092\u0093\t\4\2\2\u0093\21\3\2\2\2\u0094\u0095"+
 		"\5\16\b\2\u0095\u009a\b\n\1\2\u0096\u0097\5\20\t\2\u0097\u0098\5\16\b"+
@@ -1818,7 +1864,7 @@ public class nusmvParser extends Parser {
 		"\u00dc\u00d8\3\2\2\2\u00dc\u00da\3\2\2\2\u00dd\u00de\3\2\2\2\u00de\u00df"+
 		"\7\6\2\2\u00df\u00e0\5\4\3\2\u00e0\u00e1\7\7\2\2\u00e1\u00e2\7\35\2\2"+
 		"\u00e2\u00e3\5$\23\2\u00e3\u00e4\7\t\2\2\u00e4\u00e5\b\24\1\2\u00e5\'"+
-		"\3\2\2\2\u00e6\u00f6\7,\2\2\u00e7\u00e8\7$\2\2\u00e8\u00e9\7\36\2\2\u00e9"+
+		"\3\2\2\2\u00e6\u00f6\7-\2\2\u00e7\u00e8\7$\2\2\u00e8\u00e9\7\36\2\2\u00e9"+
 		"\u00f6\7$\2\2\u00ea\u00eb\7\37\2\2\u00eb\u00f0\5\2\2\2\u00ec\u00ed\7 "+
 		"\2\2\u00ed\u00ef\5\2\2\2\u00ee\u00ec\3\2\2\2\u00ef\u00f2\3\2\2\2\u00f0"+
 		"\u00ee\3\2\2\2\u00f0\u00f1\3\2\2\2\u00f1\u00f3\3\2\2\2\u00f2\u00f0\3\2"+
@@ -1828,23 +1874,27 @@ public class nusmvParser extends Parser {
 		"\2\2\2\u00fc\u00fd\5\4\3\2\u00fd\u00fe\b\27\1\2\u00fe\u0103\3\2\2\2\u00ff"+
 		"\u0100\5*\26\2\u0100\u0101\b\27\1\2\u0101\u0103\3\2\2\2\u0102\u00fc\3"+
 		"\2\2\2\u0102\u00ff\3\2\2\2\u0103-\3\2\2\2\u0104\u0105\7)\2\2\u0105\u0106"+
-		"\7/\2\2\u0106\u0116\b\30\1\2\u0107\u0113\7\6\2\2\u0108\u0109\5,\27\2\u0109"+
-		"\u0110\b\30\1\2\u010a\u010b\7 \2\2\u010b\u010c\5,\27\2\u010c\u010d\b\30"+
-		"\1\2\u010d\u010f\3\2\2\2\u010e\u010a\3\2\2\2\u010f\u0112\3\2\2\2\u0110"+
-		"\u010e\3\2\2\2\u0110\u0111\3\2\2\2\u0111\u0114\3\2\2\2\u0112\u0110\3\2"+
-		"\2\2\u0113\u0108\3\2\2\2\u0113\u0114\3\2\2\2\u0114\u0115\3\2\2\2\u0115"+
-		"\u0117\7\7\2\2\u0116\u0107\3\2\2\2\u0116\u0117\3\2\2\2\u0117\u012d\3\2"+
-		"\2\2\u0118\u011e\7*\2\2\u0119\u011a\5&\24\2\u011a\u011b\b\30\1\2\u011b"+
+		"\7\60\2\2\u0106\u0116\b\30\1\2\u0107\u0113\7\6\2\2\u0108\u0109\5,\27\2"+
+		"\u0109\u0110\b\30\1\2\u010a\u010b\7 \2\2\u010b\u010c\5,\27\2\u010c\u010d"+
+		"\b\30\1\2\u010d\u010f\3\2\2\2\u010e\u010a\3\2\2\2\u010f\u0112\3\2\2\2"+
+		"\u0110\u010e\3\2\2\2\u0110\u0111\3\2\2\2\u0111\u0114\3\2\2\2\u0112\u0110"+
+		"\3\2\2\2\u0113\u0108\3\2\2\2\u0113\u0114\3\2\2\2\u0114\u0115\3\2\2\2\u0115"+
+		"\u0117\7\7\2\2\u0116\u0107\3\2\2\2\u0116\u0117\3\2\2\2\u0117\u0138\3\2"+
+		"\2\2\u0118\u011e\7+\2\2\u0119\u011a\5&\24\2\u011a\u011b\b\30\1\2\u011b"+
 		"\u011d\3\2\2\2\u011c\u0119\3\2\2\2\u011d\u0120\3\2\2\2\u011e\u011c\3\2"+
-		"\2\2\u011e\u011f\3\2\2\2\u011f\u012c\3\2\2\2\u0120\u011e\3\2\2\2\u0121"+
-		"\u0128\7+\2\2\u0122\u0123\5*\26\2\u0123\u0124\7\t\2\2\u0124\u0125\b\30"+
-		"\1\2\u0125\u0127\3\2\2\2\u0126\u0122\3\2\2\2\u0127\u012a\3\2\2\2\u0128"+
-		"\u0126\3\2\2\2\u0128\u0129\3\2\2\2\u0129\u012c\3\2\2\2\u012a\u0128\3\2"+
-		"\2\2\u012b\u0118\3\2\2\2\u012b\u0121\3\2\2\2\u012c\u012f\3\2\2\2\u012d"+
-		"\u012b\3\2\2\2\u012d\u012e\3\2\2\2\u012e\u0130\3\2\2\2\u012f\u012d\3\2"+
-		"\2\2\u0130\u0131\b\30\1\2\u0131/\3\2\2\2\34\67?^cnx\177\u0088\u008f\u009a"+
-		"\u00a6\u00b3\u00be\u00ca\u00d5\u00dc\u00f0\u00f5\u0102\u0110\u0113\u0116"+
-		"\u011e\u0128\u012b\u012d";
+		"\2\2\u011e\u011f\3\2\2\2\u011f\u0137\3\2\2\2\u0120\u011e\3\2\2\2\u0121"+
+		"\u0129\7,\2\2\u0122\u0123\5\4\3\2\u0123\u0124\7\35\2\2\u0124\u0125\5$"+
+		"\23\2\u0125\u0126\7\t\2\2\u0126\u0128\3\2\2\2\u0127\u0122\3\2\2\2\u0128"+
+		"\u012b\3\2\2\2\u0129\u0127\3\2\2\2\u0129\u012a\3\2\2\2\u012a\u0137\3\2"+
+		"\2\2\u012b\u0129\3\2\2\2\u012c\u0133\7*\2\2\u012d\u012e\5*\26\2\u012e"+
+		"\u012f\7\t\2\2\u012f\u0130\b\30\1\2\u0130\u0132\3\2\2\2\u0131\u012d\3"+
+		"\2\2\2\u0132\u0135\3\2\2\2\u0133\u0131\3\2\2\2\u0133\u0134\3\2\2\2\u0134"+
+		"\u0137\3\2\2\2\u0135\u0133\3\2\2\2\u0136\u0118\3\2\2\2\u0136\u0121\3\2"+
+		"\2\2\u0136\u012c\3\2\2\2\u0137\u013a\3\2\2\2\u0138\u0136\3\2\2\2\u0138"+
+		"\u0139\3\2\2\2\u0139\u013b\3\2\2\2\u013a\u0138\3\2\2\2\u013b\u013c\b\30"+
+		"\1\2\u013c/\3\2\2\2\35\67?^cnx\177\u0088\u008f\u009a\u00a6\u00b3\u00be"+
+		"\u00ca\u00d5\u00dc\u00f0\u00f5\u0102\u0110\u0113\u0116\u011e\u0129\u0133"+
+		"\u0136\u0138";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

@@ -15,24 +15,29 @@ public class CaseOperator extends Expression {
     }
 
     public CaseOperator(List<Expression> conditions, List<Expression> options) {
-        super("case", inferType(conditions, options));
+        this(conditions, options, ExpressionType.UNKNOWN);
+    }
+
+    private CaseOperator(List<Expression> conditions, List<Expression> options, ExpressionType type) {
+        super("case", type);
         this.conditions = conditions;
         this.options = options;
     }
 
-    private static ExpressionType inferType(List<Expression> conditions, List<Expression> options) {
+    private static ExpressionType inferType(List<Expression> conditions, List<Expression> options)
+            throws TypeInferenceException {
         if (conditions.size() != options.size() || conditions.isEmpty()) {
             throw new RuntimeException("Invalid sizes of CaseOperator arguments");
         }
         // check that there are no integers in conditions
         if (conditions.stream().anyMatch(c -> c.type == ExpressionType.INT)) {
-            throw new RuntimeException("Type inference problem: one of condition types is INT in "
+            throw new TypeInferenceException("Type inference problem: one of condition types is INT in "
                     + toString(conditions, options));
         }
         // check that option types are consistent
         final Collection<ExpressionType> optionTypes = options.stream().map(o -> o.type).collect(Collectors.toSet());
         if (optionTypes.contains(ExpressionType.BOOL) && optionTypes.contains(ExpressionType.INT)) {
-            throw new RuntimeException("Type inference problem: both BOOL and INT are possible in outcomes of "
+            throw new TypeInferenceException("Type inference problem: both BOOL and INT are possible in outcomes of "
                     + toString(conditions, options));
         }
         return optionTypes.contains(ExpressionType.BOOL) ? ExpressionType.BOOL :
@@ -55,17 +60,16 @@ public class CaseOperator extends Expression {
     }
 
     @Override
-    public Set<String> variableSet() {
-        final Set<String> vars = new TreeSet<>();
-        conditions.forEach(x -> vars.addAll(x.variableSet()));
-        options.forEach(x -> vars.addAll(x.variableSet()));
-        return vars;
-    }
-
-    @Override
-    public CaseOperator clarifyTypes(Map<String, Variable> allVarDeclarations) {
-        return new CaseOperator(
-                conditions.stream().map(x -> x.clarifyTypes(allVarDeclarations)).collect(Collectors.toList()),
-                options.stream().map(x -> x.clarifyTypes(allVarDeclarations)).collect(Collectors.toList()));
+    public CaseOperator forwardInferTypes(Map<String, Variable> allVarDeclarations)
+            throws TypeInferenceException {
+        final List<Expression> newConditions = new ArrayList<>();
+        for (Expression c : conditions) {
+            newConditions.add(c.forwardInferTypes(allVarDeclarations));
+        }
+        final List<Expression> newOptions = new ArrayList<>();
+        for (Expression c : options) {
+            newOptions.add(c.forwardInferTypes(allVarDeclarations));
+        }
+        return new CaseOperator(newConditions, newOptions, inferType(newConditions, newOptions));
     }
 }

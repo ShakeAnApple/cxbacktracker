@@ -1,8 +1,6 @@
 package shakeanapple.backtracker.nusmvparsing;
 
-import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by buzhinsky on 11/20/17.
@@ -52,7 +50,7 @@ public class Variable extends Expression {
     }
 
     @Override
-    public Variable clarifyTypes(Map<String, Variable> allVarDeclarations) {
+    public Variable forwardInferTypes(Map<String, Variable> allVarDeclarations) {
         final Variable declaration = allVarDeclarations.get(name);
         return declaration == null ? this : new Variable(name, referenceType == ReferenceType.NEXT, declaration.type);
     }
@@ -69,10 +67,5 @@ public class Variable extends Expression {
             default:
                 throw new RuntimeException();
         }
-    }
-
-    @Override
-    public Set<String> variableSet() {
-        return Collections.singleton(name);
     }
 }

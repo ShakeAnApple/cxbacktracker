@@ -20,12 +20,7 @@ public class Constant extends Expression {
     }
 
     @Override
-    public Set<String> variableSet() {
-        return Collections.emptySet();
-    }
-
-    @Override
-    public Expression clarifyTypes(Map<String, Variable> allVarDeclarations) {
+    public Expression forwardInferTypes(Map<String, Variable> allVarDeclarations) {
         return this;
     }
 }

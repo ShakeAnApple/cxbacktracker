@@ -30,9 +30,9 @@ public class Assignment {
         return type + Util.par(left.name) + " := " + right + ";";
     }
 
-    Assignment clarifyTypes(Map<String, Variable> allVarDeclarations) {
-        final Variable newLeft = left.clarifyTypes(allVarDeclarations);
-        final Expression newRight = right.clarifyTypes(allVarDeclarations);
+    Assignment forwardInferTypes(Map<String, Variable> allVarDeclarations) throws TypeInferenceException {
+        final Variable newLeft = left.forwardInferTypes(allVarDeclarations);
+        final Expression newRight = right.forwardInferTypes(allVarDeclarations);
         if (newLeft.type != newRight.type && newRight.type != ExpressionType.UNKNOWN) {
             throw new RuntimeException("Incompatible types " + newLeft.type + " := " + newRight.type
                     + " in assignment " + this);

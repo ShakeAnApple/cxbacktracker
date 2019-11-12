@@ -1,8 +1,6 @@
 package shakeanapple.backtracker.nusmvparsing;
 
 import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
 
 /**
  * Created by buzhinsky on 4/18/17.
@@ -15,7 +13,6 @@ public class UnaryOperator extends Expression {
         super(name, correctType(name));
         this.name = name;
         this.argument = argument;
-        typeCheck();
     }
 
     private static ExpressionType correctType(String name) {
@@ -35,26 +32,16 @@ public class UnaryOperator extends Expression {
     }
 
     @Override
-    public Set<String> variableSet() {
-        return argument.variableSet();
+    public UnaryOperator forwardInferTypes(Map<String, Variable> allVarDeclarations) throws TypeInferenceException {
+        final UnaryOperator result = new UnaryOperator(name, argument.forwardInferTypes(allVarDeclarations));
+        result.typeCheck();
+        return result;
     }
 
-    @Override
-    public UnaryOperator clarifyTypes(Map<String, Variable> allVarDeclarations) {
-        return new UnaryOperator(name, argument.clarifyTypes(allVarDeclarations));
-    }
-
-    private void typeCheck() {
+    private void typeCheck() throws TypeInferenceException {
         if (argument.type != ExpressionType.UNKNOWN && name.equals("!") != (argument.type == ExpressionType.BOOL)) {
-            throw new RuntimeException("Type inference problem: " + name + argument.type + " in unary operator "
+            throw new TypeInferenceException("Type inference problem: " + name + argument.type + " in unary operator "
                     + argument);
         }
-    }
-
-    private Expression recursion(Function<Expression, Expression> baseFunction,
-                                 Function<UnaryOperator, Expression> transformation, String specialName) {
-        final Expression processedArgument = baseFunction.apply(argument);
-        final UnaryOperator processed = new UnaryOperator(name, processedArgument);
-        return name.equals(specialName) ? transformation.apply(processed) : processed;
     }
 }

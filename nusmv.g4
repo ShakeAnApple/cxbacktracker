@@ -22,7 +22,7 @@ TRUE : 'TRUE'; FALSE : 'FALSE';
 
 INIT : 'init'; NEXT : 'next';
 
-MODULE : 'MODULE'; ASSIGN : 'ASSIGN'; VAR : 'VAR';
+MODULE : 'MODULE'; VAR : 'VAR'; ASSIGN : 'ASSIGN'; DEFINE : 'DEFINE';
 
 BOOLEAN : 'boolean';
 
@@ -124,7 +124,7 @@ input_var_declaration returns[Variable v]
     | typeful=internal_var_declaration { $v = $typeful.v; }
     ;
 
-module returns[Module m]
+module returns[NuSMVModule m]
     : MODULE ID {
         List<Variable> inputVariables = new ArrayList<>();
         List<Variable> internalVariables = new ArrayList<>();
@@ -133,6 +133,7 @@ module returns[Module m]
       ('(' (v1=input_var_declaration { inputVariables.add($v1.v); }
       (',' v2=input_var_declaration { inputVariables.add($v2.v); })*)? ')')?
       ((ASSIGN (assignment { assignments.add($assignment.a); })*)
+      | (DEFINE (composite_id ':=' binary_operator1 ';')*) // TODO add support
       | (VAR (internal_var_declaration ';' { internalVariables.add($internal_var_declaration.v); })*))*
-      { $m = new Module($ID.text, inputVariables, internalVariables, assignments); }
+      { $m = new NuSMVModule($ID.text, inputVariables, internalVariables, assignments); }
     ;

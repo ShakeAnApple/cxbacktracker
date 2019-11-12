@@ -1,7 +1,8 @@
 package shakeanapple.backtracker.nusmvparsing;
 
-import java.util.*;
-import java.util.function.Function;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Created by buzhinsky on 4/18/17.
@@ -16,7 +17,6 @@ public class BinaryOperator extends Expression {
         this.name = name;
         this.leftArgument = leftArgument;
         this.rightArgument = rightArgument;
-        typeCheck();
     }
 
     private static ExpressionType correctType(String name) {
@@ -29,7 +29,7 @@ public class BinaryOperator extends Expression {
         }
     }
 
-    private void typeCheck() {
+    private void typeCheck() throws TypeInferenceException {
         final Collection<ExpressionType> allTypes = Arrays.asList(leftArgument.type, rightArgument.type);
         boolean failure = !allTypes.contains(ExpressionType.UNKNOWN) && leftArgument.type != rightArgument.type;
         failure |= Arrays.asList("<", "<=", ">", ">=", "+", "-", "*", "/", "mod").contains(name)
@@ -37,7 +37,7 @@ public class BinaryOperator extends Expression {
         failure |= Arrays.asList("<->", "->", "|", "&", "xor", "xnor").contains(name)
                 && allTypes.contains(ExpressionType.INT);
         if (failure) {
-            throw new RuntimeException("Type inference problem: " + leftArgument.type + " " + name + " "
+            throw new TypeInferenceException("Type inference problem: " + leftArgument.type + " " + name + " "
                     + rightArgument.type + " in binary operator " + leftArgument + " " + name + " " + rightArgument);
         }
     }
@@ -48,24 +48,10 @@ public class BinaryOperator extends Expression {
     }
 
     @Override
-    public Set<String> variableSet() {
-        final Set<String> result = leftArgument.variableSet();
-        result.addAll(rightArgument.variableSet());
+    public BinaryOperator forwardInferTypes(Map<String, Variable> allVarDeclarations) throws TypeInferenceException {
+        final BinaryOperator result = new BinaryOperator(name, leftArgument.forwardInferTypes(allVarDeclarations),
+                rightArgument.forwardInferTypes(allVarDeclarations));
+        result.typeCheck();
         return result;
-    }
-
-    @Override
-    public BinaryOperator clarifyTypes(Map<String, Variable> allVarDeclarations) {
-        return new BinaryOperator(name, leftArgument.clarifyTypes(allVarDeclarations),
-                rightArgument.clarifyTypes(allVarDeclarations));
-    }
-
-    private Expression recursion(Function<Expression, Expression> baseFunction,
-                                 Function<BinaryOperator, Expression> transformation,
-                                 String... specialNames) {
-        final Expression processedLeft = baseFunction.apply(leftArgument);
-        final Expression processedRight = baseFunction.apply(rightArgument);
-        final BinaryOperator processed = new BinaryOperator(name, processedLeft, processedRight);
-        return Arrays.asList(specialNames).contains(name) ? transformation.apply(processed) : processed;
     }
 }
