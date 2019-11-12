@@ -11,20 +11,25 @@ import java.util.List;
 
 public abstract class Gate extends DiagramElement {
 
+    private FunctionBlockBase owner;
     private Connection incomingConnection;
-
     private List<Connection> outgoingConnections;
 
     private int gateTime;
 
     private InputUpdatedEvent inputUpdatedEvent;
 
-    public Gate(String name, String type) {
+    public Gate(String name, String type, FunctionBlockBase owner) {
         super(name, type);
 
         this.gateTime = 0;
         this.outgoingConnections = new ArrayList<>();
         this.inputUpdatedEvent = new InputUpdatedEvent();
+        this.owner = owner;
+    }
+
+    public FunctionBlockBase getOwner(){
+        return this.owner;
     }
 
     public abstract InputVariable input();
@@ -59,7 +64,8 @@ public abstract class Gate extends DiagramElement {
     }
 
     private void delayPropagation(ValueHolder value) {
-        Clocks.instance().onNextTick(() -> this.populateInput(value));
+        Clocks.instance().onNextTick(() -> {
+            this.populateInput(value);});
     }
 
     public ValueHolder getValue(){

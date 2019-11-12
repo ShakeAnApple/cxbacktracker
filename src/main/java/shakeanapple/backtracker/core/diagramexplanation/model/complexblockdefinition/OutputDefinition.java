@@ -40,18 +40,18 @@ public class OutputDefinition {
     }
 
     public OutputVariable translate() {
-        if (this.type == VarDefinitionType.BOOLEAN){
-            if (this.defaultValue != null){
+        if (this.type == VarDefinitionType.BOOLEAN) {
+            if (this.defaultValue != null) {
                 BooleanValueHolder valueHolder = new BooleanValueHolder(this.getDefaultValue().toLowerCase().equals("true"));
-                return new OutputVariable(new BooleanDynamicVariable(valueHolder, this.name), valueHolder);
+                return new OutputVariable(this.id, new BooleanDynamicVariable(valueHolder, this.name), valueHolder);
             }
-            return new OutputVariable(new BooleanDynamicVariable(new BooleanValueHolder(false), this.name));
-        } else{
-            if (this.defaultValue != null){
+            return new OutputVariable(this.id, new BooleanDynamicVariable(new BooleanValueHolder(false), this.name));
+        } else {
+            if (this.defaultValue != null) {
                 IntegerValueHolder valueHolder = new IntegerValueHolder(Integer.parseInt(this.defaultValue));
-                return new OutputVariable(new IntegerDynamicVariable(valueHolder, this.name), valueHolder);
+                return new OutputVariable(this.id, new IntegerDynamicVariable(valueHolder, this.name), valueHolder);
             }
-            return new OutputVariable(new IntegerDynamicVariable(new IntegerValueHolder(Integer.MIN_VALUE), this.name));
+            return new OutputVariable(this.id, new IntegerDynamicVariable(new IntegerValueHolder(Integer.MIN_VALUE), this.name));
         }
     }
 }

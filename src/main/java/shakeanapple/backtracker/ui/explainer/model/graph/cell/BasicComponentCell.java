@@ -1,23 +1,15 @@
-package shakeanapple.backtracker.ui.explainer.model.graphcell;
+package shakeanapple.backtracker.ui.explainer.model.graph.cell;
 
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.FunctionBlockSnapshot;
-import shakeanapple.backtracker.ui.basiccomponentsconstructor.model.BasicComponent;
-import shakeanapple.backtracker.ui.basiccomponentsconstructor.model.InputVariable;
-import shakeanapple.backtracker.ui.basiccomponentsconstructor.model.OutputVariable;
-import shakeanapple.backtracker.ui.infrasructure.FunctionTwo;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Cell;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -33,8 +25,6 @@ public class BasicComponentCell extends ExplainerCell {
     private Map<String, InputPin> inputPins;
     private Map<String, OutputPin> outputPins;
 
-    private Rectangle rect;
-
     public BasicComponentCell(long id, FunctionBlockSnapshot component, Function<Pin, Boolean> pinPressHandler) {
         super(id);
         this.name = component.getName();
@@ -46,15 +36,27 @@ public class BasicComponentCell extends ExplainerCell {
 
         double rectHeight = Math.max(inputPins.size() * PIN_HEIGHT, outputPins.size() * PIN_HEIGHT);
 
+
         Rectangle view = new Rectangle(RECT_WIDTH, rectHeight);
-        this.rect = view;
+
+//        Label label = new Label(this.name + System.lineSeparator() + this.type);
+//        StackPane view = new StackPane(label);
+//        Rectangle rect = new Rectangle();
+//        rect.widthProperty().bind(label.widthProperty().add(10));
+//        rect.heightProperty().bind(label.heightProperty().add(10));
+//        view.setStyle("-fx-background-color: coral;");
+
 
         bindInputPins(view, new ArrayList<>(inputPins.values()));
         bindOutputPins(view, new ArrayList<>(outputPins.values()));
 
+
         Label label = new Label(this.name + System.lineSeparator() + this.type);
 
-        label.layoutXProperty().bind(view.xProperty().add(view.getWidth() / 2).subtract(label.widthProperty().divide(2)));
+        view.widthProperty().bind(label.widthProperty());
+
+//        label.layoutXProperty().bind(view.xProperty().add(view.getWidth() / 2).subtract(label.widthProperty().divide(2)));
+        label.layoutXProperty().bind(view.xProperty());
         label.layoutYProperty().bind(view.yProperty().add(view.getHeight() / 2).subtract(label.heightProperty().divide(2)));
 
         view.setStroke(Color.BLACK);
@@ -78,7 +80,7 @@ public class BasicComponentCell extends ExplainerCell {
         int order = 0;
         for (Pin pin: pins){
             pin.layoutYProperty().bind(view.yProperty().divide(pins.size()).add(order * PIN_HEIGHT));
-            pin.layoutXProperty().bind(view.xProperty().add(view.getWidth()));
+            pin.layoutXProperty().bind(view.xProperty().add(view.widthProperty()));
             order ++;
         }
     }
@@ -123,11 +125,6 @@ public class BasicComponentCell extends ExplainerCell {
 
     public String getName() {
         return this.name;
-    }
-
-    @Override
-    public Rectangle getRect() {
-        return this.rect;
     }
 
     @Override

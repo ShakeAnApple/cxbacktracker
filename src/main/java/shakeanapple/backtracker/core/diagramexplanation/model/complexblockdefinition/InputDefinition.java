@@ -42,14 +42,14 @@ public class InputDefinition {
                 val = ((ConstantInputDefinition) this).getValue().toLowerCase().equals("true");
             }
             BooleanValueHolder valueHolder = new BooleanValueHolder(val);
-            return new InputVariable(new BooleanDynamicVariable(valueHolder, this.name), this.order);
+            return new InputVariable(this.id, new BooleanDynamicVariable(valueHolder, this.name), this.order);
         } else{
             int val = Integer.MIN_VALUE;
             if (this instanceof ConstantInputDefinition){
                 val = Integer.parseInt(((ConstantInputDefinition)this).getValue());
             }
             IntegerValueHolder valueHolder = new IntegerValueHolder(val);
-            return new InputVariable(new IntegerDynamicVariable(valueHolder, this.name), this.order);
+            return new InputVariable(this.id, new IntegerDynamicVariable(valueHolder, this.name), this.order);
         }
     }
 }

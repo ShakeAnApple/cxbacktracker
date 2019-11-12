@@ -6,6 +6,8 @@ import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVari
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class AssignFunctionBlockBasic extends FunctionBlockBasic {
@@ -34,6 +36,6 @@ public class AssignFunctionBlockBasic extends FunctionBlockBasic {
 
     @Override
     protected List<Cause> explainImpl(OutputGate output, Integer timestamp) {
-        return null;
+        return Collections.singletonList(new Cause(super.fbInterface().getInputs().get(this.input.getName()), super.history().getVariableValueForStep(input.getName(), timestamp), timestamp));
     }
 }

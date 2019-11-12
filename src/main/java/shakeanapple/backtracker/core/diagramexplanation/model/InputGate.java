@@ -16,8 +16,8 @@ public class InputGate extends Gate {
 
     private InputVariable input;
 
-    public InputGate(InputVariable input) {
-        super(input.getName(), "INPUT_GATE");
+    public InputGate(InputVariable input, FunctionBlockBase owner) {
+        super(input.getName(), "INPUT_GATE", owner);
         this.input = input;
 
         this.output = OutputVariable.createSharedWithInput(this.input);

@@ -1,8 +1,7 @@
-package shakeanapple.backtracker.ui.explainer.model.graphcell;
+package shakeanapple.backtracker.ui.explainer.model.graph.cell;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
-import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Connectable;
 

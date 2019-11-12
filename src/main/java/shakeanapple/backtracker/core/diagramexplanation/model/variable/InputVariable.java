@@ -10,13 +10,13 @@ public class InputVariable<TVal extends ValueHolder> extends FBVariable<TVal> {
 
     private int order;
 
-    public InputVariable(DynamicVariable<TVal> variable, int order) {
-        super(variable);
+    public InputVariable(long id, DynamicVariable<TVal> variable, int order) {
+        super(variable, id);
         this.order = order;
     }
 
-    private InputVariable(OutputVariable output){
-        super(output);
+    private InputVariable(long id, OutputVariable output){
+        super(output, id);
         this.order = 0;
     }
 
@@ -24,7 +24,7 @@ public class InputVariable<TVal extends ValueHolder> extends FBVariable<TVal> {
         return this.order;
     }
 
-    public static InputVariable createSharedWithOutput(OutputVariable output){
-        return new InputVariable(output);
+    public static InputVariable createSharedWithOutput(OutputVariable output, long id){
+        return new InputVariable(id, output);
     }
 }

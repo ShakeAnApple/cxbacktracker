@@ -15,11 +15,14 @@
 
 <!--</AnchorPane>-->
 <?import shakeanapple.backtracker.ui.infrasructure.control.diagram.DiagramControl?>
+<?import shakeanapple.backtracker.ui.infrasructure.FxmlListCellFactory?>
+<?import javafx.scene.control.ListView?>
 <GridPane minWidth="1000" minHeight="1000" maxWidth="1600" xmlns="http://javafx.com/javafx/8.0.172-ea"
           xmlns:fx="http://javafx.com/fxml/1" fx:controller="shakeanapple.backtracker.ui.explainer.MainController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0"/>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="80.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="60.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0"/>
     </columnConstraints>
     <rowConstraints>
         <RowConstraints percentHeight="95.0" vgrow="ALWAYS"/>
@@ -31,6 +34,13 @@
     </VBox>
     <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
         <DiagramControl fx:id="diagram" VBox.vgrow="ALWAYS" prefHeight="1000"/>
+    </VBox>
+    <VBox GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+        <ListView fx:id="causesList">
+            <cellFactory>
+                <FxmlListCellFactory fxmlSource="@causesListCell.fxml"/>
+            </cellFactory>
+        </ListView>
     </VBox>
 <!--    <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">-->
 <!--        <VisGraphControl resource="diagramGraph.html" fx:id="functionBlocksGraph" VBox.vgrow="ALWAYS" prefHeight="1000"/>-->

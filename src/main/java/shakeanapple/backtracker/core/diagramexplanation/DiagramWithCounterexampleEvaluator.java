@@ -18,6 +18,12 @@ public class DiagramWithCounterexampleEvaluator implements DiagramSequentialEval
         this.cursor = new CounterexampleCursor(counterexample);
     }
 
+    public DiagramWithCounterexampleEvaluator(FunctionBlockComplex diagram, Counterexample counterexample) {
+        this.diagram = diagram;
+
+        this.cursor = new CounterexampleCursor(counterexample);
+    }
+
     @Override
     public DiagramSnapshot moveNext() {
         if (this.cursor.hasNext()) {

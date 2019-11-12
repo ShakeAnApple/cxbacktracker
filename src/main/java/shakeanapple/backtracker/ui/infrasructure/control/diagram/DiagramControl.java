@@ -1,8 +1,6 @@
 package shakeanapple.backtracker.ui.infrasructure.control.diagram;
 
 import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.Color;
-import shakeanapple.backtracker.ui.explainer.model.Connection;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.*;
 
 public class DiagramControl extends BorderPane {

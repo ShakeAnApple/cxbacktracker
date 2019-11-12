@@ -3,6 +3,7 @@ package shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.l
 import shakeanapple.backtracker.common.variable.BooleanValueHolder;
 import shakeanapple.backtracker.core.diagramexplanation.Cause;
 import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockBase;
+import shakeanapple.backtracker.core.diagramexplanation.model.InputGate;
 import shakeanapple.backtracker.core.diagramexplanation.model.OutputGate;
 import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.FunctionBlockBasic;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
@@ -10,6 +11,7 @@ import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVar
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AndFunctionBlockBasic extends FunctionBlockBasic {
 
@@ -38,6 +40,28 @@ public class AndFunctionBlockBasic extends FunctionBlockBasic {
 
     @Override
     protected List<Cause> explainImpl(OutputGate output, Integer timestamp) {
-        return null;
+        BooleanValueHolder val = (BooleanValueHolder) output.getValue();
+        if (val.getValue()){
+            return this.explainTrue(timestamp);
+        } else{
+            return this.explainFalse(timestamp);
+        }
+    }
+
+    private List<Cause> explainTrue(int timestamp){
+        return super.fbInterface().getInputs().values().stream()
+                .map(in -> new Cause(in, super.history().getVariableValueForStep(in.getName(), timestamp), timestamp))
+                .collect(Collectors.toList());
+    }
+
+    private List<Cause> explainFalse(int timestamp){
+        List<Cause> causes = new ArrayList<>();
+        for (InputGate in : super.fbInterface().getInputs().values()){
+            BooleanValueHolder val = (BooleanValueHolder) super.history().getVariableValueForStep(in.getName(), timestamp);
+            if (!val.getValue()){
+                causes.add(new Cause(in, val, timestamp));
+            }
+        }
+        return causes;
     }
 }

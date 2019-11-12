@@ -9,6 +9,7 @@ import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVar
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CountFunctionBlockBasic extends FunctionBlockBasic {
     private OutputVariable output;
@@ -28,6 +29,8 @@ public class CountFunctionBlockBasic extends FunctionBlockBasic {
 
     @Override
     protected List<Cause> explainImpl(OutputGate output, Integer timestamp) {
-        return null;
+        return super.fbInterface().getInputs().values().stream()
+                .map(in -> new Cause(in, super.history().getVariableValueForStep(in.getName(), timestamp), timestamp))
+                .collect(Collectors.toList());
     }
 }

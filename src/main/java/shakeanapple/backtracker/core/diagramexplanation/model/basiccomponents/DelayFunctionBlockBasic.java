@@ -8,6 +8,7 @@ import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVari
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 //TODO introduce time into system?
@@ -69,6 +70,10 @@ public class DelayFunctionBlockBasic extends FunctionBlockBasic {
 
     @Override
     protected List<Cause> explainImpl(OutputGate output, Integer timestamp) {
-        return null;
+        if (timestamp - this.delay > 0){
+            return Collections.singletonList(new Cause(super.fbInterface().getInputs().get(this.input.getName()), super.history().getVariableValueForStep(this.input.getName(), timestamp - this.delay), timestamp - this.delay));
+        }
+        // TODO start from zero? or 1? I always forget
+        return Collections.singletonList(new Cause(super.fbInterface().getInputs().get(this.input.getName()), super.history().getVariableValueForStep(this.input.getName(), 0), 0));
     }
 }

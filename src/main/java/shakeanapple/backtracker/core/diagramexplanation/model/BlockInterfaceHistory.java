@@ -1,5 +1,6 @@
 package shakeanapple.backtracker.core.diagramexplanation.model;
 
+import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
@@ -37,5 +38,12 @@ public class BlockInterfaceHistory {
 
     private void recordOutput(OutputVariable var, Integer timestamp){
         this.outputVariablesHistory.get(var.getName()).record(var, timestamp);
+    }
+
+    public ValueHolder getVariableValueForStep(String varName, int timestamp){
+        if (this.inputVariablesHistory.containsKey(varName)){
+            return this.inputVariablesHistory.get(varName).getValueForStep(timestamp);
+        }
+        return this.outputVariablesHistory.get(varName).getValueForStep(timestamp);
     }
 }

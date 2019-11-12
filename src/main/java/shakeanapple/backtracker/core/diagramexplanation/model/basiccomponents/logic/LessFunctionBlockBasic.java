@@ -9,6 +9,7 @@ import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVari
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LessFunctionBlockBasic extends BinOpFunctionBlockBasic {
     public LessFunctionBlockBasic(InputVariable left, InputVariable right, OutputVariable res) {
@@ -24,6 +25,8 @@ public class LessFunctionBlockBasic extends BinOpFunctionBlockBasic {
 
     @Override
     protected List<Cause> explainImpl(OutputGate output, Integer timestamp) {
-        return null;
+        return super.fbInterface().getInputs().values().stream()
+                .map(in -> new Cause(in, super.history().getVariableValueForStep(in.getName(), timestamp), timestamp))
+                .collect(Collectors.toList());
     }
 }

@@ -1,9 +1,9 @@
-package shakeanapple.backtracker.ui.explainer.model;
+package shakeanapple.backtracker.ui.explainer.model.graph;
 
 import javafx.scene.paint.Color;
 import shakeanapple.backtracker.common.variable.ValueHolder;
-import shakeanapple.backtracker.ui.explainer.model.graphcell.InputPin;
-import shakeanapple.backtracker.ui.explainer.model.graphcell.OutputPin;
+import shakeanapple.backtracker.ui.explainer.model.graph.cell.InputPin;
+import shakeanapple.backtracker.ui.explainer.model.graph.cell.OutputPin;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.DiagramConnection;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Edge;
 
@@ -30,7 +30,15 @@ public class Connection implements DiagramConnection {
             this.value = value;
         }
 
-        this.id = this.from.getOwner().getName() + this.from.getName() + this.to.getOwner().getName() + this.to.getName();
+        String id = this.from.getOwner().getName();
+        if (!this.from.getOwner().getName().equals(this.from.getName())){
+            id += this.from.getName();
+        }
+        id += this.to.getOwner().getName();
+        if (!this.to.getOwner().getName().equals(this.to.getName())){
+            id += this.to.getName();
+        }
+        this.id = id;
     }
 
     public OutputPin getFrom() {
@@ -73,7 +81,10 @@ public class Connection implements DiagramConnection {
         this.to.getOwner().addCellParent(this.from.getOwner());
         this.to.getOwner().addEdgeTo(edge);
 
-        this.edge.bindStartX(this.from.getOwner().layoutXProperty().add(this.from.getOwner().getBoundsInParent().getWidth()));
+//        this.edge.bindStartX(this.from.getOwner().layoutXProperty().add(this.from.getOwner().getBoundsInParent().getWidth()));
+        this.edge.bindStartX(this.from.getOwner().layoutXProperty().add(this.from.getOwner().widthProperty()).subtract(this.from.getMinWidth()));
+//        this.edge.bindStartX(this.from.getOwner().widthProperty());
+
         this.edge.bindStartY(this.from.getOwner().layoutYProperty().add(this.from.getMinHeight() / 2 + this.from.getMinHeight() * this.from.getOrder()));
         this.edge.bindEndX(this.to.getOwner().layoutXProperty().subtract(this.from.getMinWidth()));
         this.edge.bindEndY(this.to.getOwner().layoutYProperty().add(this.to.getMinHeight() / 2 + this.to.getMinHeight() * this.to.getOrder()));
