@@ -1,5 +1,7 @@
 package shakeanapple.backtracker.nusmvparsing;
 
+import shakeanapple.backtracker.parser.basiccomponents.xmlmodel.VarType;
+
 import java.util.Map;
 
 /**
@@ -67,5 +69,12 @@ public class Variable extends Expression {
             default:
                 throw new RuntimeException();
         }
+    }
+
+    VarType getVarType() throws UnresolvedTypeException {
+        if (type == ExpressionType.UNKNOWN) {
+            throw new UnresolvedTypeException("Unresolved type of variable " + name);
+        }
+        return type == ExpressionType.BOOL ? VarType.BOOLEAN : VarType.INTEGER;
     }
 }
