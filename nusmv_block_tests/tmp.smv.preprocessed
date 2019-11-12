@@ -1,0 +1,6 @@
+MODULE main()
+VAR
+    x: boolean;
+    y: boolean;
+ASSIGN
+    next(y) := (next(x) | !(x));

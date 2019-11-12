@@ -1,0 +1,17 @@
+MODULE dummy(INP)
+VAR
+    x: boolean;
+    y: boolean;
+    z: boolean;
+    t: 0..5;
+    test1: -2..10;
+    test2: { 0, 1 };
+ASSIGN
+    init(x) := !(INP);
+    next(x) := (x & next(y));
+    init(y) := TRUE;
+    next(y) := ((x | y) | next(INP));
+    init(z) := FALSE;
+    next(z) := INP;
+    init(t) := case x: (1 + 1); !(x): case case y: x; TRUE: y; esac: 1; TRUE: 0; esac; TRUE: 0; esac;
+    next(t) := case next(x): case next(z): 4; TRUE: 3; esac; TRUE: (t * 2); esac;

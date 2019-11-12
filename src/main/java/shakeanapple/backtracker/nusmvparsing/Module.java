@@ -1,6 +1,8 @@
 package shakeanapple.backtracker.nusmvparsing;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -8,25 +10,39 @@ import java.util.stream.Collectors;
  */
 public class Module {
     public final String name;
-    private final List<Variable> inputVariables;
-    private final List<Variable> internalVariables;
+    private final Map<String, Variable> inputVariables = new LinkedHashMap<>();
+    private final Map<String, Variable> internalVariables = new LinkedHashMap<>();
+    private final Map<String, Variable> allVariables = new LinkedHashMap<>();
     private final List<Assignment> assignments;
 
     public Module(String name, List<Variable> inputVariables, List<Variable> internalVariables,
                   List<Assignment> assignments) {
         this.name = name;
-        this.inputVariables = inputVariables;
-        this.internalVariables = internalVariables;
+        for (Variable v : inputVariables) {
+            this.inputVariables.put(v.name, v);
+            this.allVariables.put(v.name, v);
+        }
+        for (Variable v : internalVariables) {
+            this.internalVariables.put(v.name, v);
+            this.allVariables.put(v.name, v);
+        }
         this.assignments = assignments;
+    }
+
+    public void clarifyTypes() {
+        final List<Assignment> clarifiedAssignments = assignments.stream().map(a -> a.clarifyTypes(allVariables))
+                .collect(Collectors.toList());
+        assignments.clear();
+        assignments.addAll(clarifiedAssignments);
     }
 
     @Override
     public String toString() {
         return String.join(Util.NL,
                 "MODULE " + name +
-                Util.par(inputVariables.stream().map(v -> v.name).collect(Collectors.joining(", "))),
+                Util.par(inputVariables.keySet().stream().collect(Collectors.joining(", "))),
                 "VAR",
-                internalVariables.stream().map(v -> "    " + v.name + ": ?;").collect(Collectors.joining(Util.NL)),
+                internalVariables.values().stream().map(v -> "    " + v).collect(Collectors.joining(Util.NL)),
                 "ASSIGN",
                 assignments.stream().map(a -> "    " + a).collect(Collectors.joining(Util.NL)));
     }

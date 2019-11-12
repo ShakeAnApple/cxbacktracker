@@ -44,90 +44,6 @@ public class nusmvBaseListener implements nusmvListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterUnary_operator_sign(nusmvParser.Unary_operator_signContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitUnary_operator_sign(nusmvParser.Unary_operator_signContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterBinary_operator_sign4(nusmvParser.Binary_operator_sign4Context ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitBinary_operator_sign4(nusmvParser.Binary_operator_sign4Context ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterBinary_operator_sign3(nusmvParser.Binary_operator_sign3Context ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitBinary_operator_sign3(nusmvParser.Binary_operator_sign3Context ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterBinary_operator_sign2(nusmvParser.Binary_operator_sign2Context ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitBinary_operator_sign2(nusmvParser.Binary_operator_sign2Context ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterBinary_operator_sign1(nusmvParser.Binary_operator_sign1Context ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitBinary_operator_sign1(nusmvParser.Binary_operator_sign1Context ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterBinary_operator_sign5(nusmvParser.Binary_operator_sign5Context ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitBinary_operator_sign5(nusmvParser.Binary_operator_sign5Context ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterType(nusmvParser.TypeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitType(nusmvParser.TypeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterAtom(nusmvParser.AtomContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -135,6 +51,18 @@ public class nusmvBaseListener implements nusmvListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitAtom(nusmvParser.AtomContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterUnary_operator_sign(nusmvParser.Unary_operator_signContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitUnary_operator_sign(nusmvParser.Unary_operator_signContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -176,6 +104,18 @@ public class nusmvBaseListener implements nusmvListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterBinary_operator_sign5(nusmvParser.Binary_operator_sign5Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBinary_operator_sign5(nusmvParser.Binary_operator_sign5Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterBinary_operator5(nusmvParser.Binary_operator5Context ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -188,6 +128,18 @@ public class nusmvBaseListener implements nusmvListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterBinary_operator_sign4(nusmvParser.Binary_operator_sign4Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBinary_operator_sign4(nusmvParser.Binary_operator_sign4Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterBinary_operator4(nusmvParser.Binary_operator4Context ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -195,6 +147,18 @@ public class nusmvBaseListener implements nusmvListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitBinary_operator4(nusmvParser.Binary_operator4Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBinary_operator_sign3(nusmvParser.Binary_operator_sign3Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBinary_operator_sign3(nusmvParser.Binary_operator_sign3Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -224,6 +188,18 @@ public class nusmvBaseListener implements nusmvListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterBinary_operator_sign2(nusmvParser.Binary_operator_sign2Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBinary_operator_sign2(nusmvParser.Binary_operator_sign2Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterBinary_operator2(nusmvParser.Binary_operator2Context ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -231,6 +207,18 @@ public class nusmvBaseListener implements nusmvListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitBinary_operator2(nusmvParser.Binary_operator2Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBinary_operator_sign1(nusmvParser.Binary_operator_sign1Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBinary_operator_sign1(nusmvParser.Binary_operator_sign1Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -260,13 +248,37 @@ public class nusmvBaseListener implements nusmvListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVar_declaration(nusmvParser.Var_declarationContext ctx) { }
+	@Override public void enterType(nusmvParser.TypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitVar_declaration(nusmvParser.Var_declarationContext ctx) { }
+	@Override public void exitType(nusmvParser.TypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterInternal_var_declaration(nusmvParser.Internal_var_declarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitInternal_var_declaration(nusmvParser.Internal_var_declarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterInput_var_declaration(nusmvParser.Input_var_declarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitInput_var_declaration(nusmvParser.Input_var_declarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

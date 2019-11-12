@@ -1,5 +1,7 @@
 package shakeanapple.backtracker.nusmvparsing;
 
+import java.util.Map;
+
 /**
  * Created by buzhinsky on 11/11/19.
  */
@@ -26,5 +28,15 @@ public class Assignment {
     @Override
     public String toString() {
         return type + Util.par(left.name) + " := " + right + ";";
+    }
+
+    Assignment clarifyTypes(Map<String, Variable> allVarDeclarations) {
+        final Variable newLeft = left.clarifyTypes(allVarDeclarations);
+        final Expression newRight = right.clarifyTypes(allVarDeclarations);
+        if (newLeft.type != newRight.type && newRight.type != ExpressionType.UNKNOWN) {
+            throw new RuntimeException("Incompatible types " + newLeft.type + " := " + newRight.type
+                    + " in assignment " + this);
+        }
+        return new Assignment(type, newLeft, newRight);
     }
 }

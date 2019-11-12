@@ -6,10 +6,7 @@ import org.antlr.v4.runtime.dfa.DFA;
 import shakeanapple.backtracker.antlrgenerated.nusmvLexer;
 import shakeanapple.backtracker.antlrgenerated.nusmvParser;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -30,9 +27,11 @@ public class ParseBlockMain {
         }
         Arrays.sort(filenames);
         for (String filename : filenames) {
-            if (!filename.toLowerCase().endsWith("smv") && filename.toLowerCase().endsWith("txt")) {
+            final String filenameLower = filename.toLowerCase();
+            if (!filenameLower.endsWith(".smv") && !filenameLower.endsWith(".txt")) {
                 continue;
             }
+            System.out.println(">> Processing: " + filename);
             final byte[] bytes = Files.readAllBytes(Paths.get(dirName, filename));
             final List<String> errors = new ArrayList<>();
             final List<String> warnings = new ArrayList<>();
@@ -67,6 +66,7 @@ public class ParseBlockMain {
                     }
                 });
                 result = parser.module().m;
+                result.clarifyTypes();
             } catch (NullPointerException | RecognitionException e) {
                 System.err.println("Parse error with " + filename);
                 return;
@@ -79,7 +79,9 @@ public class ParseBlockMain {
                 System.err.println("Parse warning(s) with " + filename + ": " + warnings);
             }
             System.out.println(result);
-
+            try (PrintWriter pw = new PrintWriter(Paths.get(dirName, filename + ".preprocessed").toFile())) {
+                pw.println(result);
+            }
         }
     }
 }

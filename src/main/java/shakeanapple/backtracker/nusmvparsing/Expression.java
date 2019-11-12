@@ -7,12 +7,16 @@ import java.util.*;
  */
 public abstract class Expression {
     public final String name;
+    public final ExpressionType type;
 
-    public Expression(String name) {
+    public Expression(String name, ExpressionType type) {
         this.name = name;
+        this.type = type;
     }
 
     public abstract Set<String> variableSet();
+
+    public abstract Expression clarifyTypes(Map<String, Variable> allVarDeclarations);
 
     public static Expression not(Expression other) {
         return new UnaryOperator("!", other);
