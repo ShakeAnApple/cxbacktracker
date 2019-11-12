@@ -17,6 +17,9 @@ public class CounterexampleCursor {
     }
 
     public State getCurState(){
+        if (this.counterexample.getPath().get(this.curStep) == null){
+            this.curStep = this.counterexample.getLoopStart();
+        }
         return this.counterexample.getPath().get(this.curStep);
     }
 

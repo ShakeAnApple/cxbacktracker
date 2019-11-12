@@ -13,6 +13,7 @@ import java.util.List;
 public class Parser {
 
     private final String path;
+    private boolean loopIndicator = false;
 
     public Parser(String path) {
         this.path = path;
@@ -22,6 +23,8 @@ public class Parser {
         List<State> states = new ArrayList<>();
 
         BufferedReader reader;
+        int loopStart = -1;
+
         try {
             reader = new BufferedReader(new FileReader(this.path));
             String line = reader.readLine();
@@ -32,6 +35,10 @@ public class Parser {
             while (reader.ready()) {
                 cnt++;
                 State state = this.extractState(reader, cnt);
+                if (this.loopIndicator){
+                    loopStart = cnt + 1;
+                    this.loopIndicator = false;
+                }
                 states.add(state);
             }
             reader.close();
@@ -39,7 +46,7 @@ public class Parser {
             e.printStackTrace();
         }
 
-        return new Counterexample(states);
+        return new Counterexample(states, loopStart);
     }
 
     private State extractState(BufferedReader reader, int order) throws IOException {
@@ -48,7 +55,11 @@ public class Parser {
         while(line != null && !line.trim().startsWith("->")){
             line = line.trim();
 
-            if (line.startsWith("--")){
+            if (line.contains("Loop starts here")){
+                this.loopIndicator = true;
+                reader.readLine();
+                break;
+            } else if (line.startsWith("--")){
                 reader.readLine();
                 break;
             }

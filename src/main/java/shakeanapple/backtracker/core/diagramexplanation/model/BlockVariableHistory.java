@@ -1,5 +1,6 @@
 package shakeanapple.backtracker.core.diagramexplanation.model;
 
+import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.common.variable.Variable;
 
 import java.util.HashMap;
@@ -19,5 +20,9 @@ public class BlockVariableHistory {
 
     public String getName() {
         return this.name;
+    }
+
+    public ValueHolder getValueForStep(int timestamp){
+        return this.valuesByStep.get(timestamp).getValueHolder();
     }
 }

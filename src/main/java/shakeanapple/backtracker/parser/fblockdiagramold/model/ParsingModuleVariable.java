@@ -7,6 +7,7 @@ import shakeanapple.backtracker.common.variable.dynamic.DynamicVariable;
 import shakeanapple.backtracker.common.variable.dynamic.IntegerDynamicVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.FBVariable;
 
+// TODO obsolete
 public class ParsingModuleVariable {
     private ParsingVariableInfo info;
 
@@ -30,6 +31,7 @@ public class ParsingModuleVariable {
             default:
                 throw new RuntimeException("Unsupported var type: " + this.info.getType().name());
         }
-        return new FBVariable(var);
+        return null;
+//        return new FBVariable(var);
     }
 }

@@ -1,36 +1,37 @@
 package shakeanapple.backtracker.ui.explainer;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.paint.Color;
-import shakeanapple.backtracker.core.diagramexplanation.DiagramCounterexampleExecutor;
-import shakeanapple.backtracker.core.diagramexplanation.DiagramSequentialEvaluator;
-import shakeanapple.backtracker.core.diagramexplanation.DiagramWithCounterexampleEvaluator;
+import javafx.fxml.Initializable;
+import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
+import shakeanapple.backtracker.core.diagramexplanation.*;
+import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockComplex;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.ConnectionSnapshot;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.DiagramSnapshot;
 import shakeanapple.backtracker.core.ltlexplanation.LtlWithCounterexampleEvaluator;
 import shakeanapple.backtracker.core.ltlexplanation.LtlSequentialEvaluator;
 import shakeanapple.backtracker.core.ltlexplanation.model.ICalculatedFormula;
 import shakeanapple.backtracker.core.counterexample.Counterexample;
-import shakeanapple.backtracker.core.counterexample.State;
 import shakeanapple.backtracker.core.ltlexplanation.model.ltlformula.model.LtlFormula;
-import shakeanapple.backtracker.common.variable.BooleanValueHolder;
-import shakeanapple.backtracker.common.variable.BooleanVariable;
-import shakeanapple.backtracker.common.variable.Variable;
-import shakeanapple.backtracker.ui.explainer.model.Connection;
-import shakeanapple.backtracker.ui.explainer.model.graphcell.Pin;
+import shakeanapple.backtracker.ui.explainer.model.Cause;
+import shakeanapple.backtracker.ui.explainer.model.graph.cell.Pin;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.DiagramControl;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.ViewGraph;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Cell;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.DiagramConnection;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.RectangleCell;
 import shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.graph.VisGraph;
 import shakeanapple.backtracker.ui.GraphHelper;
 import shakeanapple.backtracker.ui.infrasructure.control.visgraph.VisGraphControl;
 
+import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MainController {
+public class MainController implements Initializable {
+
+    @FXML
+    public ListView causesList;
 
     @FXML
     private VisGraphControl ltlGraph;
@@ -44,30 +45,65 @@ public class MainController {
     private final LtlSequentialEvaluator calculationWalker;
     private DiagramSequentialEvaluator diagramEvaluator;
     private DiagramCounterexampleExecutor diagramExecutor;
+    private DiagramOutputExplainer diagramOutputExplainer;
 
     private Map<String, DiagramConnection> connections = new HashMap<>();
+    private int currentStep = 0;
+    private DiagramEvaluationCache cache = new DiagramEvaluationCache();
 
     public MainController()  {
         Counterexample cx = Counterexample.load("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\cx");
         LtlFormula formula = LtlFormula.parse("G(((!(alarm) & !(criteria)) & X (criteria & !(ack_button))) -> X (alarm))");
         this.calculationWalker = new LtlWithCounterexampleEvaluator(cx, formula);
 
-        this.diagramEvaluator = new DiagramWithCounterexampleEvaluator("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\m.smv",
-                "C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\basics", cx );
+        FunctionBlockComplex diagram = FunctionBlockComplex.parse("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\m.smv",
+                "C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\basics");
 
-        this.diagramExecutor = new DiagramCounterexampleExecutor("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\m.smv",
-                "C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\basics", cx );
 
+        this.diagramEvaluator = new DiagramWithCounterexampleEvaluator(diagram, cx );
+        this.diagramExecutor = new DiagramCounterexampleExecutor(diagram, cx );
+
+        this.diagramOutputExplainer = new DiagramBackwardExplainer(diagram);
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        this.causesList.setOnMouseClicked(this::handleCauseChosen);
+    }
+
+    private void handleCauseChosen(MouseEvent event){
+        Cause cause = (Cause)(this.causesList.getSelectionModel().getSelectedItem());
+        this.explainCause(cause.getVarName(), cause.getBlockName(), cause.getTimestamp());
+        this.renderDiagramForStep(cause.getTimestamp());
+    }
+
+    private void renderDiagramForStep(int timestamp) {
+        DiagramSnapshot snapshot = this.cache.getByStep(timestamp);
+        this.updateConnections(snapshot.getConnections());
+    }
+
+    private void explainCause(String varName, String blockName, int timestamp){
+        ObservableList<Cause> causes =  FXCollections.observableList(
+                this.diagramOutputExplainer.explain(varName, blockName, timestamp).stream().map(c -> new Cause(c.getTimestamp(), c.getGate().getOwner().getName(), c.getGate().getName(), c.getValue())).collect(Collectors.toList())
+        );
+        this.causesList.setItems(causes);
+    }
+
+    private Boolean pinPressHandler(Pin pin){
+        this.explainCause(pin.getName(), pin.getOwner().getName(), this.currentStep);
+        return true;
     }
 
     @FXML
     protected void updateGraph() {
+        this.currentStep ++;
         ICalculatedFormula formula = this.calculationWalker.moveNext();
         VisGraph graph = GraphHelper.convertToGraph(formula);
         this.ltlGraph.updateGraph(graph);
 
 //        DiagramSnapshot snapshot = this.diagramEvaluator.moveNext();
         DiagramSnapshot snapshot = this.diagramExecutor.moveNext();
+        this.cache.add(snapshot, this.currentStep);
         //VisGraph blocksGraph = GraphHelper.convertToGraph(snapshot);
         //this.diagram.draw();updateGraph(blocksGraph);
         if (this.diagram.isClear()) {
@@ -89,7 +125,5 @@ public class MainController {
         this.connections = connections.stream().collect(Collectors.toMap(DiagramConnection::getId, c -> c));
     }
 
-    private Boolean pinPressHandler(Pin pin){
-        return true;
-    }
+
   }

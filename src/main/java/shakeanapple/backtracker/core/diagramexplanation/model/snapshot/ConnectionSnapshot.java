@@ -23,7 +23,7 @@ public class ConnectionSnapshot<TValue extends ValueHolder> {
         this.isInverted = isInverted;
         this.value = value;
 
-        this.id = this.from.getName() + this.fromVarName + this.to.getName() + this.toVarName;
+        this.id = (this.from != null ? this.from.getName() : "") + this.fromVarName + (this.to != null ? this.to.getName() : "") + this.toVarName;
     }
 
     public FunctionBlockSnapshot from() {

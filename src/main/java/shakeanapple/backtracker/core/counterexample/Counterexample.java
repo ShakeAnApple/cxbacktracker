@@ -11,16 +11,23 @@ public class Counterexample {
 
     private Map<Integer, State> path;
 
+    private int loopStart = -1;
+
     public Map<Integer, State> getPath(){
         return this.path;
     }
 
-    public Counterexample(List<State> path) {
+    public Counterexample(List<State> path, int loopStart) {
         this.path = path.stream().collect(Collectors.toMap(State::getOrder, (s) -> s ));
+        this.loopStart = loopStart;
     }
 
     public int length() {
         return this.path.keySet().size();
+    }
+
+    public int getLoopStart(){
+        return loopStart;
     }
 
     public static Counterexample load(String path){

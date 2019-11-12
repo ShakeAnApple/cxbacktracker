@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.ui.explainer.model.graphcell;
+package shakeanapple.backtracker.ui.explainer.model.graph.cell;
 
 import javafx.scene.shape.Rectangle;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Cell;
@@ -15,6 +15,4 @@ public abstract class ExplainerCell extends Cell {
     public abstract Map<String, OutputPin> getOutputPins();
 
     public abstract String getName();
-
-    public abstract Rectangle getRect();
 }

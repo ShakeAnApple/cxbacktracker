@@ -8,6 +8,7 @@ import shakeanapple.backtracker.common.variable.dynamic.IntegerDynamicVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.FBVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 
+// TODO obsolete
 public class ParsingInput extends ParsingModuleVariable {
 
     private ParsingConnection incommingConnection;
@@ -37,6 +38,7 @@ public class ParsingInput extends ParsingModuleVariable {
             default:
                 throw new RuntimeException("Unsupported var type: " + this.getInfo().getType().name());
         }
-        return new InputVariable(var, Integer.MIN_VALUE);
+        return null;
+//        return new InputVariable(var, Integer.MIN_VALUE);
     }
 }

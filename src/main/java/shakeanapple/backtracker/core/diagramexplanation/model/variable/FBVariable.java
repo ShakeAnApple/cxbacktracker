@@ -7,9 +7,16 @@ public class FBVariable<TVal extends ValueHolder> extends DynamicVariable<TVal> 
     private final DynamicVariable<TVal> variable;
     private boolean isUnset;
 
-    public FBVariable(DynamicVariable variable) {
+    private long id;
+
+    public FBVariable(DynamicVariable variable, long id) {
         super(variable.getName());
         this.variable = variable;
+        this.id = id;
+    }
+
+    public long getId() {
+        return this.id;
     }
 
     @Override

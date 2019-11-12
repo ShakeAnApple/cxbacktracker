@@ -1,6 +1,5 @@
 package shakeanapple.backtracker.ui;
 
-import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.common.variable.BooleanValueHolder;
@@ -8,15 +7,10 @@ import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.Connectio
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.DiagramSnapshot;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.FunctionBlockSnapshot;
 import shakeanapple.backtracker.core.ltlexplanation.model.*;
-import shakeanapple.backtracker.ui.explainer.model.Connection;
-import shakeanapple.backtracker.ui.explainer.model.graphcell.BasicComponentCell;
-import shakeanapple.backtracker.ui.explainer.model.graphcell.ExplainerCell;
-import shakeanapple.backtracker.ui.explainer.model.graphcell.Pin;
-import shakeanapple.backtracker.ui.infrasructure.FunctionTwo;
+import shakeanapple.backtracker.ui.explainer.model.graph.Connection;
+import shakeanapple.backtracker.ui.explainer.model.graph.cell.*;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.ViewGraph;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Cell;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.DiagramConnection;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.RectangleCell;
 import shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.graph.VisEdge;
 import shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.graph.VisGraph;
 import shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.graph.VisNode;
@@ -89,16 +83,21 @@ public class GraphHelper {
 
         for (FunctionBlockSnapshot fblock : diagram.getBlocks()) {
             long id = r.nextLong();
-            nodes.put(fblock.getName(), new BasicComponentCell(id, fblock, pinPressHandler));
+            if (diagram.getDiagramInterface().getInputs().contains(fblock.getName())){
+                nodes.put(fblock.getName(), new InputVarCell(id, fblock.getName(), pinPressHandler));
+            } else if (diagram.getDiagramInterface().getOutputs().contains(fblock.getName())){
+                nodes.put(fblock.getName(), new OutputVarCell(id, fblock.getName(), pinPressHandler));
+            } else{
+                nodes.put(fblock.getName(), new BasicComponentCell(id, fblock, pinPressHandler));
+            }
         }
 
         for (ConnectionSnapshot connection : diagram.getConnections()) {
-            String blockNameFrom = connection.from().getName();
+            String blockNameFrom = connection.from() != null ? connection.from().getName() : connection.fromVarName();
             ExplainerCell from = nodes.get(blockNameFrom);
 
-            String blockNameTo = connection.to().getName();
+            String blockNameTo = connection.to() != null ? connection.to().getName() : connection.toVarName();
             ExplainerCell to = nodes.get(blockNameTo);
-
             edges.add(new Connection(from.getOutputPins().get(connection.fromVarName()), to.getInputPins().get(connection.toVarName()), connection.getValue(), connection.isInverted()));
         }
 

@@ -1,5 +1,6 @@
 package shakeanapple.backtracker.core.diagramexplanation.model;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,7 +17,7 @@ public class FBInterface implements InputUpdatedListener {
         this.outputs = outputs.stream().collect(Collectors.toMap(OutputGate::getName, o -> o));
         this.inputs = inputs.stream().collect(Collectors.toMap(InputGate::getName, i -> i));
 
-        this.orderedInputs = inputs;
+        this.orderedInputs = inputs.stream().sorted(Comparator.comparing(inputGate -> inputGate.input().getOrder())).collect(Collectors.toList());
 
         this.interfaceUpdatedEvent = new InterfaceUpdatedEvent(this.inputs);
 

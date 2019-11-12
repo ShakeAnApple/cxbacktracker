@@ -10,11 +10,11 @@ public class OutputGate extends Gate {
 
     private OutputVariable output;
 
-    public OutputGate(OutputVariable output) {
-        super(output.getName(), "OUTPUT_GATE");
+    public OutputGate(OutputVariable output, FunctionBlockBase owner) {
+        super(output.getName(), "OUTPUT_GATE", owner);
 
         this.output = output;
-        this.input = InputVariable.createSharedWithOutput(this.output);
+        this.input = InputVariable.createSharedWithOutput(this.output, this.output.getId());
     }
 
     public InputVariable input() {

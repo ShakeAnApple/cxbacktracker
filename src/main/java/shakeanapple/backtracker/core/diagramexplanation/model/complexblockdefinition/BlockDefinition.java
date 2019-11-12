@@ -9,6 +9,7 @@ import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.Fu
 import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.choice.Choice;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
+import shakeanapple.backtracker.parser.fblockdiagram.ConnectionDescription;
 
 import java.util.*;
 import java.util.stream.Collector;
@@ -72,12 +73,15 @@ public class BlockDefinition {
             FunctionBlockBasic block;
             if (def instanceof ChoiceComponentDefinition) {
                 ChoiceComponentDefinition choiceDef = (ChoiceComponentDefinition) def;
-                List<Choice> choices = choiceDef.getChoices().stream()
-                        .map(chDef -> new Choice(chDef.getCondition().translate(), chDef.getOutput().translate())).collect(Collectors.toList());
+                List<Choice> choices = new ArrayList<>();
+                for (int i = 0; i < choiceDef.getChoices().size(); i++) {
+                    ChoiceDefinition chDef = choiceDef.getChoices().get(i);
+                    choices.add(new Choice(chDef.getCondition().translate(), chDef.getOutput().translate(), i));
+                }
 
                 block = FunctionBlockBasic.choiceInstance(choices, choiceDef.getOutput().translate());
 
-                for(ChoiceDefinition chDef : choiceDef.getChoices()){
+                for (ChoiceDefinition chDef : choiceDef.getChoices()) {
                     compInputs.put(chDef.getCondition().getId(), block.fbInterface().getInputs().get(chDef.getCondition().getName()));
                     compInputs.put(chDef.getOutput().getId(), block.fbInterface().getInputs().get(chDef.getOutput().getName()));
                 }
@@ -92,7 +96,7 @@ public class BlockDefinition {
 
                 block = FunctionBlockBasic.delayInstance(input, defValue, output, delayDef.getDelay());
 
-                if (defValue != null){
+                if (defValue != null) {
                     compInputs.put(delayDef.getDefValue().getId(), block.fbInterface().getInputs().get(delayDef.getDefValue().getName()));
                 }
                 compInputs.put(delayDef.getInput().getId(), block.fbInterface().getInputs().get(delayDef.getInput().getName()));
@@ -111,24 +115,25 @@ public class BlockDefinition {
             blocks.put(def.getId(), block);
         }
 
-        Map<Long, InputGate> inVarsGates = inInterfaceVars.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, in -> new InputGate(in.getValue())));
-        Map<Long, OutputGate> outVarsGates = outInterfaceVars.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, in -> new OutputGate(in.getValue())));
-
         List<InputVariable> diagramInputs = new ArrayList<>();
         List<OutputVariable> diagramOutputs = new ArrayList<>();
 
+        Map<String, Gate> systemOutputConnections = new HashMap<>();
+        Map<String, List<ConnectionDescription>> systemInputConnections = new HashMap<>();
+
         for (ConnectionDefinition conn : this.connections) {
 
-            DiagramElement fbFrom;
-            DiagramElement fbTo;
+            DiagramElement fbFrom = null;
+            DiagramElement fbTo = null;
 
-            Gate fromGate;
-            Gate toGate;
+            Gate fromGate = null;
+            Gate toGate = null;
 
-            if (inInterfaceVars.containsKey(conn.getFromVarId())){
-                fbFrom = inVarsGates.get(conn.getFromVarId());
-                fromGate = ((InputGate)fbFrom);
-            } else{
+            if (inInterfaceVars.containsKey(conn.getFromVarId())) {
+                if (!systemInputConnections.containsKey(inInterfaceVars.get(conn.getFromVarId()).getName())) {
+                    systemInputConnections.put(inInterfaceVars.get(conn.getFromVarId()).getName(), new ArrayList<>());
+                }
+            } else {
                 Long fromBlockId = blockOutputIds.entrySet().stream().filter(bi -> bi.getValue().contains(conn.getFromVarId()))
                         .map(Map.Entry::getKey).findFirst()
                         .orElseThrow(() -> new RuntimeException("Can't find block for output " + conn.getFromVarId()));
@@ -136,10 +141,7 @@ public class BlockDefinition {
                 fromGate = compOutputs.get(conn.getFromVarId());
             }
 
-            if ((outInterfaceVars.containsKey(conn.getToVarId()))){
-                fbTo = outVarsGates.get(conn.getToVarId());
-                toGate = ((OutputGate)fbTo);
-            } else {
+            if (!(outInterfaceVars.containsKey(conn.getToVarId()))) {
                 Long toBlockId = blockInputIds.entrySet().stream().filter(bi -> bi.getValue().contains(conn.getToVarId()))
                         .map(Map.Entry::getKey).findFirst()
                         .orElseThrow(() -> new RuntimeException("Can't find block for input " + conn.getToVarId()));
@@ -147,20 +149,40 @@ public class BlockDefinition {
                 toGate = compInputs.get(conn.getToVarId());
             }
 
-            if (fbFrom instanceof InputGate){
+            if (fbFrom == null) {
+                systemInputConnections.get(inInterfaceVars.get(conn.getFromVarId()).getName()).add(new ConnectionDescription(toGate, conn.isInverted()));
                 diagramInputs.add(toGate.input());
+                continue;
             }
 
-            if (fbTo instanceof OutputGate){
+            if (fbTo == null) {
+                systemOutputConnections.put(outInterfaceVars.get(conn.getToVarId()).getName(), fromGate);
                 diagramOutputs.add(fromGate.output());
+                continue;
             }
 
             fromGate.makeOutgoingConnection(toGate, fbFrom, fbTo, conn.isInverted());
             toGate.makeIncomingConnection(fromGate, fbFrom, fbTo, conn.isInverted());
         }
 
-        FBInterface fbInterface = new FBInterface(inVarsGates.values().stream().sorted(Comparator.comparing(in -> in.input().getOrder())).collect(Collectors.toList()), new ArrayList<>(outVarsGates.values()));
-        return new FunctionBlockComplex(fbName, this.typeName, fbInterface,
-                new Diagram(new ArrayList<>(blocks.values()), diagramInputs, diagramOutputs));
+        FunctionBlockComplex resultFb = new FunctionBlockComplex(fbName, this.typeName, new ArrayList<>(inInterfaceVars.values()), new ArrayList<>(outInterfaceVars.values()),
+                new Diagram(blocks.values().stream().map(b -> (FunctionBlockBase) b).collect(Collectors.toList()),
+                        diagramInputs, diagramOutputs));
+
+        systemOutputConnections.forEach((varName, gate) -> {
+            OutputGate systemToGate = resultFb.fbInterface().getOutputs().get(varName);
+            systemToGate.makeIncomingConnection(gate, gate.getOwner(), systemToGate.getOwner(), false);
+            gate.makeOutgoingConnection(systemToGate, gate.getOwner(), systemToGate.getOwner(), false);
+        });
+
+        systemInputConnections.forEach((varName, connDescrs) -> {
+            InputGate systemOutGate = resultFb.fbInterface().getInputs().get(varName);
+            connDescrs.forEach(descr -> {
+                systemOutGate.makeOutgoingConnection(descr.getToGate(), systemOutGate.getOwner(), descr.getToGate().getOwner(), descr.isInverted());
+                descr.getToGate().makeIncomingConnection(systemOutGate, systemOutGate.getOwner(), descr.getToGate().getOwner(), descr.isInverted());
+            });
+        });
+
+        return resultFb;
     }
 }

@@ -11,6 +11,7 @@ import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVar
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO obsolete
 public class ParsingOutput extends ParsingModuleVariable {
 
     private List<ParsingConnection> outgoingConnections;
@@ -49,6 +50,7 @@ public class ParsingOutput extends ParsingModuleVariable {
             default:
                 throw new RuntimeException("Unsupported var type: " + this.getInfo().getType().name());
         }
-        return new OutputVariable(var);
+        return null;
+//        return new OutputVariable(var);
     }
 }

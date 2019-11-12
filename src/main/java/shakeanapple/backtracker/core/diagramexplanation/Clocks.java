@@ -30,6 +30,7 @@ public class Clocks {
         for (Runnable action : this.nextTickActions){
             action.run();
         }
+        this.nextTickActions.clear();
     }
 
     public void onNextTick(Runnable action) {

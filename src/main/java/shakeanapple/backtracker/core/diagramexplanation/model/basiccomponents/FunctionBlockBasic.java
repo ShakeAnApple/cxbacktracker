@@ -21,15 +21,9 @@ public abstract class FunctionBlockBasic extends FunctionBlockBase {
     private final List<OutputVariable> outputs;
 
     protected FunctionBlockBasic(String name, List<InputVariable> inputs, List<OutputVariable> outputs) {
-        super(name, "BASIC", inferInterface(inputs, outputs));
+        super(name, "BASIC", inputs, outputs);
         this.inputs = inputs;
         this.outputs = outputs;
-    }
-
-    private static FBInterface inferInterface(List<InputVariable> inputs, List<OutputVariable> outputs) {
-        List<InputGate> inGates = inputs.stream().map(InputGate::new).collect(Collectors.toList());
-        List<OutputGate> outGates = outputs.stream().map(OutputGate::new).collect(Collectors.toList());
-        return new FBInterface(inGates, outGates);
     }
 
     public static FunctionBlockBasic instance(ComponentDefinitionType type, List<InputVariable> inputs, List<OutputVariable> outputs) {

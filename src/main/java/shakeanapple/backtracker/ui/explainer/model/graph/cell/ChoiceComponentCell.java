@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.ui.explainer.model.graphcell;
+package shakeanapple.backtracker.ui.explainer.model.graph.cell;
 
 //public class ChoiceComponentCell extends Cell {
 //    private String name;
