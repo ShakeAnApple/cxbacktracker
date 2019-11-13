@@ -1,6 +1,9 @@
-package shakeanapple.backtracker.nusmvparsing;
+package shakeanapple.backtracker.nusmvparsing.expression;
 
-import shakeanapple.backtracker.parser.basiccomponents.xmlmodel.VarType;
+import shakeanapple.backtracker.nusmvparsing.NuSMVModule;
+import shakeanapple.backtracker.nusmvparsing.Util;
+import shakeanapple.backtracker.nusmvparsing.exceptions.UndeclaredVariableException;
+import shakeanapple.backtracker.parser.basiccomponents.xmlmodel.InputVariable;
 
 import java.util.Map;
 
@@ -8,11 +11,11 @@ import java.util.Map;
  * Created by buzhinsky on 11/20/17.
  */
 public class Variable extends Expression {
-    private enum ReferenceType {
+    public enum ReferenceType {
         CURRENT, NEXT, DECLARATION
     }
 
-    private final ReferenceType referenceType;
+    public final ReferenceType referenceType;
     private final String strType;
 
     /**
@@ -52,9 +55,13 @@ public class Variable extends Expression {
     }
 
     @Override
-    public Variable forwardInferTypes(Map<String, Variable> allVarDeclarations) {
+    public Variable forwardInferTypes(Map<String, Variable> allVarDeclarations) throws UndeclaredVariableException {
         final Variable declaration = allVarDeclarations.get(name);
-        return declaration == null ? this : new Variable(name, referenceType == ReferenceType.NEXT, declaration.type);
+        if (declaration == null) {
+            throw new UndeclaredVariableException("Undeclared variable: " + name);
+        }
+        return declaration.type == ExpressionType.UNKNOWN ? this
+                : new Variable(name, referenceType == ReferenceType.NEXT, declaration.type);
     }
 
     @Override
@@ -71,10 +78,9 @@ public class Variable extends Expression {
         }
     }
 
-    VarType getVarType() throws UnresolvedTypeException {
-        if (type == ExpressionType.UNKNOWN) {
-            throw new UnresolvedTypeException("Unresolved type of variable " + name);
-        }
-        return type == ExpressionType.BOOL ? VarType.BOOLEAN : VarType.INTEGER;
+    @Override
+    public InputVariable generate(NuSMVModule.FunctionBlockNetworkContext context, int order)
+            throws UndeclaredVariableException {
+        return context.referenceVariable(this, order);
     }
 }

@@ -5,6 +5,7 @@ import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
 import shakeanapple.backtracker.antlrgenerated.nusmvLexer;
 import shakeanapple.backtracker.antlrgenerated.nusmvParser;
+import shakeanapple.backtracker.nusmvparsing.exceptions.*;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -58,7 +59,7 @@ public class ParseBlockMain {
         } catch (NullPointerException | RecognitionException e) {
             System.err.println("Parse error with " + filename);
             return null;
-        } catch (TypeInferenceException e) {
+        } catch (TypeInferenceException | UndeclaredVariableException | DuplicateAssignmentException e) {
             e.printStackTrace();
             return null;
         } finally {
@@ -92,7 +93,7 @@ public class ParseBlockMain {
             System.out.println(result);
             try {
                 System.out.println(result.toFunctionBlockNetwork());
-            } catch (UnresolvedTypeException e) {
+            } catch (UnresolvedTypeException | UndeclaredVariableException | MissingAssignmentException e) {
                 e.printStackTrace();
             }
             try (PrintWriter pw = new PrintWriter(Paths.get(dirName, filename + ".preprocessed").toFile())) {

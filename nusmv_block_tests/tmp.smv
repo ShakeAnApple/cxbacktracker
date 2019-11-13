@@ -4,3 +4,6 @@ VAR
     y: boolean;
 ASSIGN
     next(y) := next(x) | !x;
+    init(x) := TRUE;
+    next(x) := next(x);
+    init(y) := TRUE;

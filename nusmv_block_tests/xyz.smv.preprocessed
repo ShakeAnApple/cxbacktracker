@@ -4,8 +4,6 @@ VAR
     y: boolean;
     z: boolean;
     t: 0..5;
-    test1: -2..10;
-    test2: { 0, 1 };
 ASSIGN
     init(x) := !(INP);
     next(x) := (x & next(y));
@@ -14,4 +12,4 @@ ASSIGN
     init(z) := FALSE;
     next(z) := INP;
     init(t) := case x: (1 + 1); !(x): case case y: x; TRUE: y; esac: 1; TRUE: 0; esac; TRUE: 0; esac;
-    next(t) := case next(x): case next(z): 4; TRUE: 3; esac; TRUE: (t * 2); esac;
+    next(t) := case next(x): case next(z): 4; TRUE: 3; esac; TRUE: (t - 2); esac;

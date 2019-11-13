@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import shakeanapple.backtracker.nusmvparsing.*;
+import shakeanapple.backtracker.nusmvparsing.expression.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -302,7 +303,7 @@ public class nusmvParser extends Parser {
 				{
 				setState(69);
 				((AtomContext)_localctx).constant = constant();
-				 ((AtomContext)_localctx).f =  new Constant((((AtomContext)_localctx).constant!=null?_input.getText(((AtomContext)_localctx).constant.start,((AtomContext)_localctx).constant.stop):null)); 
+				 ((AtomContext)_localctx).f =  new Constant((((AtomContext)_localctx).constant!=null?_input.getText(((AtomContext)_localctx).constant.start,((AtomContext)_localctx).constant.stop):null));
 				}
 				break;
 			case ID:
@@ -310,7 +311,7 @@ public class nusmvParser extends Parser {
 				{
 				setState(72);
 				((AtomContext)_localctx).composite_id = composite_id();
-				 ((AtomContext)_localctx).f =  new Variable((((AtomContext)_localctx).composite_id!=null?_input.getText(((AtomContext)_localctx).composite_id.start,((AtomContext)_localctx).composite_id.stop):null), false); 
+				 ((AtomContext)_localctx).f =  new Variable((((AtomContext)_localctx).composite_id!=null?_input.getText(((AtomContext)_localctx).composite_id.start,((AtomContext)_localctx).composite_id.stop):null), false);
 				}
 				break;
 			case NEXT:
@@ -360,7 +361,7 @@ public class nusmvParser extends Parser {
 				} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__3) | (1L << T__7) | (1L << T__8) | (1L << INT_CONST) | (1L << TRUE) | (1L << FALSE) | (1L << NEXT) | (1L << CASE) | (1L << ID))) != 0) );
 				setState(94);
 				match(ESAC);
-				 ((AtomContext)_localctx).f =  new CaseOperator(conditions, options); 
+				 ((AtomContext)_localctx).f =  new CaseOperator(conditions, options);
 				}
 				break;
 			default:
@@ -480,7 +481,7 @@ public class nusmvParser extends Parser {
 				((Unary_operatorContext)_localctx).unary_operator_sign = unary_operator_sign();
 				setState(105);
 				((Unary_operatorContext)_localctx).inside = unary_operator();
-				 ((Unary_operatorContext)_localctx).f =  new UnaryOperator((((Unary_operatorContext)_localctx).unary_operator_sign!=null?_input.getText(((Unary_operatorContext)_localctx).unary_operator_sign.start,((Unary_operatorContext)_localctx).unary_operator_sign.stop):null), ((Unary_operatorContext)_localctx).inside.f); 
+				 ((Unary_operatorContext)_localctx).f =  new UnaryOperator((((Unary_operatorContext)_localctx).unary_operator_sign!=null?_input.getText(((Unary_operatorContext)_localctx).unary_operator_sign.start,((Unary_operatorContext)_localctx).unary_operator_sign.stop):null), ((Unary_operatorContext)_localctx).inside.f);
 				}
 				break;
 			default:
@@ -567,7 +568,7 @@ public class nusmvParser extends Parser {
 				}
 				setState(120);
 				((Binary_operator7Context)_localctx).f2 = unary_operator();
-				 ((Binary_operator7Context)_localctx).f =  new BinaryOperator(op, _localctx.f, ((Binary_operator7Context)_localctx).f2.f); 
+				 ((Binary_operator7Context)_localctx).f =  new BinaryOperator(op, _localctx.f, ((Binary_operator7Context)_localctx).f2.f);
 				}
 				}
 				setState(127);
