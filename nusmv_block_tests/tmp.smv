@@ -2,8 +2,11 @@ MODULE main
 VAR
     x: boolean;
     y: boolean;
+    u: {0,1};
 ASSIGN
     next(y) := next(x) | !x;
-    init(x) := TRUE;
+    init(x) := FALSE;
     next(x) := next(x);
     init(y) := TRUE;
+    init(u) := count(x);
+    next(u) := count(x, x & y, !y, x == y);

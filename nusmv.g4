@@ -7,6 +7,7 @@ options {
 @header {
 import java.util.*;
 import shakeanapple.backtracker.nusmvparsing.*;
+import shakeanapple.backtracker.nusmvparsing.expression.*;
 }
 
 @parser::members {
@@ -25,6 +26,8 @@ INIT : 'init'; NEXT : 'next';
 MODULE : 'MODULE'; VAR : 'VAR'; ASSIGN : 'ASSIGN'; DEFINE : 'DEFINE';
 
 BOOLEAN : 'boolean';
+
+COUNT : 'count'; MOD : 'mod'; XOR : 'xor'; XNOR : 'xnor';
 
 CASE : 'case'; ESAC : 'esac';
 
@@ -50,6 +53,10 @@ atom returns[Expression f]
         List<Expression> options = new ArrayList<>();
      } (c=binary_operator1 { conditions.add($c.f); } ':' o=binary_operator1 { options.add($o.f); } ';')+ ESAC
      { $f = new CaseOperator(conditions, options); }
+    | COUNT {
+        List<Expression> arguments = new ArrayList<>();
+     } '(' a1=binary_operator1 { arguments.add($a1.f); } (',' a2=binary_operator1 { arguments.add($a2.f); })*')'
+     { $f = new CountOperator(arguments); }
     ;
 
 unary_operator_sign : '!' | '-';
@@ -61,7 +68,7 @@ unary_operator returns[Expression f]
 // binary *, /, mod
 binary_operator7 returns[Expression f]
     : f1=unary_operator { $f = $f1.f; String op; }
-        (('*' { op = "*"; } | '/' { op = "/"; } | 'mod' { op = "mod"; })
+        (('*' { op = "*"; } | '/' { op = "/"; } | MOD { op = "mod"; })
       f2=unary_operator { $f = new BinaryOperator(op, $f, $f2.f); })*
     ;
 
@@ -83,7 +90,7 @@ binary_operator4 returns[Expression f]
       { $f = new BinaryOperator($inside.text, $f, $f2.f); })*
     ;
 
-binary_operator_sign3 : '|' | 'xnor' | 'xor';
+binary_operator_sign3 : '|' | XOR | XNOR;
 binary_operator3 returns[Expression f]
     : f1=binary_operator4 { $f = $f1.f; } (inside=binary_operator_sign3 f2=binary_operator4
       { $f = new BinaryOperator($inside.text, $f, $f2.f); })*

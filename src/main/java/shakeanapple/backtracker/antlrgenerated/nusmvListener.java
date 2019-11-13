@@ -3,6 +3,7 @@ package shakeanapple.backtracker.antlrgenerated;
 
 import java.util.*;
 import shakeanapple.backtracker.nusmvparsing.*;
+import shakeanapple.backtracker.nusmvparsing.expression.*;
 
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 

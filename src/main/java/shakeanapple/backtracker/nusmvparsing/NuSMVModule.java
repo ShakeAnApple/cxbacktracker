@@ -224,11 +224,10 @@ public class NuSMVModule {
                     if (a == null) {
                         throw new MissingAssignmentException("Missing assignment " + info);
                     }
-                    expressionsToAttach.add(a.getRight().generate(this, type == Assignment.Type.INIT ? 1 : 3));
+                    expressionsToAttach.add(a.getRight().generate(this, expressionsToAttach.size()));
                 }
                 final Choice cInit = new Choice(createWire(firstCycleOutput, 0), expressionsToAttach.get(0));
-                final Choice cNext = new Choice(constantBool(true, 2), expressionsToAttach.get(1));
-                // TODO are orders set correctly here?
+                final Choice cNext = new Choice(constantBool(true, 1), expressionsToAttach.get(1));
                 Arrays.asList(cInit, cNext).forEach(c -> internalVariableChoices.get(v.name).add(c));
             }
 

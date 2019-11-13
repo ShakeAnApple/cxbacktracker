@@ -84,9 +84,8 @@ public class CaseOperator extends Expression {
             throws UnresolvedTypeException, UndeclaredVariableException {
         final List<Choice> choices = new ArrayList<>();
         for (int i = 0; i < conditions.size(); i++) {
-            choices.add(new Choice(conditions.get(i).generate(context, 2 * i),
-                    options.get(i).generate(context, 2 * i + 1)));
-            // TODO are orders set correctly here?
+            choices.add(new Choice(conditions.get(i).generate(context, i),
+                    options.get(i).generate(context, i)));
         }
         final OutputVariable output = context.newOutputVariable(getVarType());
         context.createComponent(new ChoiceComponent(getChoiceType(), context.newID(), choices, output));
