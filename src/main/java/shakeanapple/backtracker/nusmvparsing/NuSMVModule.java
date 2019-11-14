@@ -17,7 +17,7 @@ public class NuSMVModule {
     private final Map<String, Variable> allVariables = new LinkedHashMap<>();
     private final Map<AssignmentInfo, Assignment> assignments = new LinkedHashMap<>();
 
-    private class AssignmentInfo {
+    private static class AssignmentInfo {
         final String varName;
         final Assignment.Type type;
 
@@ -82,7 +82,7 @@ public class NuSMVModule {
     public String toString() {
         return String.join(Util.NL,
                 "MODULE " + name +
-                Util.par(inputVariables.keySet().stream().collect(Collectors.joining(", "))),
+                Util.par(String.join(", ", inputVariables.keySet())),
                 "VAR",
                 internalVariables.values().stream().map(v -> "    " + v).collect(Collectors.joining(Util.NL)),
                 "ASSIGN",
@@ -119,9 +119,8 @@ public class NuSMVModule {
             return constant(value, order);
         }
 
-        public <T extends BasicComponentAbstract>T createComponent(T d) {
+        public <T extends BasicComponentAbstract> void createComponent(T d) {
             components.add(d);
-            return d;
         }
 
         private OutputVariable createDelay(InputVariable vIn, InputVariable vDefault) {

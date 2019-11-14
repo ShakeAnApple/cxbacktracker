@@ -1,4 +1,4 @@
-// Generated from /home/buzhinsky/repos/cxbacktracker/nusmv.g4 by ANTLR 4.6
+// Generated from /home/buzhinsky/repos/cxbacktracker/nusmv.g4 by ANTLR 4.7.2
 package shakeanapple.backtracker.antlrgenerated;
 
 import org.antlr.v4.runtime.*;
@@ -18,7 +18,7 @@ import java.util.List;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class nusmvParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.6", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.7.2", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -39,30 +39,39 @@ public class nusmvParser extends Parser {
 		RULE_binary_operator_sign1 = 16, RULE_binary_operator1 = 17, RULE_assignment = 18, 
 		RULE_type = 19, RULE_internal_var_declaration = 20, RULE_input_var_declaration = 21, 
 		RULE_module = 22;
-	public static final String[] ruleNames = {
-		"constant", "composite_id", "atom", "unary_operator_sign", "unary_operator", 
-		"binary_operator7", "binary_operator6", "binary_operator_sign5", "binary_operator5", 
-		"binary_operator_sign4", "binary_operator4", "binary_operator_sign3", 
-		"binary_operator3", "ternary_operator", "binary_operator_sign2", "binary_operator2", 
-		"binary_operator_sign1", "binary_operator1", "assignment", "type", "internal_var_declaration", 
-		"input_var_declaration", "module"
-	};
+	private static String[] makeRuleNames() {
+		return new String[] {
+			"constant", "composite_id", "atom", "unary_operator_sign", "unary_operator", 
+			"binary_operator7", "binary_operator6", "binary_operator_sign5", "binary_operator5", 
+			"binary_operator_sign4", "binary_operator4", "binary_operator_sign3", 
+			"binary_operator3", "ternary_operator", "binary_operator_sign2", "binary_operator2", 
+			"binary_operator_sign1", "binary_operator1", "assignment", "type", "internal_var_declaration", 
+			"input_var_declaration", "module"
+		};
+	}
+	public static final String[] ruleNames = makeRuleNames();
 
-	private static final String[] _LITERAL_NAMES = {
-		null, "'.'", "'['", "']'", "'('", "')'", "':'", "';'", "','", "'!'", "'-'", 
-		"'*'", "'/'", "'+'", "'='", "'!='", "'>'", "'>='", "'<'", "'<='", "'&'", 
-		"'|'", "'?'", "'<->'", "'->'", "':='", "'..'", "'{'", "'}'", null, null, 
-		null, "'TRUE'", "'FALSE'", "'init'", "'next'", "'MODULE'", "'VAR'", "'ASSIGN'", 
-		"'DEFINE'", "'boolean'", "'count'", "'mod'", "'xor'", "'xnor'", "'case'", 
-		"'esac'"
-	};
-	private static final String[] _SYMBOLIC_NAMES = {
-		null, null, null, null, null, null, null, null, null, null, null, null, 
-		null, null, null, null, null, null, null, null, null, null, null, null, 
-		null, null, null, null, null, "WS", "LINE_COMMENT", "INT_CONST", "TRUE", 
-		"FALSE", "INIT", "NEXT", "MODULE", "VAR", "ASSIGN", "DEFINE", "BOOLEAN", 
-		"COUNT", "MOD", "XOR", "XNOR", "CASE", "ESAC", "ID"
-	};
+	private static String[] makeLiteralNames() {
+		return new String[] {
+			null, "'.'", "'['", "']'", "'('", "')'", "':'", "';'", "','", "'!'", 
+			"'-'", "'*'", "'/'", "'+'", "'='", "'!='", "'>'", "'>='", "'<'", "'<='", 
+			"'&'", "'|'", "'?'", "'<->'", "'->'", "':='", "'..'", "'{'", "'}'", null, 
+			null, null, "'TRUE'", "'FALSE'", "'init'", "'next'", "'MODULE'", "'VAR'", 
+			"'ASSIGN'", "'DEFINE'", "'boolean'", "'count'", "'mod'", "'xor'", "'xnor'", 
+			"'case'", "'esac'"
+		};
+	}
+	private static final String[] _LITERAL_NAMES = makeLiteralNames();
+	private static String[] makeSymbolicNames() {
+		return new String[] {
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, null, "WS", "LINE_COMMENT", "INT_CONST", "TRUE", 
+			"FALSE", "INIT", "NEXT", "MODULE", "VAR", "ASSIGN", "DEFINE", "BOOLEAN", 
+			"COUNT", "MOD", "XOR", "XNOR", "CASE", "ESAC", "ID"
+		};
+	}
+	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
 	/**
@@ -114,6 +123,7 @@ public class nusmvParser extends Parser {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
+
 	public static class ConstantContext extends ParserRuleContext {
 		public TerminalNode INT_CONST() { return getToken(nusmvParser.INT_CONST, 0); }
 		public TerminalNode TRUE() { return getToken(nusmvParser.TRUE, 0); }
@@ -1835,7 +1845,7 @@ public class nusmvParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\61\u014f\4\2\t\2"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\61\u014f\4\2\t\2"+
 		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
 		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\3\2\3\2\3"+
@@ -1862,12 +1872,12 @@ public class nusmvParser extends Parser {
 		"\13\30\3\30\3\30\3\30\3\30\3\30\7\30\u0143\n\30\f\30\16\30\u0146\13\30"+
 		"\7\30\u0148\n\30\f\30\16\30\u014b\13\30\3\30\3\30\3\30\2\2\31\2\4\6\b"+
 		"\n\f\16\20\22\24\26\30\32\34\36 \"$&(*,.\2\6\3\2!#\3\2\13\f\3\2\20\25"+
-		"\4\2\27\27-.\u015a\2\60\3\2\2\2\4\62\3\2\2\2\6t\3\2\2\2\bv\3\2\2\2\n\177"+
-		"\3\2\2\2\f\u0081\3\2\2\2\16\u0093\3\2\2\2\20\u00a3\3\2\2\2\22\u00a5\3"+
-		"\2\2\2\24\u00ad\3\2\2\2\26\u00af\3\2\2\2\30\u00ba\3\2\2\2\32\u00bc\3\2"+
-		"\2\2\34\u00c7\3\2\2\2\36\u00d1\3\2\2\2 \u00d3\3\2\2\2\"\u00de\3\2\2\2"+
-		"$\u00e0\3\2\2\2&\u00e8\3\2\2\2(\u0106\3\2\2\2*\u0108\3\2\2\2,\u0113\3"+
-		"\2\2\2.\u0115\3\2\2\2\60\61\t\2\2\2\61\3\3\2\2\2\62\67\7\61\2\2\63\64"+
+		"\4\2\27\27-.\2\u015a\2\60\3\2\2\2\4\62\3\2\2\2\6t\3\2\2\2\bv\3\2\2\2\n"+
+		"\177\3\2\2\2\f\u0081\3\2\2\2\16\u0093\3\2\2\2\20\u00a3\3\2\2\2\22\u00a5"+
+		"\3\2\2\2\24\u00ad\3\2\2\2\26\u00af\3\2\2\2\30\u00ba\3\2\2\2\32\u00bc\3"+
+		"\2\2\2\34\u00c7\3\2\2\2\36\u00d1\3\2\2\2 \u00d3\3\2\2\2\"\u00de\3\2\2"+
+		"\2$\u00e0\3\2\2\2&\u00e8\3\2\2\2(\u0106\3\2\2\2*\u0108\3\2\2\2,\u0113"+
+		"\3\2\2\2.\u0115\3\2\2\2\60\61\t\2\2\2\61\3\3\2\2\2\62\67\7\61\2\2\63\64"+
 		"\7\3\2\2\64\66\7\61\2\2\65\63\3\2\2\2\669\3\2\2\2\67\65\3\2\2\2\678\3"+
 		"\2\2\28?\3\2\2\29\67\3\2\2\2:;\7\4\2\2;<\7!\2\2<>\7\5\2\2=:\3\2\2\2>A"+
 		"\3\2\2\2?=\3\2\2\2?@\3\2\2\2@\5\3\2\2\2A?\3\2\2\2BC\7\6\2\2CD\5$\23\2"+
