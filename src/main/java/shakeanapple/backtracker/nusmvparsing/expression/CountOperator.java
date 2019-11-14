@@ -1,7 +1,9 @@
 package shakeanapple.backtracker.nusmvparsing.expression;
 
+import shakeanapple.backtracker.nusmvparsing.Assignment;
 import shakeanapple.backtracker.nusmvparsing.NuSMVModule;
 import shakeanapple.backtracker.nusmvparsing.Util;
+import shakeanapple.backtracker.nusmvparsing.exceptions.TooDeepNextException;
 import shakeanapple.backtracker.nusmvparsing.exceptions.TypeInferenceException;
 import shakeanapple.backtracker.nusmvparsing.exceptions.UndeclaredVariableException;
 import shakeanapple.backtracker.nusmvparsing.exceptions.UnresolvedTypeException;
@@ -42,12 +44,18 @@ public class CountOperator extends Expression {
     public CountOperator forwardInferTypes(Map<String, Variable> allVarDeclarations) throws TypeInferenceException,
             UndeclaredVariableException {
         final List<Expression> newArguments = new ArrayList<>();
-        for (Expression argument : arguments) {
-            newArguments.add(argument.forwardInferTypes(allVarDeclarations));
+        for (Expression e : arguments) {
+            newArguments.add(e.forwardInferTypes(allVarDeclarations));
         }
         final CountOperator result = new CountOperator(newArguments);
         result.typeCheck();
         return result;
+    }
+
+    @Override
+    public Expression propagateNext(boolean propagating, boolean nextAllowed, Assignment topLevelAssignment)
+            throws TooDeepNextException {
+        return new CountOperator(nextPropagateList(arguments, propagating, nextAllowed, topLevelAssignment));
     }
 
     @Override

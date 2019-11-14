@@ -1,6 +1,11 @@
 // Generated from /home/buzhinsky/repos/cxbacktracker/nusmv.g4 by ANTLR 4.7.2
 package shakeanapple.backtracker.antlrgenerated;
 
+import java.util.*;
+import shakeanapple.backtracker.nusmvparsing.*;
+import shakeanapple.backtracker.nusmvparsing.expression.*;
+
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;

@@ -1,7 +1,9 @@
 package shakeanapple.backtracker.nusmvparsing.expression;
 
+import shakeanapple.backtracker.nusmvparsing.Assignment;
 import shakeanapple.backtracker.nusmvparsing.NuSMVModule;
 import shakeanapple.backtracker.nusmvparsing.Util;
+import shakeanapple.backtracker.nusmvparsing.exceptions.TooDeepNextException;
 import shakeanapple.backtracker.nusmvparsing.exceptions.TypeInferenceException;
 import shakeanapple.backtracker.nusmvparsing.exceptions.UndeclaredVariableException;
 import shakeanapple.backtracker.nusmvparsing.exceptions.UnresolvedTypeException;
@@ -14,12 +16,10 @@ import java.util.Map;
  * Created by buzhinsky on 4/18/17.
  */
 public class UnaryOperator extends Expression {
-    public final String name;
     private final Expression argument;
 
     public UnaryOperator(String name, Expression argument) {
         super(name, correctType(name));
-        this.name = name;
         this.argument = argument;
     }
 
@@ -45,6 +45,12 @@ public class UnaryOperator extends Expression {
         final UnaryOperator result = new UnaryOperator(name, argument.forwardInferTypes(allVarDeclarations));
         result.typeCheck();
         return result;
+    }
+
+    @Override
+    public Expression propagateNext(boolean propagating, boolean nextAllowed, Assignment topLevelAssignment)
+            throws TooDeepNextException {
+        return argument.propagateNext(propagating, nextAllowed, topLevelAssignment);
     }
 
     private void typeCheck() throws TypeInferenceException {

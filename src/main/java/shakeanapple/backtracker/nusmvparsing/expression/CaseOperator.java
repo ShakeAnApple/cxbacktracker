@@ -1,6 +1,8 @@
 package shakeanapple.backtracker.nusmvparsing.expression;
 
+import shakeanapple.backtracker.nusmvparsing.Assignment;
 import shakeanapple.backtracker.nusmvparsing.NuSMVModule;
+import shakeanapple.backtracker.nusmvparsing.exceptions.TooDeepNextException;
 import shakeanapple.backtracker.nusmvparsing.exceptions.TypeInferenceException;
 import shakeanapple.backtracker.nusmvparsing.exceptions.UndeclaredVariableException;
 import shakeanapple.backtracker.nusmvparsing.exceptions.UnresolvedTypeException;
@@ -69,14 +71,22 @@ public class CaseOperator extends Expression {
     public CaseOperator forwardInferTypes(Map<String, Variable> allVarDeclarations)
             throws TypeInferenceException, UndeclaredVariableException {
         final List<Expression> newConditions = new ArrayList<>();
-        for (Expression c : conditions) {
-            newConditions.add(c.forwardInferTypes(allVarDeclarations));
+        for (Expression e : conditions) {
+            newConditions.add(e.forwardInferTypes(allVarDeclarations));
         }
         final List<Expression> newOptions = new ArrayList<>();
-        for (Expression c : options) {
-            newOptions.add(c.forwardInferTypes(allVarDeclarations));
+        for (Expression e : options) {
+            newOptions.add(e.forwardInferTypes(allVarDeclarations));
         }
         return new CaseOperator(newConditions, newOptions, inferType(newConditions, newOptions));
+    }
+
+    @Override
+    public Expression propagateNext(boolean propagating, boolean nextAllowed, Assignment topLevelAssignment) throws TooDeepNextException {
+        return new CaseOperator(
+                nextPropagateList(conditions, propagating, nextAllowed, topLevelAssignment),
+                nextPropagateList(options, propagating, nextAllowed, topLevelAssignment),
+                type);
     }
 
     @Override

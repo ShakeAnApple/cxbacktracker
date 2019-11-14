@@ -69,10 +69,16 @@ public class NuSMVModule {
         }
     }
 
-    void clarifyTypes() throws TypeInferenceException, UndeclaredVariableException, DuplicateAssignmentException {
+    void clarifyTypes() throws TypeInferenceException, UndeclaredVariableException, DuplicateAssignmentException,
+            TooDeepNextException {
         if (!savedExceptions.isEmpty()) {
             throw savedExceptions.get(0);
         }
+        // push next() to variables
+        for (AssignmentInfo key : new LinkedHashSet<>(assignments.keySet())) {
+            assignments.put(key, assignments.get(key).propagateNext());
+        }
+        // perform forward type inference based on the types of variables and operators
         for (AssignmentInfo key : new LinkedHashSet<>(assignments.keySet())) {
             assignments.put(key, assignments.get(key).forwardInferTypes(allVariables));
         }

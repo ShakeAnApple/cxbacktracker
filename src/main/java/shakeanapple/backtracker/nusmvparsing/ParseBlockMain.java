@@ -25,7 +25,7 @@ public class ParseBlockMain {
         final List<String> warnings = new ArrayList<>();
         NuSMVModule result;
         try (InputStream in = new ByteArrayInputStream(bytes)) {
-            final nusmvLexer lexer = new nusmvLexer(new ANTLRInputStream(in));
+            final nusmvLexer lexer = new nusmvLexer(CharStreams.fromStream(in));
             final CommonTokenStream tokens = new CommonTokenStream(lexer);
             final nusmvParser parser = new nusmvParser(tokens);
             parser.addErrorListener(new ANTLRErrorListener() {
@@ -55,11 +55,12 @@ public class ParseBlockMain {
             });
             result = parser.module().m;
             result.clarifyTypes();
-            return result;
+            return errors.isEmpty() ? result : null;
         } catch (NullPointerException | RecognitionException e) {
             System.err.println("Parse error with " + filename);
             return null;
-        } catch (TypeInferenceException | UndeclaredVariableException | DuplicateAssignmentException e) {
+        } catch (TypeInferenceException | UndeclaredVariableException | DuplicateAssignmentException
+                | TooDeepNextException e) {
             e.printStackTrace();
             return null;
         } finally {

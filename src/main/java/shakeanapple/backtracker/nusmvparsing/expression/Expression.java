@@ -1,6 +1,8 @@
 package shakeanapple.backtracker.nusmvparsing.expression;
 
+import shakeanapple.backtracker.nusmvparsing.Assignment;
 import shakeanapple.backtracker.nusmvparsing.NuSMVModule;
+import shakeanapple.backtracker.nusmvparsing.exceptions.TooDeepNextException;
 import shakeanapple.backtracker.nusmvparsing.exceptions.TypeInferenceException;
 import shakeanapple.backtracker.nusmvparsing.exceptions.UndeclaredVariableException;
 import shakeanapple.backtracker.nusmvparsing.exceptions.UnresolvedTypeException;
@@ -8,6 +10,8 @@ import shakeanapple.backtracker.parser.basiccomponents.xmlmodel.ComponentType;
 import shakeanapple.backtracker.parser.basiccomponents.xmlmodel.InputVariable;
 import shakeanapple.backtracker.parser.basiccomponents.xmlmodel.VarType;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,6 +29,8 @@ public abstract class Expression {
     public abstract Expression forwardInferTypes(Map<String, Variable> allVarDeclarations)
             throws TypeInferenceException, UndeclaredVariableException;
 
+    public abstract Expression propagateNext(boolean propagating, boolean nextAllowed, Assignment topLevelAssignment) throws TooDeepNextException;
+
     public abstract InputVariable generate(NuSMVModule.FunctionBlockNetworkContext context, int order)
             throws UndeclaredVariableException, UnresolvedTypeException;
 
@@ -40,5 +46,14 @@ public abstract class Expression {
             throw new UnresolvedTypeException("Unresolved type of expression " + this);
         }
         return type == ExpressionType.BOOL ? ComponentType.BOOL_CHOICE : ComponentType.INT_CHOICE;
+    }
+
+    List<Expression> nextPropagateList(List<Expression> list, boolean propagating, boolean nextAllowed,
+                                       Assignment topLevelAssignment) throws TooDeepNextException {
+        final List<Expression> newList = new ArrayList<>();
+        for (Expression e : list) {
+            newList.add(e.propagateNext(propagating, nextAllowed, topLevelAssignment));
+        }
+        return newList;
     }
 }

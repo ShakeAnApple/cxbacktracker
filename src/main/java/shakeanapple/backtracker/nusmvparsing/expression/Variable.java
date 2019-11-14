@@ -1,5 +1,6 @@
 package shakeanapple.backtracker.nusmvparsing.expression;
 
+import shakeanapple.backtracker.nusmvparsing.Assignment;
 import shakeanapple.backtracker.nusmvparsing.NuSMVModule;
 import shakeanapple.backtracker.nusmvparsing.Util;
 import shakeanapple.backtracker.nusmvparsing.exceptions.UndeclaredVariableException;
@@ -62,6 +63,16 @@ public class Variable extends Expression {
         }
         return declaration.type == ExpressionType.UNKNOWN ? this
                 : new Variable(name, referenceType == ReferenceType.NEXT, declaration.type);
+    }
+
+    @Override
+    public Expression propagateNext(boolean propagating, boolean nextAllowed, Assignment topLevelAssignment) {
+        if (referenceType == ReferenceType.DECLARATION) {
+            throw new AssertionError("Trying to take next of variable declaration " + this);
+        } else if (propagating && referenceType == ReferenceType.NEXT) {
+            throw new AssertionError("Trying to take next(" + this + ")");
+        }
+        return new Variable(name, propagating);
     }
 
     @Override

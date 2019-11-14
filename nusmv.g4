@@ -47,7 +47,7 @@ atom returns[Expression f]
     : '(' inside=binary_operator1 ')' { $f = $inside.f; }
     | constant { $f = new Constant($constant.text); }
     | composite_id { $f = new Variable($composite_id.text, false); }
-    | NEXT '(' composite_id ')' { $f = new Variable($composite_id.text, true); }
+    | NEXT '(' inside=binary_operator1 ')' { $f = new NextOperator($inside.f); }
     | CASE {
         List<Expression> conditions = new ArrayList<>();
         List<Expression> options = new ArrayList<>();

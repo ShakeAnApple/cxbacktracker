@@ -1,5 +1,6 @@
 package shakeanapple.backtracker.nusmvparsing.expression;
 
+import shakeanapple.backtracker.nusmvparsing.Assignment;
 import shakeanapple.backtracker.nusmvparsing.NuSMVModule;
 import shakeanapple.backtracker.parser.basiccomponents.xmlmodel.InputVariable;
 
@@ -25,6 +26,11 @@ public class Constant extends Expression {
 
     @Override
     public Expression forwardInferTypes(Map<String, Variable> allVarDeclarations) {
+        return this;
+    }
+
+    @Override
+    public Expression propagateNext(boolean propagating, boolean nextAllowed, Assignment topLevelAssignment) {
         return this;
     }
 

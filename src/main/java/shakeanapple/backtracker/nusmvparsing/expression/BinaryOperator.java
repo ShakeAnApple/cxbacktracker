@@ -1,7 +1,9 @@
 package shakeanapple.backtracker.nusmvparsing.expression;
 
+import shakeanapple.backtracker.nusmvparsing.Assignment;
 import shakeanapple.backtracker.nusmvparsing.NuSMVModule;
 import shakeanapple.backtracker.nusmvparsing.Util;
+import shakeanapple.backtracker.nusmvparsing.exceptions.TooDeepNextException;
 import shakeanapple.backtracker.nusmvparsing.exceptions.TypeInferenceException;
 import shakeanapple.backtracker.nusmvparsing.exceptions.UndeclaredVariableException;
 import shakeanapple.backtracker.nusmvparsing.exceptions.UnresolvedTypeException;
@@ -10,22 +12,17 @@ import shakeanapple.backtracker.parser.basiccomponents.xmlmodel.ComponentType;
 import shakeanapple.backtracker.parser.basiccomponents.xmlmodel.InputVariable;
 import shakeanapple.backtracker.parser.basiccomponents.xmlmodel.OutputVariable;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by buzhinsky on 4/18/17.
  */
 public class BinaryOperator extends Expression {
-    public final String name;
     private final Expression leftArgument;
     private final Expression rightArgument;
 
     public BinaryOperator(String name, Expression leftArgument, Expression rightArgument) {
         super(name, correctType(name));
-        this.name = name;
         this.leftArgument = leftArgument;
         this.rightArgument = rightArgument;
     }
@@ -65,6 +62,14 @@ public class BinaryOperator extends Expression {
                 rightArgument.forwardInferTypes(allVarDeclarations));
         result.typeCheck();
         return result;
+    }
+
+    @Override
+    public Expression propagateNext(boolean propagating, boolean nextAllowed, Assignment topLevelAssignment) throws TooDeepNextException {
+        final List<Expression> propagated = nextPropagateList(
+                Arrays.asList(leftArgument, rightArgument),
+                propagating, nextAllowed, topLevelAssignment);
+        return new BinaryOperator(name, propagated.get(0), propagated.get(1));
     }
 
     @Override

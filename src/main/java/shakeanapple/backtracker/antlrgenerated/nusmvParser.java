@@ -1,20 +1,18 @@
 // Generated from /home/buzhinsky/repos/cxbacktracker/nusmv.g4 by ANTLR 4.7.2
 package shakeanapple.backtracker.antlrgenerated;
 
-import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.atn.ATN;
-import org.antlr.v4.runtime.atn.ATNDeserializer;
-import org.antlr.v4.runtime.atn.ParserATNSimulator;
-import org.antlr.v4.runtime.atn.PredictionContextCache;
-import org.antlr.v4.runtime.dfa.DFA;
-import org.antlr.v4.runtime.tree.ParseTreeListener;
-import org.antlr.v4.runtime.tree.TerminalNode;
-import shakeanapple.backtracker.nusmvparsing.Assignment;
-import shakeanapple.backtracker.nusmvparsing.NuSMVModule;
+import java.util.*;
+import shakeanapple.backtracker.nusmvparsing.*;
 import shakeanapple.backtracker.nusmvparsing.expression.*;
 
-import java.util.ArrayList;
+import org.antlr.v4.runtime.atn.*;
+import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.misc.*;
+import org.antlr.v4.runtime.tree.*;
 import java.util.List;
+import java.util.Iterator;
+import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class nusmvParser extends Parser {
@@ -336,10 +334,10 @@ public class nusmvParser extends Parser {
 				setState(76);
 				match(T__3);
 				setState(77);
-				((AtomContext)_localctx).composite_id = composite_id();
+				((AtomContext)_localctx).inside = binary_operator1();
 				setState(78);
 				match(T__4);
-				 ((AtomContext)_localctx).f =  new Variable((((AtomContext)_localctx).composite_id!=null?_input.getText(((AtomContext)_localctx).composite_id.start,((AtomContext)_localctx).composite_id.stop):null), true); 
+				 ((AtomContext)_localctx).f =  new NextOperator(((AtomContext)_localctx).inside.f); 
 				}
 				break;
 			case CASE:
@@ -1882,7 +1880,7 @@ public class nusmvParser extends Parser {
 		"\2\2\28?\3\2\2\29\67\3\2\2\2:;\7\4\2\2;<\7!\2\2<>\7\5\2\2=:\3\2\2\2>A"+
 		"\3\2\2\2?=\3\2\2\2?@\3\2\2\2@\5\3\2\2\2A?\3\2\2\2BC\7\6\2\2CD\5$\23\2"+
 		"DE\7\7\2\2EF\b\4\1\2Fu\3\2\2\2GH\5\2\2\2HI\b\4\1\2Iu\3\2\2\2JK\5\4\3\2"+
-		"KL\b\4\1\2Lu\3\2\2\2MN\7%\2\2NO\7\6\2\2OP\5\4\3\2PQ\7\7\2\2QR\b\4\1\2"+
+		"KL\b\4\1\2Lu\3\2\2\2MN\7%\2\2NO\7\6\2\2OP\5$\23\2PQ\7\7\2\2QR\b\4\1\2"+
 		"Ru\3\2\2\2ST\7/\2\2T\\\b\4\1\2UV\5$\23\2VW\b\4\1\2WX\7\b\2\2XY\5$\23\2"+
 		"YZ\b\4\1\2Z[\7\t\2\2[]\3\2\2\2\\U\3\2\2\2]^\3\2\2\2^\\\3\2\2\2^_\3\2\2"+
 		"\2_`\3\2\2\2`a\7\60\2\2ab\b\4\1\2bu\3\2\2\2cd\7+\2\2de\b\4\1\2ef\7\6\2"+

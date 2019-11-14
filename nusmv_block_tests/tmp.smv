@@ -9,4 +9,4 @@ ASSIGN
     next(x) := next(x);
     init(y) := TRUE;
     init(u) := count(x);
-    next(u) := count(x, x & y, !y, x == y);
+    next(u) := count(x, x & y, !y, x = y);

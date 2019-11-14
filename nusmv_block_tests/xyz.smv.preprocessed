@@ -5,11 +5,11 @@ VAR
     z: boolean;
     t: 0..5;
 ASSIGN
-    init(x) := !(INP);
+    init(x) := INP;
     next(x) := (x & next(y));
     init(y) := TRUE;
     next(y) := ((x | y) | next(INP));
     init(z) := FALSE;
     next(z) := INP;
-    init(t) := case x: (1 + 1); !(x): case case y: x; TRUE: y; esac: 1; TRUE: 0; esac; TRUE: 0; esac;
+    init(t) := case x: (1 + 1); x: case case y: x; TRUE: y; esac: 1; TRUE: 0; esac; TRUE: 0; esac;
     next(t) := case next(x): case next(z): 4; TRUE: 3; esac; TRUE: (t - 2); esac;

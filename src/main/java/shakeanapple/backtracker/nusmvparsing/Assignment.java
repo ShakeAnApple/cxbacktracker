@@ -1,5 +1,6 @@
 package shakeanapple.backtracker.nusmvparsing;
 
+import shakeanapple.backtracker.nusmvparsing.exceptions.TooDeepNextException;
 import shakeanapple.backtracker.nusmvparsing.exceptions.TypeInferenceException;
 import shakeanapple.backtracker.nusmvparsing.exceptions.UndeclaredVariableException;
 import shakeanapple.backtracker.nusmvparsing.expression.Expression;
@@ -53,5 +54,9 @@ public class Assignment {
                     + " in assignment " + this);
         }
         return new Assignment(type, newLeft, newRight);
+    }
+
+    Assignment propagateNext() throws TooDeepNextException {
+        return new Assignment(type, left, right.propagateNext(false, type == Type.NEXT, this));
     }
 }
