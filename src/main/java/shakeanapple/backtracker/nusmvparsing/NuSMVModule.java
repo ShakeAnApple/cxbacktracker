@@ -82,17 +82,23 @@ public class NuSMVModule {
         for (AssignmentInfo key : new LinkedHashSet<>(assignments.keySet())) {
             assignments.put(key, assignments.get(key).forwardInferTypes(allVariables));
         }
+        // clarify types of all variables based on assignments
+        for (Map<String, Variable> map : Arrays.asList(internalVariables, allVariables)) {
+            for (Assignment a : assignments.values()) {
+                final String name = a.getLeft().name;
+                map.put(name, map.get(name).clarifyType(a.getLeft().type));
+            }
+        }
     }
 
     @Override
     public String toString() {
         return String.join(Util.NL,
-                "MODULE " + name +
-                Util.par(String.join(", ", inputVariables.keySet())),
-                "VAR",
-                internalVariables.values().stream().map(v -> "    " + v).collect(Collectors.joining(Util.NL)),
-                "ASSIGN",
-                assignments.values().stream().map(a -> "    " + a).collect(Collectors.joining(Util.NL)));
+                "MODULE " + name + Util.par(inputVariables.values().stream()
+                        .map(v -> v.toString().replace(";", ""))
+                        .collect(Collectors.joining(", "))),
+                "VAR", internalVariables.values().stream().map(v -> "    " + v).collect(Collectors.joining(Util.NL)),
+                "ASSIGN", assignments.values().stream().map(a -> "    " + a).collect(Collectors.joining(Util.NL)));
     }
 
     public class FunctionBlockNetworkContext {
@@ -186,7 +192,10 @@ public class NuSMVModule {
         private Block transform() throws UnresolvedTypeException, MissingAssignmentException,
                 UndeclaredVariableException {
             // 1. "First cycle" block
-            final OutputVariable firstCycleOutput = createDelay(constantBool(false, 0), constantBool(true, 1));
+            final OutputVariable firstCycleOutput = createDelay(
+                    constantBool(false, 0),
+                    constantBool(true, 1)
+            );
 
             // 2. For each input variable, create its delayed version. Store both delayed and undelayed versions.
             final List<InputVariable> inputs = new ArrayList<>();
@@ -211,7 +220,10 @@ public class NuSMVModule {
                 final OutputVariable choiceOutput = newOutputVariable(v.getVarType());
                 createComponent(new ChoiceComponent(v.getChoiceType(), newID(), choiceList, choiceOutput));
                 // create delay after choice
-                final OutputVariable delayOutput = createDelay(createWire(choiceOutput, 0), constantBool(false, 1));
+                final OutputVariable delayOutput = createDelay(
+                        createWire(choiceOutput, 0),
+                        constantBool(false, 1)
+                );
                 // fill variable information
                 varInfoMap.put(v.name, new VarInfo(v, choiceOutput, delayOutput));
                 // connect choice output to the output of the block

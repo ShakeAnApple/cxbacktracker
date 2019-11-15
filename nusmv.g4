@@ -62,26 +62,25 @@ atom returns[Expression f]
 unary_operator_sign : '!' | '-';
 unary_operator returns[Expression f]
     : atom { $f = $atom.f; }
-    | unary_operator_sign inside=unary_operator { $f = new UnaryOperator($unary_operator_sign.text, $inside.f); }
+    | op=unary_operator_sign inside=unary_operator { $f = new UnaryOperator($op.text, $inside.f); }
     ;
 
-// binary *, /, mod
+binary_operator_sign7 : '*' | '/' | MOD;
 binary_operator7 returns[Expression f]
-    : f1=unary_operator { $f = $f1.f; String op; }
-        (('*' { op = "*"; } | '/' { op = "/"; } | MOD { op = "mod"; })
-      f2=unary_operator { $f = new BinaryOperator(op, $f, $f2.f); })*
+    : f1=unary_operator { $f = $f1.f; } (inside=binary_operator_sign7 f2=unary_operator
+      { $f = new BinaryOperator($inside.text, $f, $f2.f); })*
     ;
 
-// binary +, -
+binary_operator_sign6 : '+' | '-';
 binary_operator6 returns[Expression f]
-    : f1=binary_operator7 { $f = $f1.f; String op; } (('+' { op = "+"; } | '-' { op = "-"; })
-      f2=binary_operator7 { $f = new BinaryOperator(op, $f, $f2.f); })*
+    : f1=binary_operator7 { $f = $f1.f; } (inside=binary_operator_sign6 f2=binary_operator7
+      { $f = new BinaryOperator($inside.text, $f, $f2.f); })*
     ;
 
 binary_operator_sign5 : '=' | '!=' | '>' | '>=' | '<' | '<=';
 binary_operator5 returns[Expression f]
     : f1=binary_operator6 { $f = $f1.f; } (inside=binary_operator_sign5 f2=binary_operator6
-        { $f = new BinaryOperator($inside.text, $f, $f2.f); })?
+      { $f = new BinaryOperator($inside.text, $f, $f2.f); })*
     ;
 
 binary_operator_sign4 : '&';
@@ -96,7 +95,7 @@ binary_operator3 returns[Expression f]
       { $f = new BinaryOperator($inside.text, $f, $f2.f); })*
     ;
 
-// ? :, no type checking
+// ? :
 ternary_operator returns[Expression f]
     : f1=binary_operator3 { $f = $f1.f; } ('?' f2=binary_operator3 ':' f3=binary_operator3
       { $f = CaseOperator.ternaryOperator($f1.f, $f2.f, $f3.f); })?
@@ -114,6 +113,17 @@ binary_operator1 returns[Expression f]
       { $f = new BinaryOperator($inside.text, $f, $f2.f); })?
     ;
 
+type : BOOLEAN | (INT_CONST '..' INT_CONST) | ('{' constant (',' constant)* '}');
+internal_var_declaration returns[Variable v]
+    : composite_id ':' type { $v = new Variable($composite_id.text, $type.text); }
+    ;
+
+// Either "id" or "id: type".
+possibly_untyped_declaration returns[Variable v]
+    : typeless=composite_id { $v = new Variable($typeless.text); }
+    | typeful=internal_var_declaration { $v = $typeful.v; }
+    ;
+
 assignment returns[Assignment a]
     : { Assignment.Type type; }
       (INIT { type = Assignment.Type.INIT; } | NEXT { type = Assignment.Type.NEXT; })
@@ -121,14 +131,15 @@ assignment returns[Assignment a]
       { $a = new Assignment(type, new Variable($left.text), $right.f); }
     ;
 
-type : BOOLEAN | (INT_CONST '..' INT_CONST) | ('{' constant (',' constant)* '}');
-internal_var_declaration returns[Variable v]
-    : composite_id ':' type { $v = new Variable($composite_id.text, $type.text); }
-    ;
-
-input_var_declaration returns[Variable v]
-    : typeless=composite_id { $v = new Variable($typeless.text); }
-    | typeful=internal_var_declaration { $v = $typeful.v; }
+// Only DEFINEs without next() operators are allowed.
+// They are transformed into a complete variable declaration.
+// Variable type can be given as "V: type := <definition>;".
+definition returns[Variable v, Assignment aInit, Assignment aNext]
+    : left=possibly_untyped_declaration ':=' right=binary_operator1 ';'
+      { $v = $left.v;
+        $aInit = new Assignment(Assignment.Type.INIT, $v, $right.f);
+        $aNext = new Assignment(Assignment.Type.NEXT, $v, new NextOperator($right.f));
+      }
     ;
 
 module returns[NuSMVModule m]
@@ -137,10 +148,10 @@ module returns[NuSMVModule m]
         List<Variable> internalVariables = new ArrayList<>();
         List<Assignment> assignments = new ArrayList<>();
       }
-      ('(' (v1=input_var_declaration { inputVariables.add($v1.v); }
-      (',' v2=input_var_declaration { inputVariables.add($v2.v); })*)? ')')?
-      ((ASSIGN (assignment { assignments.add($assignment.a); })*)
-      | (DEFINE (composite_id ':=' binary_operator1 ';')*) // TODO add support
-      | (VAR (internal_var_declaration ';' { internalVariables.add($internal_var_declaration.v); })*))*
-      { $m = new NuSMVModule($ID.text, inputVariables, internalVariables, assignments); }
+      ('(' (v1=possibly_untyped_declaration { inputVariables.add($v1.v); }
+      (',' v2=possibly_untyped_declaration { inputVariables.add($v2.v); })*)? ')')?
+      ( (VAR (internal_var_declaration ';' { internalVariables.add($internal_var_declaration.v); })*)
+      | (ASSIGN (assignment { assignments.add($assignment.a); })*)
+      | (DEFINE (d=definition { internalVariables.add($d.v); assignments.add($d.aInit); assignments.add($d.aNext); })*)
+      )* { $m = new NuSMVModule($ID.text, inputVariables, internalVariables, assignments); }
     ;

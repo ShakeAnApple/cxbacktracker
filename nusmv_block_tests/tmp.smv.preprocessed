@@ -1,12 +1,12 @@
 MODULE main()
 VAR
-    x: boolean;
-    y: boolean;
-    u: {0,1};
+    x: BOOL;
+    y: BOOL;
+    u: INT;
 ASSIGN
-    next(y) := (next(x) | x);
-    init(x) := FALSE;
+    next(y) := (next(x) | !(x));
+    init(x) := (FALSE <-> ((FALSE xnor TRUE) xor (0 = 0)));
     next(x) := next(x);
-    init(y) := TRUE;
+    init(y) := (TRUE -> (TRUE -> FALSE));
     init(u) := count(x);
-    next(u) := count(x, (x & y), y, (x = y));
+    next(u) := count(x, (x & y), !(y), (x = y));

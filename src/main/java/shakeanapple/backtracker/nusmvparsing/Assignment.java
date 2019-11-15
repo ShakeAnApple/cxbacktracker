@@ -7,6 +7,7 @@ import shakeanapple.backtracker.nusmvparsing.expression.Expression;
 import shakeanapple.backtracker.nusmvparsing.expression.ExpressionType;
 import shakeanapple.backtracker.nusmvparsing.expression.Variable;
 
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -45,12 +46,13 @@ public class Assignment {
         return type + Util.par(left.name) + " := " + right + ";";
     }
 
-    Assignment forwardInferTypes(Map<String, Variable> allVarDeclarations)
-            throws TypeInferenceException, UndeclaredVariableException {
-        final Variable newLeft = left.forwardInferTypes(allVarDeclarations);
+    Assignment forwardInferTypes(Map<String, Variable> allVarDeclarations) throws TypeInferenceException,
+            UndeclaredVariableException {
         final Expression newRight = right.forwardInferTypes(allVarDeclarations);
-        if (newLeft.type != newRight.type && newRight.type != ExpressionType.UNKNOWN) {
-            throw new RuntimeException("Incompatible types " + newLeft.type + " := " + newRight.type
+        final Variable newLeft = left.forwardInferTypes(allVarDeclarations).clarifyType(newRight.type);
+        if (!Arrays.asList(newLeft.type, newRight.type).contains(ExpressionType.UNKNOWN)
+                && newLeft.type != newRight.type) {
+            throw new TypeInferenceException("Incompatible types " + newLeft.type + " := " + newRight.type
                     + " in assignment " + this);
         }
         return new Assignment(type, newLeft, newRight);
