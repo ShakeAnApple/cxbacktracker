@@ -42,7 +42,7 @@ public class DiagramBackwardExplainer implements DiagramOutputExplainer {
                 return in.getIncomingConnection().fromGate().getOwner().explain((OutputGate) in.getIncomingConnection().fromGate(), timestamp);
             } else{
                 //TODO distinguish constants
-                return Collections.singletonList(new Cause((InputGate) in, in.getValue(), timestamp));
+                return Collections.singletonList(new Cause(in, in.getValue(), timestamp));
             }
         }
 
