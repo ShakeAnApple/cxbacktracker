@@ -4,13 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import shakeanapple.backtracker.common.XmlSerializer;
-import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockComplex;
-import shakeanapple.backtracker.core.diagramexplanation.model.complexblockdefinition.BlockDefinition;
-import shakeanapple.backtracker.parser.basiccomponents.xmlmodel.Block;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;

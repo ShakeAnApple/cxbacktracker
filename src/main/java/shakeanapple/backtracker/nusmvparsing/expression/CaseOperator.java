@@ -1,4 +1,12 @@
-package shakeanapple.backtracker.nusmvparsing;
+package shakeanapple.backtracker.nusmvparsing.expression;
+
+import shakeanapple.backtracker.nusmvparsing.Assignment;
+import shakeanapple.backtracker.nusmvparsing.NuSMVModule;
+import shakeanapple.backtracker.nusmvparsing.exceptions.TooDeepNextException;
+import shakeanapple.backtracker.nusmvparsing.exceptions.TypeInferenceException;
+import shakeanapple.backtracker.nusmvparsing.exceptions.UndeclaredVariableException;
+import shakeanapple.backtracker.nusmvparsing.exceptions.UnresolvedTypeException;
+import shakeanapple.backtracker.parser.basiccomponents.xmlmodel.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -61,15 +69,36 @@ public class CaseOperator extends Expression {
 
     @Override
     public CaseOperator forwardInferTypes(Map<String, Variable> allVarDeclarations)
-            throws TypeInferenceException {
+            throws TypeInferenceException, UndeclaredVariableException {
         final List<Expression> newConditions = new ArrayList<>();
-        for (Expression c : conditions) {
-            newConditions.add(c.forwardInferTypes(allVarDeclarations));
+        for (Expression e : conditions) {
+            newConditions.add(e.forwardInferTypes(allVarDeclarations));
         }
         final List<Expression> newOptions = new ArrayList<>();
-        for (Expression c : options) {
-            newOptions.add(c.forwardInferTypes(allVarDeclarations));
+        for (Expression e : options) {
+            newOptions.add(e.forwardInferTypes(allVarDeclarations));
         }
         return new CaseOperator(newConditions, newOptions, inferType(newConditions, newOptions));
+    }
+
+    @Override
+    public Expression propagateNext(boolean propagating, boolean nextAllowed, Assignment topLevelAssignment) throws TooDeepNextException {
+        return new CaseOperator(
+                nextPropagateList(conditions, propagating, nextAllowed, topLevelAssignment),
+                nextPropagateList(options, propagating, nextAllowed, topLevelAssignment),
+                type);
+    }
+
+    @Override
+    public InputVariable generate(NuSMVModule.FunctionBlockNetworkContext context, int order)
+            throws UnresolvedTypeException, UndeclaredVariableException {
+        final List<Choice> choices = new ArrayList<>();
+        for (int i = 0; i < conditions.size(); i++) {
+            choices.add(new Choice(conditions.get(i).generate(context, i),
+                    options.get(i).generate(context, i)));
+        }
+        final OutputVariable output = context.newOutputVariable(getVarType());
+        context.createComponent(new ChoiceComponent(getChoiceType(), context.newID(), choices, output));
+        return context.createWire(output, order);
     }
 }

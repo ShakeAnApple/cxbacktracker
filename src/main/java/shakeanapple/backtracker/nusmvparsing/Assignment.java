@@ -1,5 +1,12 @@
 package shakeanapple.backtracker.nusmvparsing;
 
+import shakeanapple.backtracker.nusmvparsing.exceptions.TooDeepNextException;
+import shakeanapple.backtracker.nusmvparsing.exceptions.TypeInferenceException;
+import shakeanapple.backtracker.nusmvparsing.exceptions.UndeclaredVariableException;
+import shakeanapple.backtracker.nusmvparsing.expression.Expression;
+import shakeanapple.backtracker.nusmvparsing.expression.ExpressionType;
+import shakeanapple.backtracker.nusmvparsing.expression.Variable;
+
 import java.util.Map;
 
 /**
@@ -25,12 +32,21 @@ public class Assignment {
         this.right = right;
     }
 
+    public Variable getLeft() {
+        return left;
+    }
+
+    public Expression getRight() {
+        return right;
+    }
+
     @Override
     public String toString() {
         return type + Util.par(left.name) + " := " + right + ";";
     }
 
-    Assignment forwardInferTypes(Map<String, Variable> allVarDeclarations) throws TypeInferenceException {
+    Assignment forwardInferTypes(Map<String, Variable> allVarDeclarations)
+            throws TypeInferenceException, UndeclaredVariableException {
         final Variable newLeft = left.forwardInferTypes(allVarDeclarations);
         final Expression newRight = right.forwardInferTypes(allVarDeclarations);
         if (newLeft.type != newRight.type && newRight.type != ExpressionType.UNKNOWN) {
@@ -38,5 +54,9 @@ public class Assignment {
                     + " in assignment " + this);
         }
         return new Assignment(type, newLeft, newRight);
+    }
+
+    Assignment propagateNext() throws TooDeepNextException {
+        return new Assignment(type, left, right.propagateNext(false, type == Type.NEXT, this));
     }
 }
