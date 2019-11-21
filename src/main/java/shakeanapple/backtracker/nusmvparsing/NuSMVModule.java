@@ -82,17 +82,23 @@ public class NuSMVModule {
         for (AssignmentInfo key : new LinkedHashSet<>(assignments.keySet())) {
             assignments.put(key, assignments.get(key).forwardInferTypes(allVariables));
         }
+        // clarify types of all variables based on assignments
+        for (Map<String, Variable> map : Arrays.asList(internalVariables, allVariables)) {
+            for (Assignment a : assignments.values()) {
+                final String name = a.getLeft().name;
+                map.put(name, map.get(name).clarifyType(a.getLeft().type));
+            }
+        }
     }
 
     @Override
     public String toString() {
         return String.join(Util.NL,
-                "MODULE " + name +
-                Util.par(String.join(", ", inputVariables.keySet())),
-                "VAR",
-                internalVariables.values().stream().map(v -> "    " + v).collect(Collectors.joining(Util.NL)),
-                "ASSIGN",
-                assignments.values().stream().map(a -> "    " + a).collect(Collectors.joining(Util.NL)));
+                "MODULE " + name + Util.par(inputVariables.values().stream()
+                        .map(v -> v.toString().replace(";", ""))
+                        .collect(Collectors.joining(", "))),
+                "VAR", internalVariables.values().stream().map(v -> "    " + v).collect(Collectors.joining(Util.NL)),
+                "ASSIGN", assignments.values().stream().map(a -> "    " + a).collect(Collectors.joining(Util.NL)));
     }
 
     public class FunctionBlockNetworkContext {
@@ -100,7 +106,7 @@ public class NuSMVModule {
 
         private final List<BasicComponentAbstract> components = new ArrayList<>();
         private final List<Connection> connections = new ArrayList<>();
-        private final Map<String, VarInfo> varInfoMap = new HashMap<>();
+        private final Map<String, VarInfo> varInfo = new HashMap<>();
 
         public long newID() {
             return currentId++;
@@ -125,18 +131,26 @@ public class NuSMVModule {
             return constant(value, order);
         }
 
-        public <T extends BasicComponentAbstract> void createComponent(T d) {
+        public void createComponent(BasicComponentAbstract d) {
             components.add(d);
         }
 
-        private OutputVariable createDelay(InputVariable vIn, InputVariable vDefault) {
-            final OutputVariable output = newOutputVariable(VarType.BOOLEAN);
+        private OutputVariable delay(InputVariable vIn, InputVariable vDefault) {
+            if (vIn.getType() != vDefault.getType()) {
+                throw new AssertionError();
+            }
+            final OutputVariable output = newOutputVariable(vIn.getType());
             createComponent(new DelayComponent(newID(), vIn, vDefault, output, 1));
             return output;
         }
 
+        // Delay where the default value does not matter.
+        private OutputVariable delayWithDummyDefault(InputVariable vIn) {
+            return delay(vIn, constant(vIn.getType() == VarType.BOOLEAN ? false : 0, 1));
+        }
+
         public InputVariable referenceVariable(Variable v, int order) throws UndeclaredVariableException {
-            final VarInfo info = varInfoMap.get(v.name);
+            final VarInfo info = varInfo.get(v.name);
             if (info == null) {
                 throw new UndeclaredVariableException("Undeclared variable: " + v.name);
             }
@@ -161,7 +175,7 @@ public class NuSMVModule {
                 name = ((OutputVariable) from).getName();
                 id = ((OutputVariable) from).getId();
             } else {
-                throw new RuntimeException();
+                throw new AssertionError();
             }
             final InputVariable result = new InputVariable(newID(), type, name, order);
             if (id == result.getId()) {
@@ -186,7 +200,10 @@ public class NuSMVModule {
         private Block transform() throws UnresolvedTypeException, MissingAssignmentException,
                 UndeclaredVariableException {
             // 1. "First cycle" block
-            final OutputVariable firstCycleOutput = createDelay(constantBool(false, 0), constantBool(true, 1));
+            final OutputVariable firstCycleOutput = delay(
+                    constantBool(false, 0),
+                    constantBool(true, 1)
+            );
 
             // 2. For each input variable, create its delayed version. Store both delayed and undelayed versions.
             final List<InputVariable> inputs = new ArrayList<>();
@@ -195,8 +212,8 @@ public class NuSMVModule {
                 final InputVariable inputVariable = new InputVariable(newID(), v.getVarType(), v.name, order++);
                 inputs.add(inputVariable);
                 // create the delayed version
-                final OutputVariable delayOutput = createDelay(inputVariable, constantBool(false, 1));
-                varInfoMap.put(v.name, new VarInfo(v, inputVariable, delayOutput));
+                final OutputVariable delayOutput = delayWithDummyDefault(createWire(inputVariable, 0));
+                varInfo.put(v.name, new VarInfo(v, inputVariable, delayOutput));
             }
 
             // 3. For each internal variable, define its value as a choice between next and init values.
@@ -211,9 +228,9 @@ public class NuSMVModule {
                 final OutputVariable choiceOutput = newOutputVariable(v.getVarType());
                 createComponent(new ChoiceComponent(v.getChoiceType(), newID(), choiceList, choiceOutput));
                 // create delay after choice
-                final OutputVariable delayOutput = createDelay(createWire(choiceOutput, 0), constantBool(false, 1));
+                final OutputVariable delayOutput = delayWithDummyDefault(createWire(choiceOutput, 0));
                 // fill variable information
-                varInfoMap.put(v.name, new VarInfo(v, choiceOutput, delayOutput));
+                varInfo.put(v.name, new VarInfo(v, choiceOutput, delayOutput));
                 // connect choice output to the output of the block
                 final OutputVariable wholeBlockOutput = new OutputVariable(newID(), v.getVarType(), v.name);
                 outputs.add(wholeBlockOutput);
@@ -225,7 +242,7 @@ public class NuSMVModule {
                 final List<InputVariable> expressionsToAttach = new ArrayList<>();
                 for (Assignment.Type type : Arrays.asList(Assignment.Type.INIT, Assignment.Type.NEXT)) {
                     final AssignmentInfo info = new AssignmentInfo(v.name, type);
-                    final Assignment a = assignments.get(new AssignmentInfo(v.name, type));
+                    final Assignment a = assignments.get(info);
                     if (a == null) {
                         throw new MissingAssignmentException("Missing assignment " + info);
                     }

@@ -63,6 +63,16 @@ public interface nusmvListener extends ParseTreeListener {
 	 */
 	void exitUnary_operator(nusmvParser.Unary_operatorContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link nusmvParser#binary_operator_sign7}.
+	 * @param ctx the parse tree
+	 */
+	void enterBinary_operator_sign7(nusmvParser.Binary_operator_sign7Context ctx);
+	/**
+	 * Exit a parse tree produced by {@link nusmvParser#binary_operator_sign7}.
+	 * @param ctx the parse tree
+	 */
+	void exitBinary_operator_sign7(nusmvParser.Binary_operator_sign7Context ctx);
+	/**
 	 * Enter a parse tree produced by {@link nusmvParser#binary_operator7}.
 	 * @param ctx the parse tree
 	 */
@@ -72,6 +82,16 @@ public interface nusmvListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBinary_operator7(nusmvParser.Binary_operator7Context ctx);
+	/**
+	 * Enter a parse tree produced by {@link nusmvParser#binary_operator_sign6}.
+	 * @param ctx the parse tree
+	 */
+	void enterBinary_operator_sign6(nusmvParser.Binary_operator_sign6Context ctx);
+	/**
+	 * Exit a parse tree produced by {@link nusmvParser#binary_operator_sign6}.
+	 * @param ctx the parse tree
+	 */
+	void exitBinary_operator_sign6(nusmvParser.Binary_operator_sign6Context ctx);
 	/**
 	 * Enter a parse tree produced by {@link nusmvParser#binary_operator6}.
 	 * @param ctx the parse tree
@@ -193,16 +213,6 @@ public interface nusmvListener extends ParseTreeListener {
 	 */
 	void exitBinary_operator1(nusmvParser.Binary_operator1Context ctx);
 	/**
-	 * Enter a parse tree produced by {@link nusmvParser#assignment}.
-	 * @param ctx the parse tree
-	 */
-	void enterAssignment(nusmvParser.AssignmentContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link nusmvParser#assignment}.
-	 * @param ctx the parse tree
-	 */
-	void exitAssignment(nusmvParser.AssignmentContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link nusmvParser#type}.
 	 * @param ctx the parse tree
 	 */
@@ -223,15 +233,35 @@ public interface nusmvListener extends ParseTreeListener {
 	 */
 	void exitInternal_var_declaration(nusmvParser.Internal_var_declarationContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link nusmvParser#input_var_declaration}.
+	 * Enter a parse tree produced by {@link nusmvParser#possibly_untyped_declaration}.
 	 * @param ctx the parse tree
 	 */
-	void enterInput_var_declaration(nusmvParser.Input_var_declarationContext ctx);
+	void enterPossibly_untyped_declaration(nusmvParser.Possibly_untyped_declarationContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link nusmvParser#input_var_declaration}.
+	 * Exit a parse tree produced by {@link nusmvParser#possibly_untyped_declaration}.
 	 * @param ctx the parse tree
 	 */
-	void exitInput_var_declaration(nusmvParser.Input_var_declarationContext ctx);
+	void exitPossibly_untyped_declaration(nusmvParser.Possibly_untyped_declarationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link nusmvParser#assignment}.
+	 * @param ctx the parse tree
+	 */
+	void enterAssignment(nusmvParser.AssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link nusmvParser#assignment}.
+	 * @param ctx the parse tree
+	 */
+	void exitAssignment(nusmvParser.AssignmentContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link nusmvParser#definition}.
+	 * @param ctx the parse tree
+	 */
+	void enterDefinition(nusmvParser.DefinitionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link nusmvParser#definition}.
+	 * @param ctx the parse tree
+	 */
+	void exitDefinition(nusmvParser.DefinitionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link nusmvParser#module}.
 	 * @param ctx the parse tree

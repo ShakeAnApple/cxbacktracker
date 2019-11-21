@@ -81,6 +81,18 @@ public class nusmvBaseListener implements nusmvListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterBinary_operator_sign7(nusmvParser.Binary_operator_sign7Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBinary_operator_sign7(nusmvParser.Binary_operator_sign7Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterBinary_operator7(nusmvParser.Binary_operator7Context ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -88,6 +100,18 @@ public class nusmvBaseListener implements nusmvListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitBinary_operator7(nusmvParser.Binary_operator7Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBinary_operator_sign6(nusmvParser.Binary_operator_sign6Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBinary_operator_sign6(nusmvParser.Binary_operator_sign6Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -237,18 +261,6 @@ public class nusmvBaseListener implements nusmvListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAssignment(nusmvParser.AssignmentContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitAssignment(nusmvParser.AssignmentContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterType(nusmvParser.TypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -273,13 +285,37 @@ public class nusmvBaseListener implements nusmvListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterInput_var_declaration(nusmvParser.Input_var_declarationContext ctx) { }
+	@Override public void enterPossibly_untyped_declaration(nusmvParser.Possibly_untyped_declarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitInput_var_declaration(nusmvParser.Input_var_declarationContext ctx) { }
+	@Override public void exitPossibly_untyped_declaration(nusmvParser.Possibly_untyped_declarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterAssignment(nusmvParser.AssignmentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAssignment(nusmvParser.AssignmentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDefinition(nusmvParser.DefinitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDefinition(nusmvParser.DefinitionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

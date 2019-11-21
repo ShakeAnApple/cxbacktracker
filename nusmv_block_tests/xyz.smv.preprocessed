@@ -1,15 +1,30 @@
-MODULE dummy(INP)
+MODULE dummy(INP: BOOL)
 VAR
-    x: boolean;
-    y: boolean;
-    z: boolean;
-    t: 0..5;
+    x: BOOL;
+    y: BOOL;
+    z: BOOL;
+    t: INT;
+    OUT: BOOL;
+    RECURSION: BOOL;
+    X: BOOL;
+    Y: INT;
+    Z: INT;
 ASSIGN
-    init(x) := INP;
+    init(x) := !(INP);
     next(x) := (x & next(y));
     init(y) := TRUE;
     next(y) := ((x | y) | next(INP));
     init(z) := FALSE;
     next(z) := INP;
-    init(t) := case x: (1 + 1); x: case case y: x; TRUE: y; esac: 1; TRUE: 0; esac; TRUE: 0; esac;
+    init(OUT) := INP;
+    next(OUT) := next(INP);
+    init(RECURSION) := (RECURSION | RECURSION);
+    next(RECURSION) := (next(RECURSION) | next(RECURSION));
+    init(t) := case x: (1 + 1); !(x): case case y: x; TRUE: y; esac: 1; TRUE: 0; esac; TRUE: 0; esac;
     next(t) := case next(x): case next(z): 4; TRUE: 3; esac; TRUE: (t - 2); esac;
+    init(X) := x;
+    next(X) := next(x);
+    init(Y) := (((t + -(t)) - t) + case z: -1; TRUE: 1; esac);
+    next(Y) := (((next(t) + -(next(t))) - next(t)) + case next(z): -1; TRUE: 1; esac);
+    init(Z) := -(t);
+    next(Z) := -(next(t));

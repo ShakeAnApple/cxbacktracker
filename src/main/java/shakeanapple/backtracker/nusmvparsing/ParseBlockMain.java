@@ -74,8 +74,9 @@ public class ParseBlockMain {
     }
 
     public static void main(String[] args) throws IOException {
-        final String dirName = "nusmv_block_tests";
-        final String[] filenames = new File("nusmv_block_tests").list();
+        final String dirName = args.length >= 1 ? args[0] : "nusmv_block_tests";
+        System.out.println(">> Using directory with basic blocks: " + dirName);
+        final String[] filenames = new File(dirName).list();
         if (filenames == null) {
             System.err.println("No such directory or IO error while accessing it!");
             return;

@@ -36,7 +36,7 @@ public class UnaryOperator extends Expression {
 
     @Override
     public String toString() {
-        return name + Util.par(argument.toString());
+        return name + Util.par(argument);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class UnaryOperator extends Expression {
     @Override
     public Expression propagateNext(boolean propagating, boolean nextAllowed, Assignment topLevelAssignment)
             throws TooDeepNextException {
-        return argument.propagateNext(propagating, nextAllowed, topLevelAssignment);
+        return new UnaryOperator(name, argument.propagateNext(propagating, nextAllowed, topLevelAssignment));
     }
 
     private void typeCheck() throws TypeInferenceException {

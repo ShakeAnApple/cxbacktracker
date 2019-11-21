@@ -15,6 +15,9 @@ VAR
     --test1: -2..10;
     --test2: { -1, 2, 3 };
     --test2: { 0, 1 };
+DEFINE
+    OUT := INP;
+    RECURSION := RECURSION | RECURSION;
 ASSIGN
     init(t) := case
         x: 1 + 1;
@@ -22,3 +25,7 @@ ASSIGN
         TRUE: 0;
     esac;
     next(t) := case next(x): next(z) ? 4 : 3; TRUE: t - 2; esac;
+DEFINE
+    X: boolean := x;
+    Y: 0..1 := t + -t - t + (z ? -1 : 1);
+    Z: 0..1 := -t;

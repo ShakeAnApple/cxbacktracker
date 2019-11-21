@@ -1,12 +1,13 @@
 MODULE main
+DEFINE
 VAR
     x: boolean;
     y: boolean;
     u: {0,1};
 ASSIGN
     next(y) := next(x) | !x;
-    init(x) := FALSE;
+    init(x) := FALSE <-> FALSE xnor TRUE xor 0 = 0;
     next(x) := next(x);
-    init(y) := TRUE;
+    init(y) := TRUE -> TRUE -> FALSE;
     init(u) := count(x);
     next(u) := count(x, x & y, !y, x = y);

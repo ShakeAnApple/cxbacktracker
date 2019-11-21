@@ -17,7 +17,15 @@ public class Variable extends Expression {
     }
 
     public final ReferenceType referenceType;
-    private final String strType;
+
+    private Variable(String name, ReferenceType referenceType, ExpressionType type) {
+        super(name, type);
+        this.referenceType = referenceType;
+    }
+
+    private Variable(String name, boolean isNext, ExpressionType type) {
+        this(name, isNext ? ReferenceType.NEXT : ReferenceType.CURRENT, type);
+    }
 
     /**
      * Create a variable used in an expression.
@@ -28,10 +36,25 @@ public class Variable extends Expression {
         this(name, isNext, ExpressionType.UNKNOWN);
     }
 
-    private Variable(String name, boolean isNext, ExpressionType type) {
+    /**
+     * Create a declaration with type information.
+     * @param name: name of the variable.
+     * @param type: type of the variable.
+     */
+    public Variable(String name, ExpressionType type) {
         super(name, type);
-        this.referenceType = isNext ? ReferenceType.NEXT : ReferenceType.CURRENT;
-        strType = null;
+        this.referenceType = ReferenceType.DECLARATION;
+    }
+
+    public Variable clarifyType(ExpressionType newType) {
+        if (newType == ExpressionType.UNKNOWN) {
+            return this;
+        }
+        if (type != ExpressionType.UNKNOWN && type != newType) {
+            throw new RuntimeException("Contradictory types " + type + " and " + newType + " in  type clarification of "
+                + this);
+        }
+        return new Variable(name, referenceType, newType);
     }
 
     /**
@@ -42,7 +65,6 @@ public class Variable extends Expression {
     public Variable(String name, String strType) {
         super(name, strType.equals("boolean") ? ExpressionType.BOOL : ExpressionType.INT);
         this.referenceType = ReferenceType.DECLARATION;
-        this.strType = strType;
     }
 
     /**
@@ -52,7 +74,6 @@ public class Variable extends Expression {
     public Variable(String name) {
         super(name, ExpressionType.UNKNOWN);
         this.referenceType = ReferenceType.DECLARATION;
-        this.strType = null;
     }
 
     @Override
@@ -61,8 +82,7 @@ public class Variable extends Expression {
         if (declaration == null) {
             throw new UndeclaredVariableException("Undeclared variable: " + name);
         }
-        return declaration.type == ExpressionType.UNKNOWN ? this
-                : new Variable(name, referenceType == ReferenceType.NEXT, declaration.type);
+        return clarifyType(declaration.type);
     }
 
     @Override
@@ -83,7 +103,7 @@ public class Variable extends Expression {
             case NEXT:
                 return "next" + Util.par(name);
             case DECLARATION:
-                return name + ": " + strType + ";";
+                return name + ": " + type + ";";
             default:
                 throw new RuntimeException();
         }
