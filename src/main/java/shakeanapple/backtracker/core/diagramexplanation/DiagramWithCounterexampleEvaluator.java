@@ -35,6 +35,11 @@ public class DiagramWithCounterexampleEvaluator implements DiagramSequentialEval
         return DiagramSnapshot.fromDiagram(this.diagram);
     }
 
+    @Override
+    public DiagramSnapshot moveTo(int stepNum) {
+        return null;
+    }
+
     private void evaluateDiagram() {
         State curState = this.cursor.getCurState();
         this.diagram.fbInterface().getInputs().values().forEach(in -> {

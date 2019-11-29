@@ -1,6 +1,7 @@
 package shakeanapple.backtracker.ui.infrasructure.control.diagram;
 
 import javafx.scene.layout.BorderPane;
+import shakeanapple.backtracker.ui.explainer.model.graph.HierarchicalLayout;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.*;
 
 public class DiagramControl extends BorderPane {
@@ -31,7 +32,8 @@ public class DiagramControl extends BorderPane {
 
         this.panel.update();
 
-        Layout layout = new RandomLayout(this.panel);
+        //Layout layout = new RandomLayout(this.panel);
+        Layout layout = new HierarchicalLayout(this.panel);
         layout.execute();
 
     }

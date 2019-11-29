@@ -10,7 +10,9 @@ public class DiagramEvaluationCache {
     private Map<Integer, DiagramSnapshot> history = new HashMap<>();
 
     public void add(DiagramSnapshot snapshot, int timestamp){
-        this.history.put(timestamp, snapshot);
+        if (!this.history.containsKey(timestamp)){
+            this.history.put(timestamp, snapshot);
+        }
     }
 
     public DiagramSnapshot getByStep(int timestamp){

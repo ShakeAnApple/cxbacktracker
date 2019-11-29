@@ -4,4 +4,5 @@ import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.DiagramSn
 
 public interface DiagramSequentialEvaluator {
     DiagramSnapshot moveNext();
+    DiagramSnapshot moveTo(int stepNum);
 }

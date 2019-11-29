@@ -4,10 +4,13 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
+import shakeanapple.backtracker.ui.explainer.view.Grid;
+import shakeanapple.backtracker.ui.explainer.view.Offset;
 
 public class Panel {
 
     private Graph graph;
+    private Grid grid;
 
     private ZoomableScrollPane scrollPane;
 
@@ -34,6 +37,8 @@ public class Panel {
 
         this.scrollPane.setFitToWidth(true);
         this.scrollPane.setFitToHeight(true);
+
+        this.grid = new Grid(10);
     }
 
     public ScrollPane getScrollPane() {
@@ -43,6 +48,27 @@ public class Panel {
     public Graph getGraph() {
         return this.graph;
     }
+
+    public Offset adjustCoords(Node node){
+        return this.grid.adjustCoords(node, this.scrollPane.getScaleValue());
+    }
+
+    public void allocateNode(Node node){
+        this.grid.placeNode(node);
+    }
+
+    public void removeNodeFromGrid(Node node){
+        this.grid.removeNode(node);
+    }
+
+    public double getWidth(){
+        return this.scrollPane.getWidth();
+    }
+
+    public double getHeight(){
+        return this.scrollPane.getHeight();
+    }
+
 
 //    public void beginUpdate() {
 //    }

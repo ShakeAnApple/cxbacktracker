@@ -17,23 +17,20 @@ public class CounterexampleCursor {
     }
 
     public State getCurState(){
-        if (this.counterexample.getPath().get(this.curStep) == null){
-            this.curStep = this.counterexample.getLoopStart();
-        }
         return this.counterexample.getPath().get(this.curStep);
     }
 
     public State moveNext(){
-        this.curStep ++;
+        if (this.counterexample.getPath().get(this.curStep + 1) == null){
+            this.curStep = this.counterexample.getLoopStart();
+        } else{
+            this.curStep ++;
+        }
         return this.getCurState();
     }
 
-    public State pickNext(){
-        return this.counterexample.getPath().get(this.curStep + 1);
-    }
-
     public boolean hasNext() {
-        return this.curStep < this.counterexample.length();
+        return this.counterexample.getLoopStart() > 0 || this.curStep < this.counterexample.length();
     }
 
     public int getCurStateNum() {
@@ -42,5 +39,23 @@ public class CounterexampleCursor {
 
     public CounterexampleCursor branch() {
         return new CounterexampleCursor(this.counterexample, this.curStep);
+    }
+
+    public CounterexampleCursor branchNext() {
+        CounterexampleCursor branch = new CounterexampleCursor(this.counterexample, this.curStep);
+        branch.moveNext();
+        return branch;
+    }
+
+    public boolean goTo(int stepNum) {
+        if (this.counterexample.length() < stepNum){
+            return false;
+        }
+        this.curStep = stepNum;
+        return true;
+    }
+
+    public boolean isEndOfPath() {
+        return this.counterexample.getLoopStart() == -1 && this.curStep == this.counterexample.length() - 1 ;
     }
 }

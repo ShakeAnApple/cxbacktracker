@@ -1,6 +1,6 @@
 package shakeanapple.backtracker.parser.ltlformula.tree;
 
-import shakeanapple.backtracker.core.ltlexplanation.model.ltlformula.model.tree.*;
+import shakeanapple.backtracker.core.ltl.formula.model.tree.*;
 
 public class UnOpNode extends Node{
     private final Node child;

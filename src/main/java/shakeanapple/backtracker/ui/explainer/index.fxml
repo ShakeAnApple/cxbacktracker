@@ -36,11 +36,22 @@
         <DiagramControl fx:id="diagram" VBox.vgrow="ALWAYS" prefHeight="1000"/>
     </VBox>
     <VBox GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
-        <ListView fx:id="causesList">
+        <ListView fx:id="diagramCausesList">
             <cellFactory>
-                <FxmlListCellFactory fxmlSource="@causesListCell.fxml"/>
+                <FxmlListCellFactory fxmlSource="@diagramCausesListCell.fxml"/>
             </cellFactory>
         </ListView>
+        <ListView fx:id="stepsList">
+            <cellFactory>
+                <FxmlListCellFactory fxmlSource="@stepsListCell.fxml"/>
+            </cellFactory>
+        </ListView>
+        <ListView fx:id="formulaCausesList">
+            <cellFactory>
+                <FxmlListCellFactory fxmlSource="@formulaCausesListCell.fxml"/>
+            </cellFactory>
+        </ListView>
+        <Button text="explain formula" onAction="#explainFormula"/>
     </VBox>
 <!--    <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">-->
 <!--        <VisGraphControl resource="diagramGraph.html" fx:id="functionBlocksGraph" VBox.vgrow="ALWAYS" prefHeight="1000"/>-->
