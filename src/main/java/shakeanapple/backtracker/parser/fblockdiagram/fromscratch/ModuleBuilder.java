@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.parser.fblockdiagram;
+package shakeanapple.backtracker.parser.fblockdiagram.fromscratch;
 
 import shakeanapple.backtracker.common.variable.BooleanValueHolder;
 import shakeanapple.backtracker.common.variable.IntegerValueHolder;
@@ -6,14 +6,12 @@ import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.common.variable.Variable;
 import shakeanapple.backtracker.common.variable.dynamic.BooleanDynamicVariable;
 import shakeanapple.backtracker.common.variable.dynamic.IntegerDynamicVariable;
-import shakeanapple.backtracker.core.diagramexplanation.model.InputGate;
-import shakeanapple.backtracker.core.diagramexplanation.model.OutputGate;
-import shakeanapple.backtracker.core.diagramexplanation.model.Diagram;
-import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockBase;
-import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockComplex;
-import shakeanapple.backtracker.core.diagramexplanation.model.complexblockdefinition.BlockDefinition;
+import shakeanapple.backtracker.core.diagramexplanation.model.*;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
+import shakeanapple.backtracker.parser.fblockdiagram.xmlbasiccomponents.ConnectionDescription;
+import shakeanapple.backtracker.parser.fblockdiagram.xmlbasiccomponents.ParsingVariableType;
+import shakeanapple.backtracker.parser.fblockdiagram.xmlbasiccomponents.TextDeclaration;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -22,6 +20,7 @@ import java.util.stream.Collectors;
 
 public class ModuleBuilder {
     private final List<String> contents;
+    private final BlockDefinitionsCache blockDefinitionsCache = new BlockDefinitionsCache();
 
     public ModuleBuilder(List<String> contents) {
         this.contents = contents;
@@ -45,7 +44,7 @@ public class ModuleBuilder {
         return res;
     }
 
-    public FunctionBlockComplex parseRoot(List<String> moduleContents, Map<String, BlockDefinition> blockDefinitions) {
+    public FunctionBlockComplex parseRoot(List<String> moduleContents) {
         // root internals -> inputs
         // root outputs -> outputs
 
@@ -53,7 +52,7 @@ public class ModuleBuilder {
 
         List<String> inputs = this.readInternals(moduleContents);
 
-        Map<String, TextDeclaration> moduleDeclarations = new HashMap<>();
+        Map<String, ModuleDeclaration> moduleDeclarations = new HashMap<>();
         Map<String, InputVariable> inputVars = new HashMap<>();
 
         int order = 1;
@@ -62,7 +61,7 @@ public class ModuleBuilder {
             ParsingVariableType type = this.defineType(parts[1]);
             String name = parts[0].trim();
             if (type == null) {
-                moduleDeclarations.put(name, new TextDeclaration(name, parts[1]));
+                moduleDeclarations.put(name, new ModuleDeclaration(name, this.readModuleTypeName(parts[1]), this.readInputs(parts[1])));
             } else {
                 InputVariable input = new InputVariable(r.nextLong(), type == ParsingVariableType.BOOLEAN ?
                         new BooleanDynamicVariable(new BooleanValueHolder(false), name)
@@ -73,16 +72,25 @@ public class ModuleBuilder {
         }
 
         Map<String, FunctionBlockComplex> modules = new HashMap<>();
+        for (ModuleDeclaration declaration : moduleDeclarations.values()) {
+
+            FunctionBlockComplex block;
+            block = this.blockDefinitionsCache.parseAndCache(this.extractModule(declaration.getTypeName())).instance(declaration.getName());
+
+//            if (this.blockDefinitionsCache.definitionExists(declaration.getTypeName())) {
+//                block = this.blockDefinitionsCache.get(declaration.getTypeName()).instance(declaration.getName());
+//            } else {
+//                block = this.blockDefinitionsCache.parseAndCache(this.extractModule(declaration.getTypeName())).instance(declaration.getName());
+//            }
+            modules.put(declaration.getName(), block);
+        }
+
         Map<Long, InputVariable> diagramInputs = new HashMap<>();
         Map<String, List<ConnectionDescription>> systemInputConnections = new HashMap<>();
-        for (TextDeclaration declaration : moduleDeclarations.values()) {
-            String moduleName = declaration.getName();
-            String moduleTypeName = this.readModuleTypeName(declaration.getValue());
+        for (ModuleDeclaration declaration: moduleDeclarations.values()){
 
-            FunctionBlockComplex block = blockDefinitions.get(moduleTypeName).instance(moduleName);
-            modules.put(moduleName, block);
-
-            List<String> blockInputs = this.readInputs(declaration.getValue());
+            FunctionBlockComplex block = modules.get(declaration.getName());
+            List<String> blockInputs = declaration.getInputs();
             for (int i = 0; i < blockInputs.size(); i++) {
                 String moduleCallInput = blockInputs.get(i);
                 String[] varNameParts = moduleCallInput.split("\\.");

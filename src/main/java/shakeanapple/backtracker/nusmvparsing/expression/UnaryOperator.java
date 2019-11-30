@@ -9,6 +9,7 @@ import shakeanapple.backtracker.nusmvparsing.exceptions.UndeclaredVariableExcept
 import shakeanapple.backtracker.nusmvparsing.exceptions.UnresolvedTypeException;
 import shakeanapple.backtracker.parser.basiccomponents.xmlmodel.*;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
@@ -63,16 +64,19 @@ public class UnaryOperator extends Expression {
     @Override
     public InputVariable generate(NuSMVModule.FunctionBlockNetworkContext context, int order)
             throws UndeclaredVariableException, UnresolvedTypeException {
-        final InputVariable argumentResult = argument.generate(context, 0);
+        final InputVariable argumentResult;
         final OutputVariable output;
         switch (name) {
             case "-":
                 output = context.newOutputVariable(VarType.INTEGER);
+                argumentResult = argument.generate(context, 1);
                 context.createComponent(new BasicComponent(ComponentType.MINUS, context.newID(),
-                        Collections.singletonList(argumentResult), Collections.singletonList(output)));
+                        Arrays.asList(context.constantInt(0,0), argumentResult),
+                        Collections.singletonList(output)));
                 return context.createWire(output, order);
             case "!":
                 output = context.newOutputVariable(VarType.BOOLEAN);
+                argumentResult = argument.generate(context, 0);
                 context.createComponent(new BasicComponent(ComponentType.ASSIGN, context.newID(),
                         Collections.singletonList(argumentResult), Collections.singletonList(output)));
                 return context.createWire(output, order, true);

@@ -66,13 +66,22 @@ public class MainController implements Initializable {
     private DiagramEvaluationCache cache = new DiagramEvaluationCache();
 
     public MainController() {
-        counterexample = Counterexample.load("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\cx");
         LtlFormula formula = LtlFormula.parse("G(((!(alarm) & !(criteria)) & X (criteria & !(ack_button))) -> X (alarm))");
-        this.calculationWalker = new LtlWithCounterexampleEvaluator(counterexample, formula);
 
-        FunctionBlockComplex diagram = FunctionBlockComplex.parse("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\m.smv",
+//        FunctionBlockComplex diagram = FunctionBlockComplex.parse("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\m.smv",
+//                "C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\basics");
+//        counterexample = Counterexample.load("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\cx");
+
+
+        FunctionBlockComplex diagram = FunctionBlockComplex.parse("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\test-model\\triggeredff.smv",
                 "C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\basics");
+        counterexample = Counterexample.load("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\cx");
 
+
+//        FunctionBlockComplex diagram = FunctionBlockComplex.parse("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\test-model\\m.smv",
+//                "C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\basics");
+
+        this.calculationWalker = new LtlWithCounterexampleEvaluator(counterexample, formula);
 
         this.diagramEvaluator = new DiagramWithCounterexampleEvaluator(diagram, counterexample);
         this.diagramExecutor = new DiagramCounterexampleExecutor(diagram, counterexample);
@@ -130,7 +139,7 @@ public class MainController implements Initializable {
         return true;
     }
 
-    private void updateDiagram(DiagramSnapshot snapshot){
+    private void updateDiagram(DiagramSnapshot snapshot) {
         if (this.diagram.isClear()) {
             ViewGraph diagram = GraphHelper.convertToDiagramGraph(snapshot, this::pinPressHandler);
             this.diagram.draw(diagram);

@@ -3,7 +3,7 @@ package shakeanapple.backtracker.core.diagramexplanation.model;
 import shakeanapple.backtracker.core.diagramexplanation.Cause;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
-import shakeanapple.backtracker.parser.fblockdiagram.Parser;
+import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.Parser;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,7 +56,8 @@ public class FunctionBlockComplex extends FunctionBlockBase {
 
     public static FunctionBlockComplex parse(String path, String blockDefsPath){
         try {
-            Parser p = new Parser(path, blockDefsPath);
+           // Parser p = new Parser(path, blockDefsPath);
+            Parser p = new Parser(path);
             return p.parse();
         } catch (IOException e) {
             e.printStackTrace();

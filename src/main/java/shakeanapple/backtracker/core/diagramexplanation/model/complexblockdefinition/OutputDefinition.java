@@ -20,7 +20,7 @@ public class OutputDefinition {
 
     public OutputDefinition(long id, VarDefinitionType type, String name, String defaultValue) {
         this(id, type, name);
-        this.defaultValue = defaultValue.isEmpty() ? null : defaultValue;
+        this.defaultValue = defaultValue == null || defaultValue.isEmpty() ? null : defaultValue;
     }
 
     public long getId() {

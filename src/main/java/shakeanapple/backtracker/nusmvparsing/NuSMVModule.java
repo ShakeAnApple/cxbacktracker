@@ -69,7 +69,7 @@ public class NuSMVModule {
         }
     }
 
-    void clarifyTypes() throws TypeInferenceException, UndeclaredVariableException, DuplicateAssignmentException,
+    public void clarifyTypes() throws TypeInferenceException, UndeclaredVariableException, DuplicateAssignmentException,
             TooDeepNextException {
         if (!savedExceptions.isEmpty()) {
             throw savedExceptions.get(0);

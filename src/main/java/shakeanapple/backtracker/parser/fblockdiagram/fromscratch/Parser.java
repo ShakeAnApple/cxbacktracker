@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.parser.fblockdiagram;
+package shakeanapple.backtracker.parser.fblockdiagram.fromscratch;
 
 import shakeanapple.backtracker.common.XmlSerializer;
 import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockComplex;
@@ -17,28 +17,12 @@ import java.util.stream.Collectors;
 
 public class Parser {
     private final String path;
-    private List<BlockDefinition> blockDefinitions;
 
     private final String ROOT_NAME = "main";
 
-    public Parser(String path, String blockDefsDirPath) throws IOException {
+    public Parser(String path) throws IOException {
         this.path = path;
-
-        this.loadDefinitions(blockDefsDirPath);
     }
-
-    private void loadDefinitions(String blockDefsDirPath) throws IOException {
-        this.blockDefinitions = new ArrayList<>();
-        Files.list(Paths.get(blockDefsDirPath)).forEach(path -> {
-            try {
-                Block b = XmlSerializer.deserializeFromXML(path.toString());
-                this.blockDefinitions.add(b.translate());
-            } catch (IOException | JAXBException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
 
     public FunctionBlockComplex parse() throws IOException {
         List<String> contents = this.readLines();
@@ -46,7 +30,7 @@ public class Parser {
         ModuleBuilder mb = new ModuleBuilder(contents);
         List<String> rootContents = this.extractRoot(mb);
 
-        FunctionBlockComplex d = mb.parseRoot(rootContents, this.blockDefinitions.stream().collect(Collectors.toMap(BlockDefinition::getTypeName, b -> b)));
+        FunctionBlockComplex d = mb.parseRoot(rootContents);
         return d;
     }
 

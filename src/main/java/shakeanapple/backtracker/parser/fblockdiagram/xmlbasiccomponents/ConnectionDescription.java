@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.parser.fblockdiagram;
+package shakeanapple.backtracker.parser.fblockdiagram.xmlbasiccomponents;
 
 import shakeanapple.backtracker.core.diagramexplanation.model.Gate;
 

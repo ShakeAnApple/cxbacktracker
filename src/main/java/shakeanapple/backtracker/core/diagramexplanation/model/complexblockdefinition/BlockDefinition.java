@@ -1,7 +1,6 @@
 package shakeanapple.backtracker.core.diagramexplanation.model.complexblockdefinition;
 
 
-import shakeanapple.backtracker.core.diagramexplanation.model.FBInterface;
 import shakeanapple.backtracker.core.diagramexplanation.model.InputGate;
 import shakeanapple.backtracker.core.diagramexplanation.model.OutputGate;
 import shakeanapple.backtracker.core.diagramexplanation.model.*;
@@ -9,10 +8,9 @@ import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.Fu
 import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.choice.Choice;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
-import shakeanapple.backtracker.parser.fblockdiagram.ConnectionDescription;
+import shakeanapple.backtracker.parser.fblockdiagram.xmlbasiccomponents.ConnectionDescription;
 
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class BlockDefinition {

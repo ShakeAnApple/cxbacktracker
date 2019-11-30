@@ -1,4 +1,6 @@
-package shakeanapple.backtracker.parser.fblockdiagram;
+package shakeanapple.backtracker.parser.fblockdiagram.xmlbasiccomponents;
+
+import java.util.List;
 
 public class TextDeclaration {
     private String name;
