@@ -102,7 +102,11 @@ public class NuSMVModule {
     }
 
     public class FunctionBlockNetworkContext {
-        private long currentId = 0;
+        private long currentId;
+
+        private FunctionBlockNetworkContext(long startId) {
+            this.currentId = startId;
+        }
 
         private final List<BasicComponentAbstract> components = new ArrayList<>();
         private final List<Connection> connections = new ArrayList<>();
@@ -257,9 +261,31 @@ public class NuSMVModule {
         }
     }
 
-    public Block toFunctionBlockNetwork() throws UnresolvedTypeException, MissingAssignmentException,
+    static class TransformOutput {
+        public final Block block;
+
+        /**
+         * The ID such that the next call toFunctionBlockNetwork(nextId) would continue ID generation without numbering
+         * interruptions and ID intersections.
+         */
+        public final long nextId;
+
+        public TransformOutput(Block block, long nextId) {
+            this.block = block;
+            this.nextId = nextId;
+        }
+    }
+
+    public TransformOutput toFunctionBlockNetwork(long startID) throws UnresolvedTypeException, MissingAssignmentException,
             UndeclaredVariableException {
         // FIXME ensure that all types are inferred
-        return (this.new FunctionBlockNetworkContext()).transform();
+        final FunctionBlockNetworkContext context = this.new FunctionBlockNetworkContext(startID);
+        final Block block = context.transform();
+        return new TransformOutput(block, context.currentId);
+    }
+
+    public Block toFunctionBlockNetwork() throws UnresolvedTypeException, MissingAssignmentException,
+            UndeclaredVariableException {
+        return toFunctionBlockNetwork(0).block;
     }
 }
