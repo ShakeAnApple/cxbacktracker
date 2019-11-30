@@ -1,6 +1,7 @@
 package shakeanapple.backtracker.nusmvparsing;
 
 import shakeanapple.backtracker.nusmvparsing.exceptions.*;
+import shakeanapple.backtracker.nusmvparsing.expression.Expression;
 import shakeanapple.backtracker.nusmvparsing.expression.Variable;
 import shakeanapple.backtracker.parser.basiccomponents.xmlmodel.*;
 
@@ -250,7 +251,16 @@ public class NuSMVModule {
                     if (a == null) {
                         throw new MissingAssignmentException("Missing assignment " + info);
                     }
-                    expressionsToAttach.add(a.getRight().generate(this, expressionsToAttach.size()));
+                    final Expression effectiveE;
+                    try {
+                        // for INIT, emulate a next-expression to get undelayed references
+                        effectiveE = type == Assignment.Type.INIT
+                                ? a.getRight().propagateNext(true, false, a)
+                                : a.getRight();
+                    } catch (TooDeepNextException e) {
+                        throw new AssertionError("This exception must have been caught before", e);
+                    }
+                    expressionsToAttach.add(effectiveE.generate(this, expressionsToAttach.size()));
                 }
                 final Choice cInit = new Choice(createWire(firstCycleOutput, 0), expressionsToAttach.get(0));
                 final Choice cNext = new Choice(constantBool(true, 1), expressionsToAttach.get(1));
