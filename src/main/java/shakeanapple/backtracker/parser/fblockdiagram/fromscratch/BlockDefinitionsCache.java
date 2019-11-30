@@ -17,6 +17,7 @@ import java.util.*;
 
 public class BlockDefinitionsCache {
     private Map<String, BlockDefinition> definitions = new HashMap<>();
+    private long currentId = 0;
 
     public BlockDefinition parseAndCache(List<String> moduleContents) {
         final List<String> errors = new ArrayList<>();
@@ -54,7 +55,9 @@ public class BlockDefinitionsCache {
             result = parser.module().m;
             result.clarifyTypes();
             if (errors.isEmpty()){
-                BlockDefinition def = result.toFunctionBlockNetwork().translate();
+                NuSMVModule.TransformOutput res = result.toFunctionBlockNetwork(this.currentId);
+                BlockDefinition def = res.block.translate();
+                this.currentId = res.nextId;
                 this.definitions.put(def.getTypeName(), def);
                 return def;
             }

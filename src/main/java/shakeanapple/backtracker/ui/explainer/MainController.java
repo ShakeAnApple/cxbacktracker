@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import shakeanapple.backtracker.core.counterexample.State;
 import shakeanapple.backtracker.core.diagramexplanation.*;
@@ -38,21 +39,18 @@ public class MainController implements Initializable {
 
     @FXML
     public ListView<Cause> diagramCausesList;
-
     @FXML
     public ListView<FormulaCause> formulaCausesList;
-
     @FXML
     private VisGraphControl ltlGraph;
-
     @FXML
     private VisGraphControl functionBlocksGraph;
-
     @FXML
     private DiagramControl diagram;
-
     @FXML
     private ListView<Step> stepsList;
+    @FXML
+    private TableView variablesByStepsTable;
 
     private final LtlEvaluator calculationWalker;
     private DiagramSequentialEvaluator diagramEvaluator;
@@ -66,16 +64,17 @@ public class MainController implements Initializable {
     private DiagramEvaluationCache cache = new DiagramEvaluationCache();
 
     public MainController() {
-        LtlFormula formula = LtlFormula.parse("G(((!(alarm) & !(criteria)) & X (criteria & !(ack_button))) -> X (alarm))");
 
 //        FunctionBlockComplex diagram = FunctionBlockComplex.parse("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\m.smv",
 //                "C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\basics");
 //        counterexample = Counterexample.load("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\cx");
+//        LtlFormula formula = LtlFormula.parse("G(((!(alarm) & !(criteria)) & X (criteria & !(ack_button))) -> X (alarm))");
 
 
-        FunctionBlockComplex diagram = FunctionBlockComplex.parse("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\test-model\\triggeredff.smv",
+        FunctionBlockComplex diagram = FunctionBlockComplex.parse("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\test-model\\triggeredff-typed.smv",
                 "C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\basics");
-        counterexample = Counterexample.load("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\cx");
+        counterexample = Counterexample.load("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\test-model\\cx-trig");
+        LtlFormula formula = LtlFormula.parse("G (SET & X !SET -> X !ACT)");
 
 
 //        FunctionBlockComplex diagram = FunctionBlockComplex.parse("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\test-model\\m.smv",

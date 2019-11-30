@@ -17,6 +17,7 @@
 <?import shakeanapple.backtracker.ui.infrasructure.control.diagram.DiagramControl?>
 <?import shakeanapple.backtracker.ui.infrasructure.FxmlListCellFactory?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableView?>
 <GridPane minWidth="1000" minHeight="1000" maxWidth="1600" xmlns="http://javafx.com/javafx/8.0.172-ea"
           xmlns:fx="http://javafx.com/fxml/1" fx:controller="shakeanapple.backtracker.ui.explainer.MainController">
     <columnConstraints>
@@ -46,11 +47,13 @@
                 <FxmlListCellFactory fxmlSource="@stepsListCell.fxml"/>
             </cellFactory>
         </ListView>
-        <ListView fx:id="formulaCausesList">
-            <cellFactory>
-                <FxmlListCellFactory fxmlSource="@formulaCausesListCell.fxml"/>
-            </cellFactory>
-        </ListView>
+<!--        <ListView fx:id="formulaCausesList">-->
+<!--            <cellFactory>-->
+<!--                <FxmlListCellFactory fxmlSource="@formulaCausesListCell.fxml"/>-->
+<!--            </cellFactory>-->
+<!--        </ListView>-->
+        <TableView fx:id="variablesByStepsTable">
+        </TableView>
         <Button text="explain formula" onAction="#explainFormula"/>
     </VBox>
 <!--    <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">-->

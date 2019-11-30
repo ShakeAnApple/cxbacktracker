@@ -261,7 +261,7 @@ public class NuSMVModule {
         }
     }
 
-    static class TransformOutput {
+    public static class TransformOutput {
         public final Block block;
 
         /**
