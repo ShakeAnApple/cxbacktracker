@@ -79,8 +79,18 @@ public class FunctionBlockComplex extends FunctionBlockBase {
     }
 
     public static FunctionBlockComplex parse(String path, String blockDefsPath) {
+//        try {
+//            Parser p = new Parser(path, blockDefsPath);
+//            return p.parse();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            throw new RuntimeException(e);
+//        }
+        return null;
+    }
+
+    public static FunctionBlockComplex parse(String path) {
         try {
-            // Parser p = new Parser(path, blockDefsPath);
             Parser p = new Parser(path);
             return p.parse();
         } catch (IOException e) {

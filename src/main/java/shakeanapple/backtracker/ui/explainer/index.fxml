@@ -18,7 +18,7 @@
 <?import shakeanapple.backtracker.ui.infrasructure.FxmlListCellFactory?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TableView?>
-<GridPane minWidth="1000" minHeight="1000" maxWidth="1600" xmlns="http://javafx.com/javafx/8.0.172-ea"
+<GridPane maxWidth="1200" maxHeight="800" xmlns="http://javafx.com/javafx/8.0.172-ea"
           xmlns:fx="http://javafx.com/fxml/1" fx:controller="shakeanapple.backtracker.ui.explainer.MainController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0"/>
@@ -26,7 +26,8 @@
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0"/>
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints percentHeight="95.0" vgrow="ALWAYS"/>
+        <RowConstraints percentHeight="75.0" vgrow="ALWAYS"/>
+        <RowConstraints percentHeight="20.0" vgrow="ALWAYS"/>
         <RowConstraints percentHeight="5.0" vgrow="ALWAYS"/>
     </rowConstraints>
 
@@ -47,19 +48,20 @@
                 <FxmlListCellFactory fxmlSource="@stepsListCell.fxml"/>
             </cellFactory>
         </ListView>
-<!--        <ListView fx:id="formulaCausesList">-->
-<!--            <cellFactory>-->
-<!--                <FxmlListCellFactory fxmlSource="@formulaCausesListCell.fxml"/>-->
-<!--            </cellFactory>-->
-<!--        </ListView>-->
-        <TableView fx:id="variablesByStepsTable">
-        </TableView>
+        <ListView fx:id="formulaCausesList">
+            <cellFactory>
+                <FxmlListCellFactory fxmlSource="@formulaCausesListCell.fxml"/>
+            </cellFactory>
+        </ListView>
+
         <Button text="explain formula" onAction="#explainFormula"/>
     </VBox>
 <!--    <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">-->
 <!--        <VisGraphControl resource="diagramGraph.html" fx:id="functionBlocksGraph" VBox.vgrow="ALWAYS" prefHeight="1000"/>-->
 <!--    </VBox>-->
-    <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+    <TableView GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="variablesByStepsTable">
+    </TableView>
+    <VBox GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
         <Button text="update" onAction="#updateGraph"/>
     </VBox>
 

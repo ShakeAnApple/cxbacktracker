@@ -11,8 +11,12 @@ public class State {
     private final int order;
 
     public State(List<Variable> variableValues, int order) {
-        this.variablesByNames = variableValues.stream().collect(Collectors.toMap((v) -> v.getName(), (v) -> v));
+        this.variablesByNames = variableValues.stream().collect(Collectors.toMap(Variable::getName, (v) -> v));
         this.order = order;
+    }
+
+    public Map<String, Variable> getVarsByNames(){
+        return this.variablesByNames;
     }
 
     public Variable getVarByName(String name){

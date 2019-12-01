@@ -15,6 +15,7 @@ public class MainFx  extends Application {
 
     @Override
     public void start(Stage stage) throws IOException, JAXBException {
+
 //        Block b = XmlSerializer.deserializeFromXML("C:\\Users\\ovsianp1\\projects\\SEARCH\\basic-components\\_12.xml");
 //        Block b = XmlSerializer.deserializeFromXML("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\basics\\FLIP_FLOP.xml");
 //        BlockDefinition def = b.translate();

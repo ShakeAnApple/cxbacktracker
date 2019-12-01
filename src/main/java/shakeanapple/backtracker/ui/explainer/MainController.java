@@ -1,13 +1,16 @@
 package shakeanapple.backtracker.ui.explainer;
 
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
+import shakeanapple.backtracker.Config;
 import shakeanapple.backtracker.core.counterexample.State;
 import shakeanapple.backtracker.core.diagramexplanation.*;
 import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockComplex;
@@ -21,8 +24,8 @@ import shakeanapple.backtracker.core.ltl.explanation.ILtlFormulaExplainer;
 import shakeanapple.backtracker.core.ltl.explanation.LtlFormulaExplainer;
 import shakeanapple.backtracker.core.ltl.explanation.model.FormulaCause;
 import shakeanapple.backtracker.core.ltl.formula.model.LtlFormula;
+import shakeanapple.backtracker.ui.explainer.model.*;
 import shakeanapple.backtracker.ui.explainer.model.Cause;
-import shakeanapple.backtracker.ui.explainer.model.Step;
 import shakeanapple.backtracker.ui.explainer.model.graph.cell.Pin;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.DiagramControl;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.ViewGraph;
@@ -31,6 +34,7 @@ import shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.graph.Vi
 import shakeanapple.backtracker.ui.GraphHelper;
 import shakeanapple.backtracker.ui.infrasructure.control.visgraph.VisGraphControl;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -63,12 +67,13 @@ public class MainController implements Initializable {
     private int currentStep = 0;
     private DiagramEvaluationCache cache = new DiagramEvaluationCache();
 
-    public MainController() {
+    private ObservableList<CxVar> varsTableItems = FXCollections.observableArrayList();
 
-//        FunctionBlockComplex diagram = FunctionBlockComplex.parse("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\m.smv",
-//                "C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\basics");
-//        counterexample = Counterexample.load("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\cx");
-//        LtlFormula formula = LtlFormula.parse("G(((!(alarm) & !(criteria)) & X (criteria & !(ack_button))) -> X (alarm))");
+    public MainController() throws IOException {
+        Config config = new Config();
+        FunctionBlockComplex diagram = FunctionBlockComplex.parse(config.getDiagramPath());
+        counterexample = Counterexample.load(config.getCxPath());
+        LtlFormula formula = LtlFormula.parse(config.getFormula());
 
 
 //        FunctionBlockComplex diagram = FunctionBlockComplex.parse("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\test-model\\triggeredff-typed.smv",
@@ -77,10 +82,10 @@ public class MainController implements Initializable {
 //        LtlFormula formula = LtlFormula.parse("G (SET & X !SET -> X !ACT)");
 
 
-        FunctionBlockComplex diagram = FunctionBlockComplex.parse("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\test-model\\m-typed.smv",
-                "C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\basics");
-        counterexample = Counterexample.load("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\test-model\\cx-m");
-        LtlFormula formula = LtlFormula.parse("G !(mode_a & mode_b)");
+//        FunctionBlockComplex diagram = FunctionBlockComplex.parse("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\test-model\\m-typed.smv",
+//                "C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\basics");
+//        counterexample = Counterexample.load("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\test-model\\cx-m");
+//        LtlFormula formula = LtlFormula.parse("G !(mode_a & mode_b)");
 
         this.calculationWalker = new LtlWithCounterexampleEvaluator(counterexample, formula);
 
@@ -90,7 +95,6 @@ public class MainController implements Initializable {
         this.diagramOutputExplainer = new DiagramBackwardExplainer(diagram);
 
         this.ltlExplainer = new LtlFormulaExplainer(formula, this.counterexample, this.calculationWalker);
-
     }
 
     @Override
@@ -102,6 +106,45 @@ public class MainController implements Initializable {
                         .map(state -> new Step(state.getOrder(), this.counterexample.getLoopStart() == state.getOrder())).collect(Collectors.toList())
         ));
         this.stepsList.setOnMouseClicked(this::handleStepChosen);
+
+        this.initializeTable();
+    }
+
+    private void initializeTable() {
+
+        TableColumn<CxVar, String> c = new TableColumn<>("Var name");
+        c.setCellValueFactory(param ->
+                new ReadOnlyObjectWrapper<>(param.getValue().getVarName())
+        );
+        this.variablesByStepsTable.getColumns().add(c);
+
+        for (int i = 0; i < this.counterexample.length(); i++) {
+            final int finalIdx = i;
+            TableColumn<CxVar, VarValueForStep> column = new TableColumn<>(String.valueOf(i));
+            column.setCellValueFactory(param ->
+                    new ReadOnlyObjectWrapper<>(param.getValue().getVarValues().get(finalIdx))
+            );
+            column.setCellFactory(param -> new VarValueCell());
+            column.setPrefWidth(50);
+            this.variablesByStepsTable.getColumns().add(column);
+        }
+
+        Map<String, List<VarValueForStep>> varsValues = new HashMap<>();
+        for (int step = 0; step < this.counterexample.length(); step++) {
+            State cxState = this.counterexample.getPath().get(step);
+            if (varsValues.isEmpty()) {
+                cxState.getVarsByNames().values().forEach(var -> {
+                    varsValues.put(var.getName(), new ArrayList<>());
+                });
+            }
+            varsValues.keySet().forEach(varName -> {
+                varsValues.get(varName).add(
+                        new VarValueForStep(varName, cxState.getVarByName(varName).getValue().toString(), false));
+            });
+        }
+
+        varsValues.keySet().forEach(varName -> this.varsTableItems.add(new CxVar(varName, varsValues.get(varName))));
+        this.variablesByStepsTable.getItems().addAll(this.varsTableItems);
     }
 
     private void handleStepChosen(MouseEvent mouseEvent) {
@@ -178,6 +221,30 @@ public class MainController implements Initializable {
 
     public void explainFormula(ActionEvent actionEvent) {
         List<FormulaCause> causes = this.ltlExplainer.explainRootForStep(this.currentStep).getCauses();
+        Map<String, List<FormulaCause>> causesByVarName = new HashMap<>();
+        for (FormulaCause cause: causes){
+            if (!causesByVarName.containsKey(cause.getVarName())){
+                causesByVarName.put(cause.getVarName(), new ArrayList<>());
+            }
+            causesByVarName.get(cause.getVarName()).add(cause);
+        }
+
+        this.varsTableItems.forEach(cxVar -> {
+            for (VarValueForStep varValueForStep: cxVar.getVarValues()){
+                varValueForStep.isCauseProperty().setValue(false);
+            }
+        });
+
+        this.varsTableItems.forEach(cxVar -> {
+            if (causesByVarName.containsKey(cxVar.getVarName())) {
+                List<FormulaCause> cxVarCauses = causesByVarName.get(cxVar.getVarName());
+                for (FormulaCause cause: cxVarCauses){
+                    cxVar.getVarValues().get(cause.getStepNum()).isCauseProperty().setValue(true);
+                }
+            }
+        });
+
+        this.variablesByStepsTable.refresh();
         this.formulaCausesList.setItems(FXCollections.observableArrayList(causes));
     }
 }
