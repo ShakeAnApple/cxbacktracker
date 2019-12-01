@@ -22,6 +22,10 @@ public class BlockVariableHistory {
         return this.name;
     }
 
+    public int varRecordsCount(){
+        return this.valuesByStep.values().size();
+    }
+
     public ValueHolder getValueForStep(int timestamp){
         return this.valuesByStep.get(timestamp).getValueHolder();
     }

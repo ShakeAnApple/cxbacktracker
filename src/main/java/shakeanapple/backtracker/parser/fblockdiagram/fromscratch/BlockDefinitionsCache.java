@@ -57,7 +57,7 @@ public class BlockDefinitionsCache {
             if (errors.isEmpty()){
                 NuSMVModule.TransformOutput res = result.toFunctionBlockNetwork(this.currentId);
                 BlockDefinition def = res.block.translate();
-                this.currentId = res.nextId;
+                this.currentId = res.nextId + 1;
                 this.definitions.put(def.getTypeName(), def);
                 return def;
             }

@@ -30,7 +30,7 @@ public abstract class FunctionBlockBase extends DiagramElement implements Interf
         this.history.record(this.fbInterface, Clocks.instance().currentTime());
     }
 
-    protected BlockInterfaceHistory history(){
+    public BlockInterfaceHistory history(){
         return this.history;
     }
 

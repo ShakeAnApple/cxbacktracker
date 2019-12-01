@@ -32,6 +32,10 @@ public class BlockInterfaceHistory {
         }
     }
 
+    public int outputRecordsCount(){
+        return this.outputVariablesHistory.values().stream().findFirst().get().varRecordsCount();
+    }
+
     private void recordInput(InputVariable var, Integer timestamp){
         this.inputVariablesHistory.get(var.getName()).record(var, timestamp);
     }

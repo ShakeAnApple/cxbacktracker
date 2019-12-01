@@ -64,7 +64,7 @@ public abstract class Gate extends DiagramElement {
     }
 
     private void delayPropagation(ValueHolder value) {
-        Clocks.instance().onNextTick(() -> {
+        Clocks.instance().onceOnNextTick(() -> {
             this.populateInput(value);});
     }
 
@@ -75,6 +75,7 @@ public abstract class Gate extends DiagramElement {
     public void propagateValue(){
         for (Connection connection: this.getOutgoingConnections()) {
             if (connection.isInverted()){
+                System.out.println("Inverted input from: " + this.owner.getName() + " from var:" + this.getName() + " to: " + connection.to().getName() + " to var: " + connection.toGate().getName() + " value: " + this.output().getValue() + "/" + this.output().getValue().invert());
                 connection.toGate().populateInput(this.output().getValue().invert());
             } else {
                 connection.toGate().populateInput(this.output().getValue());

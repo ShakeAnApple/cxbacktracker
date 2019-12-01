@@ -38,6 +38,10 @@ public class DelayFunctionBlockBasic extends FunctionBlockBasic {
         this.ticksPassed = 0;
     }
 
+    public InputVariable getInput() {
+        return this.input;
+    }
+
     public DelayFunctionBlockBasic(InputVariable input, InputVariable defValue, OutputVariable output, int delay) {
         super("Delay", new ArrayList<>() {{
             add(input);
@@ -53,14 +57,26 @@ public class DelayFunctionBlockBasic extends FunctionBlockBasic {
         this.ticksPassed = 0;
     }
 
+    private boolean propagateValue = false;
+
     // TODO ask Igor (what? oO)
     @Override
     public void executeImpl() {
+        if (this.propagateValue){
+            this.propagateValue = false;
+            super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(this.inputsSeq.get(Clocks.instance().currentTime() - this.delay));
+            this.ticksPassed = 0;
+            return;
+        }
         this.inputsSeq.add(this.input.getValue());
-        if (Clocks.instance().currentTime() <= this.delay){
+        if (Clocks.instance().currentTime() < this.inputsSeq.size()){
+            this.propagateValue = true;
+            return;
+        }
+        if (Clocks.instance().currentTime() <= this.delay) {
             ValueHolder defValHolder = this.defValue != null ? this.defValue.getValue() : this.output.getDefaultValue();
             super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(defValHolder);
-            this.ticksPassed ++;
+            this.ticksPassed++;
         }
         if (Clocks.instance().currentTime() > this.delay){
             super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(this.inputsSeq.get(Clocks.instance().currentTime() - this.delay));
@@ -70,10 +86,10 @@ public class DelayFunctionBlockBasic extends FunctionBlockBasic {
 
     @Override
     protected List<Cause> explainImpl(OutputGate output, Integer timestamp) {
-        if (timestamp - this.delay > 0){
+        if (timestamp - this.delay > 1){
             return Collections.singletonList(new Cause(super.fbInterface().getInputs().get(this.input.getName()), super.history().getVariableValueForStep(this.input.getName(), timestamp - this.delay), timestamp - this.delay));
         }
         // TODO start from zero? or 1? I always forget
-        return Collections.singletonList(new Cause(super.fbInterface().getInputs().get(this.input.getName()), super.history().getVariableValueForStep(this.input.getName(), 0), 0));
+        return Collections.singletonList(new Cause(super.fbInterface().getInputs().get(this.input.getName()), super.history().getVariableValueForStep(this.input.getName(), 1), 1));
     }
 }

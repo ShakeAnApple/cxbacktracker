@@ -128,6 +128,11 @@ public class NuSMVModule {
             return new OutputVariable(id, type, "output_variable_" + id);
         }
 
+        private InputVariable newInputVariable(VarType type, int order) {
+            final long id = newID();
+            return new InputVariable(id, type, "input_variable_" + id, order);
+        }
+
         public InputVariable constantBool(boolean value, int order) {
             return constant(value, order);
         }
@@ -169,20 +174,17 @@ public class NuSMVModule {
 
         public InputVariable createWire(Object from, int order, boolean inverted) {
             final VarType type;
-            final String name;
             final long id;
             if (from instanceof InputVariable) {
                 type = ((InputVariable) from).getType();
-                name = ((InputVariable) from).getName();
                 id = ((InputVariable) from).getId();
             } else if (from instanceof OutputVariable) {
                 type = ((OutputVariable) from).getType();
-                name = ((OutputVariable) from).getName();
                 id = ((OutputVariable) from).getId();
             } else {
                 throw new AssertionError();
             }
-            final InputVariable result = new InputVariable(newID(), type, name, order);
+            final InputVariable result = newInputVariable(type, order);
             if (id == result.getId()) {
                 throw new RuntimeException("Attempt to connect a variable to itself");
             }

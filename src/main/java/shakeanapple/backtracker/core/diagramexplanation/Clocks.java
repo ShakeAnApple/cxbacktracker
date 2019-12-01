@@ -1,5 +1,7 @@
 package shakeanapple.backtracker.core.diagramexplanation;
 
+import shakeanapple.backtracker.ui.basiccomponentsconstructor.component.choice.AddChoiceDialogController;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +10,8 @@ public class Clocks {
 
     private int currentTime;
 
-    List<Runnable> nextTickActions = new ArrayList<>();
+    private List<Runnable> nextTickActions = new ArrayList<>();
+    private List<Runnable> permanentActions = new ArrayList<>();
 
     private Clocks(){
         this.currentTime = 0;
@@ -27,13 +30,22 @@ public class Clocks {
 
     public void tick(){
         this.currentTime ++;
-        for (Runnable action : this.nextTickActions){
+        List<Runnable> actions = new ArrayList<>(this.nextTickActions);
+        this.nextTickActions.clear();
+        for (Runnable action : actions){
             action.run();
         }
-        this.nextTickActions.clear();
+
+        for (Runnable action : this.permanentActions){
+            action.run();
+        }
     }
 
-    public void onNextTick(Runnable action) {
+    public void onTick(Runnable action){
+        this.permanentActions.add(action);
+    }
+
+    public void onceOnNextTick(Runnable action) {
         this.nextTickActions.add(action);
     }
 }

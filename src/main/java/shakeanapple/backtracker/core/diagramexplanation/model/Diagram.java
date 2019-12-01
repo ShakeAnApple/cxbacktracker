@@ -34,15 +34,12 @@ public class Diagram {
     }
 
     public void execute() {
-        for (FunctionBlockBase fb: this.functionBlocks){
-            if (fb.fbInterface().getInputs().values().stream().noneMatch(i -> i.getIncomingConnection() != null)){
-                System.out.println(fb.getName() + ": no connected inputs, executed");
-                fb.execute();
-            } else if ((fb instanceof DelayFunctionBlockBasic) && Clocks.instance().currentTime() == 1){
-                System.out.println(fb.getName() + ": delay, executed");
-                fb.execute();
-            }
-        }
+//        for (FunctionBlockBase fb: this.functionBlocks){
+//            if (fb.fbInterface().getInputs().values().stream().noneMatch(i -> i.getIncomingConnection() != null)){
+//                System.out.println(fb.getName() + ": no connected inputs, executed");
+//                fb.execute();
+//            }
+//        }
     }
 
 

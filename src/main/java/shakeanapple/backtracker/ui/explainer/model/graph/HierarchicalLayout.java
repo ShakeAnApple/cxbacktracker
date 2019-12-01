@@ -82,13 +82,19 @@ public class HierarchicalLayout extends Layout {
     // TODO watch cycles!
     private Integer defineLevels(Cell cell, Map<Long, Integer> cellLevels) {
         if (cellLevels.containsKey(cell.getCellId())) {
+            if (cellLevels.get(cell.getCellId()) == Integer.MIN_VALUE){
+                return 0;
+            }
             return cellLevels.get(cell.getCellId());
         }
+        cellLevels.put(cell.getCellId(), Integer.MIN_VALUE);
         int maxParentLevel = 0;
         for (Cell parentCell : cell.getCellParents()) {
             int parentLevel = this.defineLevels(parentCell, cellLevels);
             if (!cellLevels.containsKey(parentCell.getCellId())) {
                 cellLevels.put(parentCell.getCellId(), parentLevel);
+            } else if (cellLevels.get(parentCell.getCellId()) == Integer.MIN_VALUE){
+                cellLevels.replace(parentCell.getCellId(), parentLevel);
             }
             maxParentLevel = Math.max(parentLevel, maxParentLevel);
         }

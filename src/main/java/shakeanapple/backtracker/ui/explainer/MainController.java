@@ -71,14 +71,16 @@ public class MainController implements Initializable {
 //        LtlFormula formula = LtlFormula.parse("G(((!(alarm) & !(criteria)) & X (criteria & !(ack_button))) -> X (alarm))");
 
 
-        FunctionBlockComplex diagram = FunctionBlockComplex.parse("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\test-model\\triggeredff-typed.smv",
-                "C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\basics");
-        counterexample = Counterexample.load("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\test-model\\cx-trig");
-        LtlFormula formula = LtlFormula.parse("G (SET & X !SET -> X !ACT)");
-
-
-//        FunctionBlockComplex diagram = FunctionBlockComplex.parse("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\test-model\\m.smv",
+//        FunctionBlockComplex diagram = FunctionBlockComplex.parse("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\test-model\\triggeredff-typed.smv",
 //                "C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\basics");
+//        counterexample = Counterexample.load("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\test-model\\cx-trig");
+//        LtlFormula formula = LtlFormula.parse("G (SET & X !SET -> X !ACT)");
+
+
+        FunctionBlockComplex diagram = FunctionBlockComplex.parse("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\test-model\\m-typed.smv",
+                "C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\basics");
+        counterexample = Counterexample.load("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\test-model\\cx-m");
+        LtlFormula formula = LtlFormula.parse("G !(mode_a & mode_b)");
 
         this.calculationWalker = new LtlWithCounterexampleEvaluator(counterexample, formula);
 

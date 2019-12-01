@@ -4,6 +4,7 @@ import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.core.counterexample.Counterexample;
 import shakeanapple.backtracker.core.counterexample.CounterexampleCursor;
 import shakeanapple.backtracker.core.diagramexplanation.model.*;
+import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.choice.ChoiceFunctionBlockBasic;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.DiagramSnapshot;
 
 import java.util.HashMap;
@@ -68,6 +69,7 @@ public class DiagramCounterexampleExecutor implements DiagramSequentialEvaluator
 
         for (DiagramElement de : this.diagram.getInternalDiagram().getFunctionBlocks()) {
             FunctionBlockBase fb = (FunctionBlockBase) de;
+            System.out.println("Block: " + fb.getName() + " ouput records: " + fb.history().outputRecordsCount());
             for (OutputGate outGate : fb.fbInterface().getOutputs().values()) {
                 String varName = fb.getName() + "." + outGate.getName();
                 ValueHolder cxValue = this.cursor.getCurState().getVarByName(varName).getValue();
