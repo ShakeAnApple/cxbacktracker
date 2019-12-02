@@ -13,6 +13,8 @@ public class Connection implements DiagramConnection {
     private final InputPin to;
     private ValueHolder value;
 
+    private boolean isCause;
+
     private boolean isInverted;
 
     private Edge edge;
@@ -64,6 +66,16 @@ public class Connection implements DiagramConnection {
             this.value = value;
         }
         this.edge.updateValue(this.value);
+    }
+
+    @Override
+    public void isCauseEdge(boolean isCause) {
+        this.isCause = isCause;
+        if (this.isCause) {
+            this.edge.color(Color.CORAL);
+        } else{
+            this.edge.color(null);
+        }
     }
 
     public String getId() {

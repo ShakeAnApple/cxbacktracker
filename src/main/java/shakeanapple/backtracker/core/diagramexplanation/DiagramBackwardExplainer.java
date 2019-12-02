@@ -1,8 +1,12 @@
 package shakeanapple.backtracker.core.diagramexplanation;
 
 import shakeanapple.backtracker.core.diagramexplanation.model.*;
+import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
+import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CausePathTree;
+import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,14 +18,15 @@ public class DiagramBackwardExplainer implements DiagramOutputExplainer {
         this.diagram = diagram;
     }
 
-    public List<Cause> explain(String gateName, String blockName, int timestamp){
+    public ExplanationItem explain(String gateName, String blockName, int timestamp){
         OutputGate outputGate = this.diagram.fbInterface().getOutputs().get(gateName);
         if (outputGate != null){
-            return this.diagram.explain(outputGate, timestamp);
+            ExplanationItem item = this.diagram.explain(outputGate, timestamp);
+            return item;
         }
         InputGate inputGate = this.diagram.fbInterface().getInputs().get(gateName);
         if (inputGate != null){
-            return new ArrayList<>();
+            return new ExplanationItem(new CausePathTree(), new ArrayList<>());
         }
 
         FunctionBlockBase fbToExplain = this.diagram.getInternalDiagram().getFunctionBlocks().stream()
@@ -34,15 +39,17 @@ public class DiagramBackwardExplainer implements DiagramOutputExplainer {
 
         OutputGate out = fbToExplain.fbInterface().getOutputs().get(gateName);
         if (out != null){
-            return fbToExplain.explain(out, timestamp);
+            ExplanationItem item = fbToExplain.explain(out, timestamp);
+            return item;
         }
         InputGate in = fbToExplain.fbInterface().getInputs().get(gateName);
         if (in != null){
             if (in.getIncomingConnection() != null && in.getIncomingConnection().fromGate() instanceof OutputGate) {
-                return in.getIncomingConnection().fromGate().getOwner().explain((OutputGate) in.getIncomingConnection().fromGate(), timestamp);
+                ExplanationItem item = in.getIncomingConnection().fromGate().getOwner().explain((OutputGate) in.getIncomingConnection().fromGate(), timestamp);
+                return item;
             } else{
                 //TODO distinguish constants
-                return Collections.singletonList(new Cause(in, in.getValue(), timestamp));
+                return new ExplanationItem(new CausePathTree(Collections.singletonList(new CauseNode(in, in.getValue(), timestamp))), new ArrayList<>());
             }
         }
 

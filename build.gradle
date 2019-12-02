@@ -72,7 +72,7 @@ task basicBlockParserJar(type: Jar) {
     manifest {
         attributes 'Implementation-Title': 'Basic block parsing test main class',
                    'Implementation-Version': '0.1',
-                   'Main-Class': 'shakeanapple.backtracker.nusmvparsing.ParseBlockMain'
+                   'Main-Class': 'shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.ParseBlockMain'
     }
     //baseName = 'parse-block'//project.name + '-all'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }

@@ -1,11 +1,11 @@
-package shakeanapple.backtracker.nusmvparsing;
+package shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
 import shakeanapple.backtracker.antlrgenerated.nusmvLexer;
 import shakeanapple.backtracker.antlrgenerated.nusmvParser;
-import shakeanapple.backtracker.nusmvparsing.exceptions.*;
+import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.exceptions.*;
 
 import java.io.*;
 import java.nio.file.Files;

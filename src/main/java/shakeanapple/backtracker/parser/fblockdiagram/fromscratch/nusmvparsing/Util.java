@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.nusmvparsing;
+package shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing;
 
 /**
  * Created by buzhinsky on 11/19/17.

@@ -1,11 +1,11 @@
-package shakeanapple.backtracker.nusmvparsing.expression;
+package shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.expression;
 
-import shakeanapple.backtracker.nusmvparsing.Assignment;
-import shakeanapple.backtracker.nusmvparsing.NuSMVModule;
-import shakeanapple.backtracker.nusmvparsing.exceptions.TooDeepNextException;
-import shakeanapple.backtracker.nusmvparsing.exceptions.TypeInferenceException;
-import shakeanapple.backtracker.nusmvparsing.exceptions.UndeclaredVariableException;
-import shakeanapple.backtracker.nusmvparsing.exceptions.UnresolvedTypeException;
+import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.Assignment;
+import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.NuSMVModule;
+import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.exceptions.TooDeepNextException;
+import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.exceptions.TypeInferenceException;
+import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.exceptions.UndeclaredVariableException;
+import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.exceptions.UnresolvedTypeException;
 import shakeanapple.backtracker.parser.basiccomponents.xmlmodel.*;
 
 import java.util.*;

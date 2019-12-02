@@ -9,6 +9,9 @@ import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.ar
 import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.choice.Choice;
 import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.choice.ChoiceFunctionBlockBasic;
 import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.logic.*;
+import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
+import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CausePathTree;
+import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
 import shakeanapple.backtracker.core.diagramexplanation.model.complexblockdefinition.ComponentDefinitionType;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
@@ -74,5 +77,21 @@ public abstract class FunctionBlockBasic extends FunctionBlockBase {
 
     public List<OutputVariable> getOutputs(){
         return this.outputs;
+    }
+
+    protected abstract List<CauseNode> explainBasicImpl(OutputGate output, Integer timestamp);
+
+    @Override
+    public ExplanationItem explainImpl(OutputGate output, Integer timestamp){
+        CauseNode root = new CauseNode(output, output.getValue(), timestamp);
+        //root.isRoot(true);
+        CausePathTree pathTree = new CausePathTree(root);
+        List<CauseNode> causes = this.explainBasicImpl(output, timestamp);
+        root.addChildren(causes);
+        ExplanationItem res = new ExplanationItem(pathTree, causes);
+        for (CauseNode cause: causes){
+            res.recordAddChildrenActionForNode(cause, ch -> { cause.addChildren(ch); return true;});
+        }
+        return res;
     }
 }

@@ -1,9 +1,10 @@
 package shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents;
 
 import shakeanapple.backtracker.common.variable.ValueHolder;
-import shakeanapple.backtracker.core.diagramexplanation.Cause;
+import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
 import shakeanapple.backtracker.core.diagramexplanation.Clocks;
 import shakeanapple.backtracker.core.diagramexplanation.model.OutputGate;
+import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
@@ -85,11 +86,11 @@ public class DelayFunctionBlockBasic extends FunctionBlockBasic {
     }
 
     @Override
-    protected List<Cause> explainImpl(OutputGate output, Integer timestamp) {
-        if (timestamp - this.delay > 1){
-            return Collections.singletonList(new Cause(super.fbInterface().getInputs().get(this.input.getName()), super.history().getVariableValueForStep(this.input.getName(), timestamp - this.delay), timestamp - this.delay));
+    protected List<CauseNode> explainBasicImpl(OutputGate output, Integer timestamp) {
+        if (timestamp - this.delay >= 1){
+            return Collections.singletonList(new CauseNode(super.fbInterface().getInputs().get(this.input.getName()), super.history().getVariableValueForStep(this.input.getName(), timestamp - this.delay), timestamp - this.delay));
         }
         // TODO start from zero? or 1? I always forget
-        return Collections.singletonList(new Cause(super.fbInterface().getInputs().get(this.input.getName()), super.history().getVariableValueForStep(this.input.getName(), 1), 1));
+        return Collections.singletonList(new CauseNode(super.fbInterface().getInputs().get(this.input.getName()), super.history().getVariableValueForStep(this.input.getName(), 1), 1));
     }
 }

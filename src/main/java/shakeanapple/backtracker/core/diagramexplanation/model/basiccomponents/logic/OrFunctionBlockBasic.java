@@ -1,11 +1,11 @@
 package shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.logic;
 
 import shakeanapple.backtracker.common.variable.BooleanValueHolder;
-import shakeanapple.backtracker.core.diagramexplanation.Cause;
-import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockBase;
+import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
 import shakeanapple.backtracker.core.diagramexplanation.model.InputGate;
 import shakeanapple.backtracker.core.diagramexplanation.model.OutputGate;
 import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.FunctionBlockBasic;
+import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
@@ -39,7 +39,7 @@ public class OrFunctionBlockBasic extends FunctionBlockBasic {
     }
 
     @Override
-    protected List<Cause> explainImpl(OutputGate output, Integer timestamp) {
+    protected List<CauseNode> explainBasicImpl(OutputGate output, Integer timestamp) {
         BooleanValueHolder val = (BooleanValueHolder) output.getValue();
         if (val.getValue()){
             return this.explainTrue(timestamp);
@@ -48,20 +48,20 @@ public class OrFunctionBlockBasic extends FunctionBlockBasic {
         }
     }
 
-    private List<Cause> explainTrue(int timestamp){
-        List<Cause> causes = new ArrayList<>();
+    private List<CauseNode> explainTrue(int timestamp){
+        List<CauseNode> causeNodes = new ArrayList<>();
         for (InputGate in : super.fbInterface().getInputs().values()){
             BooleanValueHolder val = (BooleanValueHolder) super.history().getVariableValueForStep(in.getName(), timestamp);
             if (val.getValue()){
-                causes.add(new Cause(in, val, timestamp));
+                causeNodes.add(new CauseNode(in, val, timestamp));
             }
         }
-        return causes;
+        return causeNodes;
     }
 
-    private List<Cause> explainFalse(int timestamp){
+    private List<CauseNode> explainFalse(int timestamp){
         return super.fbInterface().getInputs().values().stream()
-                .map(in -> new Cause(in, super.history().getVariableValueForStep(in.getName(), timestamp), timestamp))
+                .map(in -> new CauseNode(in, super.history().getVariableValueForStep(in.getName(), timestamp), timestamp))
                 .collect(Collectors.toList());
     }
 }

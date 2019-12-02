@@ -8,4 +8,6 @@ public interface DiagramConnection {
     String getId();
 
     void updateValue(ValueHolder value);
+
+    void isCauseEdge(boolean isCause);
 }

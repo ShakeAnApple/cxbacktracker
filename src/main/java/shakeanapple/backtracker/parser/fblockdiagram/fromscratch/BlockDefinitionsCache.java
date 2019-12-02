@@ -7,8 +7,8 @@ import org.antlr.v4.runtime.dfa.DFA;
 import shakeanapple.backtracker.antlrgenerated.nusmvLexer;
 import shakeanapple.backtracker.antlrgenerated.nusmvParser;
 import shakeanapple.backtracker.core.diagramexplanation.model.complexblockdefinition.BlockDefinition;
-import shakeanapple.backtracker.nusmvparsing.NuSMVModule;
-import shakeanapple.backtracker.nusmvparsing.exceptions.*;
+import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.NuSMVModule;
+import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.exceptions.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

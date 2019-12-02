@@ -1,7 +1,7 @@
-package shakeanapple.backtracker.nusmvparsing.expression;
+package shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.expression;
 
-import shakeanapple.backtracker.nusmvparsing.Assignment;
-import shakeanapple.backtracker.nusmvparsing.NuSMVModule;
+import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.Assignment;
+import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.NuSMVModule;
 import shakeanapple.backtracker.parser.basiccomponents.xmlmodel.InputVariable;
 
 import java.util.Arrays;

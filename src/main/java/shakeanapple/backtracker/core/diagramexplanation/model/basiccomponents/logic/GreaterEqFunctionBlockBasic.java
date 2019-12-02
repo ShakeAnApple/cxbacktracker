@@ -2,9 +2,10 @@ package shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.l
 
 import shakeanapple.backtracker.common.variable.BooleanValueHolder;
 import shakeanapple.backtracker.common.variable.IntegerValueHolder;
-import shakeanapple.backtracker.core.diagramexplanation.Cause;
+import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
 import shakeanapple.backtracker.core.diagramexplanation.model.OutputGate;
 import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.BinOpFunctionBlockBasic;
+import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
@@ -24,9 +25,9 @@ public class GreaterEqFunctionBlockBasic extends BinOpFunctionBlockBasic {
     }
 
     @Override
-    protected List<Cause> explainImpl(OutputGate output, Integer timestamp) {
+    protected List<CauseNode> explainBasicImpl(OutputGate output, Integer timestamp) {
         return super.fbInterface().getInputs().values().stream()
-                .map(in -> new Cause(in, super.history().getVariableValueForStep(in.getName(), timestamp), timestamp))
+                .map(in -> new CauseNode(in, super.history().getVariableValueForStep(in.getName(), timestamp), timestamp))
                 .collect(Collectors.toList());
     }
 }

@@ -21,6 +21,8 @@ public class Edge extends Group {
 
     private boolean isBound;
 
+    private Color defaultColor;
+
     public Edge(Connectable source, Connectable target, String text, Color color) {
 
         this.source = source;
@@ -33,6 +35,7 @@ public class Edge extends Group {
 //        target.addCellParent(source);
 //        target.addEdgeTo(this);
 
+        this.defaultColor = color;
         this.line = new Line();
         this.line.setStroke(color);
         this.line.setStrokeWidth(2);
@@ -45,6 +48,14 @@ public class Edge extends Group {
         this.label.layoutXProperty().bind(this.line.endXProperty().subtract(this.line.endXProperty().subtract(this.line.startXProperty()).divide(2)));
         this.label.layoutYProperty().bind(this.line.endYProperty().subtract(this.line.endYProperty().subtract(this.line.startYProperty()).divide(2)));
 
+    }
+
+    public void color(Color color){
+        if (color == null){
+            this.line.setStroke(this.defaultColor);
+        } else {
+            this.line.setStroke(color);
+        }
     }
 
 //        public Edge(Cell source, Cell target, String text, Color color) {

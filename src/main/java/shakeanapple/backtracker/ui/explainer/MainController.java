@@ -14,6 +14,8 @@ import shakeanapple.backtracker.Config;
 import shakeanapple.backtracker.core.counterexample.State;
 import shakeanapple.backtracker.core.diagramexplanation.*;
 import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockComplex;
+import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
+import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.ConnectionSnapshot;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.DiagramSnapshot;
 import shakeanapple.backtracker.core.ltl.evaluation.LtlWithCounterexampleEvaluator;
@@ -167,15 +169,29 @@ public class MainController implements Initializable {
     }
 
     private void renderDiagramForStep(int stepNum) {
+        this.clearConnections();
         DiagramSnapshot snapshot = this.cache.getByStep(stepNum);
         this.updateConnections(snapshot.getConnections());
     }
 
+    private void clearConnections(){
+        for (DiagramConnection conn: this.connections.values()){
+            conn.isCauseEdge(false);
+        }
+    }
+
     private void explainCause(String varName, String blockName, int timestamp) {
-        ObservableList<Cause> causes = FXCollections.observableList(
-                this.diagramOutputExplainer.explain(varName, blockName, timestamp).stream().map(c -> new Cause(c.getTimestamp(), c.getGate().getOwner().getName(), c.getGate().getName(), c.getValue())).collect(Collectors.toList())
-        );
-        this.diagramCausesList.setItems(causes);
+        this.clearConnections();
+        ExplanationItem expRes = this.diagramOutputExplainer.explain(varName, blockName, timestamp);
+        CauseNodeUI causesTree = CauseNodeUI.parse(expRes.getTree().getRoots().get(0));
+        List<String> connectionIds = causesTree.inferConnectionsIds();
+        for (String connId: connectionIds){
+            if (this.connections.containsKey(connId)){
+                this.connections.get(connId).isCauseEdge(true);
+            }
+        }
+        this.diagramCausesList.setItems(FXCollections.observableArrayList(expRes.getFreshNodes().stream()
+                .map(causeNode -> new Cause(causeNode.getTimestamp(), causeNode.getGate().getName(), causeNode.getGate().getOwner().getName(), causeNode.getValue())).collect(Collectors.toList())));
     }
 
     private Boolean pinPressHandler(Pin pin) {

@@ -9,9 +9,9 @@ import org.antlr.v4.runtime.atn.PredictionContextCache;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import shakeanapple.backtracker.nusmvparsing.Assignment;
-import shakeanapple.backtracker.nusmvparsing.NuSMVModule;
-import shakeanapple.backtracker.nusmvparsing.expression.*;
+import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.Assignment;
+import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.NuSMVModule;
+import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.expression.*;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,8 +6,8 @@ options {
 
 @header {
 import java.util.*;
-import shakeanapple.backtracker.nusmvparsing.*;
-import shakeanapple.backtracker.nusmvparsing.expression.*;
+import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.*;
+import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.expression.*;
 }
 
 @parser::members {

@@ -1,12 +1,12 @@
 package shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents;
 
-import shakeanapple.backtracker.core.diagramexplanation.Cause;
+import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
 import shakeanapple.backtracker.core.diagramexplanation.model.OutputGate;
+import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class AssignFunctionBlockBasic extends FunctionBlockBasic {
     }
 
     @Override
-    protected List<Cause> explainImpl(OutputGate output, Integer timestamp) {
-        return Collections.singletonList(new Cause(super.fbInterface().getInputs().get(this.input.getName()), super.history().getVariableValueForStep(input.getName(), timestamp), timestamp));
+    protected List<CauseNode> explainBasicImpl(OutputGate output, Integer timestamp) {
+        return Collections.singletonList(new CauseNode(super.fbInterface().getInputs().get(this.input.getName()), super.history().getVariableValueForStep(input.getName(), timestamp), timestamp));
     }
 }

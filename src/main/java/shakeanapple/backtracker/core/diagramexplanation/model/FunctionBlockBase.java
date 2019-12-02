@@ -1,11 +1,10 @@
 package shakeanapple.backtracker.core.diagramexplanation.model;
 
-import shakeanapple.backtracker.core.diagramexplanation.Cause;
 import shakeanapple.backtracker.core.diagramexplanation.Clocks;
+import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,9 +45,9 @@ public abstract class FunctionBlockBase extends DiagramElement implements Interf
         return this.fbInterface;
     }
 
-    public List<Cause> explain(OutputGate output, int timestamp) {
+    public ExplanationItem explain(OutputGate output, int timestamp) {
        return this.explainImpl(output, timestamp);
     }
 
-    protected abstract List<Cause> explainImpl(OutputGate output, Integer timestamp);
+    protected abstract ExplanationItem explainImpl(OutputGate output, Integer timestamp);
 }

@@ -1,8 +1,7 @@
 package shakeanapple.backtracker.core.diagramexplanation.model;
 
-import shakeanapple.backtracker.core.diagramexplanation.Cause;
-import shakeanapple.backtracker.core.diagramexplanation.Clocks;
-import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.DelayFunctionBlockBasic;
+import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
+import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
@@ -18,7 +17,8 @@ public class Diagram {
     public Diagram(List<FunctionBlockBase> functionBlocks, List<InputVariable> inputs, List<OutputVariable> outputs) {
         this.functionBlocks = functionBlocks;
         this.inputs = inputs.stream().collect(Collectors.toMap(InputVariable::getId, in -> in));
-        this.outputs = outputs.stream().collect(Collectors.toMap(OutputVariable::getId, out -> out));;
+        this.outputs = outputs.stream().collect(Collectors.toMap(OutputVariable::getId, out -> out));
+        ;
     }
 
     public List<FunctionBlockBase> getFunctionBlocks() {
@@ -44,21 +44,48 @@ public class Diagram {
 
 
     // TODO lazy recursion
-    public List<Cause> explain(OutputGate gateToExplain, Integer timestamp) {
-        List<Cause> causes = gateToExplain.getOwner().explain(gateToExplain, timestamp);
-        Set<Cause> outputCauses = new HashSet<>();
-        for (Cause cause: causes) {
-            if (this.inputs.containsKey(cause.getGate().output().getId())) {
-                System.out.println(String.format("InternalD: cause '%s' added to result", cause.getGate().getIncomingConnection().fromGate().getName()));
-                outputCauses.add(new Cause(cause.getGate().getIncomingConnection().fromGate(), cause.getValue(), cause.getTimestamp()));
-            } else if (cause.getGate().getIncomingConnection() != null){
-                System.out.println(String.format("InternalD: cause '%s' will be processed", cause.getGate().getName()));
-                outputCauses.addAll(
-                        this.explain((OutputGate) cause.getGate().getIncomingConnection().fromGate(), cause.getTimestamp())
-                );
-                System.out.println(String.format("InternalD: cause '%s' processed", cause.getGate().getName()));
+    public ExplanationItem explain(OutputGate gateToExplain, Integer timestamp) {
+        ExplanationItem item = gateToExplain.getOwner().explain(gateToExplain, timestamp);
+        Collection<CauseNode> causeNodes = item.getFreshNodes();
+        Set<CauseNode> outputCauseNodes = new HashSet<>();
+
+        ExplanationItem result = new ExplanationItem(item.getTree(), outputCauseNodes);
+        for (CauseNode causeNode : causeNodes) {
+            if (this.inputs.containsKey(causeNode.getGate().output().getId())) {
+                System.out.println(String.format("InternalD: cause '%s' added to result", causeNode.getGate().getIncomingConnection().fromGate().getName()));
+                CauseNode childNode = new CauseNode(causeNode.getGate().getIncomingConnection().fromGate(), causeNode.getValue(), causeNode.getTimestamp());
+//                CauseNode childNode = new CauseNode(causeNode.getGate(), causeNode.getValue(), causeNode.getTimestamp());
+                outputCauseNodes.add(childNode);
+                result.recordAddChildrenActionForNode(childNode, (ch) -> {
+                    childNode.addChildren(ch);
+                    return true;
+                });
+                item.addChildrenToNode(causeNode, new ArrayList<>(){{add(childNode);}});
+//               causeNode.addChildNode(childNode);
+            } else if (causeNode.getGate().getIncomingConnection() != null) {
+                System.out.println(String.format("InternalD: cause '%s' will be processed", causeNode.getGate().getName()));
+                ExplanationItem childItem = this.explain((OutputGate) causeNode.getGate().getIncomingConnection().fromGate(), causeNode.getTimestamp());
+                item.addChildrenToNode(causeNode, childItem.getTree().getRoots());
+                for (CauseNode node: childItem.getTree().getRoots()){
+                    result.recordAddChildrenActionForNode(node, (ch) -> {
+                        node.addChildren(ch);
+                        return true;
+                    });
+                }
+                for (CauseNode node: childItem.getFreshNodes()){
+                    result.recordAddChildrenActionForNode(node, (ch) -> {
+                        node.addChildren(ch);
+                        return true;
+                    });
+                }
+
+//                causeNode.addChildren(childItem.getTree().getRoots());
+                outputCauseNodes.addAll(childItem.getFreshNodes());
+                System.out.println(String.format("InternalD: cause '%s' processed", causeNode.getGate().getName()));
             }
         }
-        return new ArrayList<>(outputCauses);
+
+        return result;
+//        return new ArrayList<>(outputCauseNodes);
     }
 }
