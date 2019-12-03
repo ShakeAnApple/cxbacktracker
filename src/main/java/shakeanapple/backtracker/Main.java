@@ -3,14 +3,12 @@ package shakeanapple.backtracker;
 import shakeanapple.backtracker.common.XmlSerializer;
 import shakeanapple.backtracker.parser.basiccomponents.xmlmodel.*;
 
-import javax.xml.bind.JAXBException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException, JAXBException {
+    public static void main(String[] args)  {
+        MainFx.main(args);
+
 //        List<InputVariable> inputs = new ArrayList<>();
 //        inputs.add(new InputVariable(1, VarType.BOOLEAN, "in1"));
 //        inputs.add(new InputVariable(2, VarType.BOOLEAN, "in2"));
@@ -67,7 +65,7 @@ public class Main {
 
 //        XmlSerializer.serializeToXML(b);
 
-        Block bdes = XmlSerializer.deserializeFromXML("C:\\Users\\ovsianp1\\tmp\\t.xml");
+        //Block bdes = XmlSerializer.deserializeFromXML("C:\\Users\\ovsianp1\\tmp\\t.xml");
 //        Project pr = XmlSerializer.deserializeFromXML("C:\\Users\\ovsianp1\\projects\\codesys\\Test2.xml");
 //        int a = 1;
         //LtlFormula.parse("G(((!(alarm) & !(criteria)) & X (criteria & !(ack_button))) -> X (alarm))");

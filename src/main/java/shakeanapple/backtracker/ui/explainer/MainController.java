@@ -150,8 +150,9 @@ public class MainController implements Initializable {
     }
 
     private void handleStepChosen(MouseEvent mouseEvent) {
+        this.clearConnections();
         Step step = (this.stepsList.getSelectionModel().getSelectedItem());
-        this.currentStep = step.getNumber();
+        this.currentStep = step.getNumber() + 1;
 
         DiagramSnapshot snapshot = this.diagramExecutor.moveTo(step.getNumber());
         this.cache.add(snapshot, step.getNumber());
@@ -191,7 +192,7 @@ public class MainController implements Initializable {
             }
         }
         this.diagramCausesList.setItems(FXCollections.observableArrayList(expRes.getFreshNodes().stream()
-                .map(causeNode -> new Cause(causeNode.getTimestamp(), causeNode.getGate().getName(), causeNode.getGate().getOwner().getName(), causeNode.getValue())).collect(Collectors.toList())));
+                .map(causeNode -> new Cause(causeNode.getTimestamp() - 1, causeNode.getGate().getName(), causeNode.getGate().getOwner().getName(), causeNode.getValue())).collect(Collectors.toList())));
     }
 
     private Boolean pinPressHandler(Pin pin) {
@@ -236,7 +237,7 @@ public class MainController implements Initializable {
 
 
     public void explainFormula(ActionEvent actionEvent) {
-        List<FormulaCause> causes = this.ltlExplainer.explainRootForStep(this.currentStep).getCauses();
+        List<FormulaCause> causes = this.ltlExplainer.explainRootForStep(this.currentStep - 1).getCauses();
         Map<String, List<FormulaCause>> causesByVarName = new HashMap<>();
         for (FormulaCause cause: causes){
             if (!causesByVarName.containsKey(cause.getVarName())){

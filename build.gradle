@@ -1,3 +1,14 @@
+
+buildscript {
+    dependencies {
+        classpath group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: '8.8.2'
+    }
+    repositories {
+        mavenCentral()
+    }
+}
+
+
 plugins {
     id 'antlr'
     id 'application'
@@ -10,11 +21,15 @@ apply plugin: 'antlr'
 apply plugin: 'idea'
 apply plugin: 'java'
 apply plugin: 'org.unbroken-dome.xjc'
+//apply plugin: "org.openjfx.javafxplugin"
+//apply plugin: 'javafx-gradle-plugin'
+
 
 javafx {
     version = "11.0.2"
     modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.web' ]
 }
+
 
 xjc {
     includeInMainCompilation = false
@@ -43,6 +58,11 @@ dependencies {
     compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.9.0'
     compile 'com.sun.xml.bind:jaxb-osgi:2.4.0-b180830.0438'
     compile 'org.openjfx:javafx-fxml:11.0.2'
+    compile "org.openjfx:javafx-base:11.0.2"
+    compile "org.openjfx:javafx-graphics:11.0.2"
+    compile "org.openjfx:javafx-controls:11.0.2"
+    compile "org.openjfx:javafx-fxml:11.0.2"
+    compile 'org.openjfx:javafx-web:11.0.2'
 }
 
 generateGrammarSource {
@@ -79,6 +99,37 @@ task basicBlockParserJar(type: Jar) {
     with jar
 }
 
-mainClassName = 'shakeanapple.backtracker.ui.MainFx'
+//compileJava {
+//    doFirst {
+//        options.compilerArgs = [
+//                '--module-path', classpath.asPath,
+//                '--add-modules', 'javafx.controls,javafx.fxml,javafx.web'
+//        ]
+//    }
+//}
+//
+//run {
+//    doFirst {
+//        jvmArgs = [
+//                '--module-path', classpath.asPath,
+//                '--add-modules', 'javafx.controls,javafx.fxml,javafx.web'
+//        ]
+//    }
+//}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'shakeanapple.backtracker.Main'
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+
+//jfx {
+//    mainClass = 'full.qualified.nameOf.TheMainClass'  // fill me
+//    vendor = 'YourName' // fill me
+//}
+mainClassName = 'shakeanapple.backtracker.Main'
 //mainClassName = 'shakeanapple.backtracker.Main'
 //mainClassName = 'shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.examples.ComplexGraph'
+

@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.ui;
+package shakeanapple.backtracker;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
