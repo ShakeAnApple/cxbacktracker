@@ -1,14 +1,4 @@
 
-buildscript {
-    dependencies {
-        classpath group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: '8.8.2'
-    }
-    repositories {
-        mavenCentral()
-    }
-}
-
-
 plugins {
     id 'antlr'
     id 'application'
@@ -21,6 +11,7 @@ apply plugin: 'antlr'
 apply plugin: 'idea'
 apply plugin: 'java'
 apply plugin: 'org.unbroken-dome.xjc'
+//apply from: "plugins/javafx.plugin"
 //apply plugin: "org.openjfx.javafxplugin"
 //apply plugin: 'javafx-gradle-plugin'
 

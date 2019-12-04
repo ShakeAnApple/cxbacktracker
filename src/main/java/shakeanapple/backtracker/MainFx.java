@@ -21,12 +21,12 @@ public class MainFx  extends Application {
 //        BlockDefinition def = b.translate();
 //        FunctionBlockComplex fb = def.instance("lol");
 
-        URL url = new File("src/main/java/shakeanapple/backtracker/ui/explainer/index.fxml").toURI().toURL();
+//        URL url = new File("src/main/java/shakeanapple/backtracker/ui/explainer/index.fxml").toURI().toURL();
 //      URL url = new File("src\\main\\java\\shakeanapple\\backtracker\\ui\\basiccomponentsconstructor\\index.fxml").toURI().toURL();
 //
 //        Parent root = FXMLLoader.load(url);
         URL res = getClass().getClassLoader().getResource("index.fxml");
-        Parent root = FXMLLoader.load(url);
+        Parent root = FXMLLoader.load(res);
         stage.setScene(new Scene(root));
         stage.show();
     }
