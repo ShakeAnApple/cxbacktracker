@@ -46,4 +46,5 @@ public class DiagramControl extends BorderPane {
         this.panel.clear();
         this.isClear = true;
     }
+
 }

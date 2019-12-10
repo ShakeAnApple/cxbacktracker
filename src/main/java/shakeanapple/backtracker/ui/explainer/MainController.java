@@ -1,20 +1,22 @@
 package shakeanapple.backtracker.ui.explainer;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import shakeanapple.backtracker.Config;
 import shakeanapple.backtracker.core.counterexample.State;
 import shakeanapple.backtracker.core.diagramexplanation.*;
 import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockComplex;
-import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.ConnectionSnapshot;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.DiagramSnapshot;
@@ -36,6 +38,7 @@ import shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.graph.Vi
 import shakeanapple.backtracker.ui.GraphHelper;
 import shakeanapple.backtracker.ui.infrasructure.control.visgraph.VisGraphControl;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -57,8 +60,12 @@ public class MainController implements Initializable {
     private ListView<Step> stepsList;
     @FXML
     private TableView variablesByStepsTable;
+    @FXML
+    private ObjectProperty<Boolean> isReadOnly = new SimpleObjectProperty<>(false);
+    @FXML
+    private GridPane mainLayout;
 
-    private final LtlEvaluator calculationWalker;
+    private LtlEvaluator calculationWalker;
     private DiagramSequentialEvaluator diagramEvaluator;
     private DiagramCounterexampleExecutor diagramExecutor;
     private DiagramOutputExplainer diagramOutputExplainer;
@@ -71,23 +78,43 @@ public class MainController implements Initializable {
 
     private ObservableList<CxVar> varsTableItems = FXCollections.observableArrayList();
 
+    private String diagramPathCustom;
+    private String cxPathCustom;
+    private String formulaCustom;
+
     public MainController() throws IOException {
-        Config config = new Config();
-        FunctionBlockComplex diagram = FunctionBlockComplex.parse(config.getDiagramPath());
-        counterexample = Counterexample.load(config.getCxPath());
-        LtlFormula formula = LtlFormula.parse(config.getFormula());
+        Config config = Config.instance();
+        if (config.useConfig()) {
+            this.construct(config.getDiagramPath(), config.getCxPath(), config.getFormula());
+        } else {
+            this.isReadOnly.setValue(true);
+        }
+    }
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        this.mainLayout.disableProperty().bind(this.isReadOnly);
+        if (!this.isReadOnly.getValue()) {
+            this.init();
+        }
+    }
 
-//        FunctionBlockComplex diagram = FunctionBlockComplex.parse("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\test-model\\triggeredff-typed.smv",
-//                "C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\basics");
-//        counterexample = Counterexample.load("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\test-model\\cx-trig");
-//        LtlFormula formula = LtlFormula.parse("G (SET & X !SET -> X !ACT)");
+    private void init() {
+        this.diagramCausesList.setOnMouseClicked(this::handleCauseChosen);
 
+        this.stepsList.setItems(FXCollections.observableArrayList(
+                this.counterexample.getPath().values().stream().sorted(Comparator.comparing(State::getOrder))
+                        .map(state -> new Step(state.getOrder(), this.counterexample.getLoopStart() == state.getOrder())).collect(Collectors.toList())
+        ));
+        this.stepsList.setOnMouseClicked(this::handleStepChosen);
 
-//        FunctionBlockComplex diagram = FunctionBlockComplex.parse("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\test-model\\m-typed.smv",
-//                "C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\simple-model-flip-flop\\basics");
-//        counterexample = Counterexample.load("C:\\Users\\ovsianp1\\projects\\SEARCH\\modchk\\models\\test-model\\cx-m");
-//        LtlFormula formula = LtlFormula.parse("G !(mode_a & mode_b)");
+        this.initializeTable();
+    }
+
+    private void construct(String diagramPath, String cxPath, String formulaStr) {
+        FunctionBlockComplex diagram = FunctionBlockComplex.parse(diagramPath);
+        this.counterexample = Counterexample.load(cxPath);
+        LtlFormula formula = LtlFormula.parse(formulaStr);
 
         this.calculationWalker = new LtlWithCounterexampleEvaluator(counterexample, formula);
 
@@ -99,17 +126,36 @@ public class MainController implements Initializable {
         this.ltlExplainer = new LtlFormulaExplainer(formula, this.counterexample, this.calculationWalker);
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.diagramCausesList.setOnMouseClicked(this::handleCauseChosen);
+    private void customInit() {
+        this.construct(this.diagramPathCustom, this.cxPathCustom, this.formulaCustom);
+        this.init();
+    }
 
-        this.stepsList.setItems(FXCollections.observableArrayList(
-                this.counterexample.getPath().values().stream().sorted(Comparator.comparing(State::getOrder))
-                        .map(state -> new Step(state.getOrder(), this.counterexample.getLoopStart() == state.getOrder())).collect(Collectors.toList())
-        ));
-        this.stepsList.setOnMouseClicked(this::handleStepChosen);
+    private void clearMainView(){
+        this.isReadOnly.setValue(true);
+        this.diagramPathCustom = null;
+        this.cxPathCustom = null;
+        this.formulaCustom = null;
+        this.currentStep = 0;
+        Clocks.instance().reset();
 
-        this.initializeTable();
+        this.diagramCausesList.setItems(FXCollections.observableArrayList());
+        this.formulaCausesList.setItems(FXCollections.observableArrayList());
+        this.stepsList.setItems(FXCollections.observableArrayList());
+        this.variablesByStepsTable.setItems(FXCollections.observableArrayList());
+        this.variablesByStepsTable.getColumns().clear();
+        this.calculationWalker = null;
+        this.diagramEvaluator = null;
+        this.diagramExecutor = null;
+        this.diagramOutputExplainer = null;
+        this.counterexample = null;
+        this.ltlExplainer = null;
+        this.diagram.clear();
+        this.ltlGraph.clear();
+
+        this.connections = new HashMap<>();
+        this.cache = new DiagramEvaluationCache();
+        this.varsTableItems = FXCollections.observableArrayList();
     }
 
     private void initializeTable() {
@@ -175,8 +221,8 @@ public class MainController implements Initializable {
         this.updateConnections(snapshot.getConnections());
     }
 
-    private void clearConnections(){
-        for (DiagramConnection conn: this.connections.values()){
+    private void clearConnections() {
+        for (DiagramConnection conn : this.connections.values()) {
             conn.isCauseEdge(false);
         }
     }
@@ -186,13 +232,13 @@ public class MainController implements Initializable {
         ExplanationItem expRes = this.diagramOutputExplainer.explain(varName, blockName, timestamp);
         CauseNodeUI causesTree = CauseNodeUI.parse(expRes.getTree().getRoots().get(0));
         List<String> connectionIds = causesTree.inferConnectionsIds();
-        for (String connId: connectionIds){
-            if (this.connections.containsKey(connId)){
+        for (String connId : connectionIds) {
+            if (this.connections.containsKey(connId)) {
                 this.connections.get(connId).isCauseEdge(true);
             }
         }
         this.diagramCausesList.setItems(FXCollections.observableArrayList(expRes.getFreshNodes().stream()
-                .map(causeNode -> new Cause(causeNode.getTimestamp() - 1, causeNode.getGate().getName(), causeNode.getGate().getOwner().getName(), causeNode.getValue())).collect(Collectors.toList())));
+                .map(causeNode -> new Cause(causeNode.getTimestamp() - 1, causeNode.getGate().getName(), causeNode.getGate().getOwner().getName(), causeNode.getValue())).sorted(Comparator.comparing(Cause::getVarName)).collect(Collectors.toList())));
     }
 
     private Boolean pinPressHandler(Pin pin) {
@@ -239,15 +285,15 @@ public class MainController implements Initializable {
     public void explainFormula(ActionEvent actionEvent) {
         List<FormulaCause> causes = this.ltlExplainer.explainRootForStep(this.currentStep - 1).getCauses();
         Map<String, List<FormulaCause>> causesByVarName = new HashMap<>();
-        for (FormulaCause cause: causes){
-            if (!causesByVarName.containsKey(cause.getVarName())){
+        for (FormulaCause cause : causes) {
+            if (!causesByVarName.containsKey(cause.getVarName())) {
                 causesByVarName.put(cause.getVarName(), new ArrayList<>());
             }
             causesByVarName.get(cause.getVarName()).add(cause);
         }
 
         this.varsTableItems.forEach(cxVar -> {
-            for (VarValueForStep varValueForStep: cxVar.getVarValues()){
+            for (VarValueForStep varValueForStep : cxVar.getVarValues()) {
                 varValueForStep.isCauseProperty().setValue(false);
             }
         });
@@ -255,7 +301,7 @@ public class MainController implements Initializable {
         this.varsTableItems.forEach(cxVar -> {
             if (causesByVarName.containsKey(cxVar.getVarName())) {
                 List<FormulaCause> cxVarCauses = causesByVarName.get(cxVar.getVarName());
-                for (FormulaCause cause: cxVarCauses){
+                for (FormulaCause cause : cxVarCauses) {
                     cxVar.getVarValues().get(cause.getStepNum()).isCauseProperty().setValue(true);
                 }
             }
@@ -263,5 +309,81 @@ public class MainController implements Initializable {
 
         this.variablesByStepsTable.refresh();
         this.formulaCausesList.setItems(FXCollections.observableArrayList(causes));
+    }
+
+
+    //////////////////// Menu item clicks /////////////////
+
+    private File initialDirectory;
+
+
+
+    private File chooseFile(ActionEvent event, List<FileChooser.ExtensionFilter> extensionFilters) {
+        FileChooser chooser = new FileChooser();
+        chooser.getExtensionFilters().addAll(extensionFilters);
+        chooser.setInitialDirectory(this.initialDirectory);
+        chooser.setTitle("Open File");
+        return chooser.showOpenDialog(((MenuItem) event.getSource()).getParentPopup().getScene().getWindow());
+    }
+
+    public void handleOpenModelMenuItemClick(ActionEvent actionEvent) {
+
+        List<FileChooser.ExtensionFilter> filters = Collections.singletonList(new FileChooser.ExtensionFilter("NuSMV typed model", "*.smv"));
+        File file = this.chooseFile(actionEvent, filters);
+        if (file != null){
+            if (!this.isReadOnly.getValue()){
+                this.clearMainView();
+            }
+            this.initialDirectory = file.getParentFile();
+            this.diagramPathCustom = file.getAbsolutePath();
+            if (this.cxPathCustom != null && this.formulaCustom != null){
+                this.isReadOnly.setValue(false);
+                this.customInit();
+            }
+        }
+    }
+
+    public void handleOpenCounterexampleMenuItemClick(ActionEvent actionEvent) {
+
+        List<FileChooser.ExtensionFilter> filters = Collections.singletonList(new FileChooser.ExtensionFilter("Plain text", "*.*"));
+        File file = this.chooseFile(actionEvent, filters);
+        if (file != null){
+            if (this.cxPathCustom != null){
+                this.clearMainView();
+            }
+            this.initialDirectory = file.getParentFile();
+            this.cxPathCustom = file.getAbsolutePath();
+            if (this.diagramPathCustom != null && this.formulaCustom != null){
+                this.isReadOnly.setValue(false);
+                this.customInit();
+            }
+        }
+    }
+
+    public void handleInputFormulaMenuItemClick(ActionEvent actionEvent) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Input formula");
+        dialog.setContentText("Input ltl formula:");
+        Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+        stage.setMinWidth(500);
+        dialog.setResizable(true);
+        dialog.getDialogPane().setGraphic(null);
+        dialog.getDialogPane().setHeaderText("");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()){
+            if (this.formulaCustom != null){
+                this.clearMainView();
+            }
+            this.formulaCustom = result.get();
+            if (this.diagramPathCustom != null && this.cxPathCustom != null){
+                this.isReadOnly.setValue(false);
+                this.customInit();
+            }
+        }
+    }
+
+    public void handleExitMenuItemClick(ActionEvent actionEvent) {
+        System.exit(0);
     }
 }

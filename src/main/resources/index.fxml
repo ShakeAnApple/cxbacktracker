@@ -18,51 +18,70 @@
 <?import shakeanapple.backtracker.ui.infrasructure.FxmlListCellFactory?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TableView?>
-<GridPane maxWidth="1200" maxHeight="800" xmlns="http://javafx.com/javafx/8.0.172-ea"
-          xmlns:fx="http://javafx.com/fxml/1" fx:controller="shakeanapple.backtracker.ui.explainer.MainController">
-    <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0"/>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="60.0"/>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0"/>
-    </columnConstraints>
-    <rowConstraints>
-        <RowConstraints percentHeight="75.0" vgrow="ALWAYS"/>
-        <RowConstraints percentHeight="20.0" vgrow="ALWAYS"/>
-        <RowConstraints percentHeight="5.0" vgrow="ALWAYS"/>
-    </rowConstraints>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.MenuBar?>
+<VBox maxWidth="1200" maxHeight="800" xmlns="http://javafx.com/javafx/8.0.172-ea"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="shakeanapple.backtracker.ui.explainer.MainController">
+    <MenuBar fx:id="menuBar">
+        <menus>
+            <Menu text="File">
+                <items>
+                    <MenuItem text="Open model" onAction="#handleOpenModelMenuItemClick"/>
+                    <MenuItem text="Open counterexample" onAction="#handleOpenCounterexampleMenuItemClick"/>
+                    <MenuItem text="Input formula" onAction="#handleInputFormulaMenuItemClick"/>
+                    <SeparatorMenuItem  />
+                    <MenuItem text="Exit" onAction="#handleExitMenuItemClick"/>
+                </items>
+            </Menu>
+        </menus>
+    </MenuBar>
+    <GridPane fx:id="mainLayout" disable="${isReadOnly}" >
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="60.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints percentHeight="75.0" vgrow="ALWAYS"/>
+            <RowConstraints percentHeight="20.0" vgrow="ALWAYS"/>
+            <RowConstraints percentHeight="5.0" vgrow="ALWAYS"/>
+        </rowConstraints>
 
-    <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
-        <VisGraphControl resource="ltlGraph.html" fx:id="ltlGraph" VBox.vgrow="ALWAYS"/>
-    </VBox>
-    <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
-        <DiagramControl fx:id="diagram" VBox.vgrow="ALWAYS" prefHeight="1000"/>
-    </VBox>
-    <VBox GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
-        <ListView fx:id="diagramCausesList">
-            <cellFactory>
-                <FxmlListCellFactory fxmlSource="@diagramCausesListCell.fxml"/>
-            </cellFactory>
-        </ListView>
-        <ListView fx:id="stepsList">
-            <cellFactory>
-                <FxmlListCellFactory fxmlSource="@stepsListCell.fxml"/>
-            </cellFactory>
-        </ListView>
-        <ListView fx:id="formulaCausesList">
-            <cellFactory>
-                <FxmlListCellFactory fxmlSource="@formulaCausesListCell.fxml"/>
-            </cellFactory>
-        </ListView>
+        <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+            <VisGraphControl resource="ltlGraph.html" fx:id="ltlGraph" VBox.vgrow="ALWAYS"/>
+        </VBox>
+        <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+            <DiagramControl fx:id="diagram" VBox.vgrow="ALWAYS" prefHeight="1000"/>
+        </VBox>
+        <VBox GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+            <ListView fx:id="diagramCausesList">
+                <cellFactory>
+                    <FxmlListCellFactory fxmlSource="@diagramCausesListCell.fxml"/>
+                </cellFactory>
+            </ListView>
+            <ListView fx:id="stepsList">
+                <cellFactory>
+                    <FxmlListCellFactory fxmlSource="@stepsListCell.fxml"/>
+                </cellFactory>
+            </ListView>
+            <ListView fx:id="formulaCausesList">
+                <cellFactory>
+                    <FxmlListCellFactory fxmlSource="@formulaCausesListCell.fxml"/>
+                </cellFactory>
+            </ListView>
 
-        <Button text="explain formula" onAction="#explainFormula"/>
-    </VBox>
-<!--    <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">-->
-<!--        <VisGraphControl resource="diagramGraph.html" fx:id="functionBlocksGraph" VBox.vgrow="ALWAYS" prefHeight="1000"/>-->
-<!--    </VBox>-->
-    <TableView GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="variablesByStepsTable">
-    </TableView>
-    <VBox GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
-        <Button text="update" onAction="#updateGraph"/>
-    </VBox>
+            <Button text="explain formula" onAction="#explainFormula"/>
+        </VBox>
+        <!--    <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">-->
+        <!--        <VisGraphControl resource="diagramGraph.html" fx:id="functionBlocksGraph" VBox.vgrow="ALWAYS" prefHeight="1000"/>-->
+        <!--    </VBox>-->
+        <TableView GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="variablesByStepsTable">
+        </TableView>
+        <VBox GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+            <Button text="update" onAction="#updateGraph"/>
+        </VBox>
 
-</GridPane>
+    </GridPane>
+</VBox>

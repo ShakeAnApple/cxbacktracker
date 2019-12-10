@@ -8,12 +8,23 @@ import java.util.Properties;
 
 public class Config {
 
+    private static Config instance;
+
     private String formula;
     private String diagramPath;
     private String cxPath;
 
-    public Config() throws IOException {
+    private boolean useConfig;
+
+    private Config() throws IOException {
         this.readPropValues();
+    }
+
+    public static Config instance() throws IOException {
+        if (instance == null){
+            instance = new Config();
+        }
+        return instance;
     }
 
     public String getFormula() {
@@ -26,6 +37,10 @@ public class Config {
 
     public String getCxPath() {
         return this.cxPath;
+    }
+
+    public boolean useConfig() {
+        return this.useConfig;
     }
 
     private void readPropValues() throws IOException {
@@ -45,6 +60,7 @@ public class Config {
             Date time = new Date(System.currentTimeMillis());
 
             // get the property value and print it out
+            this.useConfig = prop.getProperty("useConfig").toLowerCase().trim().equals("true");
             this.formula = prop.getProperty("formula");
             this.diagramPath = prop.getProperty("diagram");
             this.cxPath = prop.getProperty("counterexample");

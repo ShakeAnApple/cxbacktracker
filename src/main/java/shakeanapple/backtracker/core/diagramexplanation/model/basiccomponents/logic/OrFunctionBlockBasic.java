@@ -40,7 +40,7 @@ public class OrFunctionBlockBasic extends FunctionBlockBasic {
 
     @Override
     protected List<CauseNode> explainBasicImpl(OutputGate output, Integer timestamp) {
-        BooleanValueHolder val = (BooleanValueHolder) output.getValue();
+        BooleanValueHolder val = (BooleanValueHolder) this.history().getVariableValueForStep(output.getName(), timestamp);
         if (val.getValue()){
             return this.explainTrue(timestamp);
         } else{

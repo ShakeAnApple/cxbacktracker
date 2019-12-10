@@ -48,4 +48,8 @@ public class Clocks {
     public void onceOnNextTick(Runnable action) {
         this.nextTickActions.add(action);
     }
+
+    public void reset() {
+        this.currentTime = 0;
+    }
 }

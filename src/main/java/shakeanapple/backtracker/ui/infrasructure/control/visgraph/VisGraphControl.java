@@ -47,6 +47,12 @@ public class VisGraphControl extends Region {
         layoutInArea(browser,0,0,w,h,0, HPos.CENTER, VPos.CENTER);
     }
 
+    public void clear() {
+        VisGraph graph = new VisGraph();
+        String script = "setTheData(" + graph.getNodesJson() +  "," + graph.getEdgesJson() + ")";
+        this.webEngine.executeScript(script);
+    }
+
 //    @Override
 //    protected double computePrefWidth(double height) {
 //        return 750;
