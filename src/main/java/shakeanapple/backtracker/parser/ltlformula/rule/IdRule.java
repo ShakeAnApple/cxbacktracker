@@ -14,7 +14,7 @@ public class IdRule extends Rule{
     }
 
     private String readIdentifier(State state) {
-        String forbiddenChars = "URWM&|-<>=+*/XFG!()";
+        String forbiddenChars = "&|-<>=+*/!() ";
         StringBuilder name = new StringBuilder();
         String next = state.pickNext(1);
         while (!forbiddenChars.contains(next) && !state.isEol()){

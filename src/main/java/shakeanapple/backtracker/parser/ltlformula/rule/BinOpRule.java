@@ -19,6 +19,7 @@ public class BinOpRule extends Rule{
 
     private String readBinOp(State state) {
         String name = state.getLastChecked();
+        state.skip();
         state.readNext(name.length());
         return name;
     }

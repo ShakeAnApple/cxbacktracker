@@ -23,6 +23,7 @@ public class Parser {
 
         Node left = null;
         while (!state.isEol()) {
+            state.skip();
             String test = state.pickNext(2);
             Rule discoveredRule = this.grammar.defineRule(test);
             if (discoveredRule == null){
@@ -44,9 +45,12 @@ public class Parser {
     }
 
     public String extractParam(State state) {
-        if (state.pickNext(1).equals("(")){
+        state.skip();
+        if (state.pickNext(1).equals("(")) {
             return extractBracketGroup(state);
-        } else if (!"-<>!URWM&|=+*/XFG!()".contains(state.pickNext(1))){
+        } else if ("W M X F G ".contains(state.pickNext(2))) {
+            return extractOpExpr(state);
+        } else if (!"-<>!UR&|=+*/!()".contains(state.pickNext(1))){
             return extractId(state);
         } else {
             return extractOpExpr(state);
@@ -60,7 +64,8 @@ public class Parser {
     }
 
     private String extractId(State state) {
-        String forbiddenChars = "-<>!URWM&|=+*/XFG!()";
+        state.skip();
+        String forbiddenChars = "-<>!&|=+*/!() ";
         StringBuilder name = new StringBuilder();
         String next = state.pickNext(1);
         while (!forbiddenChars.contains(next) && !state.isEol()){

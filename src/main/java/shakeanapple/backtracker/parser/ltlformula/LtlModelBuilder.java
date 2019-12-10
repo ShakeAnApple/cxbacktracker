@@ -55,7 +55,8 @@ public class LtlModelBuilder {
     public LtlFormula complete(String str){
         Parser parser = new Parser(this.grammar);
 
-        str = str.trim().replace(" ", "");
+//        str = str.trim().replace(" ", "");
+        str = str.trim();
         Node root = parser.parseExpr(str);
         FormulaNode formulaRoot = root.translate();
         return new LtlFormula(formulaRoot);

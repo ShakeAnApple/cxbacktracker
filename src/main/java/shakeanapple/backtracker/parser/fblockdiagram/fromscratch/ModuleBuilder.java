@@ -114,7 +114,8 @@ public class ModuleBuilder {
                         systemInputConnections.get(inSystemVar.getName()).add(new ConnectionDescription(inModuleGate, isInverted));
                     }
                 } else {
-                    FunctionBlockComplex moduleFrom = modules.get(varNameParts[0]);
+                    String bLockName = varNameParts[0].replace("!",  "");
+                    FunctionBlockComplex moduleFrom = modules.get(bLockName);
                     OutputGate outGate = moduleFrom.fbInterface().getOutputs().get(varNameParts[1]);
                     InputGate toGate = block.fbInterface().getOrderedInputs().get(i);
                     outGate.makeOutgoingConnection(toGate, outGate.getOwner(), toGate.getOwner(), isInverted);

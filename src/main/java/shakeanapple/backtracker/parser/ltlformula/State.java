@@ -55,4 +55,10 @@ public class State {
     public String getStr(){
         return this.str.substring(this.curPos);
     }
+
+    public void skip() {
+        while(this.pickNext(1).equals(" ")){
+            this.readNext(1);
+        }
+    }
 }

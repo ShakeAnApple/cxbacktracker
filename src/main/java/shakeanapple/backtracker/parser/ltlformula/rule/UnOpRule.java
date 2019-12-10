@@ -16,6 +16,7 @@ public class UnOpRule extends Rule{
     }
 
     private String readUnOp(State state) {
+        state.skip();
         String name = state.readNext(1);
         return name;
     }
