@@ -56,30 +56,11 @@ public class Diagram {
                 CauseNode childNode = new CauseNode(causeNode.getGate().getIncomingConnection().fromGate(), causeNode.getValue(), causeNode.getTimestamp());
 //                CauseNode childNode = new CauseNode(causeNode.getGate(), causeNode.getValue(), causeNode.getTimestamp());
                 outputCauseNodes.add(childNode);
-                result.recordAddChildrenActionForNode(childNode, (ch) -> {
-                    childNode.addChildren(ch);
-                    return true;
-                });
-                item.addChildrenToNode(causeNode, new ArrayList<>(){{add(childNode);}});
-//               causeNode.addChildNode(childNode);
+                causeNode.addChildNode(childNode);
             } else if (causeNode.getGate().getIncomingConnection() != null) {
                 System.out.println(String.format("InternalD: cause '%s' will be processed", causeNode.getGate().getName()));
                 ExplanationItem childItem = this.explain((OutputGate) causeNode.getGate().getIncomingConnection().fromGate(), causeNode.getTimestamp());
-                item.addChildrenToNode(causeNode, childItem.getTree().getRoots());
-                for (CauseNode node: childItem.getTree().getRoots()){
-                    result.recordAddChildrenActionForNode(node, (ch) -> {
-                        node.addChildren(ch);
-                        return true;
-                    });
-                }
-                for (CauseNode node: childItem.getFreshNodes()){
-                    result.recordAddChildrenActionForNode(node, (ch) -> {
-                        node.addChildren(ch);
-                        return true;
-                    });
-                }
-
-//                causeNode.addChildren(childItem.getTree().getRoots());
+                causeNode.addChildren(childItem.getTree().getRoots());
                 outputCauseNodes.addAll(childItem.getFreshNodes());
                 System.out.println(String.format("InternalD: cause '%s' processed", causeNode.getGate().getName()));
             }

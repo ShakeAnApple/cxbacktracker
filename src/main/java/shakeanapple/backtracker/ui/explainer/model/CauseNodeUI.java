@@ -3,7 +3,9 @@ package shakeanapple.backtracker.ui.explainer.model;
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CauseNodeUI {
     private Cause cause;
@@ -47,5 +49,21 @@ public class CauseNodeUI {
             res.addAll(child.inferConnectionsIds());
         }
         return res;
+    }
+
+    public Map<String, List<String>> getCausePins(){
+        Map<String, List<String>> pins = new HashMap<>();
+        pins.put(this.cause.getBlockName(), new ArrayList<>(){{add(cause.getVarName());}});
+        for (CauseNodeUI child: this.children){
+            Map<String, List<String>> childPins = child.getCausePins();
+            for (String blockName: childPins.keySet()){
+                if (pins.containsKey(blockName)){
+                    pins.get(blockName).addAll(childPins.get(blockName));
+                } else{
+                    pins.put(blockName, childPins.get(blockName));
+                }
+            }
+        }
+        return pins;
     }
 }

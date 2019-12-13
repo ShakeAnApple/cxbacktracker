@@ -2,7 +2,7 @@ package shakeanapple.backtracker.core.ltl.formula.model;
 
 import shakeanapple.backtracker.core.ltl.formula.ILtlFormulaVisitor;
 import shakeanapple.backtracker.core.ltl.formula.model.tree.FormulaNode;
-import shakeanapple.backtracker.parser.ltlformula.LtlModelBuilder;
+import shakeanapple.backtracker.parser.ltlformula.recent.Parser;
 
 public class LtlFormula {
     private final FormulaNode root;
@@ -20,6 +20,7 @@ public class LtlFormula {
     }
 
     public static LtlFormula parse(String str){
-        return new LtlModelBuilder().complete(str);
+        //return new LtlModelBuilder().complete(str);
+        return new Parser().parse(str);
     }
 }

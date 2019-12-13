@@ -68,10 +68,10 @@ public class HierarchicalLayout extends Layout {
         for (int i = 0; i <= maxLevel; i++) {
             List<Cell> levelCells = hierarchyLevels.get(i);
             int c = 0;
-            for (double y = height / (levelCells.size() + 1); y < height; y += height / (levelCells.size() +1)) {
+            for (double y = height / (levelCells.size() + 1); y < height && c <levelCells.size(); y += height / (levelCells.size() + 1)) {
                 Cell cell = levelCells.get(c);
                 cell.relocate(curX, y);
-                 Offset offset = this.panel.adjustCoords(cell);
+                Offset offset = this.panel.adjustCoords(cell);
                 cell.relocate(curX + offset.left, y + offset.top);
                 c++;
             }
@@ -82,7 +82,7 @@ public class HierarchicalLayout extends Layout {
     // TODO watch cycles!
     private Integer defineLevels(Cell cell, Map<Long, Integer> cellLevels) {
         if (cellLevels.containsKey(cell.getCellId())) {
-            if (cellLevels.get(cell.getCellId()) == Integer.MIN_VALUE){
+            if (cellLevels.get(cell.getCellId()) == Integer.MIN_VALUE) {
                 return 0;
             }
             return cellLevels.get(cell.getCellId());
@@ -93,7 +93,7 @@ public class HierarchicalLayout extends Layout {
             int parentLevel = this.defineLevels(parentCell, cellLevels);
             if (!cellLevels.containsKey(parentCell.getCellId())) {
                 cellLevels.put(parentCell.getCellId(), parentLevel);
-            } else if (cellLevels.get(parentCell.getCellId()) == Integer.MIN_VALUE){
+            } else if (cellLevels.get(parentCell.getCellId()) == Integer.MIN_VALUE) {
                 cellLevels.replace(parentCell.getCellId(), parentLevel);
             }
             maxParentLevel = Math.max(parentLevel, maxParentLevel);

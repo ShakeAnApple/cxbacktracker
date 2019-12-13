@@ -89,9 +89,9 @@ public abstract class FunctionBlockBasic extends FunctionBlockBase {
         List<CauseNode> causes = this.explainBasicImpl(output, timestamp);
         root.addChildren(causes);
         ExplanationItem res = new ExplanationItem(pathTree, causes);
-        for (CauseNode cause: causes){
-            res.recordAddChildrenActionForNode(cause, ch -> { cause.addChildren(ch); return true;});
-        }
+//        for (CauseNode cause: causes){
+//            res.recordAddChildrenActionForNode(cause, ch -> { cause.addChildren(ch); return true;});
+//        }
         return res;
     }
 }

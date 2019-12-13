@@ -79,21 +79,13 @@ public class FunctionBlockComplex extends FunctionBlockBase {
                 System.out.println(String.format("InternalD: cause '%s' added to result", causeNode.getGate().getName()));
                 //CauseNode childNode = new CauseNode(causeNode.getGate(), causeNode.getValue(), causeNode.getTimestamp());
                 CauseNode childNode = causeNode;
-                result.recordAddChildrenActionForNode(childNode, (ch) -> {
-                    childNode.addChildren(ch);
-                    return true;
-                });
 //                causeNode.addChildNode(childNode);
                 outputCauseNodes.add(childNode);
             } else if (causeNode.getGate().getIncomingConnection() != null) {
                 System.out.println(String.format("InternalD: cause '%s' will be processed", causeNode.getGate().getName()));
                 ExplanationItem childItem = this.explain((OutputGate) causeNode.getGate(), causeNode.getTimestamp());
                 outputCauseNodes.addAll(childItem.getFreshNodes());
-                item.addChildrenToNode(causeNode, new ArrayList<>(childItem.getFreshNodes()));
-                for (CauseNode node: childItem.getFreshNodes()){
-                    result.recordAddChildrenActionForNode(node, (ch) -> { node.addChildren(ch); return true;});
-                }
-//                causeNode.addChildren(childItem.getFreshNodes());
+                causeNode.addChildren(childItem.getFreshNodes());
                 System.out.println(String.format("InternalD: cause '%s' processed", causeNode.getGate().getName()));
             }
         }

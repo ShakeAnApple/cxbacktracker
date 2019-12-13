@@ -6,7 +6,6 @@ import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import shakeanapple.backtracker.common.variable.ValueHolder;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Cell;
 
 public class Edge extends Group {
 
@@ -17,13 +16,14 @@ public class Edge extends Group {
 //    protected Cell target;
 
     private Line line;
-    private Label label;
+    private Label labelLeft;
+    private Label labelRight;
 
     private boolean isBound;
 
     private Color defaultColor;
 
-    public Edge(Connectable source, Connectable target, String text, Color color) {
+    public Edge(Connectable source, Connectable target, String textLeft, String textRight, Color color) {
 
         this.source = source;
         this.target = target;
@@ -40,13 +40,21 @@ public class Edge extends Group {
         this.line.setStroke(color);
         this.line.setStrokeWidth(2);
 
-        this.label = new Label(text);
+        this.labelLeft = new Label(textLeft);
+        this.labelRight = new Label(textRight);
 
         super.getChildren().add(this.line);
-        super.getChildren().add(this.label);
+        super.getChildren().add(this.labelLeft);
+        super.getChildren().add(this.labelRight);
 
-        this.label.layoutXProperty().bind(this.line.endXProperty().subtract(this.line.endXProperty().subtract(this.line.startXProperty()).divide(2)));
-        this.label.layoutYProperty().bind(this.line.endYProperty().subtract(this.line.endYProperty().subtract(this.line.startYProperty()).divide(2)));
+//        this.labelLeft.layoutXProperty().bind(this.line.endXProperty().subtract(this.line.endXProperty().subtract(this.line.startXProperty()).divide(2)));
+        this.labelLeft.layoutXProperty().bind(this.line.startXProperty().subtract(5));
+//        this.labelLeft.layoutYProperty().bind(this.line.endYProperty().subtract(this.line.endYProperty().subtract(this.line.startYProperty()).divide(2)));
+        this.labelLeft.layoutYProperty().bind(this.line.startYProperty().subtract(5));
+
+        this.labelRight.layoutXProperty().bind(this.line.endXProperty());
+//        this.labelLeft.layoutYProperty().bind(this.line.endYProperty().subtract(this.line.endYProperty().subtract(this.line.startYProperty()).divide(2)));
+        this.labelRight.layoutYProperty().bind(this.line.endYProperty().subtract(5));
 
     }
 
@@ -170,6 +178,11 @@ public class Edge extends Group {
     }
 
     public void updateValue(ValueHolder value) {
-        this.label.setText(value.toString());
+        this.labelLeft.setText(value.toString());
+    }
+
+    public void updateValue(ValueHolder valueLeft, ValueHolder valueRight) {
+        this.labelLeft.setText(valueLeft.toString());
+        this.labelRight.setText(valueRight.toString());
     }
 }

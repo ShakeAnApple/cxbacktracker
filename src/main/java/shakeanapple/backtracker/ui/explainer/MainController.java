@@ -81,6 +81,7 @@ public class MainController implements Initializable {
     private String diagramPathCustom;
     private String cxPathCustom;
     private String formulaCustom;
+    private boolean isInitialState = true;
 
     public MainController() throws IOException {
         Config config = Config.instance();
@@ -137,6 +138,7 @@ public class MainController implements Initializable {
         this.cxPathCustom = null;
         this.formulaCustom = null;
         this.currentStep = 0;
+        this.isInitialState = true;
         Clocks.instance().reset();
 
         this.diagramCausesList.setItems(FXCollections.observableArrayList());
@@ -192,11 +194,15 @@ public class MainController implements Initializable {
         }
 
         varsValues.keySet().forEach(varName -> this.varsTableItems.add(new CxVar(varName, varsValues.get(varName))));
-        this.variablesByStepsTable.getItems().addAll(this.varsTableItems);
+        this.variablesByStepsTable.getItems().addAll(this.varsTableItems.stream().sorted(Comparator.comparing(CxVar::getVarName)).collect(Collectors.toList()));
     }
 
     private void handleStepChosen(MouseEvent mouseEvent) {
-        this.clearConnections();
+        if (this.isInitialState){
+            this.explainFormulaImpl(0);
+            this.isInitialState = false;
+        }
+
         Step step = (this.stepsList.getSelectionModel().getSelectedItem());
         this.currentStep = step.getNumber() + 1;
 
@@ -217,6 +223,8 @@ public class MainController implements Initializable {
 
     private void renderDiagramForStep(int stepNum) {
         this.clearConnections();
+        this.diagram.resetPinsColor();
+
         DiagramSnapshot snapshot = this.cache.getByStep(stepNum);
         this.updateConnections(snapshot.getConnections());
     }
@@ -229,6 +237,8 @@ public class MainController implements Initializable {
 
     private void explainCause(String varName, String blockName, int timestamp) {
         this.clearConnections();
+        this.diagram.resetPinsColor();
+
         ExplanationItem expRes = this.diagramOutputExplainer.explain(varName, blockName, timestamp);
         CauseNodeUI causesTree = CauseNodeUI.parse(expRes.getTree().getRoots().get(0));
         List<String> connectionIds = causesTree.inferConnectionsIds();
@@ -237,18 +247,22 @@ public class MainController implements Initializable {
                 this.connections.get(connId).isCauseEdge(true);
             }
         }
+
+        this.diagram.colorPins(causesTree.getCausePins());
         this.diagramCausesList.setItems(FXCollections.observableArrayList(expRes.getFreshNodes().stream()
                 .map(causeNode -> new Cause(causeNode.getTimestamp() - 1, causeNode.getGate().getName(), causeNode.getGate().getOwner().getName(), causeNode.getValue())).sorted(Comparator.comparing(Cause::getVarName)).collect(Collectors.toList())));
     }
 
-    private Boolean pinPressHandler(Pin pin) {
+    private Boolean diagramPinPressHandler(Pin pin) {
         this.explainCause(pin.getName(), pin.getOwner().getName(), this.currentStep);
         return true;
     }
 
     private void updateDiagram(DiagramSnapshot snapshot) {
+        this.clearConnections();
+        this.diagram.resetPinsColor();
         if (this.diagram.isClear()) {
-            ViewGraph diagram = GraphHelper.convertToDiagramGraph(snapshot, this::pinPressHandler);
+            ViewGraph diagram = GraphHelper.convertToDiagramGraph(snapshot, this::diagramPinPressHandler);
             this.diagram.draw(diagram);
             this.recordConnections(diagram.getConnections());
         } else {
@@ -256,20 +270,20 @@ public class MainController implements Initializable {
         }
     }
 
-    @FXML
-    protected void updateGraph() {
-        this.currentStep++;
-        ICalculatedFormula formula = this.calculationWalker.moveNext();
-        VisGraph graph = GraphHelper.convertToGraph(formula);
-        this.ltlGraph.updateGraph(graph);
-
-//        DiagramSnapshot snapshot = this.diagramEvaluator.moveNext();
-        DiagramSnapshot snapshot = this.diagramExecutor.moveNext();
-        this.cache.add(snapshot, this.currentStep);
-        //VisGraph blocksGraph = GraphHelper.convertToGraph(snapshot);
-        //this.diagram.draw();updateGraph(blocksGraph);
-        this.updateDiagram(snapshot);
-    }
+//    @FXML
+//    protected void updateGraph() {
+//        this.currentStep++;
+//        ICalculatedFormula formula = this.calculationWalker.moveNext();
+//        VisGraph graph = GraphHelper.convertToGraph(formula);
+//        this.ltlGraph.updateGraph(graph);
+//
+////        DiagramSnapshot snapshot = this.diagramEvaluator.moveNext();
+//        DiagramSnapshot snapshot = this.diagramExecutor.moveNext();
+//        this.cache.add(snapshot, this.currentStep);
+//        //VisGraph blocksGraph = GraphHelper.convertToGraph(snapshot);
+//        //this.diagram.draw();updateGraph(blocksGraph);
+//        this.updateDiagram(snapshot);
+//    }
 
     private void updateConnections(List<ConnectionSnapshot> connections) {
         for (ConnectionSnapshot snap : connections) {
@@ -283,7 +297,11 @@ public class MainController implements Initializable {
 
 
     public void explainFormula(ActionEvent actionEvent) {
-        List<FormulaCause> causes = this.ltlExplainer.explainRootForStep(this.currentStep - 1).getCauses();
+        this.explainFormulaImpl(this.currentStep - 1);
+    }
+
+    private void explainFormulaImpl(int forStep){
+        List<FormulaCause> causes = this.ltlExplainer.explainRootForStep(forStep).getCauses();
         Map<String, List<FormulaCause>> causesByVarName = new HashMap<>();
         for (FormulaCause cause : causes) {
             if (!causesByVarName.containsKey(cause.getVarName())) {

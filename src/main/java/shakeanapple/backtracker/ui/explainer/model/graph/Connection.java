@@ -27,10 +27,10 @@ public class Connection implements DiagramConnection {
         if (this.isInverted) {
             this.to.invert();
             // TODO don't remember should I?
-            this.value = value.invert();
-        } else {
-            this.value = value;
+           // this.value = value.invert();
         }
+        this.value = value;
+
 
         String id = this.from.getOwner().getName();
         if (!this.from.getOwner().getName().equals(this.from.getName())){
@@ -60,19 +60,23 @@ public class Connection implements DiagramConnection {
     }
 
     public void updateValue(ValueHolder value) {
+        this.value = value;
+
         if (this.isInverted) {
-            this.value = value.invert();
+            this.edge.updateValue(this.value, this.value.invert());
+//            this.value = value.invert();
         } else {
-            this.value = value;
+            this.edge.updateValue(this.value, this.value);
+//            this.value = value;
         }
-        this.edge.updateValue(this.value);
+//        this.edge.updateValue(this.value);
     }
 
     @Override
     public void isCauseEdge(boolean isCause) {
         this.isCause = isCause;
         if (this.isCause) {
-            this.edge.color(Color.CORAL);
+            this.edge.color(Color.RED);
         } else{
             this.edge.color(null);
         }
@@ -86,7 +90,7 @@ public class Connection implements DiagramConnection {
     @Override
     public Edge inferEdge() {
 //        Edge edge = new Edge(this.from.getOwner(), this.to.getOwner(), this.value.toString(), Color.GRAY);
-        this.edge = new Edge(this.from, this.to, this.value.toString(), Color.GRAY);
+        this.edge = new Edge(this.from, this.to, this.value.toString(), this.isInverted ? this.value.invert().toString() : this.value.toString(), Color.GRAY);
         this.from.getOwner().addCellChild(this.to.getOwner());
         this.from.getOwner().addEdgeFrom(edge);
 

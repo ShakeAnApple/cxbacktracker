@@ -19,7 +19,7 @@ public class BasicComponentCell extends ExplainerCell {
 
     private Function<Pin, Boolean> pinPressHandler;
 
-    private static final double PIN_HEIGHT = 20;
+    private static final double PIN_HEIGHT = 26;
     private static final double RECT_WIDTH = 70;
 
     private Map<String, InputPin> inputPins;
@@ -53,10 +53,10 @@ public class BasicComponentCell extends ExplainerCell {
 
         Label label = new Label(this.name + System.lineSeparator() + this.type);
 
-        view.widthProperty().bind(label.widthProperty());
+        view.widthProperty().bind(label.widthProperty().add(4));
 
 //        label.layoutXProperty().bind(view.xProperty().add(view.getWidth() / 2).subtract(label.widthProperty().divide(2)));
-        label.layoutXProperty().bind(view.xProperty());
+        label.layoutXProperty().bind(view.xProperty().add(2));
         label.layoutYProperty().bind(view.yProperty().add(view.getHeight() / 2).subtract(label.heightProperty().divide(2)));
 
         view.setStroke(Color.BLACK);

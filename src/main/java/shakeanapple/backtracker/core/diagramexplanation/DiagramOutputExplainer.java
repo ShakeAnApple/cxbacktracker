@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface DiagramOutputExplainer {
     ExplanationItem explain(String outputName, String blockName, int timestamp);
+
+    ExplanationItem explain(String varName, String blockName, int timestamp, boolean inContext);
 }

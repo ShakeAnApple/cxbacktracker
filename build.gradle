@@ -3,36 +3,16 @@ plugins {
     id 'antlr'
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.8'
-    /* Generate Java code from XSD */
-    id 'org.unbroken-dome.xjc' version '1.4.3'
 }
 
 apply plugin: 'antlr'
 apply plugin: 'idea'
 apply plugin: 'java'
-apply plugin: 'org.unbroken-dome.xjc'
-//apply from: "plugins/javafx.plugin"
-//apply plugin: "org.openjfx.javafxplugin"
-//apply plugin: 'javafx-gradle-plugin'
 
 
 javafx {
     version = "11.0.2"
     modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.web' ]
-}
-
-
-xjc {
-    includeInMainCompilation = false
-}
-
-sourceSets {
-    main { java { srcDir xjcGenerate.outputDirectory } }
-}
-
-xjcGenerate {
-    source = fileTree('src/main/schema') { include '*.xsd' }
-    outputDirectory = file('src/main/java')
 }
 
 repositories {
@@ -90,24 +70,6 @@ task basicBlockParserJar(type: Jar) {
     with jar
 }
 
-//compileJava {
-//    doFirst {
-//        options.compilerArgs = [
-//                '--module-path', classpath.asPath,
-//                '--add-modules', 'javafx.controls,javafx.fxml,javafx.web'
-//        ]
-//    }
-//}
-//
-//run {
-//    doFirst {
-//        jvmArgs = [
-//                '--module-path', classpath.asPath,
-//                '--add-modules', 'javafx.controls,javafx.fxml,javafx.web'
-//        ]
-//    }
-//}
-
 jar {
     manifest {
         attributes 'Main-Class': 'shakeanapple.backtracker.Main'
@@ -116,10 +78,6 @@ jar {
 }
 
 
-//jfx {
-//    mainClass = 'full.qualified.nameOf.TheMainClass'  // fill me
-//    vendor = 'YourName' // fill me
-//}
 mainClassName = 'shakeanapple.backtracker.Main'
 //mainClassName = 'shakeanapple.backtracker.Main'
 //mainClassName = 'shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.examples.ComplexGraph'
