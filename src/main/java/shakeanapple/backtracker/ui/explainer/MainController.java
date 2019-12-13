@@ -223,7 +223,7 @@ public class MainController implements Initializable {
 
     private void renderDiagramForStep(int stepNum) {
         this.clearConnections();
-        this.diagram.resetPinsColor();
+        this.diagram.resetPins();
 
         DiagramSnapshot snapshot = this.cache.getByStep(stepNum);
         this.updateConnections(snapshot.getConnections());
@@ -237,7 +237,7 @@ public class MainController implements Initializable {
 
     private void explainCause(String varName, String blockName, int timestamp) {
         this.clearConnections();
-        this.diagram.resetPinsColor();
+        this.diagram.resetPins();
 
         ExplanationItem expRes = this.diagramOutputExplainer.explain(varName, blockName, timestamp);
         CauseNodeUI causesTree = CauseNodeUI.parse(expRes.getTree().getRoots().get(0));
@@ -249,6 +249,7 @@ public class MainController implements Initializable {
         }
 
         this.diagram.colorPins(causesTree.getCausePins());
+        this.diagram.addTooltipsToPins(causesTree.getCausesByBlocks());
         this.diagramCausesList.setItems(FXCollections.observableArrayList(expRes.getFreshNodes().stream()
                 .map(causeNode -> new Cause(causeNode.getTimestamp() - 1, causeNode.getGate().getName(), causeNode.getGate().getOwner().getName(), causeNode.getValue())).sorted(Comparator.comparing(Cause::getVarName)).collect(Collectors.toList())));
     }
@@ -260,7 +261,7 @@ public class MainController implements Initializable {
 
     private void updateDiagram(DiagramSnapshot snapshot) {
         this.clearConnections();
-        this.diagram.resetPinsColor();
+        this.diagram.resetPins();
         if (this.diagram.isClear()) {
             ViewGraph diagram = GraphHelper.convertToDiagramGraph(snapshot, this::diagramPinPressHandler);
             this.diagram.draw(diagram);

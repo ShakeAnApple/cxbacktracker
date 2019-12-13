@@ -2,14 +2,15 @@ package shakeanapple.backtracker.ui.infrasructure.control.diagram;
 
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
+import shakeanapple.backtracker.ui.explainer.model.Cause;
 import shakeanapple.backtracker.ui.explainer.model.graph.HierarchicalLayout;
 import shakeanapple.backtracker.ui.explainer.model.graph.cell.ExplainerCell;
 import shakeanapple.backtracker.ui.explainer.model.graph.cell.InputPin;
 import shakeanapple.backtracker.ui.explainer.model.graph.cell.Pin;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.*;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DiagramControl extends BorderPane {
 
@@ -22,18 +23,18 @@ public class DiagramControl extends BorderPane {
         super.setCenter(this.panel.getScrollPane());
     }
 
-    public boolean isClear(){
+    public boolean isClear() {
         return this.isClear;
     }
 
-    public void draw(ViewGraph graph){
+    public void draw(ViewGraph graph) {
         this.isClear = false;
 
-        for(Cell cell : graph.getCells()){
+        for (Cell cell : graph.getCells()) {
             this.panel.getGraph().addCell(cell);
         }
 
-        for(DiagramConnection conn : graph.getConnections()){
+        for (DiagramConnection conn : graph.getConnections()) {
             this.panel.getGraph().addEdge(conn);
         }
 
@@ -45,11 +46,11 @@ public class DiagramControl extends BorderPane {
 
     }
 
-    public void update(ViewGraph diagram){
+    public void update(ViewGraph diagram) {
 
     }
 
-    public void clear(){
+    public void clear() {
         this.panel.clear();
         this.isClear = true;
     }
@@ -66,26 +67,65 @@ public class DiagramControl extends BorderPane {
     }
 
     public void colorPins(Map<String, List<String>> pinsByBlocks) {
-        this.panel.getGraph().getAllCells().stream().filter(cell -> pinsByBlocks.containsKey(((ExplainerCell)cell).getName()))
-                .forEach(cell ->{
+        this.panel.getGraph().getAllCells().stream().filter(cell -> pinsByBlocks.containsKey(((ExplainerCell) cell).getName()))
+                .forEach(cell -> {
                     ExplainerCell expCell = (ExplainerCell) cell;
                     List<String> blockPinsToColor = pinsByBlocks.get(expCell.getName());
-                    for (String pin : blockPinsToColor){
-                        if (expCell.getInputPins().containsKey(pin)){
+                    for (String pin : blockPinsToColor) {
+                        if (expCell.getInputPins().containsKey(pin)) {
                             expCell.getInputPins().get(pin).colorBorder(this.toHexString(Color.RED));
-                        } else if (expCell.getOutputPins().containsKey(pin)){
+                        } else if (expCell.getOutputPins().containsKey(pin)) {
                             expCell.getOutputPins().get(pin).colorBorder(this.toHexString(Color.RED));
                         }
                     }
                 });
     }
 
-    public void resetPinsColor(){
+    public void resetPins() {
         this.panel.getGraph().getAllCells()
-                .forEach(cell ->{
+                .forEach(cell -> {
                     ExplainerCell expCell = (ExplainerCell) cell;
-                    expCell.getInputPins().values().forEach(InputPin::usualColor);
-                    expCell.getOutputPins().values().forEach(Pin::usualColor);
+                    expCell.getInputPins().values().forEach(in -> {
+                        in.usualColor();
+                        in.addTextToTooltip("");
+                    });
+                    expCell.getOutputPins().values().forEach(out -> {
+                        out.usualColor();
+                        out.addTextToTooltip("");
+                    });
                 });
     }
+
+    public void addTooltipsToPins(Map<String, List<Cause>> causesPins) {
+        this.panel.getGraph().getAllCells().stream().filter(cell -> causesPins.containsKey(((ExplainerCell) cell).getName()))
+                .forEach(cell -> {
+                    ExplainerCell expCell = (ExplainerCell) cell;
+                    List<Cause> blockCauses = causesPins.get(expCell.getName());
+                    Map<String, List<Cause>> blockCausesByVars = new HashMap<>();
+                    for (Cause cause : blockCauses) {
+                        if (!blockCausesByVars.containsKey(cause.getVarName())) {
+                            blockCausesByVars.put(cause.getVarName(), new ArrayList<>());
+                        }
+                        blockCausesByVars.get(cause.getVarName()).add(cause);
+                    }
+                    for (String pin : blockCausesByVars.keySet()) {
+                        if (expCell.getInputPins().containsKey(pin)) {
+                            expCell.getInputPins().get(pin).colorBorder(this.toHexString(Color.RED));
+                            String pinText = blockCausesByVars.get(pin).stream()
+                                    .sorted(Comparator.comparing(Cause::getTimestamp))
+                                    .map(cause -> (cause.getTimestamp() - 1) + ":" + cause.getValue().toString())
+                                    .collect(Collectors.joining("\n"));
+                            expCell.getInputPins().get(pin).addTextToTooltip(pinText);
+                        } else if (expCell.getOutputPins().containsKey(pin)) {
+                            expCell.getOutputPins().get(pin).colorBorder(this.toHexString(Color.RED));
+                            String pinText = blockCausesByVars.get(pin).stream()
+                                    .sorted(Comparator.comparing(Cause::getTimestamp))
+                                    .map(cause -> cause.getTimestamp() + ":" + cause.getValue().toString())
+                                    .collect(Collectors.joining("\n"));
+                            expCell.getOutputPins().get(pin).addTextToTooltip(pinText);
+                        }
+                    }
+                });
+    }
+
 }

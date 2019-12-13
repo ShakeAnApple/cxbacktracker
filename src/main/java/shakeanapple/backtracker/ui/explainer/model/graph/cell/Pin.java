@@ -14,6 +14,8 @@ public abstract class Pin extends Button implements Connectable {
 
     private int order;
 
+
+
     protected static class Styles {
         public static String BACKGROUND_RADIUS = "-fx-background-radius:0";
         public static String INVERTED = "-fx-background-color: #FFA500";
@@ -97,6 +99,12 @@ public abstract class Pin extends Button implements Connectable {
         styles.addAll(this.getDefStyle());
         styles.add(style);
         this.applyStyles(style);
+    }
+
+    public void addTextToTooltip(String pinText) {
+        Tooltip tooltip = new Tooltip(this.name + "\n" + pinText);
+        tooltip.setShowDelay(Duration.ZERO);
+        this.setTooltip(tooltip);
     }
 
     protected List<String> getAdditionalStyles() {

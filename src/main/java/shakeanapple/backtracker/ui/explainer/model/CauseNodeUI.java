@@ -66,4 +66,20 @@ public class CauseNodeUI {
         }
         return pins;
     }
+
+    public Map<String, List<Cause>> getCausesByBlocks() {
+        Map<String, List<Cause>> causes = new HashMap<>();
+        causes.put(this.cause.getBlockName(), new ArrayList<>(){{add(cause);}});
+        for (CauseNodeUI child: this.children){
+            Map<String, List<Cause>> childPins = child.getCausesByBlocks();
+            for (String blockName: childPins.keySet()){
+                if (causes.containsKey(blockName)){
+                    causes.get(blockName).addAll(childPins.get(blockName));
+                } else{
+                    causes.put(blockName, childPins.get(blockName));
+                }
+            }
+        }
+        return causes;
+    }
 }

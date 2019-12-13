@@ -13,7 +13,6 @@ public class VarValueCell extends TableCell<CxVar, VarValueForStep> {
         } else {
             this.defineStyle(item.isCauseProperty().getValue());
             this.setText(item.getValue());
-            // If the statis is changing dynamic you have to add the following:
             item.isCauseProperty()
                     .addListener((observable, oldValue, newValue) ->
                             defineStyle(newValue));
