@@ -52,6 +52,10 @@ public class OutputVarCell extends ExplainerCell {
         return pin;
     }
 
+    public InputPin getInputPin() {
+        return this.inputPin;
+    }
+
     @Override
     public String toString() {
         return this.name;

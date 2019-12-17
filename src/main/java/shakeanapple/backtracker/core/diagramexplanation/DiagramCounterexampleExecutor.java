@@ -79,5 +79,7 @@ public class DiagramCounterexampleExecutor implements DiagramSequentialEvaluator
                 }
             }
         }
+
+        this.diagram.history().record(this.diagram.fbInterface(), Clocks.instance().currentTime());
     }
 }

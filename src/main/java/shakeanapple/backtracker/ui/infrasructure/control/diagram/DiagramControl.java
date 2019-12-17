@@ -4,9 +4,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import shakeanapple.backtracker.ui.explainer.model.Cause;
 import shakeanapple.backtracker.ui.explainer.model.graph.HierarchicalLayout;
-import shakeanapple.backtracker.ui.explainer.model.graph.cell.ExplainerCell;
-import shakeanapple.backtracker.ui.explainer.model.graph.cell.InputPin;
-import shakeanapple.backtracker.ui.explainer.model.graph.cell.Pin;
+import shakeanapple.backtracker.ui.explainer.model.graph.cell.*;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.*;
 
 import java.util.*;
@@ -79,6 +77,19 @@ public class DiagramControl extends BorderPane {
                         }
                     }
                 });
+
+        List<String> rootPins = pinsByBlocks.get("root");
+        this.panel.getGraph().getAllCells().stream().filter(cell -> cell instanceof InputVarCell && rootPins.contains(((InputVarCell) cell).getName()))
+                .forEach(cell -> {
+                    InputVarCell expCell = (InputVarCell) cell;
+                    expCell.getOutputPin().colorBorder(this.toHexString(Color.RED));
+                });
+
+        this.panel.getGraph().getAllCells().stream().filter(cell -> cell instanceof OutputVarCell && rootPins.contains(((OutputVarCell) cell).getName()))
+                .forEach(cell -> {
+                    OutputVarCell expCell = (OutputVarCell) cell;
+                    expCell.getInputPin().colorBorder(this.toHexString(Color.RED));
+                });
     }
 
     public void resetPins() {
@@ -96,11 +107,11 @@ public class DiagramControl extends BorderPane {
                 });
     }
 
-    public void addTooltipsToPins(Map<String, List<Cause>> causesPins) {
-        this.panel.getGraph().getAllCells().stream().filter(cell -> causesPins.containsKey(((ExplainerCell) cell).getName()))
+    public void addTooltipsToPins(Map<String, List<Cause>> causesPinsByBlocks) {
+        this.panel.getGraph().getAllCells().stream().filter(cell -> causesPinsByBlocks.containsKey(((ExplainerCell) cell).getName()))
                 .forEach(cell -> {
                     ExplainerCell expCell = (ExplainerCell) cell;
-                    List<Cause> blockCauses = causesPins.get(expCell.getName());
+                    List<Cause> blockCauses = causesPinsByBlocks.get(expCell.getName());
                     Map<String, List<Cause>> blockCausesByVars = new HashMap<>();
                     for (Cause cause : blockCauses) {
                         if (!blockCausesByVars.containsKey(cause.getVarName())) {
@@ -112,6 +123,7 @@ public class DiagramControl extends BorderPane {
                         if (expCell.getInputPins().containsKey(pin)) {
                             expCell.getInputPins().get(pin).colorBorder(this.toHexString(Color.RED));
                             String pinText = blockCausesByVars.get(pin).stream()
+                                    .distinct()
                                     .sorted(Comparator.comparing(Cause::getTimestamp))
                                     .map(cause -> (cause.getTimestamp() - 1) + ":" + cause.getValue().toString())
                                     .collect(Collectors.joining("\n"));
@@ -119,12 +131,36 @@ public class DiagramControl extends BorderPane {
                         } else if (expCell.getOutputPins().containsKey(pin)) {
                             expCell.getOutputPins().get(pin).colorBorder(this.toHexString(Color.RED));
                             String pinText = blockCausesByVars.get(pin).stream()
+                                    .distinct()
                                     .sorted(Comparator.comparing(Cause::getTimestamp))
-                                    .map(cause -> cause.getTimestamp() + ":" + cause.getValue().toString())
+                                    .map(cause -> (cause.getTimestamp()-1) + ":" + cause.getValue().toString())
                                     .collect(Collectors.joining("\n"));
                             expCell.getOutputPins().get(pin).addTextToTooltip(pinText);
                         }
                     }
+                });
+
+        List<String> rootPinsNames = causesPinsByBlocks.get("root").stream().map(Cause::getVarName).collect(Collectors.toList());
+        this.panel.getGraph().getAllCells().stream().filter(cell -> cell instanceof InputVarCell && rootPinsNames.contains(((InputVarCell) cell).getName()))
+                .forEach(cell -> {
+                    InputVarCell expCell = (InputVarCell) cell;
+                    String pinText = causesPinsByBlocks.get("root").stream().filter(cause -> cause.getVarName().equals(expCell.getName()))
+                            .distinct()
+                            .sorted(Comparator.comparing(Cause::getTimestamp))
+                            .map(cause -> (cause.getTimestamp() - 1) + ":" + cause.getValue().toString())
+                            .collect(Collectors.joining("\n"));
+                    expCell.getOutputPin().addTextToTooltip(pinText);
+                });
+
+        this.panel.getGraph().getAllCells().stream().filter(cell -> (cell instanceof OutputVarCell) && rootPinsNames.contains(((OutputVarCell) cell).getName()))
+                .forEach(cell -> {
+                    OutputVarCell expCell = (OutputVarCell) cell;
+                    String pinText = causesPinsByBlocks.get("root").stream().filter(cause -> cause.getVarName().equals(expCell.getName()))
+                            .distinct()
+                            .sorted(Comparator.comparing(Cause::getTimestamp))
+                            .map(cause -> (cause.getTimestamp() - 1) + ":" + cause.getValue().toString())
+                            .collect(Collectors.joining("\n"));
+                    expCell.getInputPin().addTextToTooltip(pinText);
                 });
     }
 

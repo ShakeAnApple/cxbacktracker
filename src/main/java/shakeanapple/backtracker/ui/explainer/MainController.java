@@ -251,7 +251,8 @@ public class MainController implements Initializable {
         this.diagram.colorPins(causesTree.getCausePins());
         this.diagram.addTooltipsToPins(causesTree.getCausesByBlocks());
         this.diagramCausesList.setItems(FXCollections.observableArrayList(expRes.getFreshNodes().stream()
-                .map(causeNode -> new Cause(causeNode.getTimestamp() - 1, causeNode.getGate().getName(), causeNode.getGate().getOwner().getName(), causeNode.getValue())).sorted(Comparator.comparing(Cause::getVarName)).collect(Collectors.toList())));
+                .map(causeNode -> new Cause(causeNode.getTimestamp() - 1, causeNode.getGate().getName(), causeNode.getGate().getOwner().getName(), causeNode.getValue()))
+                .sorted(Comparator.comparing(Cause::getTimestamp).thenComparing(Cause::getBlockName).thenComparing(Cause::getVarName)).collect(Collectors.toList())));
     }
 
     private Boolean diagramPinPressHandler(Pin pin) {
@@ -302,7 +303,8 @@ public class MainController implements Initializable {
     }
 
     private void explainFormulaImpl(int forStep){
-        List<FormulaCause> causes = this.ltlExplainer.explainRootForStep(forStep).getCauses();
+        List<FormulaCause> causes = this.ltlExplainer.explainRootForStep(forStep).getCauses().stream()
+                .sorted(Comparator.comparing(FormulaCause::getStepNum).thenComparing(FormulaCause::getVarName)).collect(Collectors.toList());
         Map<String, List<FormulaCause>> causesByVarName = new HashMap<>();
         for (FormulaCause cause : causes) {
             if (!causesByVarName.containsKey(cause.getVarName())) {

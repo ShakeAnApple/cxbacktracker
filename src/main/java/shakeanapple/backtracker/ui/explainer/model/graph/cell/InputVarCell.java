@@ -69,6 +69,10 @@ public class InputVarCell extends ExplainerCell {
         return out;
     }
 
+    public OutputPin getOutputPin() {
+        return this.outputPin;
+    }
+
     @Override
     public String getName() {
         return this.name;

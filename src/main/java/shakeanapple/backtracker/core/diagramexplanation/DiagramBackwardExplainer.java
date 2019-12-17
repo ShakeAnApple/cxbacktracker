@@ -46,31 +46,32 @@ public class DiagramBackwardExplainer implements DiagramOutputExplainer {
         ExplanationItem res;
         OutputGate out = fbToExplain.fbInterface().getOutputs().get(gateName);
         if (out != null) {
-            rootNode = new CauseNode(out, out.getValue(), timestamp);
+            rootNode = new CauseNode(out, fbToExplain.history().getVariableValueForStep(out.getName(), timestamp), timestamp);
             res = fbToExplain.explain(out, timestamp);
             parentNode = rootNode;
         } else {
             InputGate in = fbToExplain.fbInterface().getInputs().get(gateName);
             if (in != null) {
-                rootNode = new CauseNode(in, in.getValue(), timestamp);
+                rootNode = new CauseNode(in, fbToExplain.history().getVariableValueForStep(in.getName(), timestamp), timestamp);
                 if (in.getIncomingConnection() != null && in.getIncomingConnection().fromGate() instanceof OutputGate) {
                     OutputGate gateToExplain = (OutputGate) in.getIncomingConnection().fromGate();
-                    CauseNode childCause = new CauseNode(gateToExplain, gateToExplain.getValue(), timestamp);
+                    CauseNode childCause = new CauseNode(gateToExplain, gateToExplain.getOwner().history().getVariableValueForStep(gateToExplain.getName(), timestamp), timestamp);
                     rootNode.addChildNode(childCause);
                     parentNode = childCause;
                     res = gateToExplain.getOwner().explain(gateToExplain, timestamp);
                 } else if (in.getIncomingConnection() != null) {
                     // connected to system input
                     CausePathTree tree = new CausePathTree();
-                    CauseNode root = new CauseNode(in, in.getValue(), timestamp);
+                    CauseNode root = new CauseNode(in, fbToExplain.history().getVariableValueForStep(in.getName(), timestamp), timestamp);
                     tree.addRoot(root);
-                    CauseNode child = new CauseNode(in.getIncomingConnection().fromGate(), in.getIncomingConnection().fromGate().getValue(), timestamp);
+                    Gate childGate = in.getIncomingConnection().fromGate();
+                    CauseNode child = new CauseNode(childGate, childGate.getOwner().history().getVariableValueForStep(childGate.getName(), timestamp), timestamp);
                     root.addChildNode(child);
                     return new ExplanationItem(tree, new ArrayList<>(){{add(child);}});
 
                 } else {
                     //const
-                    return new ExplanationItem(new CausePathTree(Collections.singletonList(new CauseNode(in, in.getValue(), timestamp))), new ArrayList<>());
+                    return new ExplanationItem(new CausePathTree(Collections.singletonList(new CauseNode(in, this.diagram.history().getVariableValueForStep(in.getName(), timestamp), timestamp))), new ArrayList<>());
                 }
             }
             else{

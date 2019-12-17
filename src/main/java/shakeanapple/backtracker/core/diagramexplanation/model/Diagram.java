@@ -53,7 +53,8 @@ public class Diagram {
         for (CauseNode causeNode : causeNodes) {
             if (this.inputs.containsKey(causeNode.getGate().output().getId())) {
                 System.out.println(String.format("InternalD: cause '%s' added to result", causeNode.getGate().getIncomingConnection().fromGate().getName()));
-                CauseNode childNode = new CauseNode(causeNode.getGate().getIncomingConnection().fromGate(), causeNode.getValue(), causeNode.getTimestamp());
+                Gate childGate = causeNode.getGate().getIncomingConnection().fromGate();
+                CauseNode childNode = new CauseNode(childGate, childGate.getOwner().history().getVariableValueForStep(childGate.getName(), causeNode.getTimestamp()), causeNode.getTimestamp());
 //                CauseNode childNode = new CauseNode(causeNode.getGate(), causeNode.getValue(), causeNode.getTimestamp());
                 outputCauseNodes.add(childNode);
                 causeNode.addChildNode(childNode);

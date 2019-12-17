@@ -60,7 +60,8 @@ public class FunctionBlockComplex extends FunctionBlockBase {
         OutputGate gateToExplain = (OutputGate) output.getIncomingConnection().fromGate();
 
         CausePathTree causesTree = new CausePathTree();
-        CauseNode rootNode = new CauseNode(output, output.getValue(), timestamp);
+
+        CauseNode rootNode = new CauseNode(output, this.history().getVariableValueForStep(output.getName(), timestamp), timestamp);
         causesTree.addRoot(rootNode);
 
 //        CauseNode internalDiagramChildNode = new CauseNode(gateToExplain, gateToExplain.getValue(), timestamp);
