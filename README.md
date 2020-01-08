@@ -10,7 +10,7 @@ The latest jar for windows can be found in
 `jars/win`
 
 To run the tool double click the oeritte.jar or run it from the console
-> java -jar jars/win/oeritte.jar
+> java -jar jars/win/oeritte-win.jar
 
 ## Input data:
 - a flat model (the main module with nested basic blocks) that follows NuSMV MODCHK format;
