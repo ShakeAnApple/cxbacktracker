@@ -167,5 +167,5 @@ binary_operator1 returns[Node f]
     ;
 
 formula returns[Node f]
-    : binary_operator1 { $f = $binary_operator1.f; }
+    : binary_operator1 { $f = $binary_operator1.f; } EOF
     ;

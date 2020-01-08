@@ -153,5 +153,5 @@ module returns[NuSMVModule m]
       ( (VAR (internal_var_declaration ';' { internalVariables.add($internal_var_declaration.v); })*)
       | (ASSIGN (assignment { assignments.add($assignment.a); })*)
       | (DEFINE (d=definition { internalVariables.add($d.v); assignments.add($d.aInit); assignments.add($d.aNext); })*)
-      )* { $m = new NuSMVModule($ID.text, inputVariables, internalVariables, assignments); }
+      )* { $m = new NuSMVModule($ID.text, inputVariables, internalVariables, assignments); } EOF
     ;
