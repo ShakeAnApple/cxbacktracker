@@ -1,11 +1,8 @@
 package shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents;
 
-import shakeanapple.backtracker.core.diagramexplanation.model.FBInterface;
-import shakeanapple.backtracker.core.diagramexplanation.model.InputGate;
 import shakeanapple.backtracker.core.diagramexplanation.model.OutputGate;
 import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockBase;
-import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.arithmetic.MinusFunctionBlockBasic;
-import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.arithmetic.PlusFunctionBlockBasic;
+import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.arithmetic.*;
 import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.choice.Choice;
 import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.choice.ChoiceFunctionBlockBasic;
 import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.logic.*;
@@ -41,6 +38,12 @@ public abstract class FunctionBlockBasic extends FunctionBlockBase {
                 return new MinusFunctionBlockBasic(inputs.get(0), inputs.get(1), outputs.get(0));
             case PLUS:
                 return new PlusFunctionBlockBasic(inputs.get(0), inputs.get(1), outputs.get(0));
+            case MUL:
+                return new MulFunctionBlockBasic(inputs.get(0), inputs.get(1), outputs.get(0));
+            case DIV:
+                return new DivFunctionBlockBasic(inputs.get(0), inputs.get(1), outputs.get(0));
+            case MOD:
+                return new ModFunctionBlockBasic(inputs.get(0), inputs.get(1), outputs.get(0));
             case EQ:
                 return new EqFunctionBlockBasic(inputs.get(0), inputs.get(1), outputs.get(0));
             case GREATER:

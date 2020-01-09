@@ -14,5 +14,8 @@ public enum ComponentDefinitionType {
     LESS_EQ,
     INT_CHOICE,
     BOOL_CHOICE,
-    COUNT
+    COUNT,
+    MUL,
+    DIV,
+    MOD
 }

@@ -42,6 +42,9 @@
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0"/>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="60.0"/>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0"/>
+<!--            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="23.0"/>-->
+<!--            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="65.0"/>-->
+<!--            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="12.0"/>-->
         </columnConstraints>
         <rowConstraints>
             <RowConstraints percentHeight="75.0" vgrow="ALWAYS"/>

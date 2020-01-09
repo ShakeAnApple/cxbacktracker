@@ -89,7 +89,9 @@ public class BinaryOperator extends Expression {
             case ">=":
                 componentType = ComponentType.GREATER_EQ;
                 break;
-            case "<->": case "=": case "xnor":
+            case "<->":
+            case "=":
+            case "xnor":
                 componentType = ComponentType.EQ;
                 break;
             case "->":
@@ -113,8 +115,16 @@ public class BinaryOperator extends Expression {
             case "-":
                 return new BinaryOperator("+", leftArgument, new UnaryOperator("-", rightArgument))
                         .generate(context, order);
-            case "*": case "/": case "mod":
-                throw new RuntimeException("Conversion of operator " + name + " to FBD is not supported yet"); // FIXME
+            case "*":
+                componentType = ComponentType.MUL;
+                break;
+            case "/":
+                componentType = ComponentType.DIV;
+                break;
+            case "mod":
+                componentType = ComponentType.MOD;
+                break;
+//                throw new RuntimeException("Conversion of operator " + name + " to FBD is not supported yet"); // FIXME
             default:
                 throw new RuntimeException("Unknown binary operator " + name);
         }
