@@ -10,7 +10,7 @@ The latest jar for windows can be found in
 `jars/win`
 
 To run the tool double click the oeritte.jar or run it from the console
-> java -jar jars/win/oeritte.jar
+> java -jar jars/win/oeritte-win.jar
 
 ## Input data:
 - a flat model (the main module with nested basic blocks) that follows NuSMV MODCHK format;
@@ -24,5 +24,6 @@ When program is running:
 2) When all the required data provided click on the step of interest in the second list on the right and the diagram and LTL formula will appear evaluated for the chosen step. By default in the third list on the right LTL formula will be explained for the step number zero and set of causes will be displayed in the third list on the right. Also formula explanation result is desplayed in the variables' table below the system diagram.
 3) Now if you click on any step, the diagram and the LTL formula tree will be reevaluated. If you want to explain formula on particular step, click on this step and then click on the button `explain formula`. 
 4) On the diagram there are blocks with columns of buttons (pins) on the left and right sides. There are also standalone pins on the left and right side of the diagram, they form input and output interfaces of the system correspondingly.
-5) Diagram explanation: if you are to find causes of the particular input or output, press on the desired pin on the desired step. This will highlight explanation paths on the diagram. Also if input interface variables are causes for the explained pin, they will be displayed in the first list on the right in a form `stepNumber blockName varName varValue`.
-6) To open another model just repeat step 1.
+5) Diagram explanation: if you are to find causes of the particular input or output, press on the desired pin on the desired step. This will highlight explanation paths on the diagram. Also if input interface variables are causes for the explained pin, they will be displayed in the first list on the right in form `stepNumber blockName varName varValue`.
+6) Diagram variables' names can be found in tooltips that are triggered by hovering pins. In explanation mode if variable is a cause, information about it is added to its pin in form `stepNumber: varValue`.
+7) To open another model just repeat step 1.
