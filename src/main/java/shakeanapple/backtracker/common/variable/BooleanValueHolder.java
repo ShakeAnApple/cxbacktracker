@@ -14,7 +14,7 @@ public class BooleanValueHolder extends ValueHolder<Boolean> {
 
     @Override
     public String toString() {
-        return ((Integer) (_value ? 1 : 0)).toString();
+        return ( (_value ? "TRUE" : "FALSE"));
     }
 
     @Override

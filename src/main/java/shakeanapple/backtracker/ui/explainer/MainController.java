@@ -64,6 +64,8 @@ public class MainController implements Initializable {
     private ObjectProperty<Boolean> isReadOnly = new SimpleObjectProperty<>(false);
     @FXML
     private GridPane mainLayout;
+    @FXML
+    private TextField formulaField;
 
     private LtlEvaluator calculationWalker;
     private DiagramSequentialEvaluator diagramEvaluator;
@@ -71,6 +73,8 @@ public class MainController implements Initializable {
     private DiagramOutputExplainer diagramOutputExplainer;
     private Counterexample counterexample;
     private ILtlFormulaExplainer ltlExplainer;
+
+    private String formulaStr;
 
     private Map<String, DiagramConnection> connections = new HashMap<>();
     private int currentStep = 0;
@@ -108,11 +112,12 @@ public class MainController implements Initializable {
                         .map(state -> new Step(state.getOrder(), this.counterexample.getLoopStart() == state.getOrder())).collect(Collectors.toList())
         ));
         this.stepsList.setOnMouseClicked(this::handleStepChosen);
-
+        this.formulaField.setText(this.formulaStr);
         this.initializeTable();
     }
 
     private void construct(String diagramPath, String cxPath, String formulaStr) {
+        this.formulaStr = formulaStr;
         FunctionBlockComplex diagram = FunctionBlockComplex.parse(diagramPath);
         this.counterexample = Counterexample.load(cxPath);
         LtlFormula formula = LtlFormula.parse(formulaStr);
@@ -139,6 +144,7 @@ public class MainController implements Initializable {
         this.formulaCustom = null;
         this.currentStep = 0;
         this.isInitialState = true;
+        this.formulaField.setText("");
         Clocks.instance().reset();
 
         this.diagramCausesList.setItems(FXCollections.observableArrayList());
@@ -160,6 +166,20 @@ public class MainController implements Initializable {
         this.varsTableItems = FXCollections.observableArrayList();
     }
 
+    private boolean onTableCellClicked(VarValueForStep varValueForStep){
+        if (!varValueForStep.isCauseProperty().getValue()){
+            return true;
+        }
+        this.stepsList.getSelectionModel().select(this.stepsList.getItems().stream().filter(step -> step.getNumber() == varValueForStep.getStepNum()).findFirst().get());
+
+        this.currentStep = varValueForStep.getStepNum();
+        DiagramSnapshot snapshot = this.diagramExecutor.moveTo(varValueForStep.getStepNum());
+        this.cache.add(snapshot, varValueForStep.getStepNum());
+        this.updateDiagram(snapshot);
+        this.explainCause(varValueForStep.getFullVarName(), varValueForStep.getBlockName(), varValueForStep.getStepNum());
+        return true;
+    }
+
     private void initializeTable() {
 
         TableColumn<CxVar, String> c = new TableColumn<>("Var name");
@@ -174,7 +194,7 @@ public class MainController implements Initializable {
             column.setCellValueFactory(param ->
                     new ReadOnlyObjectWrapper<>(param.getValue().getVarValues().get(finalIdx))
             );
-            column.setCellFactory(param -> new VarValueCell());
+            column.setCellFactory(param -> new VarValueCell(this::onTableCellClicked));
             column.setPrefWidth(50);
             this.variablesByStepsTable.getColumns().add(column);
         }
@@ -187,9 +207,10 @@ public class MainController implements Initializable {
                     varsValues.put(var.getName(), new ArrayList<>());
                 });
             }
+            final int finalStep = step;
             varsValues.keySet().forEach(varName -> {
                 varsValues.get(varName).add(
-                        new VarValueForStep(varName, cxState.getVarByName(varName).getValue().toString(), false));
+                        new VarValueForStep(varName, cxState.getVarByName(varName).getValue().toString(), finalStep,false));
             });
         }
 

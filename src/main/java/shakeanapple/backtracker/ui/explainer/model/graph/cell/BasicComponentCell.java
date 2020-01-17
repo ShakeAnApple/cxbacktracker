@@ -1,8 +1,9 @@
 package shakeanapple.backtracker.ui.explainer.model.graph.cell;
 
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.FunctionBlockSnapshot;
@@ -50,7 +51,6 @@ public class BasicComponentCell extends ExplainerCell {
         bindInputPins(view, new ArrayList<>(inputPins.values()));
         bindOutputPins(view, new ArrayList<>(outputPins.values()));
 
-
         Label label = new Label(this.name + System.lineSeparator() + this.type);
 
         view.widthProperty().bind(label.widthProperty().add(4));
@@ -64,8 +64,12 @@ public class BasicComponentCell extends ExplainerCell {
 
         List<Node> nodes = new ArrayList<>(inputPins.values());
         nodes.addAll(outputPins.values());
+
         nodes.add(label);
         setView(view, nodes);
+
+//        super.setBorder(new Border(new BorderStroke(Color.BLACK,
+//                BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
     }
 
     public Map<String, InputPin> getInputPins() {
@@ -79,8 +83,8 @@ public class BasicComponentCell extends ExplainerCell {
     private void bindOutputPins(Rectangle view, List<Pin> pins) {
         int order = 0;
         for (Pin pin: pins){
-            pin.layoutYProperty().bind(view.yProperty().divide(pins.size()).add(order * PIN_HEIGHT));
-            pin.layoutXProperty().bind(view.xProperty().add(view.widthProperty()));
+            pin.layoutYProperty().bind(view.layoutYProperty().divide(pins.size()).add(order * PIN_HEIGHT));
+            pin.layoutXProperty().bind(view.layoutXProperty().add(view.widthProperty()));
             order ++;
         }
     }
@@ -88,8 +92,8 @@ public class BasicComponentCell extends ExplainerCell {
     private void bindInputPins(Rectangle view, List<Pin> pins) {
         for (int i = 0; i < pins.size(); i++) {
             Pin pin = pins.get(i);
-            pin.layoutYProperty().bind(view.yProperty().divide(pins.size()).add(i * PIN_HEIGHT));
-            pin.layoutXProperty().bind(view.xProperty().subtract(PIN_HEIGHT));
+            pin.layoutYProperty().bind(view.layoutYProperty().divide(pins.size()).add(i * PIN_HEIGHT));
+            pin.layoutXProperty().bind(view.layoutXProperty().subtract(PIN_HEIGHT));
         }
     }
 

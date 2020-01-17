@@ -28,8 +28,11 @@ public class MouseGestures {
 
         double scale = this.panel.getScale();
 
-        this.dragContext.x = node.getBoundsInParent().getMinX() * scale - event.getSceneX();
-        this.dragContext.y = node.getBoundsInParent().getMinY() * scale - event.getSceneY();
+//        this.dragContext.x = node.getBoundsInParent().getMinX() * scale - event.getSceneX();
+//        this.dragContext.y = node.getBoundsInParent().getMinY() * scale - event.getSceneY();
+
+        this.dragContext.x = node.getLayoutX() * scale - event.getSceneX();
+        this.dragContext.y = node.getLayoutY() * scale - event.getSceneY();
 
 //            System.out.println("PRESSED");
 //            System.out.println("click on screen coords (" + event.getScreenX() + "," + event.getScreenY() + ")");

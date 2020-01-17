@@ -31,6 +31,7 @@ public class Connection implements DiagramConnection {
         }
         this.value = value;
 
+        this.to.isTarget();
 
         String id = this.from.getOwner().getName();
         if (!this.from.getOwner().getName().equals(this.from.getName())){
@@ -98,12 +99,20 @@ public class Connection implements DiagramConnection {
         this.to.getOwner().addEdgeTo(edge);
 
 //        this.edge.bindStartX(this.from.getOwner().layoutXProperty().add(this.from.getOwner().getBoundsInParent().getWidth()));
-        this.edge.bindStartX(this.from.getOwner().layoutXProperty().add(this.from.getOwner().widthProperty()).subtract(this.from.getMinWidth()));
+
+//        this.edge.bindStartX(this.from.getOwner().layoutXProperty().add(this.from.getOwner().widthProperty()).subtract(this.from.getMinWidth()));
+//        this.edge.bindStartY(this.from.getOwner().layoutYProperty().add(this.from.getMinHeight() / 2 + this.from.getMinHeight() * this.from.getOrder()));
+
+        this.edge.bindStartX(this.from.getOwner().layoutXProperty().add(this.from.layoutXProperty()).add(this.from.widthProperty()));
+        this.edge.bindStartY(this.from.getOwner().layoutYProperty().add(this.from.layoutYProperty()).add(this.from.heightProperty().divide(2)));
 //        this.edge.bindStartX(this.from.getOwner().widthProperty());
 
-        this.edge.bindStartY(this.from.getOwner().layoutYProperty().add(this.from.getMinHeight() / 2 + this.from.getMinHeight() * this.from.getOrder()));
-        this.edge.bindEndX(this.to.getOwner().layoutXProperty().subtract(this.from.getMinWidth()));
-        this.edge.bindEndY(this.to.getOwner().layoutYProperty().add(this.to.getMinHeight() / 2 + this.to.getMinHeight() * this.to.getOrder()));
+
+//        this.edge.bindEndX(this.to.getOwner().layoutXProperty().subtract(this.from.getMinWidth()));
+//        this.edge.bindEndY(this.to.getOwner().layoutYProperty().add(this.to.getMinHeight() / 2 + this.to.getMinHeight() * this.to.getOrder()));
+
+        this.edge.bindEndX(this.to.getOwner().layoutXProperty().add(this.to.getLayoutX()));
+        this.edge.bindEndY(this.to.getOwner().layoutYProperty().add(this.to.getLayoutY()).add(this.to.heightProperty().divide(2)));
 
 //        edge.bindStartX(this.from.layoutXProperty().add(this.from.getWidth()));
 //        edge.bindStartY(this.from.layoutYProperty().add(this.from.getHeight() / 2));

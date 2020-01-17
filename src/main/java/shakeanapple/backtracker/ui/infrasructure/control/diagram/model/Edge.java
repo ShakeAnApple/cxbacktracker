@@ -48,13 +48,13 @@ public class Edge extends Group {
         super.getChildren().add(this.labelRight);
 
 //        this.labelLeft.layoutXProperty().bind(this.line.endXProperty().subtract(this.line.endXProperty().subtract(this.line.startXProperty()).divide(2)));
-        this.labelLeft.layoutXProperty().bind(this.line.startXProperty().subtract(5));
+        this.labelLeft.layoutXProperty().bind(this.line.startXProperty().add(2));
 //        this.labelLeft.layoutYProperty().bind(this.line.endYProperty().subtract(this.line.endYProperty().subtract(this.line.startYProperty()).divide(2)));
-        this.labelLeft.layoutYProperty().bind(this.line.startYProperty().subtract(5));
+        this.labelLeft.layoutYProperty().bind(this.line.startYProperty().add(2));
 
-        this.labelRight.layoutXProperty().bind(this.line.endXProperty());
+        this.labelRight.layoutXProperty().bind(this.line.endXProperty().subtract(20));
 //        this.labelLeft.layoutYProperty().bind(this.line.endYProperty().subtract(this.line.endYProperty().subtract(this.line.startYProperty()).divide(2)));
-        this.labelRight.layoutYProperty().bind(this.line.endYProperty().subtract(5));
+        this.labelRight.layoutYProperty().bind(this.line.endYProperty().add(2));
 
     }
 

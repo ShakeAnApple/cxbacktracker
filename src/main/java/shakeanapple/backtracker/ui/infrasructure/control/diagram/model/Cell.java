@@ -9,7 +9,7 @@ import javafx.scene.shape.Line;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cell extends Region {
+public class Cell extends Pane {
 
     private long cellId;
 
@@ -57,6 +57,7 @@ public class Cell extends Region {
         this.view = view;
         super.getChildren().add(view);
         for(Node ch: children) {
+//            super.getChildren().add(ch  );
             super.getChildren().add(ch  );
         }
     }

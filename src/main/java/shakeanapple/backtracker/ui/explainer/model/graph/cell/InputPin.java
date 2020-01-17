@@ -1,5 +1,8 @@
 package shakeanapple.backtracker.ui.explainer.model.graph.cell;
 
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,4 +28,23 @@ public class InputPin extends Pin {
     }
 
 
+    public void isTarget() {
+        Line line = new Line();
+        line.setStroke(Color.GRAY);
+        line.setStrokeWidth(2);
+
+        // TODO grid cell size should be here
+        line.startXProperty()
+                .bind(super.layoutXProperty().subtract(100));
+        line.startYProperty()
+                .bind(super.layoutYProperty().add(super.getMinHeight() / 2));
+
+        // TODO grid cell size should be here
+        line.endXProperty()
+                .bind(super.layoutXProperty());
+        line.endYProperty()
+                .bind(super.layoutYProperty().add(super.getMinHeight() / 2));
+
+        super.getChildren().add(line);
+    }
 }
