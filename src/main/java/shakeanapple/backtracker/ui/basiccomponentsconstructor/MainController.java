@@ -23,8 +23,8 @@ import shakeanapple.backtracker.ui.basiccomponentsconstructor.model.BasicCompone
 import shakeanapple.backtracker.ui.basiccomponentsconstructor.model.BasicComponentAbstract;
 import shakeanapple.backtracker.ui.basiccomponentsconstructor.model.ChoiceComponent;
 import shakeanapple.backtracker.ui.basiccomponentsconstructor.model.Connection;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.DiagramControl;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.ViewGraph;
+import shakeanapple.backtracker.ui.infrasructure.control.diagramold.DiagramControl;
+import shakeanapple.backtracker.ui.infrasructure.control.diagramold.ViewGraph;
 import shakeanapple.backtracker.ui.infrasructure.FunctionTwo;
 
 import javax.xml.bind.JAXBException;

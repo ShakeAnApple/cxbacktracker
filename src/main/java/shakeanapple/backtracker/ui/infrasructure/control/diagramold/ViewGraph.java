@@ -1,7 +1,7 @@
-package shakeanapple.backtracker.ui.infrasructure.control.diagram;
+package shakeanapple.backtracker.ui.infrasructure.control.diagramold;
 
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Cell;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.DiagramConnection;
+import shakeanapple.backtracker.ui.infrasructure.control.diagramold.model.Cell;
+import shakeanapple.backtracker.ui.infrasructure.control.diagramold.model.DiagramConnection;
 
 import java.util.ArrayList;
 import java.util.List;

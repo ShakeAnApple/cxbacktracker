@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.ui.infrasructure.control.diagram.model;
+package shakeanapple.backtracker.ui.infrasructure.control.diagramold.model;
 
 import javafx.event.EventHandler;
 import javafx.scene.Node;

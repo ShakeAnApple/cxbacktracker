@@ -12,8 +12,10 @@ import shakeanapple.backtracker.core.ltl.evaluation.model.ICalculatedNode;
 import shakeanapple.backtracker.core.ltl.evaluation.model.LogicalResult;
 import shakeanapple.backtracker.ui.explainer.model.graph.Connection;
 import shakeanapple.backtracker.ui.explainer.model.graph.cell.*;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.ViewGraph;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.DiagramConnection;
+import shakeanapple.backtracker.ui.explainer.model.graph.cell.Pin;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.*;
+import shakeanapple.backtracker.ui.infrasructure.control.diagramold.ViewGraph;
+import shakeanapple.backtracker.ui.infrasructure.control.diagramold.model.DiagramConnection;
 import shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.graph.VisEdge;
 import shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.graph.VisGraph;
 import shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.graph.VisNode;
@@ -107,6 +109,47 @@ public class GraphHelper {
         ViewGraph graph = new ViewGraph(new ArrayList<>(nodes.values()), edges);
         return graph;
     }
+
+    public static Graph convertToDiagramGraphNew(DiagramSnapshot diagram, Function<shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Pin, Boolean> pinPressHandler) {
+        Random r = new Random();
+
+        Map<String, DiagramCell> nodes = new HashMap<>();
+        List<shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Connection> edges = new ArrayList<>();
+
+//        for (String input : diagram.getDiagramInterface().getInputs()) {
+//            long id = r.nextLong();
+//            nodes.put(input, new InputCell(id, "input: " + input));
+//        }
+//
+//        for (String output : diagram.getDiagramInterface().getOutputs()) {
+//            long id = r.nextLong();
+//            nodes.put(output, new OutputCell(id, "output: " + output));
+//        }
+
+        for (FunctionBlockSnapshot fblock : diagram.getBlocks()) {
+            long id = r.nextLong();
+            if (diagram.getDiagramInterface().getInputs().contains(fblock.getName())){
+                nodes.put(fblock.getName(), new InputInterfaceCell(fblock.getName(), pinPressHandler));
+            } else if (diagram.getDiagramInterface().getOutputs().contains(fblock.getName())){
+                nodes.put(fblock.getName(), new OutputInterfaceCell(fblock.getName(), pinPressHandler));
+            } else{
+                nodes.put(fblock.getName(), new Cell(fblock.getName(), fblock.getType(), fblock.getFbInterface().getInputs(), fblock.getFbInterface().getOutputs(), pinPressHandler));
+            }
+        }
+
+        for (ConnectionSnapshot connection : diagram.getConnections()) {
+            String blockNameFrom = connection.from() != null ? connection.from().getName() : connection.fromVarName();
+            DiagramCell from = nodes.get(blockNameFrom);
+
+            String blockNameTo = connection.to() != null ? connection.to().getName() : connection.toVarName();
+            DiagramCell to = nodes.get(blockNameTo);
+            edges.add(new shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Connection(from.getOutputPins().get(connection.fromVarName()), to.getInputPins().get(connection.toVarName()), connection.getValue(), connection.isInverted()));
+        }
+
+        Graph graph = new Graph(new ArrayList<>(nodes.values()), edges);
+        return graph;
+    }
+
 
     public static VisGraph convertToGraph(DiagramSnapshot diagram) {
 //        Random r = new Random();

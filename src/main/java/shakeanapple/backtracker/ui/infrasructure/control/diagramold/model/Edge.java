@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.ui.infrasructure.control.diagram.model;
+package shakeanapple.backtracker.ui.infrasructure.control.diagramold.model;
 
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;

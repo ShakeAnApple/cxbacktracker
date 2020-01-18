@@ -5,10 +5,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import shakeanapple.backtracker.ui.basiccomponentsconstructor.model.*;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Cell;
+import shakeanapple.backtracker.ui.infrasructure.control.diagramold.model.Cell;
 import shakeanapple.backtracker.ui.infrasructure.FunctionTwo;
 
 import java.util.ArrayList;

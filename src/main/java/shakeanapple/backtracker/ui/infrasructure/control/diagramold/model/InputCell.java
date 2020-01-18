@@ -1,13 +1,13 @@
-package shakeanapple.backtracker.ui.infrasructure.control.diagram.model;
+package shakeanapple.backtracker.ui.infrasructure.control.diagramold.model;
 
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class OutputCell extends Cell {
+public class InputCell extends Cell {
     private String name;
 
-    public OutputCell(long id, String name) {
+    public InputCell(long id, String name) {
         super(id);
         this.name = name;
 
@@ -19,7 +19,7 @@ public class OutputCell extends Cell {
 
 
         view.setStroke(Color.BLACK);
-        view.setFill(Color.LAVENDER);
+        view.setFill(Color.HONEYDEW);
 
         setView(view, label);
 

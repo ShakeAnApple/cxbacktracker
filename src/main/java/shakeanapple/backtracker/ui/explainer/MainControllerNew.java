@@ -14,29 +14,27 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import shakeanapple.backtracker.Config;
+import shakeanapple.backtracker.core.counterexample.Counterexample;
 import shakeanapple.backtracker.core.counterexample.State;
 import shakeanapple.backtracker.core.diagramexplanation.*;
 import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockComplex;
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.ConnectionSnapshot;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.DiagramSnapshot;
-import shakeanapple.backtracker.core.ltl.evaluation.LtlWithCounterexampleEvaluator;
 import shakeanapple.backtracker.core.ltl.evaluation.LtlEvaluator;
+import shakeanapple.backtracker.core.ltl.evaluation.LtlWithCounterexampleEvaluator;
 import shakeanapple.backtracker.core.ltl.evaluation.model.ICalculatedFormula;
-import shakeanapple.backtracker.core.counterexample.Counterexample;
 import shakeanapple.backtracker.core.ltl.explanation.ILtlFormulaExplainer;
 import shakeanapple.backtracker.core.ltl.explanation.LtlFormulaExplainer;
 import shakeanapple.backtracker.core.ltl.explanation.model.FormulaCause;
 import shakeanapple.backtracker.core.ltl.formula.model.LtlFormula;
-import shakeanapple.backtracker.ui.explainer.model.*;
-import shakeanapple.backtracker.ui.explainer.model.Cause;
-import shakeanapple.backtracker.ui.explainer.model.graph.cell.Pin;
-import shakeanapple.backtracker.ui.infrasructure.control.diagramold.DiagramControl;
-import shakeanapple.backtracker.ui.infrasructure.control.diagramold.ViewGraph;
-import shakeanapple.backtracker.ui.infrasructure.control.diagramold.model.DiagramConnection;
-import shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.graph.VisGraph;
 import shakeanapple.backtracker.ui.GraphHelper;
+import shakeanapple.backtracker.ui.explainer.model.*;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.DiagramControl;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Connection;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Graph;
 import shakeanapple.backtracker.ui.infrasructure.control.visgraph.VisGraphControl;
+import shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.graph.VisGraph;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,7 +42,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MainController implements Initializable {
+public class MainControllerNew implements Initializable {
 
     @FXML
     public ListView<Cause> diagramCausesList;
@@ -76,7 +74,7 @@ public class MainController implements Initializable {
 
     private String formulaStr;
 
-    private Map<String, DiagramConnection> connections = new HashMap<>();
+    private Map<String, Connection> connections = new HashMap<>();
     private int currentStep = 0;
     private DiagramEvaluationCache cache = new DiagramEvaluationCache();
 
@@ -87,7 +85,7 @@ public class MainController implements Initializable {
     private String formulaCustom;
     private boolean isInitialState = true;
 
-    public MainController() throws IOException {
+    public MainControllerNew() throws IOException {
         Config config = Config.instance();
         if (config.useConfig()) {
             this.construct(config.getDiagramPath(), config.getCxPath(), config.getFormula());
@@ -158,6 +156,7 @@ public class MainController implements Initializable {
         this.diagramOutputExplainer = null;
         this.counterexample = null;
         this.ltlExplainer = null;
+
         this.diagram.clear();
         this.ltlGraph.clear();
 
@@ -244,48 +243,54 @@ public class MainController implements Initializable {
 
     private void renderDiagramForStep(int stepNum) {
         this.clearConnections();
-        this.diagram.resetPins();
 
         DiagramSnapshot snapshot = this.cache.getByStep(stepNum);
         this.updateConnections(snapshot.getConnections());
     }
 
     private void clearConnections() {
-        for (DiagramConnection conn : this.connections.values()) {
-            conn.isCauseEdge(false);
+        for (Connection conn : this.connections.values()) {
+            conn.isCauseTreeEdge(false);
         }
     }
 
     private void explainCause(String varName, String blockName, int timestamp) {
         this.clearConnections();
-        this.diagram.resetPins();
 
         ExplanationItem expRes = this.diagramOutputExplainer.explain(varName, blockName, timestamp);
         CauseNodeUI causesTree = CauseNodeUI.parse(expRes.getTree().getRoots().get(0));
-        List<String> connectionIds = causesTree.inferConnectionsIds();
-        for (String connId : connectionIds) {
+
+
+        Map<String, Map<String, Cause>> connectionsCauses = causesTree.inferConnectionCauses();
+        for (String connId : connectionsCauses.keySet()) {
             if (this.connections.containsKey(connId)) {
-                this.connections.get(connId).isCauseEdge(true);
+                Connection conn = this.connections.get(connId);
+                conn.isCauseTreeEdge(true);
+
+                Cause causeFrom = connectionsCauses.get(connId).get(conn.getFrom().getName());
+                conn.getFrom().getCausesObservable().add(
+                        new shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Cause(causeFrom.getTimestamp(), causeFrom.getVarName(), causeFrom.getBlockName(), causeFrom.getValue()));
+
+                Cause causeTo = connectionsCauses.get(connId).get(conn.getTo().getName());
+                conn.getTo().getCausesObservable().add(
+                        new shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Cause(causeTo.getTimestamp(), causeTo.getVarName(), causeTo.getBlockName(), causeTo.getValue()));
             }
         }
 
-        this.diagram.colorPins(causesTree.getCausePins());
-        this.diagram.addTooltipsToPins(causesTree.getCausesByBlocks());
         this.diagramCausesList.setItems(FXCollections.observableArrayList(expRes.getFreshNodes().stream()
                 .map(causeNode -> new Cause(causeNode.getTimestamp() - 1, causeNode.getGate().getName(), causeNode.getGate().getOwner().getName(), causeNode.getValue()))
                 .sorted(Comparator.comparing(Cause::getTimestamp).thenComparing(Cause::getBlockName).thenComparing(Cause::getVarName)).collect(Collectors.toList())));
     }
 
-    private Boolean diagramPinPressHandler(Pin pin) {
+    private Boolean diagramPinPressHandler(shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Pin pin) {
         this.explainCause(pin.getName(), pin.getOwner().getName(), this.currentStep);
         return true;
     }
 
     private void updateDiagram(DiagramSnapshot snapshot) {
         this.clearConnections();
-        this.diagram.resetPins();
         if (this.diagram.isClear()) {
-            ViewGraph diagram = GraphHelper.convertToDiagramGraph(snapshot, this::diagramPinPressHandler);
+            Graph diagram = GraphHelper.convertToDiagramGraphNew(snapshot, this::diagramPinPressHandler);
             this.diagram.draw(diagram);
             this.recordConnections(diagram.getConnections());
         } else {
@@ -293,29 +298,14 @@ public class MainController implements Initializable {
         }
     }
 
-//    @FXML
-//    protected void updateGraph() {
-//        this.currentStep++;
-//        ICalculatedFormula formula = this.calculationWalker.moveNext();
-//        VisGraph graph = GraphHelper.convertToGraph(formula);
-//        this.ltlGraph.updateGraph(graph);
-//
-////        DiagramSnapshot snapshot = this.diagramEvaluator.moveNext();
-//        DiagramSnapshot snapshot = this.diagramExecutor.moveNext();
-//        this.cache.add(snapshot, this.currentStep);
-//        //VisGraph blocksGraph = GraphHelper.convertToGraph(snapshot);
-//        //this.diagram.draw();updateGraph(blocksGraph);
-//        this.updateDiagram(snapshot);
-//    }
-
     private void updateConnections(List<ConnectionSnapshot> connections) {
         for (ConnectionSnapshot snap : connections) {
             this.connections.get(snap.getId()).updateValue(snap.getValue());
         }
     }
 
-    private void recordConnections(List<DiagramConnection> connections) {
-        this.connections = connections.stream().collect(Collectors.toMap(DiagramConnection::getId, c -> c));
+    private void recordConnections(List<Connection> connections) {
+        this.connections = connections.stream().collect(Collectors.toMap(Connection::getId, c -> c));
     }
 
 
@@ -357,8 +347,6 @@ public class MainController implements Initializable {
     //////////////////// Menu item clicks /////////////////
 
     private File initialDirectory;
-
-
 
     private File chooseFile(ActionEvent event, List<FileChooser.ExtensionFilter> extensionFilters) {
         FileChooser chooser = new FileChooser();

@@ -3,7 +3,7 @@ package shakeanapple.backtracker.ui.explainer.model.graph.cell;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import javafx.util.Duration;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Connectable;
+import shakeanapple.backtracker.ui.infrasructure.control.diagramold.model.Connectable;
 
 import java.util.ArrayList;
 import java.util.List;

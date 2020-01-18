@@ -1,100 +1,38 @@
 package shakeanapple.backtracker.ui.infrasructure.control.diagram.model;
 
-import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
-import javafx.scene.shape.Line;
-
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-public class Cell extends Pane {
+public class Cell implements DiagramCell{
+    private String name;
+    private String type;
 
-    private long cellId;
+    private Map<String, InputPin> inputPins;
+    private Map<String, OutputPin> outputPins;
 
-    private List<Cell> children = new ArrayList<>();
-    private List<Cell> parents = new ArrayList<>();
-
-    private List<Edge> outcomingEdges = new ArrayList<>();
-    private List<Edge> incomingEdges = new ArrayList<>();
-
-    private Node view;
-
-    public Cell(long cellId) {
-        this.cellId = cellId;
+    public Cell(String name, String type, List<String> inputPinsNames, List<String> outputPinsNames, Function<Pin, Boolean> pinClickHandler) {
+        this.name = name;
+        this.type = type;
+        this.inputPins = inputPinsNames.stream().map(pinName -> new InputPin(this, pinName, pinClickHandler)).collect(Collectors.toMap(Pin::getName, pin -> pin));
+        this.outputPins = outputPinsNames.stream().map(pinName -> new OutputPin(this, pinName, pinClickHandler)).collect(Collectors.toMap(Pin::getName, pin -> pin));
     }
 
-    public void addCellChild(Cell cell) {
-        this.children.add(cell);
+    public String getName() {
+        return name;
     }
 
-    public List<Cell> getCellChildren() {
-        return children;
+    public String getType() {
+        return this.type;
     }
 
-    public void addCellParent(Cell cell) {
-        parents.add(cell);
+
+    public Map<String, InputPin> getInputPins() {
+        return inputPins;
     }
 
-    public List<Cell> getCellParents() {
-        return parents;
-    }
-
-    public void removeCellChild(Cell cell) {
-        children.remove(cell);
-    }
-
-    public void setView(Node view, Label label) {
-
-        this.view = view;
-        super.getChildren().add(view);
-        super.getChildren().add(label);
-
-    }
-
-    public void setView(Node view, List<Node> children) {
-        this.view = view;
-        super.getChildren().add(view);
-        for(Node ch: children) {
-//            super.getChildren().add(ch  );
-            super.getChildren().add(ch  );
-        }
-    }
-
-    public Node getView() {
-        return this.view;
-    }
-
-    public long getCellId() {
-        return cellId;
-    }
-
-    public int getChildrenCount(){
-        return this.children.size();
-    }
-
-    public void addEdgeFrom(Edge edge) {
-        this.outcomingEdges.add(edge);
-    }
-
-    public void addEdgeTo(Edge edge) {
-        this.incomingEdges.add(edge);
-    }
-
-    public long getBoundOutcomingEdgesCount(){
-        return this.outcomingEdges.stream().filter(e -> e.isBound()).count();
-    }
-
-    public long getBoundIncomingEdgesCount(){
-        return this.incomingEdges.stream().filter(e -> e.isBound()).count();
-    }
-
-    public int getOutcomingEdgesCount(){
-        return this.outcomingEdges.size();
-    }
-
-    public int getIncomingEdgesCount(){
-        return this.incomingEdges.size();
+    public Map<String, OutputPin> getOutputPins() {
+        return outputPins;
     }
 }

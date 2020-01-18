@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.ui.infrasructure.control.diagram.model;
+package shakeanapple.backtracker.ui.infrasructure.control.diagramold.model;
 
 import java.util.List;
 import java.util.Random;

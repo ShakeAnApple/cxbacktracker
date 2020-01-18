@@ -26,7 +26,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Label?>
 <VBox maxWidth="1200" maxHeight="800" xmlns="http://javafx.com/javafx/8.0.172-ea"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="shakeanapple.backtracker.ui.explainer.MainController">
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="shakeanapple.backtracker.ui.explainer.MainControllerNew">
     <MenuBar fx:id="menuBar">
         <menus>
             <Menu text="File">

@@ -4,8 +4,8 @@ import javafx.scene.paint.Color;
 import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.ui.explainer.model.graph.cell.InputPin;
 import shakeanapple.backtracker.ui.explainer.model.graph.cell.OutputPin;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.DiagramConnection;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Edge;
+import shakeanapple.backtracker.ui.infrasructure.control.diagramold.model.DiagramConnection;
+import shakeanapple.backtracker.ui.infrasructure.control.diagramold.model.Edge;
 
 public class Connection implements DiagramConnection {
     private final String id;

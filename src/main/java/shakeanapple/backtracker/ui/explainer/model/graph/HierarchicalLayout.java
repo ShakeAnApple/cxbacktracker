@@ -3,7 +3,7 @@ package shakeanapple.backtracker.ui.explainer.model.graph;
 import shakeanapple.backtracker.ui.explainer.model.graph.cell.InputVarCell;
 import shakeanapple.backtracker.ui.explainer.model.graph.cell.OutputVarCell;
 import shakeanapple.backtracker.ui.explainer.view.Offset;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.*;
+import shakeanapple.backtracker.ui.infrasructure.control.diagramold.model.*;
 
 import java.util.*;
 

@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.ui.infrasructure.control.diagram.model;
+package shakeanapple.backtracker.ui.infrasructure.control.diagramold.model;
 
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;

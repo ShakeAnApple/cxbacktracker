@@ -2,7 +2,7 @@ package shakeanapple.backtracker.ui.explainer.model.graph.cell;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Edge;
+import shakeanapple.backtracker.ui.infrasructure.control.diagramold.model.Edge;
 
 public class OutputPin extends Pin {
 

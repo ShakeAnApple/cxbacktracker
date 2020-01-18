@@ -36,7 +36,7 @@ public class CauseNodeUI {
         return new CauseNodeUI(cause, children);
     }
 
-    private String constructConnectionId(String fromBlock, String fromVarName, String toBlock, String  toVarName){
+    public String constructConnectionId(String fromBlock, String fromVarName, String toBlock, String  toVarName){
         return (fromBlock == null || fromBlock.equals("root") ? "" : fromBlock) + fromVarName + (toBlock == null || toBlock.equals("root") ? "" : toBlock) + toVarName;
     }
 
@@ -47,6 +47,20 @@ public class CauseNodeUI {
                     this.constructConnectionId(child.cause.getBlockName(), child.cause.getVarName(), this.cause.getBlockName(), this.cause.getVarName());
             res.add(connId);
             res.addAll(child.inferConnectionsIds());
+        }
+        return res;
+    }
+
+    public Map<String, Map<String, Cause>> inferConnectionCauses() {
+        Map<String, Map<String, Cause>> res = new HashMap<>();
+        for (CauseNodeUI child: this.children) {
+            String connId =
+                    this.constructConnectionId(child.cause.getBlockName(), child.cause.getVarName(), this.cause.getBlockName(), this.cause.getVarName());
+            Map<String, Cause> connectionCauses = new HashMap<>();
+            connectionCauses.put(this.cause.getVarName(), this.cause);
+            connectionCauses.put(child.cause.getVarName(), child.cause);
+            res.put(connId, connectionCauses);
+            res.putAll(child.inferConnectionCauses());
         }
         return res;
     }

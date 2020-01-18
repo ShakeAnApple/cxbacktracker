@@ -1,7 +1,6 @@
 package shakeanapple.backtracker.ui.explainer.model.graph.cell;
 
-import javafx.scene.shape.Rectangle;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Cell;
+import shakeanapple.backtracker.ui.infrasructure.control.diagramold.model.Cell;
 
 import java.util.Map;
 
