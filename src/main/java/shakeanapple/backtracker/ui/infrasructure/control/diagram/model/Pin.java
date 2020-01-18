@@ -4,6 +4,7 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import shakeanapple.backtracker.common.variable.BooleanValueHolder;
 import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.core.diagramexplanation.model.Diagram;
 
@@ -25,7 +26,7 @@ public abstract class Pin {
         this.name = name;
 
         this.causes = FXCollections.observableArrayList(new ArrayList<>());
-        this.valueProperty = new SimpleObjectProperty<>(null);
+        this.valueProperty = new SimpleObjectProperty<>(new BooleanValueHolder(false));
         this.pinClickHandler = pinClickHandler;
     }
 

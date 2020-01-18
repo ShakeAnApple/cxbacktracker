@@ -13,11 +13,11 @@ public class InputPinView extends PinView {
 
         pin.isInvertedProperty().addListener((observable, oldVal, newVal) ->{
             if (newVal){
-                this.getView().getStylesheets().add(DiagramStyles.PIN_INVERTED_STYLE);
+                this.getView().setStyle(this.getView().getStyle().concat(";").concat(DiagramStyles.PIN_INVERTED_STYLE));
             }
         });
 
-        super.getLabel().layoutXProperty().bind(this.getView().layoutXProperty().subtract(50));
+        super.getLabel().layoutXProperty().bind(this.getView().layoutXProperty().subtract(super.getLabel().widthProperty()));
         super.getLabel().layoutYProperty().bind(this.getView().layoutYProperty().add(this.getView().heightProperty().divide(2)));
 
     }

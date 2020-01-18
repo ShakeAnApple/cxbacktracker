@@ -34,8 +34,10 @@ public class OutputInterfaceCellView extends NodeView implements DiagramCellView
         view.setStroke(DiagramStyles.OUTPUT_CELL_STROKE_COLOR);
 
         Label label = new Label(cell.getName());
-        label.layoutXProperty().bind(view.layoutXProperty());
-        label.layoutYProperty().bind(view.layoutYProperty());
+        label.layoutXProperty().bind(view.layoutXProperty().add(2));
+        label.layoutYProperty().bind(view.layoutYProperty()
+                .add(view.heightProperty().divide(2))
+                .subtract(label.heightProperty().divide(2)));
         label.addEventHandler(MouseEvent.ANY, e -> this.view.fireEvent(e));
         view.widthProperty().bind(label.widthProperty().add(4));
 

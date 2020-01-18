@@ -10,7 +10,7 @@ public class OutputPinView extends PinView {
     public OutputPinView(Group parent, OutputPin pin, DiagramCellView owner) {
         super(parent, pin, owner);
 
-        super.getLabel().layoutXProperty().bind(this.getView().layoutXProperty().add(20));
-        super.getLabel().layoutYProperty().bind(this.getView().layoutYProperty().add(this.getView().heightProperty().divide(2)));
+        super.getLabel().layoutXProperty().bind(this.getView().layoutXProperty().add(this.getView().widthProperty()));
+        super.getLabel().layoutYProperty().bind(this.getView().layoutYProperty().add(super.getLabel().heightProperty().divide(2)));
     }
 }

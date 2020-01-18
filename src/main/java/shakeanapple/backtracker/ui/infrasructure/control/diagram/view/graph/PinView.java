@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
+import shakeanapple.backtracker.common.variable.BooleanValueHolder;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Cause;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Pin;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.DiagramStyles;
@@ -37,7 +38,8 @@ public class PinView extends NodeView {
 
         this.view = new Button();
         this.view.setMinSize(DiagramStyles.PIN_SIZE, DiagramStyles.PIN_SIZE);
-        this.view.getStylesheets().add(DiagramStyles.PIN_BACKGROUND_RADIUS_STYLE);
+//        this.view.getStylesheets().add(DiagramStyles.PIN_BACKGROUND_RADIUS_STYLE);
+        this.view.setStyle(DiagramStyles.PIN_BACKGROUND_RADIUS_STYLE);
         this.view.onActionProperty().setValue(
                 actionEvent -> this.pin.getPinClickHandler().apply(this.pin));
         parent.getChildren().add(view);
@@ -54,10 +56,11 @@ public class PinView extends NodeView {
             this.tooltipText.setValue(text);
 
             if (!this.pin.getCausesObservable().isEmpty()){
-                this.view.getStylesheets().add(DiagramStyles.PIN_IS_CAUSE_STYLE);
+                this.view.setStyle(this.view.getStyle().concat(";").concat(DiagramStyles.PIN_IS_CAUSE_STYLE));
             } else{
-                this.view.getStylesheets().remove(DiagramStyles.PIN_IS_CAUSE_STYLE);
+                this.view.setStyle(this.view.getStyle().replace(DiagramStyles.PIN_IS_CAUSE_STYLE, ""));
             }
+            this.view.applyCss();
         });
 
         this.tooltipText = new SimpleObjectProperty<>(this.pin.getName());
@@ -70,14 +73,13 @@ public class PinView extends NodeView {
 
         ///////////// label
         this.label = new Label();
+        this.label.setText(new BooleanValueHolder(false).toString());
         this.getPin().valueProperty().addListener(((observableValue, oldVal, newVal) ->{
             label.setText(newVal.toString());
         }));
-
         this.label.addEventHandler(MouseEvent.ANY, (e) -> this.view.fireEvent(e));
 
-        this.getLabel().layoutXProperty().bind(this.getView().layoutXProperty().subtract(50));
-        this.getLabel().layoutYProperty().bind(this.getView().layoutYProperty().add(this.getView().heightProperty().divide(2)));
+
         parent.getChildren().add(this.label);
 
     }

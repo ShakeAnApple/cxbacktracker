@@ -293,6 +293,8 @@ public class MainControllerNew implements Initializable {
             Graph diagram = GraphHelper.convertToDiagramGraphNew(snapshot, this::diagramPinPressHandler);
             this.diagram.draw(diagram);
             this.recordConnections(diagram.getConnections());
+            this.updateConnections(snapshot.getConnections());
+
         } else {
             this.updateConnections(snapshot.getConnections());
         }
