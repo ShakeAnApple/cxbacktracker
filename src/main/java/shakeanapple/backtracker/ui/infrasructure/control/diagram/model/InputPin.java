@@ -10,7 +10,6 @@ import java.util.function.Function;
 public class InputPin extends Pin {
     private Property<Boolean> isInverted;
 
-
     public InputPin(DiagramCell owner, String name, Function<Pin, Boolean> pinClickHandler) {
         super(owner, name, pinClickHandler);
 
