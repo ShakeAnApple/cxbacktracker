@@ -71,7 +71,7 @@ public class HierarchicalLayout extends Layout {
         prefLevelDistance = Math.max(prefLevelDistance, minLevelsDIstanceX);
 
         // TODO "adjust" feels uncomfortable
-        double curX = prefLevelDistance;
+        double curX = 0;
         for (int i = 0; i <= maxLevel; i++) {
             List<DiagramCellView> levelCells = hierarchyLevels.get(i);
             int c = 0;

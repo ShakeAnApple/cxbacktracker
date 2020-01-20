@@ -51,16 +51,28 @@ public class CauseNodeUI {
         return res;
     }
 
-    public Map<String, Map<String, Cause>> inferConnectionCauses() {
-        Map<String, Map<String, Cause>> res = new HashMap<>();
+    public Map<String, Map<String, List<Cause>>> inferConnectionCauses() {
+        return this.inferConnectionCausesImpl(new HashMap<>());
+    }
+
+    private Map<String, Map<String, List<Cause>>> inferConnectionCausesImpl(Map<String, Map<String, List<Cause>>> res){
         for (CauseNodeUI child: this.children) {
             String connId =
                     this.constructConnectionId(child.cause.getBlockName(), child.cause.getVarName(), this.cause.getBlockName(), this.cause.getVarName());
-            Map<String, Cause> connectionCauses = new HashMap<>();
-            connectionCauses.put(this.cause.getVarName(), this.cause);
-            connectionCauses.put(child.cause.getVarName(), child.cause);
-            res.put(connId, connectionCauses);
-            res.putAll(child.inferConnectionCauses());
+            if (!res.containsKey(connId)){
+                res.put(connId, new HashMap<>());
+            }
+            if (!res.get(connId).containsKey(this.cause.getVarName())){
+                res.get(connId).put(this.cause.getVarName(), new ArrayList<>());
+            }
+            res.get(connId).get(this.cause.getVarName()).add(this.cause);
+
+            if (!res.get(connId).containsKey(child.cause.getVarName())) {
+                res.get(connId).put(child.cause.getVarName(), new ArrayList<>());
+            }
+            res.get(connId).get(child.cause.getVarName()).add(child.cause);
+
+            child.inferConnectionCausesImpl(res);
         }
         return res;
     }

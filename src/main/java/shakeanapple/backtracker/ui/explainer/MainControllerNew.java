@@ -171,11 +171,11 @@ public class MainControllerNew implements Initializable {
         }
         this.stepsList.getSelectionModel().select(this.stepsList.getItems().stream().filter(step -> step.getNumber() == varValueForStep.getStepNum()).findFirst().get());
 
-        this.currentStep = varValueForStep.getStepNum();
+        this.currentStep = varValueForStep.getStepNum() + 1;
         DiagramSnapshot snapshot = this.diagramExecutor.moveTo(varValueForStep.getStepNum());
         this.cache.add(snapshot, varValueForStep.getStepNum());
         this.updateDiagram(snapshot);
-        this.explainCause(varValueForStep.getFullVarName(), varValueForStep.getBlockName(), varValueForStep.getStepNum());
+        this.explainCause(varValueForStep.getFullVarName(), varValueForStep.getBlockName(), this.currentStep);
         return true;
     }
 
@@ -261,19 +261,19 @@ public class MainControllerNew implements Initializable {
         CauseNodeUI causesTree = CauseNodeUI.parse(expRes.getTree().getRoots().get(0));
 
 
-        Map<String, Map<String, Cause>> connectionsCauses = causesTree.inferConnectionCauses();
+        Map<String, Map<String, List<Cause>>> connectionsCauses = causesTree.inferConnectionCauses();
         for (String connId : connectionsCauses.keySet()) {
             if (this.connections.containsKey(connId)) {
                 Connection conn = this.connections.get(connId);
                 conn.isCauseTreeEdge(true);
 
-                Cause causeFrom = connectionsCauses.get(connId).get(conn.getFrom().getName());
-                conn.getFrom().getCausesObservable().add(
-                        new shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Cause(causeFrom.getTimestamp(), causeFrom.getVarName(), causeFrom.getBlockName(), causeFrom.getValue()));
+                List<Cause> causesFrom = connectionsCauses.get(connId).get(conn.getFrom().getName());
+                conn.getFrom().getCausesObservable().addAll(causesFrom.stream().map(c ->
+                        new shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Cause(c.getTimestamp(), c.getVarName(), c.getBlockName(), c.getValue())).collect(Collectors.toList()));
 
-                Cause causeTo = connectionsCauses.get(connId).get(conn.getTo().getName());
-                conn.getTo().getCausesObservable().add(
-                        new shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Cause(causeTo.getTimestamp(), causeTo.getVarName(), causeTo.getBlockName(), causeTo.getValue()));
+                List<Cause> causesTo = connectionsCauses.get(connId).get(conn.getTo().getName());
+                conn.getTo().getCausesObservable().addAll(causesTo.stream().map(c ->
+                        new shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Cause(c.getTimestamp(), c.getVarName(), c.getBlockName(), c.getValue())).collect(Collectors.toList()));
             }
         }
 
