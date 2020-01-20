@@ -68,13 +68,17 @@ public class OutputInterfaceCellView extends NodeView implements DiagramCellView
     }
 
     @Override
-    public void setParents(List<DiagramCellView> parents){
-        this.parents = parents;
+    public List<DiagramCellView> getParents() {
+        return this.parents;
     }
 
     @Override
-    public List<DiagramCellView> getParents() {
-        return this.parents;
+    public double getWidth() {
+        double width = this.view.getBoundsInParent().getWidth();
+        if (this.input != null){
+            width += this.input.getWidth();
+        }
+        return width;
     }
 
 }

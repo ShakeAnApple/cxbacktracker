@@ -38,7 +38,6 @@ public class DiagramControl extends BorderPane {
 //        }
 
         this.canvas.update(graphView);
-
         Layout layout = new HierarchicalLayout(this.canvas);
         layout.execute();
 

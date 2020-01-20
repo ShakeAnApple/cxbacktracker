@@ -98,13 +98,20 @@ public class CellView extends NodeView implements DiagramCellView {
     }
 
     @Override
-    public void setParents(List<DiagramCellView> parents){
-        this.parents = parents;
+    public List<DiagramCellView> getParents() {
+        return this.parents;
     }
 
     @Override
-    public List<DiagramCellView> getParents() {
-        return this.parents;
+    public double getWidth() {
+        double width = this.view.widthProperty().get();
+        if (!this.inputs.isEmpty()){
+            width += this.inputs.get(0).getWidth();
+        }
+        if (!this.outputs.isEmpty()){
+            width += this.outputs.get(0).getWidth();
+        }
+        return width;
     }
 
 }

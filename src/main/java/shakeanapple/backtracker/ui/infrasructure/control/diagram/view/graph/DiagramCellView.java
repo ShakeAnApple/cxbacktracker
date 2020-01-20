@@ -12,5 +12,6 @@ public interface DiagramCellView {
     List<OutputPinView> getOutputs();
 
     List<DiagramCellView> getParents();
-    void setParents(List<DiagramCellView> parents);
+
+    double getWidth();
 }

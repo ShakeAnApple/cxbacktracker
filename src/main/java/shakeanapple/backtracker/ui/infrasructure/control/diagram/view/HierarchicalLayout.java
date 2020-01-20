@@ -4,8 +4,11 @@ import shakeanapple.backtracker.ui.explainer.model.graph.cell.InputVarCell;
 import shakeanapple.backtracker.ui.explainer.model.graph.cell.OutputVarCell;
 import shakeanapple.backtracker.ui.explainer.view.Offset;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.DiagramCell;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.OutputInterfaceCell;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.graph.DiagramCellView;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.graph.InputInterfaceCellView;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.graph.NodeView;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.graph.OutputInterfaceCellView;
 import shakeanapple.backtracker.ui.infrasructure.control.diagramold.model.Cell;
 import shakeanapple.backtracker.ui.infrasructure.control.diagramold.model.Panel;
 
@@ -33,16 +36,14 @@ public class HierarchicalLayout extends Layout {
         List<DiagramCellView> blockCells = new ArrayList<>();
 
         for (DiagramCellView cell : cells) {
-            if (cell instanceof OutputVarCell) {
+            if (cell instanceof OutputInterfaceCellView) {
                 outputCells.add(cell);
-            } else if (cell instanceof InputVarCell) {
+            } else if (cell instanceof InputInterfaceCellView) {
                 inputCells.add(cell);
             } else {
                 blockCells.add(cell);
             }
         }
-
-        double minLevelsDIstanceX = 50;
 
         Map<Integer, List<DiagramCellView>> hierarchyLevels = new HashMap<>();
         hierarchyLevels.put(0, inputCells);
@@ -68,21 +69,23 @@ public class HierarchicalLayout extends Layout {
 
         hierarchyLevels.put(++maxLevel, outputCells);
         double prefLevelDistance = width / maxLevel;
-        prefLevelDistance = Math.max(prefLevelDistance, minLevelsDIstanceX);
+        prefLevelDistance = Math.max(prefLevelDistance, DiagramStyles.DIAGRAM_BLOCK_PADDING);
 
         // TODO "adjust" feels uncomfortable
         double curX = 0;
         for (int i = 0; i <= maxLevel; i++) {
             List<DiagramCellView> levelCells = hierarchyLevels.get(i);
             int c = 0;
+            double cellMaxWidth = 0;
             for (double y = height / (levelCells.size() + 1); y < height && c <levelCells.size(); y += height / (levelCells.size() + 1)) {
                 DiagramCellView cell = levelCells.get(c);
                 cell.getView().relocate(curX, y);
+                cellMaxWidth = Math.max(cellMaxWidth, cell.getWidth());
 //                Offset offset = this.panel.adjustCoords(cell);
 //                cell.relocate(curX + offset.left, y + offset.top);
                 c++;
             }
-            curX += prefLevelDistance;
+            curX += (prefLevelDistance + cellMaxWidth);
         }
     }
 

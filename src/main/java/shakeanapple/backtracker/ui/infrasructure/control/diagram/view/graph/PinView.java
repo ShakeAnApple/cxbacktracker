@@ -108,4 +108,8 @@ public class PinView extends NodeView {
     public DiagramCellView getOwner() {
         return this.owner;
     }
+
+    public double getWidth(){
+        return this.view.getWidth();
+    }
 }
