@@ -14,4 +14,6 @@ public interface DiagramCellView {
     List<DiagramCellView> getParents();
 
     double getWidth();
+
+    String getName();
 }

@@ -26,6 +26,8 @@ public class CellView extends NodeView implements DiagramCellView {
 
     private List<DiagramCellView> parents = new ArrayList<>();
 
+    private String name;
+
     public CellView(Group parent, Cell cell) {
         super(parent);
         this.cell = cell;
@@ -35,6 +37,7 @@ public class CellView extends NodeView implements DiagramCellView {
         view.setFill(DiagramStyles.CELL_COLOR);
         view.setStroke(DiagramStyles.CELL_STROKE_COLOR);
 
+        this.name = cell.getName() + '\n' + cell.getType();
         Label label = new Label(cell.getName() + '\n' + cell.getType());
         label.layoutXProperty().bind(view.layoutXProperty().add(2));
         label.layoutYProperty().bind(view.layoutYProperty()
@@ -112,6 +115,11 @@ public class CellView extends NodeView implements DiagramCellView {
             width += this.outputs.get(0).getWidth();
         }
         return width;
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
     }
 
 }

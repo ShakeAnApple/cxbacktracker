@@ -3,13 +3,14 @@ package shakeanapple.backtracker.ui.infrasructure.control.diagram.view;
 import javafx.scene.paint.Color;
 
 public class DiagramStyles {
-    public static final double CONNECTION_STROKE_WIDTH_DEFAULT = 1.5;
-    public static final double CONNECTION_STROKE_WIDTH_SELECTED = 4;
+
 
     private DiagramStyles(){};
 
     public static final Color CONNECTION_COLOR_DEFAULT = Color.GRAY;
     public static final Color CONNECTION_COLOR_CAUSE = Color.ROYALBLUE;
+    public static final double CONNECTION_STROKE_WIDTH_DEFAULT = 1.5;
+    public static final double CONNECTION_STROKE_WIDTH_SELECTED = 4;
 
     public static final int PIN_SIZE = 26;
     public static final String PIN_INVERTED_STYLE = String.format("-fx-background-radius: %s", "20px");
@@ -27,6 +28,7 @@ public class DiagramStyles {
 
 
     public static final double DIAGRAM_BLOCK_PADDING = 100;
+    public static final double DIAGRAM_ELEMENTS_PADDING = 10;
 
     private static String format(double val) {
         String in = Integer.toHexString((int) Math.round(val * 255));

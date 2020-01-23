@@ -25,6 +25,8 @@ public class OutputInterfaceCellView extends NodeView implements DiagramCellView
 
     private List<DiagramCellView> parents = new ArrayList<>();
 
+    private String name;
+
     public OutputInterfaceCellView(Group parent, OutputInterfaceCell cell) {
         super(parent);
         this.cell = cell;
@@ -32,6 +34,7 @@ public class OutputInterfaceCellView extends NodeView implements DiagramCellView
         this.view = new Rectangle(10, DiagramStyles.PIN_SIZE);
         view.setFill(DiagramStyles.OUTPUT_CELL_COLOR);
         view.setStroke(DiagramStyles.OUTPUT_CELL_STROKE_COLOR);
+        this.name = cell.getName();
 
         Label label = new Label(cell.getName());
         label.layoutXProperty().bind(view.layoutXProperty().add(2));
@@ -79,6 +82,11 @@ public class OutputInterfaceCellView extends NodeView implements DiagramCellView
             width += this.input.getWidth();
         }
         return width;
+    }
+
+    @Override
+    public String getName() {
+        return this.getName();
     }
 
 }

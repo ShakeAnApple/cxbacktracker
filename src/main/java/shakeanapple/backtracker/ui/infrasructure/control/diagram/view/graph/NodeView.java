@@ -16,4 +16,8 @@ public abstract class NodeView {
     public long getViewId() {
         return id;
     }
+
+    public Group getParent() {
+        return this.parent;
+    }
 }

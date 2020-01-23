@@ -2,6 +2,7 @@ package shakeanapple.backtracker.ui.infrasructure.control.diagram.view.graph;
 
 import javafx.scene.Group;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.*;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.layout.ConnectionLayoutManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +14,8 @@ public class GraphView extends Group {
     private List<DiagramCellView> nodes;
     private List<ConnectionView> connections;
 
+    private Graph graph;
+
     private GraphView() {
         this.nodes = new ArrayList<>();
         this.connections = new ArrayList<>();
@@ -20,6 +23,7 @@ public class GraphView extends Group {
 
     public static GraphView from(Graph graph) {
         GraphView graphView = new GraphView();
+        graphView.graph = graph;
 
         Map<Pin, Long> idsForPinViews = new HashMap<>();
         Map<Long, PinView> pinViewsById = new HashMap<>();

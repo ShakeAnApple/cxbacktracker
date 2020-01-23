@@ -1,5 +1,6 @@
 package shakeanapple.backtracker.ui.infrasructure.control.diagram.view.graph;
 
+import javafx.beans.property.DoubleProperty;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -23,6 +24,8 @@ public class InputInterfaceCellView extends NodeView implements DiagramCellView{
 
     private List<DiagramCellView> parents = new ArrayList<>();
 
+    private String name;
+
     public InputInterfaceCellView(Group parent, InputInterfaceCell cell) {
         super(parent);
         this.cell = cell;
@@ -31,6 +34,7 @@ public class InputInterfaceCellView extends NodeView implements DiagramCellView{
         view.setFill(DiagramStyles.INPUT_CELL_COLOR);
         view.setStroke(DiagramStyles.INPUT_CELL_STROKE_COLOR);
 
+        this.name = cell.getName();
         Label label = new Label(cell.getName());
         label.layoutXProperty().bind(view.layoutXProperty().add(2));
         label.layoutYProperty().bind(view.layoutYProperty()
@@ -77,6 +81,11 @@ public class InputInterfaceCellView extends NodeView implements DiagramCellView{
             width += this.output.getWidth();
         }
         return width;
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
     }
 
 }

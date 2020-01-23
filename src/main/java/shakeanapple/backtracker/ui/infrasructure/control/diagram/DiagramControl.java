@@ -1,13 +1,15 @@
 package shakeanapple.backtracker.ui.infrasructure.control.diagram;
 
+import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.layout.BorderPane;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Graph;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.Canvas;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.HierarchicalLayout;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.Layout;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.RandomLayout;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.*;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.graph.ConnectionView;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.graph.GraphView;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.layout.ConnectionLayoutManager;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.layout.HierarchicalLayout;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.layout.Layout;
 
 public class DiagramControl extends BorderPane {
 
@@ -37,9 +39,18 @@ public class DiagramControl extends BorderPane {
 //            this.panel.getGraph().addEdge(conn);
 //        }
 
+
         this.canvas.update(graphView);
         Layout layout = new HierarchicalLayout(this.canvas);
         layout.execute();
+        Platform.runLater(() -> {
+            layout.execute();
+            ConnectionLayoutManager connLayoutManager = new ConnectionLayoutManager(graphView, DiagramStyles.DIAGRAM_ELEMENTS_PADDING);
+            for (ConnectionView cv: graphView.getConnections()){
+                connLayoutManager.draw(cv);
+            }
+        });
+
 
     }
 

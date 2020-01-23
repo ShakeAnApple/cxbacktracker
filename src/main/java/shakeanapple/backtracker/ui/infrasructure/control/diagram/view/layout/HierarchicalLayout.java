@@ -1,16 +1,11 @@
-package shakeanapple.backtracker.ui.infrasructure.control.diagram.view;
+package shakeanapple.backtracker.ui.infrasructure.control.diagram.view.layout;
 
-import shakeanapple.backtracker.ui.explainer.model.graph.cell.InputVarCell;
-import shakeanapple.backtracker.ui.explainer.model.graph.cell.OutputVarCell;
-import shakeanapple.backtracker.ui.explainer.view.Offset;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.DiagramCell;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.OutputInterfaceCell;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.Canvas;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.DiagramStyles;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.graph.DiagramCellView;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.graph.InputInterfaceCellView;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.graph.NodeView;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.graph.OutputInterfaceCellView;
-import shakeanapple.backtracker.ui.infrasructure.control.diagramold.model.Cell;
-import shakeanapple.backtracker.ui.infrasructure.control.diagramold.model.Panel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
