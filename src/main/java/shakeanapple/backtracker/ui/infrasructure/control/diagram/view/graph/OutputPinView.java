@@ -11,6 +11,6 @@ public class OutputPinView extends PinView {
         super(parent, pin, owner);
 
         super.getLabel().layoutXProperty().bind(this.getView().layoutXProperty().add(this.getView().widthProperty()));
-        super.getLabel().layoutYProperty().bind(this.getView().layoutYProperty().add(super.getLabel().heightProperty().divide(2)));
+        super.getLabel().layoutYProperty().bind(this.getView().layoutYProperty().add(this.getView().heightProperty().divide(2)));
     }
 }

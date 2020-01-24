@@ -3,6 +3,7 @@ package shakeanapple.backtracker.ui.explainer.model;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableCell;
 import shakeanapple.backtracker.ui.infrasructure.FunctionTwo;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.DiagramStyles;
 
 import java.util.function.Function;
 
@@ -31,7 +32,7 @@ public class VarValueCell extends TableCell<CxVar, VarValueForStep> {
 
     private void defineStyle(Boolean isCause) {
         if (isCause){
-            this.setStyle("-fx-background-color: red");
+            this.setStyle(DiagramStyles.TABLE_CELL_CAUSE_STYLE);
         } else{
             this.setStyle(null);
         }
