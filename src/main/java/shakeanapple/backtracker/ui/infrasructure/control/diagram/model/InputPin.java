@@ -22,11 +22,13 @@ public class InputPin extends Pin {
 
     @Override
     public void updateValue(ValueHolder value){
-        if (this.isInverted.getValue()){
-            super.valueProperty().setValue(value.invert());
-        } else {
-            super.valueProperty().setValue(value);
-        }
+//        if (this.isInverted.getValue()){
+//            super.valueProperty().setValue(value.invert());
+//        } else {
+//            super.valueProperty().setValue(value);
+//        }
+        super.valueProperty().setValue(value);
+
     }
 
     public Property<Boolean> isInvertedProperty() {

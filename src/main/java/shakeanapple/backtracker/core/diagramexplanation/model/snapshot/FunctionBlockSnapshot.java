@@ -1,10 +1,14 @@
 package shakeanapple.backtracker.core.diagramexplanation.model.snapshot;
 
+import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockBase;
 import shakeanapple.backtracker.core.diagramexplanation.model.Gate;
+import shakeanapple.backtracker.core.diagramexplanation.model.InputGate;
+import shakeanapple.backtracker.core.diagramexplanation.model.OutputGate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class FunctionBlockSnapshot {
@@ -20,10 +24,21 @@ public class FunctionBlockSnapshot {
         this.fbInterface = new FBInterfaceSnapshot(inputs, outputs);
     }
 
+    public FunctionBlockSnapshot(String name, String type, Map<String, ValueHolder> inputs, Map<String, ValueHolder> outputs) {
+        this.name = name;
+        this.type = type;
+
+        this.fbInterface = new FBInterfaceSnapshot(inputs, outputs);
+    }
+
     public static FunctionBlockSnapshot fromFunctionBlock(FunctionBlockBase functionBlock) {
+//        return new FunctionBlockSnapshot(functionBlock.getName(), functionBlock.getType(),
+//                functionBlock.fbInterface().getInputs().values().stream().map(in -> in.input().getName()).collect(Collectors.toList()),
+//                functionBlock.fbInterface().getOutputs().values().stream().map(out -> out.output().getName()).collect(Collectors.toList()));
+
         return new FunctionBlockSnapshot(functionBlock.getName(), functionBlock.getType(),
-                functionBlock.fbInterface().getInputs().values().stream().map(in -> in.input().getName()).collect(Collectors.toList()),
-                functionBlock.fbInterface().getOutputs().values().stream().map(out -> out.output().getName()).collect(Collectors.toList()));
+                functionBlock.fbInterface().getInputs().values().stream().collect(Collectors.toMap(InputGate::getName, InputGate::getValue)),
+                functionBlock.fbInterface().getOutputs().values().stream().collect(Collectors.toMap(OutputGate::getName, OutputGate::getValue)));
     }
 
     public static FunctionBlockSnapshot fromGate(Gate gate) {

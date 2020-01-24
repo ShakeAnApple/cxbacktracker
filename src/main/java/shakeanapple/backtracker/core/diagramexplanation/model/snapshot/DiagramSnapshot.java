@@ -1,5 +1,6 @@
 package shakeanapple.backtracker.core.diagramexplanation.model.snapshot;
 
+import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.core.diagramexplanation.model.InputGate;
 import shakeanapple.backtracker.core.diagramexplanation.model.OutputGate;
 import shakeanapple.backtracker.core.diagramexplanation.model.*;
@@ -24,12 +25,19 @@ public class DiagramSnapshot {
         this.diagramInterface = new FBInterfaceSnapshot(inputs, outputs);
     }
 
+    private DiagramSnapshot(Map<String, ValueHolder> inputs, Map<String, ValueHolder> outputs, List<FunctionBlockSnapshot> blocks, List<ConnectionSnapshot> connections) {
+        this.blocks = blocks;
+        this.connections = connections;
+
+        this.diagramInterface = new FBInterfaceSnapshot(inputs, outputs);
+    }
+
     public static DiagramSnapshot fromDiagram(FunctionBlockComplex diagram) {
 
         Map<String, FunctionBlockSnapshot> blockSnapshots = new HashMap<>();
 
-        List<String> inputs = diagram.fbInterface().getInputs().values().stream().map(in -> in.input().getName()).collect(Collectors.toList());
-        List<String> outputs = diagram.fbInterface().getOutputs().values().stream().map(out -> out.output().getName()).collect(Collectors.toList());
+        Map<String, ValueHolder> inputs = diagram.fbInterface().getInputs().values().stream().collect(Collectors.toMap(InputGate::getName, InputGate::getValue));
+        Map<String, ValueHolder> outputs = diagram.fbInterface().getOutputs().values().stream().collect(Collectors.toMap(OutputGate::getName, OutputGate::getValue));
 
         for (DiagramElement fblock : diagram.getInternalDiagram().getFunctionBlocks()) {
             blockSnapshots.put(fblock.getName(), FunctionBlockSnapshot.fromFunctionBlock((FunctionBlockBase) fblock));
