@@ -28,7 +28,7 @@ public class FunctionBlockComplex extends FunctionBlockBase {
     private void releaseUnconnectedBlocks() {
         for (FunctionBlockBase fb: this.internalDiagram.getFunctionBlocks()){
             if (fb.fbInterface().getInputs().values().stream().noneMatch(i -> i.getIncomingConnection() != null)){
-                System.out.println(fb.getName() + ": no connected inputs, executed");
+                //System.out.println(fb.getName() + ": no connected inputs, executed");
                 fb.execute();
             }
         }
@@ -39,7 +39,7 @@ public class FunctionBlockComplex extends FunctionBlockBase {
             DelayFunctionBlockBasic delayFb = (DelayFunctionBlockBasic) fb;
             if (fb.fbInterface().getInputs().values().stream().anyMatch(i -> i.getIncomingConnection() != null) &&
                     !this.fbInterface().getInputs().containsKey(delayFb.fbInterface().getInputs().get(delayFb.getInput().getName()).getName())) {
-                System.out.println(fb.getName() + ": delay, executed");
+               // System.out.println(fb.getName() + ": delay, executed");
                 fb.execute();
             }
         });
@@ -56,7 +56,7 @@ public class FunctionBlockComplex extends FunctionBlockBase {
 
     @Override
     protected ExplanationItem explainImpl(OutputGate output, Integer timestamp) {
-        System.out.println(String.format("Upper Block: %s, Gate: %s, Timestamp: %s", this.getName(), output.getName(), timestamp));
+       // System.out.println(String.format("Upper Block: %s, Gate: %s, Timestamp: %s", this.getName(), output.getName(), timestamp));
         OutputGate gateToExplain = (OutputGate) output.getIncomingConnection().fromGate();
 
         CausePathTree causesTree = new CausePathTree();
@@ -77,22 +77,22 @@ public class FunctionBlockComplex extends FunctionBlockBase {
             if (this.fbInterface().getInputs().get(causeNode.getGate().getName()) != null &&
                     this.fbInterface().getInputs().get(causeNode.getGate().getName()).equals(causeNode.getGate())
             ) {
-                System.out.println(String.format("InternalD: cause '%s' added to result", causeNode.getGate().getName()));
+              //  System.out.println(String.format("InternalD: cause '%s' added to result", causeNode.getGate().getName()));
                 //CauseNode childNode = new CauseNode(causeNode.getGate(), causeNode.getValue(), causeNode.getTimestamp());
                 CauseNode childNode = causeNode;
 //                causeNode.addChildNode(childNode);
                 outputCauseNodes.add(childNode);
             } else if (causeNode.getGate().getIncomingConnection() != null) {
-                System.out.println(String.format("InternalD: cause '%s' will be processed", causeNode.getGate().getName()));
+            //    System.out.println(String.format("InternalD: cause '%s' will be processed", causeNode.getGate().getName()));
                 ExplanationItem childItem = this.explain((OutputGate) causeNode.getGate(), causeNode.getTimestamp());
                 outputCauseNodes.addAll(childItem.getFreshNodes());
                 causeNode.addChildren(childItem.getFreshNodes());
-                System.out.println(String.format("InternalD: cause '%s' processed", causeNode.getGate().getName()));
+            //    System.out.println(String.format("InternalD: cause '%s' processed", causeNode.getGate().getName()));
             }
         }
 
 //        internalDiagramChildNode.addChildren(outputCauseNodes);
-        System.out.println(String.format("Upper Block Processed: %s, Gate: %s, Timestamp: %s", this.getName(), output.getName(), timestamp));
+     //   System.out.println(String.format("Upper Block Processed: %s, Gate: %s, Timestamp: %s", this.getName(), output.getName(), timestamp));
 //        return new ArrayList<>(outputCauseNodes);
         return result;
     }

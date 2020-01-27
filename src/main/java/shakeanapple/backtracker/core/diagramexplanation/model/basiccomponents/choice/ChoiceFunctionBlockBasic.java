@@ -41,10 +41,10 @@ public class ChoiceFunctionBlockBasic extends FunctionBlockBasic {
         for (Choice choice : this.choices) {
             if (((BooleanValueHolder) choice.getCondition().getValue()).getValue()) {
                 this.executedChoices.put(Clocks.instance().currentTime(), choice.clone());
-                System.out.println("Executed choices:");
-                this.executedChoices.entrySet().stream().forEach((kv) -> {
-                    System.out.println("Step: " + kv.getKey() + " Choice: " + kv.getValue().toString());
-                });
+//                System.out.println("Executed choices:");
+//                this.executedChoices.entrySet().stream().forEach((kv) -> {
+//                    System.out.println("Step: " + kv.getKey() + " Choice: " + kv.getValue().toString());
+//                });
                 super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(choice.getOutput().getValue());
                 break;
             }
@@ -53,10 +53,10 @@ public class ChoiceFunctionBlockBasic extends FunctionBlockBasic {
 
     @Override
     protected List<CauseNode> explainBasicImpl(OutputGate output, Integer timestamp) {
-        System.out.println("Executed choices:");
-        this.executedChoices.entrySet().stream().forEach((kv) -> {
-            System.out.println("Step: " + kv.getKey() + " Choice: " + kv.getValue().toString());
-        });
+//        System.out.println("Executed choices:");
+//        this.executedChoices.entrySet().stream().forEach((kv) -> {
+//            System.out.println("Step: " + kv.getKey() + " Choice: " + kv.getValue().toString());
+//        });
         Choice executedChoice = this.executedChoices.get(timestamp);
         List<CauseNode> causeNodes = this.choices.stream()
                 .takeWhile(ch -> ch.getOrder() <= executedChoice.getOrder())

@@ -61,8 +61,8 @@ public class MouseGestures {
         node.relocate(offsetX, offsetY);
 
 
-        System.out.println("Offset: " + offsetX + "; " + offsetY + " coords: " + node.getLayoutX() + "; " + node.getLayoutY());
-
+//        System.out.println("Offset: " + offsetX + "; " + offsetY + " coords: " + node.getLayoutX() + "; " + node.getLayoutY());
+//
 
 //            System.out.println("offset (" + offsetX + "," + offsetY + ")");
 //            System.out.println("click on screen coords (" + event.getScreenX() + "," + event.getScreenY() + ")");

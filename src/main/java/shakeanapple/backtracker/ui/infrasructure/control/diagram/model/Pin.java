@@ -21,12 +21,12 @@ public abstract class Pin {
 
     private Function<Pin, Boolean> pinClickHandler;
 
-    public Pin(DiagramCell owner, String name, Function<Pin, Boolean> pinClickHandler) {
+    public Pin(DiagramCell owner, String name, Function<Pin, Boolean> pinClickHandler, ValueHolder initialValue) {
         this.owner = owner;
         this.name = name;
 
         this.causes = FXCollections.observableArrayList(new ArrayList<>());
-        this.valueProperty = new SimpleObjectProperty<>(new BooleanValueHolder(false));
+        this.valueProperty = new SimpleObjectProperty<>(initialValue);
         this.pinClickHandler = pinClickHandler;
     }
 

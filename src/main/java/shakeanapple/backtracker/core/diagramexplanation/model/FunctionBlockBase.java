@@ -37,7 +37,7 @@ public abstract class FunctionBlockBase extends DiagramElement implements Interf
 
     @Override
     public void onInterfaceUpdated() {
-        System.out.println(this.getName() + ": interface updated");
+        // System.out.println(this.getName() + ": interface updated");
         this.execute();
     }
 

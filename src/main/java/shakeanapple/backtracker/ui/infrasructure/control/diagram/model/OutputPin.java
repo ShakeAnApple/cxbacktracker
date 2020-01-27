@@ -5,8 +5,8 @@ import shakeanapple.backtracker.common.variable.ValueHolder;
 import java.util.function.Function;
 
 public class OutputPin extends Pin {
-    public OutputPin(DiagramCell owner, String name, Function<Pin, Boolean> pinClickHandler) {
-        super(owner, name, pinClickHandler);
+    public OutputPin(DiagramCell owner, String name, Function<Pin, Boolean> pinClickHandler, ValueHolder initialValue) {
+        super(owner, name, pinClickHandler, initialValue);
     }
 
     @Override

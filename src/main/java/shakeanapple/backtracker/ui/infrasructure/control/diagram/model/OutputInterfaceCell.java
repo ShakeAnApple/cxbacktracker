@@ -1,5 +1,7 @@
 package shakeanapple.backtracker.ui.infrasructure.control.diagram.model;
 
+import shakeanapple.backtracker.common.variable.ValueHolder;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -9,9 +11,9 @@ public class OutputInterfaceCell implements DiagramCell {
 
     private InputPin inputPin;
 
-    public OutputInterfaceCell(String name, Function<Pin, Boolean> pinClickHandler) {
+    public OutputInterfaceCell(String name, Function<Pin, Boolean> pinClickHandler, ValueHolder initialValue) {
         this.name = name;
-        this.inputPin = new InputPin(this, name, pinClickHandler);
+        this.inputPin = new InputPin(this, name, pinClickHandler, initialValue);
     }
 
     public String getName() {

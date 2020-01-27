@@ -43,6 +43,8 @@ import shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.graph.Vi
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -365,7 +367,9 @@ public class MainControllerNew implements Initializable {
 
     private File chooseFile(ActionEvent event, List<FileChooser.ExtensionFilter> extensionFilters) {
         FileChooser chooser = new FileChooser();
-        chooser.getExtensionFilters().addAll(extensionFilters);
+        if (extensionFilters != null) {
+            chooser.getExtensionFilters().addAll(extensionFilters);
+        }
         chooser.setInitialDirectory(this.initialDirectory);
         chooser.setTitle("Open File");
         return chooser.showOpenDialog(((MenuItem) event.getSource()).getParentPopup().getScene().getWindow());
@@ -390,8 +394,8 @@ public class MainControllerNew implements Initializable {
 
     public void handleOpenCounterexampleMenuItemClick(ActionEvent actionEvent) {
 
-        List<FileChooser.ExtensionFilter> filters = Collections.singletonList(new FileChooser.ExtensionFilter("Plain text", "*.*"));
-        File file = this.chooseFile(actionEvent, filters);
+        //List<FileChooser.ExtensionFilter> filters = Collections.singletonList(new FileChooser.ExtensionFilter("Plain text", "*.*"));
+        File file = this.chooseFile(actionEvent, null);
         if (file != null) {
             if (this.cxPathCustom != null) {
                 this.clearMainView();
@@ -405,22 +409,41 @@ public class MainControllerNew implements Initializable {
         }
     }
 
-    public void handleInputFormulaMenuItemClick(ActionEvent actionEvent) {
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Input formula");
-        dialog.setContentText("Input ltl formula:");
-        Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
-        stage.setMinWidth(500);
-        dialog.setResizable(true);
-        dialog.getDialogPane().setGraphic(null);
-        dialog.getDialogPane().setHeaderText("");
+    // TODO for future
+//    public void handleInputFormulaMenuItemClick(ActionEvent actionEvent) {
+//        TextInputDialog dialog = new TextInputDialog();
+//        dialog.setTitle("Input formula");
+//        dialog.setContentText("Input ltl formula:");
+//        Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+//        stage.setMinWidth(500);
+//        dialog.setResizable(true);
+//        dialog.getDialogPane().setGraphic(null);
+//        dialog.getDialogPane().setHeaderText("");
+//
+//        Optional<String> result = dialog.showAndWait();
+//        if (result.isPresent()) {
+//            if (this.formulaCustom != null) {
+//                this.clearMainView();
+//            }
+//            this.formulaCustom = result.get();
+//            if (this.diagramPathCustom != null && this.cxPathCustom != null) {
+//                this.isReadOnly.setValue(false);
+//                this.customInit();
+//            }
+//        }
+//    }
 
-        Optional<String> result = dialog.showAndWait();
-        if (result.isPresent()) {
+    public void handleInputFormulaMenuItemClick(ActionEvent actionEvent) throws IOException {
+        File file = this.chooseFile(actionEvent, null);
+        if (file != null) {
             if (this.formulaCustom != null) {
                 this.clearMainView();
             }
-            this.formulaCustom = result.get();
+            this.initialDirectory = file.getParentFile();
+            this.formulaCustom = Files.readAllLines(Path.of(file.getAbsolutePath())).stream()
+                    .map(String::trim)
+                    .filter(str -> !str.isBlank() && !str.isEmpty() )
+                    .findFirst().orElse("");
             if (this.diagramPathCustom != null && this.cxPathCustom != null) {
                 this.isReadOnly.setValue(false);
                 this.customInit();

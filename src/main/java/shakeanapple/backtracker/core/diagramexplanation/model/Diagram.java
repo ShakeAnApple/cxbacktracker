@@ -52,18 +52,18 @@ public class Diagram {
         ExplanationItem result = new ExplanationItem(item.getTree(), outputCauseNodes);
         for (CauseNode causeNode : causeNodes) {
             if (this.inputs.containsKey(causeNode.getGate().output().getId())) {
-                System.out.println(String.format("InternalD: cause '%s' added to result", causeNode.getGate().getIncomingConnection().fromGate().getName()));
+                // System.out.println(String.format("InternalD: cause '%s' added to result", causeNode.getGate().getIncomingConnection().fromGate().getName()));
                 Gate childGate = causeNode.getGate().getIncomingConnection().fromGate();
                 CauseNode childNode = new CauseNode(childGate, childGate.getOwner().history().getVariableValueForStep(childGate.getName(), causeNode.getTimestamp()), causeNode.getTimestamp());
 //                CauseNode childNode = new CauseNode(causeNode.getGate(), causeNode.getValue(), causeNode.getTimestamp());
                 outputCauseNodes.add(childNode);
                 causeNode.addChildNode(childNode);
             } else if (causeNode.getGate().getIncomingConnection() != null) {
-                System.out.println(String.format("InternalD: cause '%s' will be processed", causeNode.getGate().getName()));
+                // System.out.println(String.format("InternalD: cause '%s' will be processed", causeNode.getGate().getName()));
                 ExplanationItem childItem = this.explain((OutputGate) causeNode.getGate().getIncomingConnection().fromGate(), causeNode.getTimestamp());
                 causeNode.addChildren(childItem.getTree().getRoots());
                 outputCauseNodes.addAll(childItem.getFreshNodes());
-                System.out.println(String.format("InternalD: cause '%s' processed", causeNode.getGate().getName()));
+                // System.out.println(String.format("InternalD: cause '%s' processed", causeNode.getGate().getName()));
             }
         }
 

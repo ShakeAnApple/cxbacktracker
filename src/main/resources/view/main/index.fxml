@@ -33,7 +33,7 @@
                 <items>
                     <MenuItem text="Open model" onAction="#handleOpenModelMenuItemClick"/>
                     <MenuItem text="Open counterexample" onAction="#handleOpenCounterexampleMenuItemClick"/>
-                    <MenuItem text="Input formula" onAction="#handleInputFormulaMenuItemClick"/>
+                    <MenuItem text="Open LTL formula" onAction="#handleInputFormulaMenuItemClick"/>
                     <SeparatorMenuItem/>
                     <MenuItem text="Exit" onAction="#handleExitMenuItemClick"/>
                 </items>

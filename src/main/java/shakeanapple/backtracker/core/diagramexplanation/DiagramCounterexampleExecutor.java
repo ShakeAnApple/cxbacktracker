@@ -69,13 +69,13 @@ public class DiagramCounterexampleExecutor implements DiagramSequentialEvaluator
 
         for (DiagramElement de : this.diagram.getInternalDiagram().getFunctionBlocks()) {
             FunctionBlockBase fb = (FunctionBlockBase) de;
-            System.out.println("Block: " + fb.getName() + " ouput records: " + fb.history().outputRecordsCount());
+            // System.out.println("Block: " + fb.getName() + " ouput records: " + fb.history().outputRecordsCount());
             for (OutputGate outGate : fb.fbInterface().getOutputs().values()) {
                 String varName = fb.getName() + "." + outGate.getName();
                 ValueHolder cxValue = this.cursor.getCurState().getVarByName(varName).getValue();
                 ValueHolder calculatedValue = outGate.getValue();
                 if (!cxValue.equals(calculatedValue)) {
-                    System.out.println(String.format("%s has value %s in cx and %s after evaluation", varName, cxValue, calculatedValue));
+              //      System.out.println(String.format("%s has value %s in cx and %s after evaluation", varName, cxValue, calculatedValue));
                 }
             }
         }

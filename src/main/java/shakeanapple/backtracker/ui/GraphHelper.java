@@ -1,6 +1,7 @@
 package shakeanapple.backtracker.ui;
 
 import javafx.scene.paint.Color;
+import shakeanapple.backtracker.common.variable.IntegerValueHolder;
 import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.common.variable.BooleanValueHolder;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.ConnectionSnapshot;
@@ -127,13 +128,14 @@ public class GraphHelper {
 //        }
 
         for (FunctionBlockSnapshot fblock : diagram.getBlocks()) {
-            long id = r.nextLong();
             if (diagram.getDiagramInterface().getInputs().contains(fblock.getName())){
-                nodes.put(fblock.getName(), new InputInterfaceCell(fblock.getName(), pinPressHandler));
+                ValueHolder input = diagram.getDiagramInterface().getInputsValues().get(fblock.getName());
+                nodes.put(fblock.getName(), new InputInterfaceCell(fblock.getName(), pinPressHandler, input instanceof BooleanValueHolder ? new BooleanValueHolder(false) : new IntegerValueHolder(Integer.MIN_VALUE)));
             } else if (diagram.getDiagramInterface().getOutputs().contains(fblock.getName())){
-                nodes.put(fblock.getName(), new OutputInterfaceCell(fblock.getName(), pinPressHandler));
+                ValueHolder output = diagram.getDiagramInterface().getOutputsValues().get(fblock.getName());
+                nodes.put(fblock.getName(), new OutputInterfaceCell(fblock.getName(), pinPressHandler, output instanceof BooleanValueHolder ? new BooleanValueHolder(false) : new IntegerValueHolder(Integer.MIN_VALUE)));
             } else{
-                nodes.put(fblock.getName(), new Cell(fblock.getName(), fblock.getType(), fblock.getFbInterface().getInputs(), fblock.getFbInterface().getOutputs(), pinPressHandler));
+                nodes.put(fblock.getName(), new Cell(fblock.getName(), fblock.getType(), fblock.getFbInterface().getInputsValues(), fblock.getFbInterface().getOutputsValues(), pinPressHandler));
             }
         }
 

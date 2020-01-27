@@ -23,7 +23,7 @@ public class DiagramBackwardExplainer implements DiagramOutputExplainer {
         }
         InputGate inputGate = this.diagram.fbInterface().getInputs().get(gateName);
         if (inputGate != null) {
-            return new ExplanationItem(new CausePathTree(), new ArrayList<>());
+            return new ExplanationItem(new CausePathTree(Collections.singletonList(new CauseNode(inputGate, this.diagram.history().getVariableValueForStep(inputGate.getName(), timestamp), timestamp))), new ArrayList<>());
         }
 
         return this.explainInternalBlock(gateName, blockName, timestamp);
@@ -71,6 +71,9 @@ public class DiagramBackwardExplainer implements DiagramOutputExplainer {
 
                 } else {
                     //const
+                    if (!this.diagram.fbInterface().getInputs().containsKey(in.getName())){
+                        return new ExplanationItem(new CausePathTree(Collections.singletonList(new CauseNode(in, fbToExplain.history().getVariableValueForStep(in.getName(), timestamp), timestamp))), new ArrayList<>());
+                    }
                     return new ExplanationItem(new CausePathTree(Collections.singletonList(new CauseNode(in, this.diagram.history().getVariableValueForStep(in.getName(), timestamp), timestamp))), new ArrayList<>());
                 }
             }
@@ -92,16 +95,16 @@ public class DiagramBackwardExplainer implements DiagramOutputExplainer {
             if (this.diagram.fbInterface().getInputs().get(causeNode.getGate().getName()) != null &&
                     this.diagram.fbInterface().getInputs().get(causeNode.getGate().getName()).equals(causeNode.getGate())
             ) {
-                System.out.println(String.format("InternalD: cause '%s' added to result", causeNode.getGate().getName()));
+                // System.out.println(String.format("InternalD: cause '%s' added to result", causeNode.getGate().getName()));
                 CauseNode childNode = causeNode;
                 outputCauseNodes.add(childNode);
             } else if (causeNode.getGate().getIncomingConnection() != null) {
-                System.out.println(String.format("InternalD: cause '%s' will be processed", causeNode.getGate().getName()));
+                // System.out.println(String.format("InternalD: cause '%s' will be processed", causeNode.getGate().getName()));
                 ExplanationItem childItem = this.explainInternalBlock(causeNode.getGate().getName(), causeNode.getGate().getOwner().getName(), causeNode.getTimestamp());
                 outputCauseNodes.addAll(childItem.getFreshNodes());
 //                causeNode.addChildren(childItem.getFreshNodes());
                 causeNode.addChildren(childItem.getTree().getRoots());
-                System.out.println(String.format("InternalD: cause '%s' processed", causeNode.getGate().getName()));
+                // System.out.println(String.format("InternalD: cause '%s' processed", causeNode.getGate().getName()));
             }
         }
 
