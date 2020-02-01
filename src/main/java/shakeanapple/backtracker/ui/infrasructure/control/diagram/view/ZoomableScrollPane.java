@@ -1,5 +1,7 @@
 package shakeanapple.backtracker.ui.infrasructure.control.diagram.view;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -13,6 +15,8 @@ public class ZoomableScrollPane extends ScrollPane {
     Node content;
     double scaleValue = 1.0;
     double delta = 0.1;
+
+    private DoubleProperty zoom = new SimpleDoubleProperty(1.0);
 
     public ZoomableScrollPane() {
 //        this.content = content;
@@ -34,11 +38,16 @@ public class ZoomableScrollPane extends ScrollPane {
         setContent(content);
 
     }
-    public void addTransformContent(Node content){
-        scaleTransform = new Scale(scaleValue, scaleValue, 0, 0);
-        content.getTransforms().add(scaleTransform);
 
-        content.setOnScroll(new ZoomHandler());
+
+    public void addTransformContent(Node content){
+//        scaleTransform = new Scale(scaleValue, scaleValue, 0, 0);
+//        content.getTransforms().add(scaleTransform);
+
+        content.scaleXProperty().bind(zoom);
+        content.scaleYProperty().bind(zoom);
+
+       // content.setOnScroll(new ZoomHandler());
     }
 
     public double getScaleValue() {
@@ -72,18 +81,22 @@ public class ZoomableScrollPane extends ScrollPane {
             scaleValue = 0.1;
         }
 
-        zoomTo(scaleValue);
+        //zoomTo(scaleValue);
+        zoom.setValue(scaleValue);
+
     }
 
     public void zoomIn() {
 
         scaleValue += delta;
 
-        if (Double.compare(scaleValue, 10) > 0) {
+        if (Double.compare(scaleValue, 5) > 0) {
             scaleValue = 10;
         }
 
-        zoomTo(scaleValue);
+        //zoomTo(scaleValue);
+        zoom.setValue(scaleValue);
+
 
     }
 
@@ -129,14 +142,17 @@ public class ZoomableScrollPane extends ScrollPane {
             {
 
                 if (scrollEvent.getDeltaY() < 0) {
-                    scaleValue -= delta;
+                    //scaleValue -= delta;
+                    zoom.setValue(zoom.getValue() - delta);
                 } else {
-                    scaleValue += delta;
+                    zoom.setValue(zoom.getValue() + delta);
+
+//                    scaleValue += delta;
                 }
 
-                zoomTo(scaleValue);
+//                zoomTo(scaleValue);
 
-                scrollEvent.consume();
+//                scrollEvent.consume();
             }
         }
     }
