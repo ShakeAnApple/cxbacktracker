@@ -4,7 +4,7 @@
     <title>Network | Basic usage</title>
 
     <script type="text/javascript" src="graphLibraries/vis.min.js"></script>
-    <link href="graphLibraries/vis-network.min.css" rel="stylesheet" type="text/css" />
+    <link href="graphLibraries/vis-network.min.css" rel="stylesheet" type="text/css"/>
 
     <style type="text/css">
         #mynetwork {
@@ -12,6 +12,7 @@
             height: 97vh;
             border: 1px solid lightgray;
         }
+
     </style>
 </head>
 <body>
@@ -54,9 +55,12 @@
         }
     },
     zoom: {
-        scale: 0.5
+        scale: 0.1
     },
-    interaction: {dragNodes :false},
+    interaction: {
+        dragNodes: false,
+        zoomView: true
+    },
     physics: {
         enabled: false
     },
@@ -69,6 +73,7 @@
         network.setData({nodes:nodes, edges:edges});
         //network.setOptions({layout:{hierarchical:{sortMethod:'directed'}}});
     }
+
 </script>
 
 

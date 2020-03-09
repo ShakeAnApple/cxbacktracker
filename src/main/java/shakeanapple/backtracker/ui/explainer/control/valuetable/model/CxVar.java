@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.ui.explainer.model;
+package shakeanapple.backtracker.ui.explainer.control.valuetable.model;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;

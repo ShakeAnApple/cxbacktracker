@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.ui.explainer.model;
+package shakeanapple.backtracker.ui.explainer.control.diagramexplainer.model;
 
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
 

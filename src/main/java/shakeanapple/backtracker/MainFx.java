@@ -25,6 +25,7 @@ public class MainFx  extends Application {
 //
 //        Parent root = FXMLLoader.load(url);
         URL res = getClass().getClassLoader().getResource("view/main/index.fxml");
+//        URL res = getClass().getClassLoader().getResource("view/main/index.fxml");
         Parent root = FXMLLoader.load(res);
         stage.setScene(new Scene(root));
         stage.show();

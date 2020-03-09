@@ -2,12 +2,12 @@ package shakeanapple.backtracker.ui.basiccomponentsconstructor;
 
 import javafx.scene.control.Button;
 import javafx.scene.shape.Rectangle;
-import shakeanapple.backtracker.ui.infrasructure.control.diagramold.model.Cell;
 import shakeanapple.backtracker.ui.infrasructure.FunctionTwo;
 
 import java.util.Arrays;
 
-public class ComponentVarCell extends Cell {
+@Deprecated
+public class ComponentVarCell  {
     private String name;
 
     private FunctionTwo<Button, Long, Boolean> pinPressHandler;
@@ -17,7 +17,7 @@ public class ComponentVarCell extends Cell {
     private Button pin;
 
     public ComponentVarCell(long id, String name, FunctionTwo<Button, Long, Boolean> pinPressHandler) {
-        super(id);
+//        super(id);
         this.name = name;
         this.pinPressHandler = pinPressHandler;
         Rectangle view = new Rectangle(10, 10);
@@ -26,7 +26,7 @@ public class ComponentVarCell extends Cell {
         this.pin.layoutXProperty().bind(view.xProperty().add(10));
         this.pin.layoutYProperty().bind(view.yProperty());
 
-        setView(view, Arrays.asList(this.pin));
+//        setView(view, Arrays.asList(this.pin));
     }
 
     private Button createPin(long id, String name) {

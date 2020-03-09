@@ -7,14 +7,14 @@ import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import shakeanapple.backtracker.ui.basiccomponentsconstructor.model.*;
-import shakeanapple.backtracker.ui.infrasructure.control.diagramold.model.Cell;
 import shakeanapple.backtracker.ui.infrasructure.FunctionTwo;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class ChoiceComponentCell extends Cell {
+@Deprecated
+public class ChoiceComponentCell  {
     private String name;
 
     private ChoiceComponent component;
@@ -26,7 +26,7 @@ public class ChoiceComponentCell extends Cell {
     private static final double RECT_WIDTH = 70;
 
     public ChoiceComponentCell(long id, ChoiceComponent component, FunctionTwo<Button, Long, Boolean> pinPressHandler, Function<Long, Boolean> isInvertedCheckboxPressHandler) {
-        super(id);
+//        super(id);
         this.name = component.getType().name();
         this.component = component;
         this.pinPressHandler = pinPressHandler;
@@ -56,7 +56,7 @@ public class ChoiceComponentCell extends Cell {
         nodes.addAll(inputInvertedCheckBoxes);
         nodes.add(outputPin);
         nodes.add(label);
-        setView(view, nodes);
+//        setView(view, nodes);
     }
 
     private List<CheckBox> createInputInvertedCheckBoxes(List<Choice> choices) {

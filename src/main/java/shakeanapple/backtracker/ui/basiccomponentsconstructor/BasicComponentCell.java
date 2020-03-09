@@ -9,7 +9,6 @@ import javafx.scene.shape.Rectangle;
 import shakeanapple.backtracker.ui.basiccomponentsconstructor.model.BasicComponent;
 import shakeanapple.backtracker.ui.basiccomponentsconstructor.model.InputVariable;
 import shakeanapple.backtracker.ui.basiccomponentsconstructor.model.OutputVariable;
-import shakeanapple.backtracker.ui.infrasructure.control.diagramold.model.Cell;
 import shakeanapple.backtracker.ui.infrasructure.FunctionTwo;
 //import shakeanapple.backtracker.ui.infrasructure.Function;
 
@@ -17,7 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class BasicComponentCell extends Cell {
+@Deprecated
+public class BasicComponentCell  {
     private String name;
 
     private FunctionTwo<Button, Long, Boolean> pinPressHandler;
@@ -27,7 +27,7 @@ public class BasicComponentCell extends Cell {
     private static final double RECT_WIDTH = 70;
 
     public BasicComponentCell(long id, BasicComponent component, FunctionTwo<Button, Long, Boolean> pinPressHandler, Function<Long, Boolean> isInvertedCheckboxPressHandler) {
-        super(id);
+//        super(id);
         this.name = component.getType().name();
         this.pinPressHandler = pinPressHandler;
         this.isInvertedCheckboxPressHandler = isInvertedCheckboxPressHandler;
@@ -55,7 +55,7 @@ public class BasicComponentCell extends Cell {
         nodes.addAll(inputInvertedCheckBoxes);
         nodes.addAll(outputPins);
         nodes.add(label);
-        setView(view, nodes);
+//        setView(view, nodes);
     }
 
     private List<CheckBox> createInputInvertedCheckBoxes(List<InputVariable> inputs) {

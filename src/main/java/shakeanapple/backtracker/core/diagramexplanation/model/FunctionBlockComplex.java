@@ -8,7 +8,6 @@ import shakeanapple.backtracker.core.diagramexplanation.model.causetree.Explanat
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.Parser;
-import shakeanapple.backtracker.ui.explainer.model.Cause;
 
 import java.io.IOException;
 import java.util.*;

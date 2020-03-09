@@ -1,8 +1,5 @@
 package shakeanapple.backtracker.core.diagramexplanation.model.causetree;
 
-import shakeanapple.backtracker.ui.explainer.model.Cause;
-
-import javax.swing.*;
 import java.util.*;
 import java.util.function.Function;
 

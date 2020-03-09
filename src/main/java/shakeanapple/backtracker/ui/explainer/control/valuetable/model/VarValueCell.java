@@ -1,8 +1,6 @@
-package shakeanapple.backtracker.ui.explainer.model;
+package shakeanapple.backtracker.ui.explainer.control.valuetable.model;
 
-import javafx.collections.ObservableList;
 import javafx.scene.control.TableCell;
-import shakeanapple.backtracker.ui.infrasructure.FunctionTwo;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.DiagramStyles;
 
 import java.util.function.Function;

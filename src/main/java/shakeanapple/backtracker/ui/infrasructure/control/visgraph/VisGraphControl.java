@@ -3,12 +3,14 @@ package shakeanapple.backtracker.ui.infrasructure.control.visgraph;
 import javafx.beans.NamedArg;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.graph.VisGraph;
 
-public class VisGraphControl extends Region {
+public class VisGraphControl extends VBox {
     private final WebView browser = new WebView();
     private final WebEngine webEngine = browser.getEngine();
 
@@ -24,7 +26,7 @@ public class VisGraphControl extends Region {
         super.getStyleClass().add("browser");
 
         // load the web page
-        this.webEngine.load((getClass().getClassLoader().getResource(resource)).toString());
+        this.webEngine.load((getClass().getClassLoader().getResource(this.resource)).toString());
 
         //add the web view to the scene
         super.getChildren().add(browser);

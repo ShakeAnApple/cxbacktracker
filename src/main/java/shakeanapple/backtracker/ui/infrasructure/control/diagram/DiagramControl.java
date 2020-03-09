@@ -26,8 +26,8 @@ public class DiagramControl extends BorderPane {
         this.canvas = new Canvas(new Group());
         super.setCenter(this.canvas.getScrollPane());
         FlowPane zoomPane = new FlowPane();
-        Button zoomInButton =new Button("+");
-        Button zoomOutButton =new Button("-");
+        Button zoomInButton = new Button("+");
+        Button zoomOutButton = new Button("-");
         zoomPane.getChildren().add(zoomInButton);
         zoomPane.getChildren().add(zoomOutButton);
         super.setTop(zoomPane);
@@ -68,7 +68,7 @@ public class DiagramControl extends BorderPane {
         Platform.runLater(() -> {
             layout.execute();
             ConnectionLayoutManager connLayoutManager = new ConnectionLayoutManager(graphView, DiagramStyles.DIAGRAM_ELEMENTS_PADDING);
-            for (ConnectionView cv: graphView.getConnections()){
+            for (ConnectionView cv : graphView.getConnections()) {
                 connLayoutManager.draw(cv);
             }
         });

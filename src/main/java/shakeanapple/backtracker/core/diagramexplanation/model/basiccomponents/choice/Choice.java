@@ -7,7 +7,6 @@ import shakeanapple.backtracker.common.variable.dynamic.BooleanDynamicVariable;
 import shakeanapple.backtracker.common.variable.dynamic.IntegerDynamicVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
-import shakeanapple.backtracker.ui.explainer.model.graph.cell.InputVarCell;
 
 public class Choice<TVal extends ValueHolder> {
     private final InputVariable<BooleanValueHolder> condition;

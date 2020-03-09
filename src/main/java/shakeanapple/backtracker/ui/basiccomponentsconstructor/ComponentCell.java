@@ -4,13 +4,13 @@ import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import shakeanapple.backtracker.ui.basiccomponentsconstructor.model.BasicComponentAbstract;
-import shakeanapple.backtracker.ui.infrasructure.control.diagramold.model.Cell;
 
-public abstract class ComponentCell extends Cell {
+@Deprecated
+public abstract class ComponentCell {
     private String name;
 
     public ComponentCell(long id, BasicComponentAbstract component) {
-        super(id);
+//        super(id);
         this.name = component.getType().name();
 
         Rectangle view = new Rectangle(20, 20);
@@ -24,7 +24,7 @@ public abstract class ComponentCell extends Cell {
         view.setStroke(Color.BLACK);
         view.setFill(Color.LAVENDER);
 
-        setView(view, label);
+//        setView(view, label);
 
     }
 

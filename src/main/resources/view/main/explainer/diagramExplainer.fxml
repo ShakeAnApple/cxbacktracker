@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<?import shakeanapple.backtracker.ui.infrasructure.control.diagram.DiagramControl?>
+<?import javafx.scene.control.TextField?>
+<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml">
+    <DiagramControl fx:id="diagram" VBox.vgrow="ALWAYS"  prefHeight="1000" prefWidth="1000"/>
+</fx:root>

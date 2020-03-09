@@ -1,97 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.AnchorPane?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<?import shakeanapple.backtracker.ui.infrasructure.control.visgraph.VisGraphControl?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
-<!--<AnchorPane minWidth="1000" minHeight="1000" xmlns="http://javafx.com/javafx/8.0.172-ea"-->
-<!--            xmlns:fx="http://javafx.com/fxml/1" fx:controller="shakeanapple.backtracker.ui.explainer.MainController">-->
-
-<!--   -->
-
-<!--</AnchorPane>-->
-<?import shakeanapple.backtracker.ui.infrasructure.control.diagram.DiagramControl?>
+<?import shakeanapple.backtracker.ui.explainer.control.ltlexplainer.LtlFormulaExplainer?>
+<?import shakeanapple.backtracker.ui.explainer.control.diagramexplainer.DiagramExplainer?>
+<?import shakeanapple.backtracker.ui.explainer.control.valuetable.ValueTable?>
 <?import shakeanapple.backtracker.ui.infrasructure.FxmlListCellFactory?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SeparatorMenuItem?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Label?>
-<VBox maxWidth="1200" maxHeight="800" xmlns="http://javafx.com/javafx/8.0.172-ea"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="shakeanapple.backtracker.ui.explainer.MainControllerNew">
-    <MenuBar fx:id="menuBar">
-        <menus>
-            <Menu text="File">
-                <items>
-                    <MenuItem text="Open model" onAction="#handleOpenModelMenuItemClick"/>
-                    <MenuItem text="Open counterexample" onAction="#handleOpenCounterexampleMenuItemClick"/>
-                    <MenuItem text="Open LTL formula" onAction="#handleInputFormulaMenuItemClick"/>
-                    <SeparatorMenuItem/>
-                    <MenuItem text="Exit" onAction="#handleExitMenuItemClick"/>
-                </items>
-            </Menu>
-        </menus>
-    </MenuBar>
-    <!--    <GridPane fx:id="mainLayout" disable="${isReadOnly}" >-->
-    <!--        <columnConstraints>-->
-    <!--            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0"/>-->
-    <!--            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="60.0"/>-->
-    <!--            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0"/>-->
-    <!--&lt;!&ndash;            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="23.0"/>&ndash;&gt;-->
-    <!--&lt;!&ndash;            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="65.0"/>&ndash;&gt;-->
-    <!--&lt;!&ndash;            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="12.0"/>&ndash;&gt;-->
-    <!--        </columnConstraints>-->
-    <!--        <rowConstraints>-->
-    <!--            <RowConstraints percentHeight="75.0" vgrow="ALWAYS"/>-->
-    <!--            <RowConstraints percentHeight="20.0" vgrow="ALWAYS"/>-->
-    <!--            <RowConstraints percentHeight="5.0" vgrow="ALWAYS"/>-->
-    <!--        </rowConstraints>-->
+<?import shakeanapple.backtracker.ui.explainer.control.menubar.MenuBarCustom?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="shakeanapple.backtracker.ui.explainer.MainController"
+      maxWidth="1200" maxHeight="800" >
+    <MenuBarCustom fx:id="menuBarCustom"/>
 
-    <!--        <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">-->
-    <!--            <VisGraphControl resource="ltlGraph.html" fx:id="ltlGraph" VBox.vgrow="ALWAYS"/>-->
-    <!--        </VBox>-->
-    <!--        <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">-->
-    <!--            <DiagramControl fx:id="diagram" VBox.vgrow="ALWAYS" prefHeight="1000"/>-->
-    <!--        </VBox>-->
-    <!--        <VBox GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">-->
-    <!--            <ListView fx:id="diagramCausesList">-->
-    <!--                <cellFactory>-->
-    <!--                    <FxmlListCellFactory fxmlSource="@listcell/diagramCausesListCell.fxml"/>-->
-    <!--                </cellFactory>-->
-    <!--            </ListView>-->
-    <!--            <ListView fx:id="stepsList">-->
-    <!--                <cellFactory>-->
-    <!--                    <FxmlListCellFactory fxmlSource="@listcell/stepsListCell.fxml"/>-->
-    <!--                </cellFactory>-->
-    <!--            </ListView>-->
-    <!--            <ListView fx:id="formulaCausesList">-->
-    <!--                <cellFactory>-->
-    <!--                    <FxmlListCellFactory fxmlSource="@listcell/formulaCausesListCell.fxml"/>-->
-    <!--                </cellFactory>-->
-    <!--            </ListView>-->
-
-    <!--            <Button text="explain formula" onAction="#explainFormula"/>-->
-    <!--        </VBox>-->
-    <!--        &lt;!&ndash;    <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">&ndash;&gt;-->
-    <!--        &lt;!&ndash;        <VisGraphControl resource="diagramGraph.html" fx:id="functionBlocksGraph" VBox.vgrow="ALWAYS" prefHeight="1000"/>&ndash;&gt;-->
-    <!--        &lt;!&ndash;    </VBox>&ndash;&gt;-->
-    <!--        <TableView GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="variablesByStepsTable">-->
-    <!--        </TableView>-->
-    <!--&lt;!&ndash;        <VBox GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">&ndash;&gt;-->
-    <!--&lt;!&ndash;            <Button text="update" onAction="#updateGraph"/>&ndash;&gt;-->
-    <!--&lt;!&ndash;        </VBox>&ndash;&gt;-->
-
-    <!--    </GridPane>-->
-
-    <GridPane fx:id="mainLayout" disable="${isReadOnly}">
+    <GridPane fx:id="mainLayout" disable="${isReadonly}">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" percentWidth="100.0"/>
         </columnConstraints>
@@ -99,22 +25,20 @@
             <RowConstraints percentHeight="100.0" vgrow="ALWAYS"/>
         </rowConstraints>
 
-        <SplitPane GridPane.rowIndex="0" GridPane.columnIndex="0" dividerPositions="0.8" orientation="HORIZONTAL">
-            <SplitPane dividerPositions="0.75" orientation="VERTICAL">
-                <SplitPane dividerPositions="0.4" orientation="HORIZONTAL">
+        <SplitPane GridPane.rowIndex="0" GridPane.columnIndex="0" dividerPositions="0.8" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+            <SplitPane dividerPositions="0.75" orientation="VERTICAL" >
+                <SplitPane dividerPositions="0.4">
                     <VBox>
-                        <TextField fx:id="formulaField" editable="false" focusTraversable="false"/>
-                        <VisGraphControl resource="ltlGraph.html" fx:id="ltlGraph" VBox.vgrow="ALWAYS"/>
+                        <LtlFormulaExplainer fx:id="ltlExplainer" VBox.vgrow="ALWAYS"/>
                     </VBox>
                     <VBox>
-                        <DiagramControl fx:id="diagram" VBox.vgrow="ALWAYS" prefHeight="1000"/>
+                        <DiagramExplainer fx:id="diagramExplainer" VBox.vgrow="ALWAYS" prefHeight="1000"/>
                     </VBox>
                 </SplitPane>
-                <TableView GridPane.columnIndex="0" GridPane.rowIndex="1" fx:id="variablesByStepsTable">
-                </TableView>
+                <ValueTable fx:id="valueTable" SplitPane.resizableWithParent="false"/>
             </SplitPane>
 
-            <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+            <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" SplitPane.resizableWithParent="false">
                 <Label text="Diagram explanation result:"/>
                 <ListView fx:id="diagramCausesList">
                     <cellFactory>
