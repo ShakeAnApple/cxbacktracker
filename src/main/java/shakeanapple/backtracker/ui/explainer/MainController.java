@@ -104,6 +104,7 @@ public class MainController implements Initializable {
 
         Clocks.instance().reset();
         this.formulaCausesList.setItems(FXCollections.observableArrayList());
+        this.diagramCausesList.setItems(FXCollections.observableArrayList());
         this.stepsList.setItems(FXCollections.observableArrayList());
 
         Context.instance().reset();
@@ -123,6 +124,7 @@ public class MainController implements Initializable {
         this.diagramExplainer.init();
         this.ltlExplainer.init();
 
+        this.isInitialState = true;
         this.isReadonly.setValue(false);
         return true;
     }
@@ -156,8 +158,8 @@ public class MainController implements Initializable {
     }
 
 
-    public boolean onTableCellClicked(VarValueForStep varValueForStep) {
-        this.onTableCellClicked(varValueForStep);
+    private boolean onTableCellClicked(VarValueForStep varValueForStep) {
+//        this.onTableCellClicked(varValueForStep);
 
         if (!varValueForStep.isCauseProperty().getValue()) {
             return true;
