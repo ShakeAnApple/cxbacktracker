@@ -7,6 +7,7 @@ import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CausePat
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
+import shakeanapple.backtracker.parser.basiccomponents.xmlmodel.Block;
 import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.Parser;
 
 import java.io.IOException;
@@ -44,6 +45,27 @@ public class FunctionBlockComplex extends FunctionBlockBase {
         });
     }
 
+    public FunctionBlockBase findInternal(LinkedList<String> blockPath){
+        FunctionBlockBase parent = this;
+
+        for (String s : blockPath) {
+            if (parent instanceof FunctionBlockComplex) {
+                parent = this.findBlock((FunctionBlockComplex) parent, s);
+            } else {
+                throw new RuntimeException("Can't search in basic block");
+            }
+        }
+        return parent;
+    }
+
+    public FunctionBlockBase findInternal(String blockName){
+        return this.internalDiagram.getFunctionBlocks().stream().filter(fb -> fb.getName().equals(blockName)).findFirst().orElse(null);
+    }
+
+    private FunctionBlockBase findBlock(FunctionBlockComplex parent, String name){
+        return parent.internalDiagram.getFunctionBlocks().stream().filter(fb -> fb.getName().equals(name)).findFirst().orElse(null);
+    }
+
     public Diagram getInternalDiagram() {
         return this.internalDiagram;
     }
@@ -63,9 +85,6 @@ public class FunctionBlockComplex extends FunctionBlockBase {
         CauseNode rootNode = new CauseNode(output, this.history().getVariableValueForStep(output.getName(), timestamp), timestamp);
         causesTree.addRoot(rootNode);
 
-//        CauseNode internalDiagramChildNode = new CauseNode(gateToExplain, gateToExplain.getValue(), timestamp);
-//        rootNode.addChildNode(internalDiagramChildNode);
-
         ExplanationItem item = this.internalDiagram.explain(gateToExplain, timestamp);
         Collection<CauseNode> causeNodes = item.getFreshNodes();
         rootNode.addChildren(item.getTree().getRoots());
@@ -77,9 +96,7 @@ public class FunctionBlockComplex extends FunctionBlockBase {
                     this.fbInterface().getInputs().get(causeNode.getGate().getName()).equals(causeNode.getGate())
             ) {
               //  System.out.println(String.format("InternalD: cause '%s' added to result", causeNode.getGate().getName()));
-                //CauseNode childNode = new CauseNode(causeNode.getGate(), causeNode.getValue(), causeNode.getTimestamp());
                 CauseNode childNode = causeNode;
-//                causeNode.addChildNode(childNode);
                 outputCauseNodes.add(childNode);
             } else if (causeNode.getGate().getIncomingConnection() != null) {
             //    System.out.println(String.format("InternalD: cause '%s' will be processed", causeNode.getGate().getName()));
@@ -90,21 +107,8 @@ public class FunctionBlockComplex extends FunctionBlockBase {
             }
         }
 
-//        internalDiagramChildNode.addChildren(outputCauseNodes);
      //   System.out.println(String.format("Upper Block Processed: %s, Gate: %s, Timestamp: %s", this.getName(), output.getName(), timestamp));
-//        return new ArrayList<>(outputCauseNodes);
         return result;
-    }
-
-    public static FunctionBlockComplex parse(String path, String blockDefsPath) {
-//        try {
-//            Parser p = new Parser(path, blockDefsPath);
-//            return p.parse();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            throw new RuntimeException(e);
-//        }
-        return null;
     }
 
     public static FunctionBlockComplex parse(String path) {

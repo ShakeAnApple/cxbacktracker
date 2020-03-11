@@ -106,11 +106,13 @@ public class GraphHelper {
 //        return graph;
 //    }
 
-    public static Graph convertToDiagramGraphNew(DiagramSnapshot diagram, Function<shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Pin, Boolean> pinPressHandler) {
+    public static Graph convertToDiagramGraphNew(DiagramSnapshot diagram,
+                                                 Function<Pin, Boolean> pinClickHandler,
+                                                 Function<String, Boolean> cellClickHandler) {
         Random r = new Random();
 
         Map<String, DiagramCell> nodes = new HashMap<>();
-        List<shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Connection> edges = new ArrayList<>();
+        List<Connection> edges = new ArrayList<>();
 
 //        for (String input : diagram.getDiagramInterface().getInputs()) {
 //            long id = r.nextLong();
@@ -125,12 +127,12 @@ public class GraphHelper {
         for (FunctionBlockSnapshot fblock : diagram.getBlocks()) {
             if (diagram.getDiagramInterface().getInputs().contains(fblock.getName())){
                 ValueHolder input = diagram.getDiagramInterface().getInputsValues().get(fblock.getName());
-                nodes.put(fblock.getName(), new InputInterfaceCell(fblock.getName(), pinPressHandler, input instanceof BooleanValueHolder ? new BooleanValueHolder(false) : new IntegerValueHolder(Integer.MIN_VALUE)));
+                nodes.put(fblock.getName(), new InputInterfaceCell(fblock.getName(), diagram.getName(), pinClickHandler, input instanceof BooleanValueHolder ? new BooleanValueHolder(false) : new IntegerValueHolder(Integer.MIN_VALUE)));
             } else if (diagram.getDiagramInterface().getOutputs().contains(fblock.getName())){
                 ValueHolder output = diagram.getDiagramInterface().getOutputsValues().get(fblock.getName());
-                nodes.put(fblock.getName(), new OutputInterfaceCell(fblock.getName(), pinPressHandler, output instanceof BooleanValueHolder ? new BooleanValueHolder(false) : new IntegerValueHolder(Integer.MIN_VALUE)));
+                nodes.put(fblock.getName(), new OutputInterfaceCell(fblock.getName(), diagram.getName(), pinClickHandler, output instanceof BooleanValueHolder ? new BooleanValueHolder(false) : new IntegerValueHolder(Integer.MIN_VALUE)));
             } else{
-                nodes.put(fblock.getName(), new Cell(fblock.getName(), fblock.getType(), fblock.getFbInterface().getInputsValues(), fblock.getFbInterface().getOutputsValues(), pinPressHandler));
+                nodes.put(fblock.getName(), new Cell(fblock.getName(), fblock.getType(), fblock.getFbInterface().getInputsValues(), fblock.getFbInterface().getOutputsValues(), pinClickHandler, cellClickHandler));
             }
         }
 
@@ -140,7 +142,7 @@ public class GraphHelper {
 
             String blockNameTo = connection.to() != null ? connection.to().getName() : connection.toVarName();
             DiagramCell to = nodes.get(blockNameTo);
-            edges.add(new shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Connection(from.getOutputPins().get(connection.fromVarName()), to.getInputPins().get(connection.toVarName()), connection.getValue(), connection.isInverted()));
+            edges.add(new Connection(from.getOutputPins().get(connection.fromVarName()), to.getInputPins().get(connection.toVarName()), connection.getValue(), connection.isInverted()));
         }
 
         Graph graph = new Graph(new ArrayList<>(nodes.values()), edges);

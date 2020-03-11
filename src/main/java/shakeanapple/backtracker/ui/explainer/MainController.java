@@ -79,9 +79,6 @@ public class MainController implements Initializable {
         this.valueTable.setOnTableCellClicked(this::onTableCellClicked);
 
         this.diagramCausesList.setItems(FXCollections.observableArrayList());
-        this.diagramExplainer.getDiagramCausesList().addListener((ListChangeListener<? super Cause>) c -> {
-            this.diagramCausesList.setItems(this.diagramExplainer.getDiagramCausesList());
-        });
 
         if (!this.isReadonly.getValue()) {
             this.stepsList.setItems(FXCollections.observableArrayList(
@@ -124,6 +121,10 @@ public class MainController implements Initializable {
         this.diagramExplainer.init();
         this.ltlExplainer.init();
 
+        this.diagramExplainer.getDiagramCausesList().addListener((ListChangeListener<? super Cause>) c -> {
+            this.diagramCausesList.setItems(this.diagramExplainer.getDiagramCausesList());
+        });
+
         this.isInitialState = true;
         this.isReadonly.setValue(false);
         return true;
@@ -138,7 +139,6 @@ public class MainController implements Initializable {
             this.isInitialState = false;
         }
 
-        /// diagram was updated with just stepNum without +1, whyy
         this.diagramExplainer.updateDiagram();
         this.ltlExplainer.updateLtlTree();
     }

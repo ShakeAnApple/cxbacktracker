@@ -16,20 +16,24 @@ public class DiagramSnapshot {
     private final List<FunctionBlockSnapshot> blocks;
     private final List<ConnectionSnapshot> connections;
 
+    private final String name;
+
     private final FBInterfaceSnapshot diagramInterface;
 
-    private DiagramSnapshot(List<String> inputs, List<String> outputs, List<FunctionBlockSnapshot> blocks, List<ConnectionSnapshot> connections) {
+//    private DiagramSnapshot(List<String> inputs, List<String> outputs, List<FunctionBlockSnapshot> blocks, List<ConnectionSnapshot> connections) {
+//        this.blocks = blocks;
+//        this.connections = connections;
+//
+//        this.diagramInterface = new FBInterfaceSnapshot(inputs, outputs);
+//    }
+
+    private DiagramSnapshot(String name, Map<String, ValueHolder> inputs, Map<String, ValueHolder> outputs, List<FunctionBlockSnapshot> blocks, List<ConnectionSnapshot> connections) {
         this.blocks = blocks;
         this.connections = connections;
 
         this.diagramInterface = new FBInterfaceSnapshot(inputs, outputs);
-    }
 
-    private DiagramSnapshot(Map<String, ValueHolder> inputs, Map<String, ValueHolder> outputs, List<FunctionBlockSnapshot> blocks, List<ConnectionSnapshot> connections) {
-        this.blocks = blocks;
-        this.connections = connections;
-
-        this.diagramInterface = new FBInterfaceSnapshot(inputs, outputs);
+        this.name = name;
     }
 
     public static DiagramSnapshot fromDiagram(FunctionBlockComplex diagram) {
@@ -63,7 +67,7 @@ public class DiagramSnapshot {
         }
 
         for (DiagramElement fblock : diagram.getInternalDiagram().getFunctionBlocks()) {
-            for (OutputGate outputGate : ((FunctionBlockComplex)fblock).fbInterface().getOutputs().values()) {
+            for (OutputGate outputGate : ((FunctionBlockBase)fblock).fbInterface().getOutputs().values()) {
                 for (Connection connection : outputGate.getOutgoingConnections()) {
 
                     FunctionBlockSnapshot from = blockSnapshots.get(connection.from().getName());
@@ -74,7 +78,11 @@ public class DiagramSnapshot {
             }
         }
 
-        return new DiagramSnapshot(inputs, outputs, new ArrayList<>(blockSnapshots.values()), connections);
+        return new DiagramSnapshot(diagram.getName(), inputs, outputs, new ArrayList<>(blockSnapshots.values()), connections);
+    }
+
+    public String getName() {
+        return this.name;
     }
 
     public List<FunctionBlockSnapshot> getBlocks() {

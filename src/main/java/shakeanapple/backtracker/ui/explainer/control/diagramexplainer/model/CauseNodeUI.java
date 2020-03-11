@@ -37,7 +37,7 @@ public class CauseNodeUI {
     }
 
     public String constructConnectionId(String fromBlock, String fromVarName, String toBlock, String  toVarName){
-        return (fromBlock == null || fromBlock.equals("root") ? "" : fromBlock) + fromVarName + (toBlock == null || toBlock.equals("root") ? "" : toBlock) + toVarName;
+        return (fromBlock == null || fromBlock.equals("root") ? "root" : fromBlock) + fromVarName + (toBlock == null || toBlock.equals("root") ? "root" : toBlock) + toVarName;
     }
 
     public List<String> inferConnectionsIds() {

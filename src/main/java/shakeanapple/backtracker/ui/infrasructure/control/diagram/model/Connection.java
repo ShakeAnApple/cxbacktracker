@@ -31,14 +31,19 @@ public class Connection {
     }
 
     private String makeId() {
-        String id = this.from.getOwner().getName();
+        String id = "";
         if (!this.from.getOwner().getName().equals(this.from.getName())){
-            id += this.from.getName();
+            id += this.from.getOwner().getName();
+        } else{
+            id += ((InputInterfaceCell)this.from.getOwner()).getDiagramOwnerName();
         }
-        id += this.to.getOwner().getName();
+        id += this.from.getName();
         if (!this.to.getOwner().getName().equals(this.to.getName())){
-            id += this.to.getName();
+            id += this.to.getOwner().getName();
+        } else{
+            id += ((OutputInterfaceCell)this.to.getOwner()).getDiagramOwnerName();
         }
+        id += this.to.getName();
         return id;
     }
 

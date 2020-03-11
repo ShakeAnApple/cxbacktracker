@@ -6,5 +6,4 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="shakeanapple.backtracker.ui.infrasructure.control.diagram.DiagramControl"
       prefHeight="400.0" prefWidth="600.0">
-    <TextField/>
 </Pane>

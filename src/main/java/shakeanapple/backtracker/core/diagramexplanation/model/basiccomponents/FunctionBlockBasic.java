@@ -21,7 +21,7 @@ public abstract class FunctionBlockBasic extends FunctionBlockBase {
     private final List<OutputVariable> outputs;
 
     protected FunctionBlockBasic(String name, List<InputVariable> inputs, List<OutputVariable> outputs) {
-        super(name, "BASIC", inputs, outputs);
+        super(name + BasicBlocksIdGenerator.next(name), "BASIC", inputs, outputs);
         this.inputs = inputs;
         this.outputs = outputs;
     }

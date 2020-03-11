@@ -50,4 +50,8 @@ public abstract class FunctionBlockBase extends DiagramElement implements Interf
     }
 
     protected abstract ExplanationItem explainImpl(OutputGate output, Integer timestamp);
+
+    public boolean isRoot() {
+        return this.getName().equals("root");
+    }
 }

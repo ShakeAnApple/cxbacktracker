@@ -3,6 +3,7 @@ package shakeanapple.backtracker.ui.infrasructure.control.diagram.view.graph;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -45,6 +46,14 @@ public class CellView extends NodeView implements DiagramCellView {
                 .subtract(label.heightProperty().divide(2)));
         label.addEventHandler(MouseEvent.ANY, e -> this.view.fireEvent(e));
         view.widthProperty().bind(label.widthProperty().add(4));
+
+        this.view.onMouseClickedProperty().setValue(
+                event ->
+                {
+                    if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+                        this.cell.getCellClickHandler().apply(this.cell.getName());
+                    }
+                });
 
         this.inputs = this.createInputPinViews(parent, cell.getInputPins().values());
         this.outputs = this.createOutputPinViews(parent, cell.getOutputPins().values());
@@ -108,10 +117,10 @@ public class CellView extends NodeView implements DiagramCellView {
     @Override
     public double getWidth() {
         double width = this.view.widthProperty().get();
-        if (!this.inputs.isEmpty()){
+        if (!this.inputs.isEmpty()) {
             width += this.inputs.get(0).getWidth();
         }
-        if (!this.outputs.isEmpty()){
+        if (!this.outputs.isEmpty()) {
             width += this.outputs.get(0).getWidth();
         }
         return width;

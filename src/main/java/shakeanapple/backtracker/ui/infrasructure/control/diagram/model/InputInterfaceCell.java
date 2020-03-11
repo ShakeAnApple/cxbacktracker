@@ -13,15 +13,21 @@ public class InputInterfaceCell implements DiagramCell{
 
     private OutputPin outputPin;
 
-    public InputInterfaceCell(String name, Function<Pin, Boolean> pinClickHandler, ValueHolder initialValue) {
+    private String diagramOwnerName;
+
+    public InputInterfaceCell(String name, String diagramOwnerName, Function<Pin, Boolean> pinClickHandler, ValueHolder initialValue) {
         this.name = name;
         this.outputPin = new OutputPin(this, name, pinClickHandler, initialValue);
+        this.diagramOwnerName = diagramOwnerName;
     }
 
     public String getName() {
         return name;
     }
 
+    public String getDiagramOwnerName() {
+        return this.diagramOwnerName;
+    }
 
     public Map<String, InputPin> getInputPins() {
         return new HashMap<>();

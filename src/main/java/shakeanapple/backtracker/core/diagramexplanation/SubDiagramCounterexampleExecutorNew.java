@@ -1,8 +1,6 @@
 package shakeanapple.backtracker.core.diagramexplanation;
 
 import shakeanapple.backtracker.common.variable.ValueHolder;
-import shakeanapple.backtracker.core.counterexample.Counterexample;
-import shakeanapple.backtracker.core.counterexample.CounterexampleCursor;
 import shakeanapple.backtracker.core.diagramexplanation.model.*;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.DiagramSnapshot;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.FunctionBlockSnapshot;
@@ -10,33 +8,31 @@ import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.FunctionB
 import java.util.HashMap;
 import java.util.Map;
 
-public class DiagramCounterexampleExecutor implements DiagramExecutor {
-
+public class SubDiagramCounterexampleExecutorNew implements DiagramExecutor {
     private final FunctionBlockComplex diagram;
-    private final CounterexampleCursor cursor;
+    private final DiagramInputSource inputSource;
 
     private HashMap<Integer, DiagramSnapshot> stepsEvaluated = new HashMap<>();
     private int maxEvaluatedStepNum = -1;
 
-    public DiagramCounterexampleExecutor(FunctionBlockComplex diagram, Counterexample counterexample) {
+    public SubDiagramCounterexampleExecutorNew(FunctionBlockComplex diagram, DiagramInputSource inputSource) {
         this.diagram = diagram;
 
-        this.cursor = new CounterexampleCursor(counterexample);
+        this.inputSource = inputSource;
     }
 
     @Override
     public DiagramSnapshot moveNext() {
-        if (this.cursor.hasNext()) {
-            this.cursor.moveNext();
-            if (!this.stepsEvaluated.containsKey(this.cursor.getCurStateNum())) {
-                Clocks.instance().tick();
-                this.evaluateDiagram();
+        if (this.inputSource.hasNext()) {
+            this.inputSource.moveNext();
+            if (!this.stepsEvaluated.containsKey(this.inputSource.getCurStateNum())) {
                 DiagramSnapshot snapshot = DiagramSnapshot.fromDiagram(this.diagram);
-                this.stepsEvaluated.put(this.cursor.getCurStateNum(), snapshot);
+                this.stepsEvaluated.put(this.inputSource.getCurStateNum(), snapshot);
+                this.diagram.history().record(this.diagram.fbInterface(), Clocks.instance().currentTime());
                 this.maxEvaluatedStepNum++;
                 return snapshot;
             } else{
-                return this.stepsEvaluated.get(this.cursor.getCurStateNum());
+                return this.stepsEvaluated.get(this.inputSource.getCurStateNum());
             }
         }
         return DiagramSnapshot.fromDiagram(this.diagram);
@@ -45,12 +41,12 @@ public class DiagramCounterexampleExecutor implements DiagramExecutor {
     @Override
     public DiagramSnapshot moveTo(int stepNum) {
         if (this.stepsEvaluated.containsKey(stepNum)) {
-            this.cursor.goTo(stepNum);
+            this.inputSource.goTo(stepNum);
             return this.stepsEvaluated.get(stepNum);
         } else {
-            this.cursor.goTo(this.maxEvaluatedStepNum);
+            this.inputSource.goTo(this.maxEvaluatedStepNum);
             DiagramSnapshot lastSnapshot = null;
-            while (this.cursor.getCurStateNum() < stepNum) {
+            while (this.inputSource.getCurStateNum() < stepNum) {
                 lastSnapshot = this.moveNext();
             }
             return lastSnapshot;
@@ -62,7 +58,7 @@ public class DiagramCounterexampleExecutor implements DiagramExecutor {
         if (this.stepsEvaluated.containsKey(stepNum)){
             return true;
         }
-        return this.cursor.hasNext();
+        return this.inputSource.hasNext();
     }
 
     @Override
@@ -74,12 +70,7 @@ public class DiagramCounterexampleExecutor implements DiagramExecutor {
 
     private void evaluateDiagram() {
         for (InputGate inGate : this.diagram.fbInterface().getInputs().values()) {
-            String gateName = "";
-            if (!this.diagram.isRoot()){
-                gateName += this.diagram.getName() + ".";
-            }
-            gateName += inGate.getName();
-            inGate.populateInput(this.cursor.getCurState().getVarByName(gateName).getValue());
+            inGate.populateInput(this.inputSource.getCurState().get(inGate.getName()));
         }
 
         for (DiagramElement de : this.diagram.getInternalDiagram().getFunctionBlocks()) {
@@ -87,10 +78,10 @@ public class DiagramCounterexampleExecutor implements DiagramExecutor {
             // System.out.println("Block: " + fb.getName() + " ouput records: " + fb.history().outputRecordsCount());
             for (OutputGate outGate : fb.fbInterface().getOutputs().values()) {
                 String varName = fb.getName() + "." + outGate.getName();
-                ValueHolder cxValue = this.cursor.getCurState().getVarByName(varName).getValue();
+                ValueHolder cxValue = this.inputSource.getCurState().get(varName);
                 ValueHolder calculatedValue = outGate.getValue();
                 if (!cxValue.equals(calculatedValue)) {
-              //      System.out.println(String.format("%s has value %s in cx and %s after evaluation", varName, cxValue, calculatedValue));
+                    //      System.out.println(String.format("%s has value %s in cx and %s after evaluation", varName, cxValue, calculatedValue));
                 }
             }
         }

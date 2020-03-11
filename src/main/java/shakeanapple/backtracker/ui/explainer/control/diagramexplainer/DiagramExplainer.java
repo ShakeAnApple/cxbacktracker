@@ -4,6 +4,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
 import shakeanapple.backtracker.core.diagramexplanation.DiagramBackwardExplainer;
 import shakeanapple.backtracker.core.diagramexplanation.DiagramCounterexampleExecutor;
@@ -30,21 +34,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class DiagramExplainer extends VBox {
-    @FXML
-    private DiagramControl diagram;
+public class DiagramExplainer extends TabPane {
+    private DiagramExplainerTab systemOverviewTab;
 
-    private DiagramCounterexampleExecutor diagramExecutor;
-    private DiagramOutputExplainer diagramOutputExplainer;
-    private Map<String, Connection> connections = new HashMap<>();
-    private Map<String, Pin> diagramPins = new HashMap<>();
-
-    private ObservableList<Cause> diagramCausesList = FXCollections.observableArrayList();
 
     public DiagramExplainer() {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("view/main/explainer/diagramExplainer.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("view/main/explainer/diagram/diagramExplainer.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
+
+        this.setStyle("-fx-background-color:white");
 
         try {
             fxmlLoader.load();
@@ -54,114 +53,36 @@ public class DiagramExplainer extends VBox {
     }
 
     public void init(){
-        FunctionBlockComplex diagram = FunctionBlockComplex.parse(Context.instance().getDiagramPath());
-        this.diagramExecutor = new DiagramCounterexampleExecutor(diagram, Context.instance().getCounterexample());
+        this.systemOverviewTab = new DiagramExplainerTab("System", this);
 
-        this.diagramOutputExplainer = new DiagramBackwardExplainer(diagram);
-    }
+        this.systemOverviewTab.init(FunctionBlockComplex.parse(Context.instance().getDiagramPath()));
+        this.systemOverviewTab.closableProperty().setValue(false);
 
-    private void clearConnections() {
-        for (Connection conn : this.connections.values()) {
-            conn.isCauseTreeEdge(false);
-        }
+        this.getTabs().add(this.systemOverviewTab);
     }
 
     public List<Cause> explainCause(String varName, String blockName, int timestamp) {
-        this.clearConnections();
-
-        ExplanationItem expRes = this.diagramOutputExplainer.explain(varName, blockName, timestamp);
-        CauseNodeUI causesTree = CauseNodeUI.parse(expRes.getTree().getRoots().get(0));
-
-
-        Map<String, Map<String, List<Cause>>> connectionsCauses = causesTree.inferConnectionCauses();
-        for (String connId : connectionsCauses.keySet()) {
-            if (this.connections.containsKey(connId)) {
-                Connection conn = this.connections.get(connId);
-                conn.isCauseTreeEdge(true);
-
-                List<Cause> causesFrom = connectionsCauses.get(connId).get(conn.getFrom().getName());
-                conn.getFrom().getCausesObservable().addAll(causesFrom.stream().map(c ->
-                        new shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Cause(c.getTimestamp(), c.getVarName(), c.getBlockName(), c.getValue())).collect(Collectors.toList()));
-
-                List<Cause> causesTo = connectionsCauses.get(connId).get(conn.getTo().getName());
-                conn.getTo().getCausesObservable().addAll(causesTo.stream().map(c ->
-                        new shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Cause(c.getTimestamp(), c.getVarName(), c.getBlockName(), c.getValue())).collect(Collectors.toList()));
-            }
-        }
-
-        return expRes.getFreshNodes().stream()
-                .map(causeNode -> new Cause(causeNode.getTimestamp() - 1, causeNode.getGate().getName(), causeNode.getGate().getOwner().getName(), causeNode.getValue()))
-                .sorted(Comparator.comparing(Cause::getTimestamp).thenComparing(Cause::getBlockName).thenComparing(Cause::getVarName)).collect(Collectors.toList());
-    }
-
-    private Boolean diagramPinPressHandler(shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Pin pin) {
-        List<Cause> causes = this.explainCause(pin.getName(), pin.getOwner().getName(), Context.instance().getCurrentStep() + 1);
-        this.diagramCausesList.clear();
-        this.diagramCausesList.addAll(causes);
-        return true;
-    }
-
-    private void updateDiagram(DiagramSnapshot snapshot) {
-        this.clearConnections();
-        if (this.diagram.isClear()) {
-            Graph diagram = GraphHelper.convertToDiagramGraphNew(snapshot, this::diagramPinPressHandler);
-            this.diagram.draw(diagram);
-            this.recordConnections(diagram.getConnections());
-            this.recordPins(diagram.getCells());
-            this.updateBlockInterfaces(snapshot.getBlocks(), snapshot.getDiagramInterface());
-        } else {
-            this.updateBlockInterfaces(snapshot.getBlocks(), snapshot.getDiagramInterface());
-        }
+        return this.systemOverviewTab.explainCause(varName, blockName, timestamp);
     }
 
     public void updateDiagram(){
-        DiagramSnapshot snapshot = this.diagramExecutor.moveTo(Context.instance().getCurrentStep());
-        this.updateDiagram(snapshot);
-    }
-
-    private void updateBlockInterfaces(List<FunctionBlockSnapshot> blockSnapshots, FBInterfaceSnapshot diagramInterface) {
-        for (FunctionBlockSnapshot fb : blockSnapshots) {
-            for (String varName : fb.getFbInterface().getInputsValues().keySet()) {
-                this.diagramPins.get(fb.getName() + varName).updateValue(fb.getFbInterface().getInputsValues().get(varName));
-            }
-            for (String varName : fb.getFbInterface().getOutputsValues().keySet()) {
-                this.diagramPins.get(fb.getName() + varName).updateValue(fb.getFbInterface().getOutputsValues().get(varName));
-            }
+        for (Tab tab: this.getTabs()){
+            ((DiagramExplainerTab)tab).updateDiagram();
         }
-        for (String varName : diagramInterface.getInputsValues().keySet()) {
-            this.diagramPins.get(varName + varName).updateValue(diagramInterface.getInputsValues().get(varName));
-        }
-        for (String varName : diagramInterface.getOutputsValues().keySet()) {
-            this.diagramPins.get(varName + varName).updateValue(diagramInterface.getOutputsValues().get(varName));
-        }
-    }
-
-
-    private void recordConnections(List<Connection> connections) {
-        this.connections = connections.stream().collect(Collectors.toMap(Connection::getId, c -> c));
-    }
-
-    private void recordPins(List<DiagramCell> cells) {
-        for (DiagramCell cell : cells) {
-            for (Pin pin : cell.getInputPins().values()) {
-                this.diagramPins.put(pin.getOwner().getName() + pin.getName(), pin);
-            }
-            for (Pin pin : cell.getOutputPins().values()) {
-                this.diagramPins.put(pin.getOwner().getName() + pin.getName(), pin);
-            }
-        }
+//        this.systemOverviewTab.updateDiagram();
     }
 
     public void reset() {
-        this.diagram.clear();
-        this.diagramExecutor = null;
-        this.diagramOutputExplainer = null;
-        this.connections = new HashMap<>();
-        this.diagramPins = new HashMap<>();
+        this.getTabs().clear();
+//        this.systemOverviewTab.reset();
     }
 
     public ObservableList<Cause> getDiagramCausesList(){
-        return this.diagramCausesList;
+        return this.systemOverviewTab.getDiagramCausesList();
     }
 
+    public void addTab(DiagramExplainerTab subTab) {
+        this.getTabs().add(subTab);
+        this.getSelectionModel().select(subTab);
+    }
 }

@@ -31,6 +31,7 @@ public class DiagramControl extends BorderPane {
         zoomPane.getChildren().add(zoomInButton);
         zoomPane.getChildren().add(zoomOutButton);
         super.setTop(zoomPane);
+        super.setStyle("-fx-background-color:white");
 
         zoomInButton.onActionProperty().setValue((e) -> {
             this.canvas.zoomIn();
