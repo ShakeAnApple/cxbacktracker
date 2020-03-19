@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import shakeanapple.backtracker.core.diagramexplanation.*;
 import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockBase;
@@ -30,6 +31,9 @@ public class DiagramExplainerTab extends Tab {
     @FXML
     private DiagramControl diagramControl;
 
+    @FXML
+    private ListView diagramCausesList;
+
     private DiagramExecutor diagramExecutor;
     private DiagramOutputExplainer diagramOutputExplainer;
     private Map<String, Connection> connections = new HashMap<>();
@@ -39,7 +43,7 @@ public class DiagramExplainerTab extends Tab {
     private DiagramExplainer parent;
     private FunctionBlockComplex diagram;
 
-    private ObservableList<Cause> diagramCausesList = FXCollections.observableArrayList();
+    private ObservableList<Cause> diagramCausesListObservable = FXCollections.observableArrayList();
 
     DiagramExplainerTab(String title, DiagramExplainer parent) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("view/main/explainer/diagram/diagramExplainerTab.fxml"));
@@ -64,8 +68,10 @@ public class DiagramExplainerTab extends Tab {
 
     private void init(FunctionBlockComplex diagram, DiagramExecutor parentExecutor) {
 //        FunctionBlockComplex diagram = FunctionBlockComplex.parse(Context.instance().getDiagramPath());
-        this.diagramExecutor = new SubDiagramCounterexampleExecutorNew(diagram, new SnapshotInputSource(parentExecutor, diagram.getName()));
+        this.diagramExecutor = new SubDiagramCounterexampleExecutorNew(diagram, parentExecutor);
         this.diagram = diagram;
+        this.diagramCausesList.setItems(this.diagramCausesListObservable);
+
 
         this.diagramOutputExplainer = new DiagramBackwardExplainer(diagram);
     }
@@ -74,6 +80,8 @@ public class DiagramExplainerTab extends Tab {
 //        FunctionBlockComplex diagram = FunctionBlockComplex.parse(Context.instance().getDiagramPath());
         this.diagramExecutor = new DiagramCounterexampleExecutor(diagram, Context.instance().getCounterexample());
         this.diagram = diagram;
+        this.diagramCausesList.setItems(this.diagramCausesListObservable);
+
 
         this.diagramOutputExplainer = new DiagramBackwardExplainer(diagram);
     }
@@ -107,20 +115,23 @@ public class DiagramExplainerTab extends Tab {
             }
         }
 
-        return expRes.getFreshNodes().stream()
+        List<Cause> res = expRes.getFreshNodes().stream()
                 .map(causeNode -> new Cause(causeNode.getTimestamp() - 1, causeNode.getGate().getName(), causeNode.getGate().getOwner().getName(), causeNode.getValue()))
                 .sorted(Comparator.comparing(Cause::getTimestamp).thenComparing(Cause::getBlockName).thenComparing(Cause::getVarName)).collect(Collectors.toList());
+        this.diagramCausesListObservable.setAll(res);
+        return res;
     }
 
     private Boolean diagramPinPressHandler(Pin pin) {
         List<Cause> causes = this.explainCause(pin.getName(), pin.getOwner().getName(), Context.instance().getCurrentStep() + 1);
-        this.diagramCausesList.clear();
-        this.diagramCausesList.addAll(causes);
+        this.diagramCausesListObservable.clear();
+        this.diagramCausesListObservable.addAll(causes);
         return true;
     }
 
     private void updateDiagram(DiagramSnapshot snapshot) {
         this.clearConnections();
+        this.diagramCausesListObservable.clear();
         if (this.diagramControl.isClear()) {
             Graph diagram = GraphHelper.convertToDiagramGraphNew(snapshot, this::diagramPinPressHandler, this::onBlockClicked);
             this.diagramControl.draw(diagram);
@@ -133,7 +144,7 @@ public class DiagramExplainerTab extends Tab {
     }
 
     private boolean onBlockClicked(String blockName) {
-        FunctionBlockBase child = this.diagram.findInternal(blockName);
+        FunctionBlockBase child = this.diagram.extractInternal(blockName);
         if (!(child instanceof FunctionBlockComplex)) {
             return false;
         }
@@ -193,6 +204,6 @@ public class DiagramExplainerTab extends Tab {
     }
 
     public ObservableList<Cause> getDiagramCausesList() {
-        return this.diagramCausesList;
+        return this.diagramCausesListObservable;
     }
 }

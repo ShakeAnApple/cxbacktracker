@@ -15,10 +15,9 @@ public class SubDiagramCounterexampleExecutorNew implements DiagramExecutor {
     private HashMap<Integer, DiagramSnapshot> stepsEvaluated = new HashMap<>();
     private int maxEvaluatedStepNum = -1;
 
-    public SubDiagramCounterexampleExecutorNew(FunctionBlockComplex diagram, DiagramInputSource inputSource) {
+    public SubDiagramCounterexampleExecutorNew(FunctionBlockComplex diagram, DiagramExecutor parentExecutor) {
+        this.inputSource = new SnapshotInputSource(parentExecutor, diagram.getName());
         this.diagram = diagram;
-
-        this.inputSource = inputSource;
     }
 
     @Override
@@ -26,9 +25,11 @@ public class SubDiagramCounterexampleExecutorNew implements DiagramExecutor {
         if (this.inputSource.hasNext()) {
             this.inputSource.moveNext();
             if (!this.stepsEvaluated.containsKey(this.inputSource.getCurStateNum())) {
+                this.diagram.tickSystemTime();
+                this.evaluateDiagram();
                 DiagramSnapshot snapshot = DiagramSnapshot.fromDiagram(this.diagram);
                 this.stepsEvaluated.put(this.inputSource.getCurStateNum(), snapshot);
-                this.diagram.history().record(this.diagram.fbInterface(), Clocks.instance().currentTime());
+                this.diagram.history().record(this.diagram.fbInterface(), this.diagram.getSystemTime());
                 this.maxEvaluatedStepNum++;
                 return snapshot;
             } else{
@@ -62,7 +63,7 @@ public class SubDiagramCounterexampleExecutorNew implements DiagramExecutor {
     }
 
     @Override
-    public Map<String, ValueHolder> extractInputsSnapshotFor(int stepNum, String blockName) {
+    public Map<String, ValueHolder> extractInputSnapshotFor(int stepNum, String blockName) {
         DiagramSnapshot diagramSnapshot = this.stepsEvaluated.get(stepNum);
         FunctionBlockSnapshot blockSnapshot = diagramSnapshot.getBlocks().stream().filter(block -> block.getName().equals(blockName)).findFirst().orElse(null);
         return blockSnapshot.getFbInterface().getInputsValues();
@@ -73,19 +74,19 @@ public class SubDiagramCounterexampleExecutorNew implements DiagramExecutor {
             inGate.populateInput(this.inputSource.getCurState().get(inGate.getName()));
         }
 
-        for (DiagramElement de : this.diagram.getInternalDiagram().getFunctionBlocks()) {
-            FunctionBlockBase fb = (FunctionBlockBase) de;
-            // System.out.println("Block: " + fb.getName() + " ouput records: " + fb.history().outputRecordsCount());
-            for (OutputGate outGate : fb.fbInterface().getOutputs().values()) {
-                String varName = fb.getName() + "." + outGate.getName();
-                ValueHolder cxValue = this.inputSource.getCurState().get(varName);
-                ValueHolder calculatedValue = outGate.getValue();
-                if (!cxValue.equals(calculatedValue)) {
-                    //      System.out.println(String.format("%s has value %s in cx and %s after evaluation", varName, cxValue, calculatedValue));
-                }
-            }
-        }
+//        for (DiagramElement de : this.diagram.getInternalDiagram().getFunctionBlocks()) {
+//            FunctionBlockBase fb = (FunctionBlockBase) de;
+//            // System.out.println("Block: " + fb.getName() + " ouput records: " + fb.history().outputRecordsCount());
+//            for (OutputGate outGate : fb.fbInterface().getOutputs().values()) {
+//                String varName = fb.getName() + "." + outGate.getName();
+//                ValueHolder cxValue = this.inputSource.getCurState().get(varName);
+//                ValueHolder calculatedValue = outGate.getValue();
+//                if (!cxValue.equals(calculatedValue)) {
+//                    //      System.out.println(String.format("%s has value %s in cx and %s after evaluation", varName, cxValue, calculatedValue));
+//                }
+//            }
+//        }
 
-        this.diagram.history().record(this.diagram.fbInterface(), Clocks.instance().currentTime());
+        this.diagram.history().record(this.diagram.fbInterface(), this.diagram.getSystemTime());
     }
 }

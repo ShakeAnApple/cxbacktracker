@@ -18,7 +18,6 @@ public class Diagram {
         this.functionBlocks = functionBlocks;
         this.inputs = inputs.stream().collect(Collectors.toMap(InputVariable::getId, in -> in));
         this.outputs = outputs.stream().collect(Collectors.toMap(OutputVariable::getId, out -> out));
-        ;
     }
 
     public List<FunctionBlockBase> getFunctionBlocks() {
@@ -69,5 +68,47 @@ public class Diagram {
 
         return result;
 //        return new ArrayList<>(outputCauseNodes);
+    }
+
+    @Override
+    public Diagram clone() {
+        List<FunctionBlockBase> a = this.functionBlocks.stream().map(FunctionBlockBase::clone).collect(Collectors.toList());
+
+        List<InputVariable> newInputs = new ArrayList<>();
+        List<OutputVariable> newOutputs = new ArrayList<>();
+
+        Map<String, FunctionBlockBase> blockClones = this.functionBlocks.stream().map(FunctionBlockBase::clone).collect(Collectors.toMap(DiagramElement::getName, v -> v));
+
+        for (FunctionBlockBase fb : this.functionBlocks) {
+            FunctionBlockBase clonedBlock = blockClones.get(fb.getName());
+            Map<String, InputGate> inputGatesFb = fb.fbInterface().getInputs();
+            for (InputGate inCloned : clonedBlock.fbInterface().getInputs().values()) {
+                Connection inConnection = inputGatesFb.get(inCloned.getName()).getIncomingConnection();
+                if (inConnection != null) {
+                    FunctionBlockBase fromCloned = blockClones.get(inConnection.from().getName());
+                    if (fromCloned != null) {
+                        inCloned.makeIncomingConnection(fromCloned.fbInterface().getOutputs().get(inConnection.fromGate().getName()), fromCloned, clonedBlock, inConnection.isInverted());
+                    }else{
+                        newInputs.add(inCloned.input());
+                    }
+                }
+            }
+            Map<String, OutputGate> outputGatesFb = fb.fbInterface().getOutputs();
+            for (OutputGate outCloned : clonedBlock.fbInterface().getOutputs().values()) {
+                for (Connection outConnection : outputGatesFb.get(outCloned.getName()).getOutgoingConnections()) {
+                    FunctionBlockBase toCloned = blockClones.get(outConnection.to().getName());
+                    if (toCloned != null) {
+                        outCloned.makeOutgoingConnection(toCloned.fbInterface().getInputs().get(outConnection.toGate().getName()), clonedBlock, toCloned, outConnection.isInverted());
+                    } else{
+                        newOutputs.add(outCloned.output());
+                    }
+                }
+            }
+        }
+
+        // can go wrong as inputs and outputs are references
+        return new Diagram(new ArrayList<>(blockClones.values()),
+                newInputs,
+                newOutputs);
     }
 }

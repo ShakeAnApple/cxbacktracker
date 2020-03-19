@@ -31,7 +31,7 @@ public class SnapshotInputSource implements DiagramInputSource {
         if (this.maxExecutedStep <= this.currentStep) {
             this.parentExecutor.moveTo(this.currentStep + 1);
             this.inputsHistory.record(this.currentStep + 1,
-                    this.parentExecutor.extractInputsSnapshotFor(this.currentStep + 1, this.blockName));
+                    this.parentExecutor.extractInputSnapshotFor(this.currentStep + 1, this.blockName));
         }
         this.currentStep++;
         this.maxExecutedStep = Math.max(this.currentStep, this.maxExecutedStep);

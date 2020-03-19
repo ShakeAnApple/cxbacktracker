@@ -1,6 +1,8 @@
 package shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents;
 
 import shakeanapple.backtracker.common.variable.ValueHolder;
+import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockBase;
+import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.logic.AndFunctionBlockBasic;
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
 import shakeanapple.backtracker.core.diagramexplanation.Clocks;
 import shakeanapple.backtracker.core.diagramexplanation.model.OutputGate;
@@ -11,6 +13,7 @@ import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVar
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 //TODO introduce time into system?
 public class DelayFunctionBlockBasic extends FunctionBlockBasic {
@@ -25,8 +28,22 @@ public class DelayFunctionBlockBasic extends FunctionBlockBasic {
 
     private List<ValueHolder> inputsSeq = new ArrayList<>();
 
-    public DelayFunctionBlockBasic(InputVariable input, OutputVariable output, int delay) {
-        super("Delay", new ArrayList<>() {{
+    public DelayFunctionBlockBasic(boolean generateId,InputVariable input, OutputVariable output, int delay) {
+        super("Delay"+ (generateId ? BasicBlocksIdGenerator.next("Delay") : ""), new ArrayList<>() {{
+            add(input);
+        }}, new ArrayList<>() {{
+            add(output);
+        }});
+
+        this.input = input;
+        this.output = output;
+        this.delay = delay;
+        this.defValue = null;
+        this.ticksPassed = 0;
+    }
+
+    private DelayFunctionBlockBasic(String name, InputVariable input, OutputVariable output, int delay) {
+        super(name, new ArrayList<>() {{
             add(input);
         }}, new ArrayList<>() {{
             add(output);
@@ -43,8 +60,31 @@ public class DelayFunctionBlockBasic extends FunctionBlockBasic {
         return this.input;
     }
 
-    public DelayFunctionBlockBasic(InputVariable input, InputVariable defValue, OutputVariable output, int delay) {
-        super("Delay", new ArrayList<>() {{
+    @Override
+    public FunctionBlockBase clone() {
+        if (this.defValue != null) {
+            return new DelayFunctionBlockBasic(this.getName(), this.input.clone(), this.defValue.clone(), this.output.clone(), this.delay);
+        }
+        return new DelayFunctionBlockBasic(this.getName(), this.input.clone(), this.output.clone(), this.delay);
+    }
+
+    public DelayFunctionBlockBasic(boolean generateId,InputVariable input, InputVariable defValue, OutputVariable output, int delay) {
+        super("Delay"+ (generateId ? BasicBlocksIdGenerator.next("Delay") : ""), new ArrayList<>() {{
+            add(input);
+            add(defValue);
+        }}, new ArrayList<>() {{
+            add(output);
+        }});
+
+        this.input = input;
+        this.output = output;
+        this.delay = delay;
+        this.defValue = defValue;
+        this.ticksPassed = 0;
+    }
+
+    private DelayFunctionBlockBasic(String name, InputVariable input, InputVariable defValue, OutputVariable output, int delay) {
+        super(name, new ArrayList<>() {{
             add(input);
             add(defValue);
         }}, new ArrayList<>() {{
@@ -65,22 +105,22 @@ public class DelayFunctionBlockBasic extends FunctionBlockBasic {
     public void executeImpl() {
         if (this.propagateValue){
             this.propagateValue = false;
-            super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(this.inputsSeq.get(Clocks.instance().currentTime() - this.delay));
+            super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(this.inputsSeq.get(super.getSystemTime() - this.delay));
             this.ticksPassed = 0;
             return;
         }
         this.inputsSeq.add(this.input.getValue());
-        if (Clocks.instance().currentTime() < this.inputsSeq.size()){
+        if (super.getSystemTime() < this.inputsSeq.size()){
             this.propagateValue = true;
             return;
         }
-        if (Clocks.instance().currentTime() <= this.delay) {
+        if (super.getSystemTime() <= this.delay) {
             ValueHolder defValHolder = this.defValue != null ? this.defValue.getValue() : this.output.getDefaultValue();
             super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(defValHolder);
             this.ticksPassed++;
         }
-        if (Clocks.instance().currentTime() > this.delay){
-            super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(this.inputsSeq.get(Clocks.instance().currentTime() - this.delay));
+        if (super.getSystemTime() > this.delay){
+            super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(this.inputsSeq.get(super.getSystemTime() - this.delay));
             this.ticksPassed = 0;
         }
     }

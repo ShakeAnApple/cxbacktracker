@@ -26,4 +26,9 @@ public class IntegerValueHolder extends ValueHolder<Integer> {
     public boolean equals(Object obj) {
         return this.value == ((IntegerValueHolder) obj).value;
     }
+
+    @Override
+    public IntegerValueHolder clone(){
+        return new IntegerValueHolder(this.value);
+    }
 }

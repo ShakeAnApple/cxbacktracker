@@ -1,5 +1,6 @@
 package shakeanapple.backtracker.core.diagramexplanation.model;
 
+import shakeanapple.backtracker.core.diagramexplanation.DiagramExecutor;
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
 import shakeanapple.backtracker.core.diagramexplanation.Clocks;
 import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.DelayFunctionBlockBasic;
@@ -12,6 +13,7 @@ import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.Parser;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class FunctionBlockComplex extends FunctionBlockBase {
 
@@ -21,8 +23,15 @@ public class FunctionBlockComplex extends FunctionBlockBase {
         super(name, type, inputs, outputs);
 
         this.internalDiagram = internalDiagram;
-        Clocks.instance().onTick(this::releaseDelays);
-        Clocks.instance().onTick(this::releaseUnconnectedBlocks);
+        this.getClocks().onTick(this::tickChildrenTime);
+        this.getClocks().onTick(this::releaseDelays);
+        this.getClocks().onTick(this::releaseUnconnectedBlocks);
+    }
+
+    private void tickChildrenTime() {
+        for (FunctionBlockBase fb: this.internalDiagram.getFunctionBlocks()){
+            fb.tickSystemTime();
+        }
     }
 
     private void releaseUnconnectedBlocks() {
@@ -45,7 +54,7 @@ public class FunctionBlockComplex extends FunctionBlockBase {
         });
     }
 
-    public FunctionBlockBase findInternal(LinkedList<String> blockPath){
+    public FunctionBlockBase extractInternal(LinkedList<String> blockPath){
         FunctionBlockBase parent = this;
 
         for (String s : blockPath) {
@@ -58,8 +67,9 @@ public class FunctionBlockComplex extends FunctionBlockBase {
         return parent;
     }
 
-    public FunctionBlockBase findInternal(String blockName){
-        return this.internalDiagram.getFunctionBlocks().stream().filter(fb -> fb.getName().equals(blockName)).findFirst().orElse(null);
+    public FunctionBlockBase extractInternal(String blockName){
+        FunctionBlockBase block = this.internalDiagram.getFunctionBlocks().stream().filter(fb -> fb.getName().equals(blockName)).findFirst().orElse(null);
+        return block.clone();
     }
 
     private FunctionBlockBase findBlock(FunctionBlockComplex parent, String name){
@@ -109,6 +119,44 @@ public class FunctionBlockComplex extends FunctionBlockBase {
 
      //   System.out.println(String.format("Upper Block Processed: %s, Gate: %s, Timestamp: %s", this.getName(), output.getName(), timestamp));
         return result;
+    }
+
+    @Override
+    public FunctionBlockBase clone() {
+//        List<InputGate> inGates = inputs.stream().map(in -> new InputGate(in, this)).collect(Collectors.toList());
+//        List<OutputGate> outGates = outputs.stream().map(out -> new OutputGate(out, this)).collect(Collectors.toList());
+        List<InputVariable> ins = this.fbInterface().getInputs().values().stream().map(inputGate -> inputGate.input().clone()).collect(Collectors.toList());
+        List<OutputVariable> outs = this.fbInterface().getOutputs().values().stream().map(outputGate -> outputGate.output().clone()).collect(Collectors.toList());
+
+        Diagram diagramClone = this.internalDiagram.clone();
+        FunctionBlockComplex fbCloned = new FunctionBlockComplex(this.getName(), this.getType(),
+                ins,
+                outs,
+                diagramClone
+                );
+        Map<String, FunctionBlockBase> internalBlocksCloned = diagramClone.getFunctionBlocks().stream().collect(Collectors.toMap(FunctionBlockBase::getName, fb -> fb));
+        for (InputGate inGate: this.fbInterface().getInputs().values()){
+            for (Connection conn: inGate.getOutgoingConnections()){
+                DiagramElement from = fbCloned.fbInterface().getInputs().get(inGate.getName());
+                InputGate fromGate = fbCloned.fbInterface().getInputs().get(inGate.getName());
+                DiagramElement to = internalBlocksCloned.get(conn.to().getName());
+                InputGate toGate = ((FunctionBlockBase)to).fbInterface().getInputs().get(conn.toGate().getName());
+                fromGate.makeOutgoingConnection(toGate, from, to, conn.isInverted());
+                toGate.makeIncomingConnection(fromGate, from, to, conn.isInverted());
+            }
+        }
+
+        for (OutputGate outGate: this.fbInterface().getOutputs().values()){
+                Connection conn = outGate.getIncomingConnection();
+                DiagramElement from = internalBlocksCloned.get(conn.from().getName());
+                OutputGate fromGate = ((FunctionBlockBase)from).fbInterface().getOutputs().get(conn.fromGate().getName());
+                DiagramElement to = fbCloned.fbInterface().getOutputs().get(outGate.getName());
+                OutputGate toGate = fbCloned.fbInterface().getOutputs().get(outGate.getName());
+                fromGate.makeOutgoingConnection(toGate, from, to, conn.isInverted());
+                toGate.makeIncomingConnection(fromGate, from, to, conn.isInverted());
+        }
+
+        return fbCloned;
     }
 
     public static FunctionBlockComplex parse(String path) {

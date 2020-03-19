@@ -20,4 +20,9 @@ public class IntegerDynamicVariable extends DynamicVariable<IntegerValueHolder> 
     public void setValue(IntegerValueHolder value) {
         this.value = value;
     }
+
+    @Override
+    public DynamicVariable<IntegerValueHolder> clone() {
+        return new IntegerDynamicVariable(this.value.clone(), this.getName());
+    }
 }

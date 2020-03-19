@@ -10,6 +10,23 @@
 <!--<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml">-->
 <!--    <DiagramControl fx:id="diagram" VBox.vgrow="ALWAYS" prefHeight="1000" prefWidth="1000"/>-->
 <!--</fx:root>-->
+<?import shakeanapple.backtracker.ui.infrasructure.FxmlListCellFactory?>
 <fx:root type="javafx.scene.control.Tab" xmlns:fx="http://javafx.com/fxml">
-    <DiagramControl fx:id="diagramControl" VBox.vgrow="ALWAYS" prefHeight="1000" prefWidth="1000"/>
+    <SplitPane dividerPositions="0.8" >
+        <DiagramControl fx:id="diagramControl" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" prefHeight="1000" prefWidth="1000"/>
+        <VBox SplitPane.resizableWithParent="false">
+            <Label text="Diagram explanation result"/>
+            <ListView fx:id="diagramCausesList">
+                <cellFactory>
+                    <FxmlListCellFactory fxmlSource="@../../listcell/diagramCausesListCell.fxml"/>
+                </cellFactory>
+            </ListView>
+        </VBox>
+    </SplitPane>
+
+<!--    <VBox maxWidth="20" minWidth="20" HBox.hgrow="NEVER">-->
+<!--            <Button>+</Button>-->
+<!--        </VBox>-->
+
 </fx:root>
+

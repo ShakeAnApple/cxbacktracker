@@ -7,4 +7,7 @@ public abstract class ValueHolder<VType> {
     public abstract String toString();
 
     public abstract ValueHolder<VType> invert();
+
+    @Override
+    public abstract ValueHolder<VType> clone();
 }

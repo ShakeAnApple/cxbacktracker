@@ -39,12 +39,6 @@
             </SplitPane>
 
             <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" SplitPane.resizableWithParent="false">
-                <Label text="Diagram explanation result:"/>
-                <ListView fx:id="diagramCausesList">
-                    <cellFactory>
-                        <FxmlListCellFactory fxmlSource="@listcell/diagramCausesListCell.fxml"/>
-                    </cellFactory>
-                </ListView>
                 <Label text="Counterexample steps:"/>
                 <ListView fx:id="stepsList">
                     <cellFactory>

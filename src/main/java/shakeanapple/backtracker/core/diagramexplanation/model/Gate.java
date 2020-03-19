@@ -53,10 +53,10 @@ public abstract class Gate extends DiagramElement {
     }
 
     public void populateInput(ValueHolder value) {
-        if (this.gateTime < Clocks.instance().currentTime()){
+        if (this.gateTime < this.owner.getClocks().currentTime()){
             this.input().setValue(value);
             this.inputUpdatedEvent.fire(this);
-            this.gateTime = Clocks.instance().currentTime();
+            this.gateTime = this.owner.getClocks().currentTime();
             this.propagateValue();
         } else{
             this.delayPropagation(value);
@@ -64,7 +64,7 @@ public abstract class Gate extends DiagramElement {
     }
 
     private void delayPropagation(ValueHolder value) {
-        Clocks.instance().onceOnNextTick(() -> {
+        this.owner.getClocks().onceOnNextTick(() -> {
             this.populateInput(value);});
     }
 

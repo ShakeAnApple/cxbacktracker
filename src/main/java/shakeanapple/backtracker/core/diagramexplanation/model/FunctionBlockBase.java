@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 public abstract class FunctionBlockBase extends DiagramElement implements InterfaceUpdatedListener {
     private FBInterface fbInterface;
 
+    private Clocks clocks;
+
     private BlockInterfaceHistory history;
 
     public FunctionBlockBase(String name, String type, List<InputVariable> inputs, List<OutputVariable> outputs) {
@@ -22,11 +24,24 @@ public abstract class FunctionBlockBase extends DiagramElement implements Interf
         this.fbInterface = new FBInterface(inGates, outGates);
         this.fbInterface.interfaceUpdatedEvent().addListener(this);
         this.history = new BlockInterfaceHistory(this.fbInterface);
+        this.clocks = new Clocks();
     }
 
     public void execute() {
         this.executeImpl();
-        this.history.record(this.fbInterface, Clocks.instance().currentTime());
+        this.history.record(this.fbInterface, this.clocks.currentTime());
+    }
+
+    public void tickSystemTime(){
+        this.clocks.tick();
+    }
+
+    protected Clocks getClocks(){
+        return this.clocks;
+    }
+
+    public int getSystemTime(){
+        return this.clocks.currentTime();
     }
 
     public BlockInterfaceHistory history(){
@@ -54,4 +69,7 @@ public abstract class FunctionBlockBase extends DiagramElement implements Interf
     public boolean isRoot() {
         return this.getName().equals("root");
     }
+
+    @Override
+    public abstract FunctionBlockBase clone();
 }

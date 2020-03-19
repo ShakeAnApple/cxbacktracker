@@ -73,7 +73,9 @@ public class DiagramSnapshot {
                     FunctionBlockSnapshot from = blockSnapshots.get(connection.from().getName());
                     FunctionBlockSnapshot to = blockSnapshots.get(connection.to().getName());
 
-                    connections.add(new ConnectionSnapshot(from, connection.fromGate().getName(), to, connection.toGate().getName(), connection.isInverted(), connection.fromGate().getValue()));
+                    if (connection.fromGate() != null && connection.toGate() != null) {
+                        connections.add(new ConnectionSnapshot(from, connection.fromGate().getName(), to, connection.toGate().getName(), connection.isInverted(), connection.fromGate().getValue()));
+                    }
                 }
             }
         }

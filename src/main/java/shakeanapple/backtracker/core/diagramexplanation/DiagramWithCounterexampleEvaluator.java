@@ -7,6 +7,7 @@ import shakeanapple.backtracker.core.counterexample.CounterexampleCursor;
 import shakeanapple.backtracker.core.counterexample.State;
 import shakeanapple.backtracker.core.diagramexplanation.model.*;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.DiagramSnapshot;
+import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.FunctionBlockSnapshot;
 
 import java.util.Map;
 
@@ -50,7 +51,7 @@ public class DiagramWithCounterexampleEvaluator implements DiagramExecutor {
     }
 
     @Override
-    public Map<String, ValueHolder> extractInputsSnapshotFor(int stepNum, String blockName) {
+    public Map<String, ValueHolder> extractInputSnapshotFor(int stepNum, String blockName) {
         return null;
     }
 

@@ -24,4 +24,7 @@ public abstract class DynamicVariable<TVal extends ValueHolder> extends Variable
     public abstract TVal getValue();
 
     public abstract void setValue(TVal val);
+
+    @Override
+    public abstract DynamicVariable<TVal> clone();
 }

@@ -29,7 +29,7 @@ public class DiagramCounterexampleExecutor implements DiagramExecutor {
         if (this.cursor.hasNext()) {
             this.cursor.moveNext();
             if (!this.stepsEvaluated.containsKey(this.cursor.getCurStateNum())) {
-                Clocks.instance().tick();
+                this.diagram.tickSystemTime();
                 this.evaluateDiagram();
                 DiagramSnapshot snapshot = DiagramSnapshot.fromDiagram(this.diagram);
                 this.stepsEvaluated.put(this.cursor.getCurStateNum(), snapshot);
@@ -66,20 +66,15 @@ public class DiagramCounterexampleExecutor implements DiagramExecutor {
     }
 
     @Override
-    public Map<String, ValueHolder> extractInputsSnapshotFor(int stepNum, String blockName) {
+    public Map<String,ValueHolder> extractInputSnapshotFor(int stepNum, String blockName) {
         DiagramSnapshot diagramSnapshot = this.stepsEvaluated.get(stepNum);
-        FunctionBlockSnapshot blockSnapshot = diagramSnapshot.getBlocks().stream().filter(block -> block.getName().equals(blockName)).findFirst().orElse(null);
-        return blockSnapshot.getFbInterface().getInputsValues();
+        FunctionBlockSnapshot snapshot =  diagramSnapshot.getBlocks().stream().filter(block -> block.getName().equals(blockName)).findFirst().orElse(null);
+        return snapshot.getFbInterface().getInputsValues();
     }
 
     private void evaluateDiagram() {
         for (InputGate inGate : this.diagram.fbInterface().getInputs().values()) {
-            String gateName = "";
-            if (!this.diagram.isRoot()){
-                gateName += this.diagram.getName() + ".";
-            }
-            gateName += inGate.getName();
-            inGate.populateInput(this.cursor.getCurState().getVarByName(gateName).getValue());
+            inGate.populateInput(this.cursor.getCurState().getVarByName(inGate.getName()).getValue());
         }
 
         for (DiagramElement de : this.diagram.getInternalDiagram().getFunctionBlocks()) {
@@ -95,6 +90,6 @@ public class DiagramCounterexampleExecutor implements DiagramExecutor {
             }
         }
 
-        this.diagram.history().record(this.diagram.fbInterface(), Clocks.instance().currentTime());
+        this.diagram.history().record(this.diagram.fbInterface(), this.diagram.getSystemTime());
     }
 }

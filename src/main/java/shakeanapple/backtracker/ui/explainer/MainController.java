@@ -33,8 +33,6 @@ import java.util.stream.Collectors;
 
 public class MainController implements Initializable {
     @FXML
-    public ListView<Cause> diagramCausesList;
-    @FXML
     public ListView<FormulaCause> formulaCausesList;
     @FXML
     private ListView<Step> stepsList;
@@ -78,8 +76,6 @@ public class MainController implements Initializable {
 
         this.valueTable.setOnTableCellClicked(this::onTableCellClicked);
 
-        this.diagramCausesList.setItems(FXCollections.observableArrayList());
-
         if (!this.isReadonly.getValue()) {
             this.stepsList.setItems(FXCollections.observableArrayList(
                     Context.instance().getCounterexample().getPath().values().stream().sorted(Comparator.comparing(State::getOrder))
@@ -99,9 +95,7 @@ public class MainController implements Initializable {
         this.diagramExplainer.reset();
         this.ltlExplainer.reset();
 
-        Clocks.instance().reset();
         this.formulaCausesList.setItems(FXCollections.observableArrayList());
-        this.diagramCausesList.setItems(FXCollections.observableArrayList());
         this.stepsList.setItems(FXCollections.observableArrayList());
 
         Context.instance().reset();
@@ -120,10 +114,6 @@ public class MainController implements Initializable {
         this.valueTable.init();
         this.diagramExplainer.init();
         this.ltlExplainer.init();
-
-        this.diagramExplainer.getDiagramCausesList().addListener((ListChangeListener<? super Cause>) c -> {
-            this.diagramCausesList.setItems(this.diagramExplainer.getDiagramCausesList());
-        });
 
         this.isInitialState = true;
         this.isReadonly.setValue(false);
@@ -159,7 +149,6 @@ public class MainController implements Initializable {
 
 
     private boolean onTableCellClicked(VarValueForStep varValueForStep) {
-//        this.onTableCellClicked(varValueForStep);
 
         if (!varValueForStep.isCauseProperty().getValue()) {
             return true;
@@ -167,9 +156,7 @@ public class MainController implements Initializable {
         this.stepsList.getSelectionModel().select(this.stepsList.getItems().stream().filter(step -> step.getNumber() == varValueForStep.getStepNum()).findFirst().get());
         Context.instance().setCurrentStep(varValueForStep.getStepNum() + 1);
         this.diagramExplainer.updateDiagram();
-        List<Cause> diagramRootCauses = this.diagramExplainer.explainCause(varValueForStep.getFullVarName(), varValueForStep.getBlockName(), Context.instance().getCurrentStep());
-        this.diagramCausesList.getItems().clear();
-        this.diagramCausesList.setItems(FXCollections.observableArrayList(diagramRootCauses));
+        this.diagramExplainer.explainCause(varValueForStep.getFullVarName(), varValueForStep.getBlockName(), Context.instance().getCurrentStep());
 
         return true;
     }

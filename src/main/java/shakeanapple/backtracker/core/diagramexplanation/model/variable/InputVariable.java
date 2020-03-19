@@ -10,14 +10,18 @@ public class InputVariable<TVal extends ValueHolder> extends FBVariable<TVal> {
 
     private int order;
 
+    private DynamicVariable<TVal> variable;
+
     public InputVariable(long id, DynamicVariable<TVal> variable, int order) {
         super(variable, id);
         this.order = order;
+        this.variable = variable;
     }
 
     private InputVariable(long id, OutputVariable output){
         super(output, id);
         this.order = 0;
+        this.variable = output;
     }
 
     public int getOrder() {
@@ -26,5 +30,10 @@ public class InputVariable<TVal extends ValueHolder> extends FBVariable<TVal> {
 
     public static InputVariable createSharedWithOutput(OutputVariable output, long id){
         return new InputVariable(id, output);
+    }
+
+    @Override
+    public InputVariable clone(){
+        return new InputVariable(this.getId(), this.variable.clone(), this.order);
     }
 }

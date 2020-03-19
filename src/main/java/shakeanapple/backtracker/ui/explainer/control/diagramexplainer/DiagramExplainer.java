@@ -61,24 +61,18 @@ public class DiagramExplainer extends TabPane {
         this.getTabs().add(this.systemOverviewTab);
     }
 
-    public List<Cause> explainCause(String varName, String blockName, int timestamp) {
-        return this.systemOverviewTab.explainCause(varName, blockName, timestamp);
+    public void explainCause(String varName, String blockName, int timestamp) {
+        this.systemOverviewTab.explainCause(varName, blockName, timestamp);
     }
 
     public void updateDiagram(){
         for (Tab tab: this.getTabs()){
             ((DiagramExplainerTab)tab).updateDiagram();
         }
-//        this.systemOverviewTab.updateDiagram();
     }
 
     public void reset() {
         this.getTabs().clear();
-//        this.systemOverviewTab.reset();
-    }
-
-    public ObservableList<Cause> getDiagramCausesList(){
-        return this.systemOverviewTab.getDiagramCausesList();
     }
 
     public void addTab(DiagramExplainerTab subTab) {

@@ -1,6 +1,8 @@
 package shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.logic;
 
 import shakeanapple.backtracker.common.variable.BooleanValueHolder;
+import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockBase;
+import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.BasicBlocksIdGenerator;
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
 import shakeanapple.backtracker.core.diagramexplanation.model.InputGate;
 import shakeanapple.backtracker.core.diagramexplanation.model.OutputGate;
@@ -17,8 +19,16 @@ public class OrFunctionBlockBasic extends FunctionBlockBasic {
 
     private final OutputVariable result;
 
-    public OrFunctionBlockBasic(List<InputVariable> inputs, OutputVariable res) {
-        super("Or", inputs, new ArrayList<>() {{
+    public OrFunctionBlockBasic(boolean generateId, List<InputVariable> inputs, OutputVariable res) {
+        super("Or"+ (generateId ? BasicBlocksIdGenerator.next("Or") : ""), inputs, new ArrayList<>() {{
+            add(res);
+        }});
+
+        this.result = res;
+    }
+
+    public OrFunctionBlockBasic(String name, List<InputVariable> inputs, OutputVariable res) {
+        super(name, inputs, new ArrayList<>() {{
             add(res);
         }});
 
@@ -36,6 +46,11 @@ public class OrFunctionBlockBasic extends FunctionBlockBasic {
         super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(
                 new BooleanValueHolder(res)
         );
+    }
+
+    @Override
+    public FunctionBlockBase clone() {
+        return new OrFunctionBlockBasic(this.getName(), this.getInputs().stream().map(in -> in.clone()).collect(Collectors.toList()), this.result.clone());
     }
 
     @Override

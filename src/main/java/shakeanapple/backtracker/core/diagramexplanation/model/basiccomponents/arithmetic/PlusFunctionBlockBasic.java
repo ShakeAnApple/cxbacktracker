@@ -1,6 +1,9 @@
 package shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.arithmetic;
 
 import shakeanapple.backtracker.common.variable.IntegerValueHolder;
+import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockBase;
+import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.BasicBlocksIdGenerator;
+import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.logic.LessEqFunctionBlockBasic;
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
 import shakeanapple.backtracker.core.diagramexplanation.model.OutputGate;
 import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.BinOpFunctionBlockBasic;
@@ -12,8 +15,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PlusFunctionBlockBasic extends BinOpFunctionBlockBasic {
-    public PlusFunctionBlockBasic(InputVariable<IntegerValueHolder> left, InputVariable<IntegerValueHolder> right, OutputVariable<IntegerValueHolder> output) {
-        super("Plus", left, right, output);
+    public PlusFunctionBlockBasic(boolean generateId,InputVariable<IntegerValueHolder> left, InputVariable<IntegerValueHolder> right, OutputVariable<IntegerValueHolder> output) {
+        super("Plus"+ (generateId ? BasicBlocksIdGenerator.next("Plus") : ""), left, right, output);
+    }
+
+    private PlusFunctionBlockBasic(String name, InputVariable<IntegerValueHolder> left, InputVariable<IntegerValueHolder> right, OutputVariable<IntegerValueHolder> output) {
+        super(name, left, right, output);
     }
 
     @Override
@@ -21,6 +28,11 @@ public class PlusFunctionBlockBasic extends BinOpFunctionBlockBasic {
         super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(
                 new IntegerValueHolder(((IntegerValueHolder)super.getLeft().getValue()).getValue() + ((IntegerValueHolder)super.getRight().getValue()).getValue())
         );
+    }
+
+    @Override
+    public FunctionBlockBase clone() {
+        return new PlusFunctionBlockBasic(this.getName(), this.getLeft().clone(), this.getRight().clone(), this.getOutput().clone());
     }
 
     @Override

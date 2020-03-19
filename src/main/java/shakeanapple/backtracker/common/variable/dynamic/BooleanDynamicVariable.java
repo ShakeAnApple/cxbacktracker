@@ -21,4 +21,9 @@ public class BooleanDynamicVariable extends DynamicVariable<BooleanValueHolder> 
     public void setValue(BooleanValueHolder value) {
         this.value = value;
     }
+
+    @Override
+    public DynamicVariable<BooleanValueHolder> clone() {
+        return new BooleanDynamicVariable(this.value.clone(), this.getName());
+    }
 }

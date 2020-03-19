@@ -1,6 +1,8 @@
 package shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.logic;
 
 import shakeanapple.backtracker.common.variable.BooleanValueHolder;
+import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockBase;
+import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.BasicBlocksIdGenerator;
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
 import shakeanapple.backtracker.core.diagramexplanation.model.InputGate;
 import shakeanapple.backtracker.core.diagramexplanation.model.OutputGate;
@@ -17,8 +19,16 @@ public class AndFunctionBlockBasic extends FunctionBlockBasic {
 
     private final OutputVariable result;
 
-    public AndFunctionBlockBasic(List<InputVariable> inputs, OutputVariable res) {
-        super("And", inputs, new ArrayList<OutputVariable>() {{
+    public AndFunctionBlockBasic(boolean generateId, List<InputVariable> inputs, OutputVariable res) {
+        super("And" + (generateId ? BasicBlocksIdGenerator.next("And") : ""), inputs, new ArrayList<OutputVariable>() {{
+            add(res);
+        }});
+
+        this.result = res;
+    }
+
+    private AndFunctionBlockBasic(String name, List<InputVariable> inputs, OutputVariable res) {
+        super(name, inputs, new ArrayList<OutputVariable>() {{
             add(res);
         }});
 
@@ -36,6 +46,11 @@ public class AndFunctionBlockBasic extends FunctionBlockBasic {
         super.fbInterface().getOutputs().values().stream().findFirst().get().assignValue(
                 new BooleanValueHolder(res)
         );
+    }
+
+    @Override
+    public FunctionBlockBase clone() {
+        return new AndFunctionBlockBasic(this.getName(), this.getInputs().stream().map(InputVariable::clone).collect(Collectors.toList()), this.getOutputs().get(0).clone());
     }
 
     @Override

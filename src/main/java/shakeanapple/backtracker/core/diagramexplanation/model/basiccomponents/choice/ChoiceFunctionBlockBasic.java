@@ -1,6 +1,8 @@
 package shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.choice;
 
 import shakeanapple.backtracker.common.variable.BooleanValueHolder;
+import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockBase;
+import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.BasicBlocksIdGenerator;
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
 import shakeanapple.backtracker.core.diagramexplanation.Clocks;
 import shakeanapple.backtracker.core.diagramexplanation.model.OutputGate;
@@ -19,8 +21,19 @@ public class ChoiceFunctionBlockBasic extends FunctionBlockBasic {
 
     private final Map<Integer, Choice> executedChoices = new HashMap<>();
 
-    public ChoiceFunctionBlockBasic(List<Choice> choices, OutputVariable output) {
-        super("Choice",
+    public ChoiceFunctionBlockBasic(boolean generateId,List<Choice> choices, OutputVariable output) {
+        super("Choice"+ (generateId ? BasicBlocksIdGenerator.next("Choice") : ""),
+                inferInputs(choices),
+                new ArrayList<>() {{
+                    add(output);
+                }}
+        );
+        this.choices = choices;
+        this.output = output;
+    }
+
+    private ChoiceFunctionBlockBasic(String name,List<Choice> choices, OutputVariable output) {
+        super(name,
                 inferInputs(choices),
                 new ArrayList<>() {{
                     add(output);
@@ -40,7 +53,7 @@ public class ChoiceFunctionBlockBasic extends FunctionBlockBasic {
     public void executeImpl() {
         for (Choice choice : this.choices) {
             if (((BooleanValueHolder) choice.getCondition().getValue()).getValue()) {
-                this.executedChoices.put(Clocks.instance().currentTime(), choice.clone());
+                this.executedChoices.put(super.getSystemTime(), choice.clone());
 //                System.out.println("Executed choices:");
 //                this.executedChoices.entrySet().stream().forEach((kv) -> {
 //                    System.out.println("Step: " + kv.getKey() + " Choice: " + kv.getValue().toString());
@@ -49,6 +62,11 @@ public class ChoiceFunctionBlockBasic extends FunctionBlockBasic {
                 break;
             }
         }
+    }
+
+    @Override
+    public FunctionBlockBase clone() {
+        return new ChoiceFunctionBlockBasic(this.getName(), this.choices.stream().map(Choice::clone).collect(Collectors.toList()), this.output.clone());
     }
 
     @Override

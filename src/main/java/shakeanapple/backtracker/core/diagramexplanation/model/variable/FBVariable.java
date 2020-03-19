@@ -3,13 +3,13 @@ package shakeanapple.backtracker.core.diagramexplanation.model.variable;
 import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.common.variable.dynamic.DynamicVariable;
 
-public class FBVariable<TVal extends ValueHolder> extends DynamicVariable<TVal> {
+public abstract class FBVariable<TVal extends ValueHolder> extends DynamicVariable<TVal> {
     private final DynamicVariable<TVal> variable;
     private boolean isUnset;
 
     private long id;
 
-    public FBVariable(DynamicVariable variable, long id) {
+    public FBVariable(DynamicVariable<TVal> variable, long id) {
         super(variable.getName());
         this.variable = variable;
         this.id = id;

@@ -26,4 +26,9 @@ public class BooleanValueHolder extends ValueHolder<Boolean> {
     public boolean equals(Object obj) {
         return _value == ((BooleanValueHolder) obj)._value;
     }
+
+    @Override
+    public BooleanValueHolder clone(){
+        return new BooleanValueHolder(this.getValue());
+    }
 }

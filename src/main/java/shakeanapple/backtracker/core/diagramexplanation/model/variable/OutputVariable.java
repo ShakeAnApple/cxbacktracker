@@ -12,13 +12,16 @@ public class OutputVariable<TVal extends ValueHolder> extends FBVariable<TVal> {
 
 
     private ValueHolder defaultValue;
+    private final DynamicVariable variable;
 
     public OutputVariable(long id, DynamicVariable<TVal> variable) {
         super(variable, id);
+        this.variable = variable;
     }
 
-    private OutputVariable(long id, InputVariable input){
+    private OutputVariable(long id, InputVariable input) {
         super(input, id);
+        this.variable = input;
     }
 
     public OutputVariable(long id, DynamicVariable<TVal> variable, ValueHolder defaultValue) {
@@ -30,8 +33,15 @@ public class OutputVariable<TVal extends ValueHolder> extends FBVariable<TVal> {
         return this.defaultValue;
     }
 
-    public static OutputVariable createSharedWithInput(InputVariable input){
+    public static OutputVariable createSharedWithInput(InputVariable input) {
         return new OutputVariable(input.getId(), input);
     }
 
+    @Override
+    public OutputVariable clone() {
+        if (this.defaultValue != null) {
+            return new OutputVariable(this.getId(), this.variable.clone(), this.defaultValue.clone());
+        }
+        return new OutputVariable(this.getId(), this.variable.clone());
+    }
 }
