@@ -66,21 +66,28 @@ public class HierarchicalLayout extends Layout {
         double prefLevelDistance = width / maxLevel;
         prefLevelDistance = Math.max(prefLevelDistance, DiagramStyles.DIAGRAM_BLOCK_PADDING);
 
-        // TODO "adjust" feels uncomfortable
         double curX = 0;
         for (int i = 0; i <= maxLevel; i++) {
             List<DiagramCellView> levelCells = hierarchyLevels.get(i);
             int c = 0;
             double cellMaxWidth = 0;
-            for (double y = height / (levelCells.size() + 1); y < height && c <levelCells.size(); y += height / (levelCells.size() + 1)) {
-                DiagramCellView cell = levelCells.get(c);
-                cell.getView().relocate(curX, y);
+            double curY = 50;
+            for (DiagramCellView cell: levelCells){
+                cell.getView().relocate(curX, curY);
                 cellMaxWidth = Math.max(cellMaxWidth, cell.getWidth());
-//                Offset offset = this.panel.adjustCoords(cell);
-//                cell.relocate(curX + offset.left, y + offset.top);
-                c++;
+                curY += (30 + cell.getHeight());
             }
             curX += (prefLevelDistance + cellMaxWidth);
+
+//            for (double y = height / (levelCells.size() + 1); y < height && c <levelCells.size(); y += height / (levelCells.size() + 1)) {
+//                DiagramCellView cell = levelCells.get(c);
+//                cell.getView().relocate(curX, y);
+//                cellMaxWidth = Math.max(cellMaxWidth, cell.getWidth());
+////                Offset offset = this.panel.adjustCoords(cell);
+////                cell.relocate(curX + offset.left, y + offset.top);
+//                c++;
+//            }
+//            curX += (prefLevelDistance + cellMaxWidth);
         }
     }
 
@@ -98,7 +105,7 @@ public class HierarchicalLayout extends Layout {
             int parentLevel = this.defineLevels(parentCell, cellLevels);
             if (!cellLevels.containsKey(((NodeView)parentCell).getViewId())) {
                 cellLevels.put(((NodeView)parentCell).getViewId(), parentLevel);
-            } else if (cellLevels.get(((NodeView)parentCell).getViewId()) == Integer.MIN_VALUE) {
+            } else if ((cellLevels.get(((NodeView)parentCell).getViewId()) == Integer.MIN_VALUE) || cellLevels.get(((NodeView)parentCell).getViewId()) == 0) {
                 cellLevels.replace(((NodeView)parentCell).getViewId(), parentLevel);
             }
             maxParentLevel = Math.max(parentLevel, maxParentLevel);

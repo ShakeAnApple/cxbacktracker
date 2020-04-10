@@ -16,4 +16,6 @@ public interface DiagramCellView {
     double getWidth();
 
     String getName();
+
+    double getHeight();
 }

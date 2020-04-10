@@ -88,4 +88,9 @@ public class InputInterfaceCellView extends NodeView implements DiagramCellView{
         return this.name;
     }
 
+    @Override
+    public double getHeight() {
+        return this.view.heightProperty().get();
+    }
+
 }
