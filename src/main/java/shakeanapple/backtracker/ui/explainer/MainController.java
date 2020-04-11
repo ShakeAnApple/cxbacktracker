@@ -3,7 +3,6 @@ package shakeanapple.backtracker.ui.explainer;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -12,8 +11,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import shakeanapple.backtracker.Config;
 import shakeanapple.backtracker.core.counterexample.Counterexample;
+import shakeanapple.backtracker.core.counterexample.SpecVerified;
 import shakeanapple.backtracker.core.counterexample.State;
-import shakeanapple.backtracker.core.diagramexplanation.Clocks;
 import shakeanapple.backtracker.core.ltl.explanation.model.FormulaCause;
 import shakeanapple.backtracker.ui.explainer.control.diagramexplainer.DiagramExplainer;
 import shakeanapple.backtracker.ui.explainer.control.ltlexplainer.LtlFormulaExplainer;
@@ -21,11 +20,11 @@ import shakeanapple.backtracker.ui.explainer.control.menubar.model.CustomConfig;
 import shakeanapple.backtracker.ui.explainer.control.menubar.MenuBarCustom;
 import shakeanapple.backtracker.ui.explainer.control.valuetable.ValueTable;
 import shakeanapple.backtracker.ui.explainer.control.valuetable.model.VarValueForStep;
-import shakeanapple.backtracker.ui.explainer.control.diagramexplainer.model.Cause;
 import shakeanapple.backtracker.ui.explainer.model.Step;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -58,8 +57,15 @@ public class MainController implements Initializable {
 
     public MainController() throws IOException {
         if (Config.instance().useConfig()){
-            Context.instance().setFormulaStr(Config.instance().getFormula());
-            Context.instance().setCounterexample(Counterexample.load(Config.instance().getCxPath()));
+            if (Config.instance().useFullCx()) {
+                // only failed ones will be displayed
+                List<SpecVerified> specs = Counterexample.loadFromNusmvOutput(Config.instance().getCxPath()).stream()
+                        .filter(spec -> spec.getCx() != null).collect(Collectors.toList());
+                Context.instance().setSpecsVerified(specs);
+            } else {
+                SpecVerified spec = new SpecVerified(Config.instance().getFormula(), Counterexample.load(Config.instance().getCxPath()));
+                Context.instance().setSpecsVerified(Arrays.asList(spec));
+            }
             Context.instance().setDiagramPath(Config.instance().getDiagramPath());
         } else{
             this.isReadonly.setValue(true);
@@ -85,7 +91,29 @@ public class MainController implements Initializable {
             this.valueTable.init();
             this.diagramExplainer.init();
             this.ltlExplainer.init();
+            this.ltlExplainer.setOnExplainedFormulaChanged(this::changeFormula);
         }
+    }
+
+    private boolean changeFormula(SpecVerified newFormula) {
+        this.valueTable.reset();
+        this.diagramExplainer.reset();
+        this.ltlExplainer.reset();
+        this.stepsList.getItems().clear();
+
+        this.formulaCausesList.setItems(FXCollections.observableArrayList());
+        this.stepsList.setItems(FXCollections.observableArrayList());
+
+        Context.instance().setActiveSpecVerified(newFormula);
+
+        this.valueTable.init();
+        this.diagramExplainer.init();
+        this.ltlExplainer.init();
+        this.stepsList.setItems(FXCollections.observableArrayList(
+                Context.instance().getCounterexample().getPath().values().stream().sorted(Comparator.comparing(State::getOrder))
+                        .map(state -> new Step(state.getOrder(), Context.instance().getCounterexample().getLoopStart() == state.getOrder())).collect(Collectors.toList())
+        ));
+        return true;
     }
 
     private void cleanMainView(){
@@ -102,8 +130,13 @@ public class MainController implements Initializable {
     }
 
     private boolean initMainView(CustomConfig config){
-        Context.instance().setFormulaStr(config.getFormulaCustom());
-        Context.instance().setCounterexample(Counterexample.load(config.getCxPathCustom()));
+        if (config.useFullCx()) {
+            List<SpecVerified> specs = Counterexample.loadFromNusmvOutput(config.getCxPathCustom());
+            Context.instance().setSpecsVerified(specs);
+        } else {
+            SpecVerified spec = new SpecVerified(config.getFormulaCustom(), Counterexample.load(config.getCxPathCustom()));
+            Context.instance().setSpecsVerified(Arrays.asList(spec));
+        }
         Context.instance().setDiagramPath(config.getDiagramPathCustom());
 
         this.stepsList.setItems(FXCollections.observableArrayList(

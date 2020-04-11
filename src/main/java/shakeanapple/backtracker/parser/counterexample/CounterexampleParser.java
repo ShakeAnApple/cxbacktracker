@@ -10,12 +10,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Parser {
+public class CounterexampleParser {
 
     private final String path;
     private boolean loopIndicator = false;
 
-    public Parser(String path) {
+    public CounterexampleParser(String path) {
         this.path = path;
     }
 

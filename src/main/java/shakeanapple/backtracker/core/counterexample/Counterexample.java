@@ -1,7 +1,7 @@
 package shakeanapple.backtracker.core.counterexample;
 
-import org.w3c.dom.css.Counter;
-import shakeanapple.backtracker.parser.counterexample.Parser;
+import shakeanapple.backtracker.parser.counterexample.CounterexampleParser;
+import shakeanapple.backtracker.parser.counterexample.SpecVerifiedParser;
 
 import java.util.List;
 import java.util.Map;
@@ -32,11 +32,21 @@ public class Counterexample {
 
     public static Counterexample load(String path){
         try {
-            Parser p = new Parser(path);
+            CounterexampleParser p = new CounterexampleParser(path);
             return p.parse();
         }
         catch (Exception e){
             throw new RuntimeException("Can't load counterexample");
+        }
+    }
+
+    public static List<SpecVerified> loadFromNusmvOutput(String path){
+        try {
+            SpecVerifiedParser p = new SpecVerifiedParser(path);
+            return p.parse();
+        }
+        catch (Exception e){
+            throw new RuntimeException("Can't load failed formulas");
         }
     }
 }

@@ -1,15 +1,18 @@
 package shakeanapple.backtracker.ui.explainer;
 
 import shakeanapple.backtracker.core.counterexample.Counterexample;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.IdGenerator;
+import shakeanapple.backtracker.core.counterexample.SpecVerified;
+
+import java.util.List;
 
 public class Context {
     private int currentStep = 0;
-    private Counterexample cx;
-    private String formulaStr;
 
     private static Context instance;
     private String diagramPath;
+
+    private List<SpecVerified> specsVerified;
+    private SpecVerified activeSpecVerified;
 
     private Context() {
     }
@@ -21,6 +24,14 @@ public class Context {
         return instance;
     }
 
+    public SpecVerified getActiveSpecVerified() {
+        return this.activeSpecVerified;
+    }
+
+    public List<SpecVerified> getSpecsVerified() {
+        return this.specsVerified;
+    }
+
     public int getCurrentStep(){
         return this.currentStep;
     }
@@ -29,20 +40,17 @@ public class Context {
         this.currentStep = stepNum;
     }
 
-    public void setCounterexample(Counterexample cx){
-        this.cx = cx;
+    public void setSpecsVerified(List<SpecVerified> specsVerified){
+        this.specsVerified = specsVerified;
+        this.activeSpecVerified = this.specsVerified.get(0);
     }
 
     public Counterexample getCounterexample() {
-        return this.cx;
+        return this.activeSpecVerified.getCx();
     }
 
     public String getFormulaStr() {
-        return this.formulaStr;
-    }
-
-    public void setFormulaStr(String formulaStr) {
-        this.formulaStr = formulaStr;
+        return this.activeSpecVerified.getFormulaStr();
     }
 
     public String getDiagramPath() {
@@ -55,8 +63,11 @@ public class Context {
 
     public void reset() {
         this.currentStep = 0;
-        this.cx = null;
         this.diagramPath = null;
-        this.formulaStr = null;
+        this.specsVerified.clear();
+    }
+
+    public void setActiveSpecVerified(SpecVerified newFormula) {
+        this.activeSpecVerified = this.specsVerified.stream().filter(spec -> spec.toString().equals(newFormula.toString())).findFirst().get();
     }
 }

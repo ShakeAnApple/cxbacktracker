@@ -92,7 +92,7 @@ public class MenuBarCustom extends VBox {
             this.initialDirectory = file.getParentFile();
             this.config.setCxPathCustom(file.getAbsolutePath());
             if (this.config.isCompleted()) {
-                this.onConfigCompleted.apply(config);
+                this.onConfigCompleted.apply(this.config);
             }
         }
     }
@@ -132,7 +132,21 @@ public class MenuBarCustom extends VBox {
                     .filter(str -> !str.isBlank() && !str.isEmpty())
                     .findFirst().orElse(""));
             if (this.config.isCompleted()) {
-                this.onConfigCompleted.apply(config);
+                this.onConfigCompleted.apply(this.config);
+            }
+        }
+    }
+
+    public void handleReadRawNusmvCounterexampleOutput(ActionEvent actionEvent){
+        File file = this.chooseFile(actionEvent, null);
+        this.config.useFullCx(true);
+        if (file != null) {
+            this.preProcessFile();
+
+            this.initialDirectory = file.getParentFile();
+            this.config.setCxPathCustom(file.getAbsolutePath());
+            if (this.config.isCompleted()) {
+                this.onConfigCompleted.apply(this.config);
             }
         }
     }

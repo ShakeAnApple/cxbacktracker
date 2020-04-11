@@ -149,7 +149,12 @@ public class DiagramExplainerTab extends Tab {
             return false;
         }
 
-        DiagramExplainerTab subTab = new DiagramExplainerTab(new LinkedList<>(this.pathInDiagram), blockName, this.parent);
+        String tabTitle = this.getText() + "." + blockName;
+        if (this.parent.getTabs().stream().anyMatch(tab -> tab.getText().equals(tabTitle))){
+            return false;
+        }
+
+        DiagramExplainerTab subTab = new DiagramExplainerTab(new LinkedList<>(this.pathInDiagram), tabTitle, this.parent);
         this.parent.addTab(subTab);
         subTab.init((FunctionBlockComplex) child, this.diagramExecutor);
         subTab.updateDiagram();

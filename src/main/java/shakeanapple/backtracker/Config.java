@@ -14,6 +14,7 @@ public class Config {
     private String diagramPath;
     private String cxPath;
 
+    private boolean useFullCx;
     private boolean useConfig;
 
     private Config() throws IOException {
@@ -43,6 +44,10 @@ public class Config {
         return this.useConfig;
     }
 
+    public boolean useFullCx() {
+        return this.useFullCx;
+    }
+
     private void readPropValues() throws IOException {
         InputStream inputStream = null;
         try {
@@ -57,13 +62,12 @@ public class Config {
                 throw new FileNotFoundException("property file '" + propFileName + "' not found in the classpath");
             }
 
-            Date time = new Date(System.currentTimeMillis());
-
             // get the property value and print it out
             this.useConfig = prop.getProperty("useConfig").toLowerCase().trim().equals("true");
             this.formula = prop.getProperty("formula");
             this.diagramPath = prop.getProperty("diagram");
             this.cxPath = prop.getProperty("counterexample");
+            this.useFullCx = prop.getProperty("useFullCx").toLowerCase().trim().equals("true");
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

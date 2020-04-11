@@ -4,6 +4,15 @@ public class CustomConfig {
     private String diagramPathCustom;
     private String cxPathCustom;
     private String formulaCustom;
+    private boolean isLoadFromRawNusmvOutput;
+
+    public boolean useFullCx() {
+        return this.isLoadFromRawNusmvOutput;
+    }
+
+    public void useFullCx(boolean loadFromRawNusmvOutput) {
+        this.isLoadFromRawNusmvOutput = loadFromRawNusmvOutput;
+    }
 
     public String getDiagramPathCustom() {
         return this.diagramPathCustom;
@@ -30,7 +39,7 @@ public class CustomConfig {
     }
 
     public boolean isCompleted(){
-        return this.cxPathCustom != null && this.diagramPathCustom != null && this.formulaCustom != null;
+        return  (this.cxPathCustom != null && this.diagramPathCustom != null) && (this.isLoadFromRawNusmvOutput || this.formulaCustom != null);
     }
 
     public void clear() {
