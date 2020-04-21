@@ -187,9 +187,9 @@ public class MainController implements Initializable {
             return true;
         }
         this.stepsList.getSelectionModel().select(this.stepsList.getItems().stream().filter(step -> step.getNumber() == varValueForStep.getStepNum()).findFirst().get());
-        Context.instance().setCurrentStep(varValueForStep.getStepNum() + 1);
+        Context.instance().setCurrentStep(varValueForStep.getStepNum());
         this.diagramExplainer.updateDiagram();
-        this.diagramExplainer.explainCause(varValueForStep.getFullVarName(), varValueForStep.getBlockName(), Context.instance().getCurrentStep());
+        this.diagramExplainer.explainCause(varValueForStep.getFullVarName(), varValueForStep.getBlockName(), Context.instance().getCurrentStep() + 1);
 
         return true;
     }
