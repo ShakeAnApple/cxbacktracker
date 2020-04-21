@@ -1,6 +1,7 @@
 package shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.choice;
 
 import shakeanapple.backtracker.common.variable.BooleanValueHolder;
+import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockBase;
 import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.BasicBlocksIdGenerator;
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
@@ -75,9 +76,34 @@ public class ChoiceFunctionBlockBasic extends FunctionBlockBasic {
 //        this.executedChoices.entrySet().stream().forEach((kv) -> {
 //            System.out.println("Step: " + kv.getKey() + " Choice: " + kv.getValue().toString());
 //        });
+        return newExplain(output, timestamp);
+
+//        Choice executedChoice = this.executedChoices.get(timestamp);
+//        List<CauseNode> causeNodes = this.choices.stream()
+//                .takeWhile(ch -> ch.getOrder() <= executedChoice.getOrder())
+//                .map(ch -> new CauseNode(super.fbInterface().getInputs().get(ch.getCondition().getName()),
+//                        super.history().getVariableValueForStep(ch.getCondition().getName(), timestamp),
+//                        timestamp)).collect(Collectors.toList());
+//        causeNodes.add(new CauseNode(super.fbInterface().getInputs().get(executedChoice.getOutput().getName()), super.history().getVariableValueForStep(executedChoice.getOutput().getName(), timestamp), timestamp));
+//        return causeNodes;
+    }
+
+    private List<CauseNode> newExplain(OutputGate output, Integer timestamp){
         Choice executedChoice = this.executedChoices.get(timestamp);
-        List<CauseNode> causeNodes = this.choices.stream()
-                .takeWhile(ch -> ch.getOrder() <= executedChoice.getOrder())
+        List<Choice> failedChoices = this.choices.stream()
+                .takeWhile(ch -> ch.getOrder() < executedChoice.getOrder()).collect(Collectors.toList());
+        ValueHolder resultOutputValue = super.history().getVariableValueForStep(executedChoice.getOutput().getName(), timestamp);
+        List<Choice> possibleCauses = new ArrayList<>();
+        for (Choice choice: failedChoices){
+            ValueHolder choiceOutputValue = super.history().getVariableValueForStep(choice.getOutput().getName(), timestamp);
+            if (!choiceOutputValue.equals(resultOutputValue)){
+                possibleCauses.add(choice);
+            } else{
+                System.out.println("eliminated " + choice);
+            }
+        }
+        possibleCauses.add(this.choices.stream().filter(ch -> ch.getOrder() == executedChoice.getOrder()).findFirst().get());
+        List<CauseNode> causeNodes = possibleCauses.stream()
                 .map(ch -> new CauseNode(super.fbInterface().getInputs().get(ch.getCondition().getName()),
                         super.history().getVariableValueForStep(ch.getCondition().getName(), timestamp),
                         timestamp)).collect(Collectors.toList());
