@@ -55,6 +55,7 @@ public class CauseNodeUI {
         return this.inferConnectionCausesImpl(new HashMap<>());
     }
 
+    // TODO can be more lightweight
     private Map<String, Map<String, List<Cause>>> inferConnectionCausesImpl(Map<String, Map<String, List<Cause>>> res){
         for (CauseNodeUI child: this.children) {
             String connId =
@@ -62,19 +63,35 @@ public class CauseNodeUI {
             if (!res.containsKey(connId)){
                 res.put(connId, new HashMap<>());
             }
-            if (!res.get(connId).containsKey(this.cause.getVarName())){
-                res.get(connId).put(this.cause.getVarName(), new ArrayList<>());
+            if (!res.get(connId).containsKey(this.cause.getBlockName() + this.cause.getVarName())){
+                res.get(connId).put(this.cause.getBlockName() + this.cause.getVarName(), new ArrayList<>());
             }
-            res.get(connId).get(this.cause.getVarName()).add(this.cause);
+            res.get(connId).get(this.cause.getBlockName() + this.cause.getVarName()).add(this.cause);
 
-            if (!res.get(connId).containsKey(child.cause.getVarName())) {
-                res.get(connId).put(child.cause.getVarName(), new ArrayList<>());
+            if (!res.get(connId).containsKey(child.cause.getBlockName() + child.cause.getVarName())) {
+                res.get(connId).put(child.cause.getBlockName() + child.cause.getVarName(), new ArrayList<>());
             }
-            res.get(connId).get(child.cause.getVarName()).add(child.cause);
+            res.get(connId).get(child.cause.getBlockName() + child.cause.getVarName()).add(child.cause);
 
             child.inferConnectionCausesImpl(res);
         }
         return res;
+    }
+
+    public Map<String, List<Cause>> getCausesForPins(){
+        Map<String, List<Cause>> pins = new HashMap<>();
+        pins.put(this.cause.getBlockName() + this.cause.getVarName(), new ArrayList<>(){{add(cause);}});
+        for (CauseNodeUI child: this.children){
+            Map<String, List<Cause>> childPins = child.getCausesForPins();
+            for (String pinName: childPins.keySet()){
+                if (pins.containsKey(pinName)){
+                    pins.get(pinName).addAll(childPins.get(pinName));
+                } else{
+                    pins.put(pinName, childPins.get(pinName));
+                }
+            }
+        }
+        return pins;
     }
 
     public Map<String, List<String>> getCausePins(){

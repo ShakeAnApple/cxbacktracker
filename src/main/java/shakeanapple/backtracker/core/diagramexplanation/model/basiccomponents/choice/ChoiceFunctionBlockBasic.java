@@ -76,16 +76,16 @@ public class ChoiceFunctionBlockBasic extends FunctionBlockBasic {
 //        this.executedChoices.entrySet().stream().forEach((kv) -> {
 //            System.out.println("Step: " + kv.getKey() + " Choice: " + kv.getValue().toString());
 //        });
-        return newExplain(output, timestamp);
+//        return newExplain(output, timestamp);
 
-//        Choice executedChoice = this.executedChoices.get(timestamp);
-//        List<CauseNode> causeNodes = this.choices.stream()
-//                .takeWhile(ch -> ch.getOrder() <= executedChoice.getOrder())
-//                .map(ch -> new CauseNode(super.fbInterface().getInputs().get(ch.getCondition().getName()),
-//                        super.history().getVariableValueForStep(ch.getCondition().getName(), timestamp),
-//                        timestamp)).collect(Collectors.toList());
-//        causeNodes.add(new CauseNode(super.fbInterface().getInputs().get(executedChoice.getOutput().getName()), super.history().getVariableValueForStep(executedChoice.getOutput().getName(), timestamp), timestamp));
-//        return causeNodes;
+        Choice executedChoice = this.executedChoices.get(timestamp);
+        List<CauseNode> causeNodes = this.choices.stream()
+                .takeWhile(ch -> ch.getOrder() <= executedChoice.getOrder())
+                .map(ch -> new CauseNode(super.fbInterface().getInputs().get(ch.getCondition().getName()),
+                        super.history().getVariableValueForStep(ch.getCondition().getName(), timestamp),
+                        timestamp)).collect(Collectors.toList());
+        causeNodes.add(new CauseNode(super.fbInterface().getInputs().get(executedChoice.getOutput().getName()), super.history().getVariableValueForStep(executedChoice.getOutput().getName(), timestamp), timestamp));
+        return causeNodes;
     }
 
     private List<CauseNode> newExplain(OutputGate output, Integer timestamp){

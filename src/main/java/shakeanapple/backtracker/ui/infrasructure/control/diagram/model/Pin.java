@@ -42,6 +42,10 @@ public abstract class Pin {
         return this.causes;
     }
 
+    public boolean belongsToSystemInterface(){
+        return (this.getOwner() instanceof InputInterfaceCell) || (this.getOwner() instanceof OutputInterfaceCell);
+    }
+
     public DiagramCell getOwner() {
         return owner;
     }

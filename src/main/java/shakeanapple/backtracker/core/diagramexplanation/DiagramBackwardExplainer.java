@@ -16,17 +16,24 @@ public class DiagramBackwardExplainer implements DiagramOutputExplainer {
     }
 
     public ExplanationItem explain(String gateName, String blockName, int timestamp) {
-        OutputGate outputGate = this.diagram.fbInterface().getOutputs().get(gateName);
-        if (outputGate != null) {
-            ExplanationItem item = this.diagram.explain(outputGate, timestamp);
-            return item;
-        }
-        InputGate inputGate = this.diagram.fbInterface().getInputs().get(gateName);
-        if (inputGate != null) {
-            return new ExplanationItem(new CausePathTree(Collections.singletonList(new CauseNode(inputGate, this.diagram.history().getVariableValueForStep(inputGate.getName(), timestamp), timestamp))), new ArrayList<>());
-        }
+        FunctionBlockBase fbToExplain = this.diagram.getInternalDiagram().getFunctionBlocks().stream()
+                .filter(fb -> fb.getName().equals(blockName))
+                .findFirst().orElse(null);
 
-        return this.explainInternalBlock(gateName, blockName, timestamp);
+        if (fbToExplain == null) {
+            OutputGate outputGate = this.diagram.fbInterface().getOutputs().get(gateName);
+            if (outputGate != null) {
+                ExplanationItem item = this.diagram.explain(outputGate, timestamp);
+                return item;
+            }
+            InputGate inputGate = this.diagram.fbInterface().getInputs().get(gateName);
+            if (inputGate != null) {
+                return new ExplanationItem(new CausePathTree(Collections.singletonList(new CauseNode(inputGate, this.diagram.history().getVariableValueForStep(inputGate.getName(), timestamp), timestamp))), new ArrayList<>());
+            }
+        } else {
+            return this.explainInternalBlock(gateName, blockName, timestamp);
+        }
+        throw new RuntimeException("can't find gate " + gateName + " for block " + blockName);
     }
 
     private ExplanationItem explainInternalBlock(String gateName, String blockName, int timestamp) {
@@ -67,17 +74,18 @@ public class DiagramBackwardExplainer implements DiagramOutputExplainer {
                     Gate childGate = in.getIncomingConnection().fromGate();
                     CauseNode child = new CauseNode(childGate, childGate.getOwner().history().getVariableValueForStep(childGate.getName(), timestamp), timestamp);
                     root.addChildNode(child);
-                    return new ExplanationItem(tree, new ArrayList<>(){{add(child);}});
+                    return new ExplanationItem(tree, new ArrayList<>() {{
+                        add(child);
+                    }});
 
                 } else {
                     //const
-                    if (!this.diagram.fbInterface().getInputs().containsKey(in.getName())){
+                    if (!this.diagram.fbInterface().getInputs().containsKey(in.getName())) {
                         return new ExplanationItem(new CausePathTree(Collections.singletonList(new CauseNode(in, fbToExplain.history().getVariableValueForStep(in.getName(), timestamp), timestamp))), new ArrayList<>());
                     }
                     return new ExplanationItem(new CausePathTree(Collections.singletonList(new CauseNode(in, this.diagram.history().getVariableValueForStep(in.getName(), timestamp), timestamp))), new ArrayList<>());
                 }
-            }
-            else{
+            } else {
                 throw new RuntimeException("Can't find the Gate " + gateName + " in Block " + blockName);
             }
         }
