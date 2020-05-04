@@ -85,7 +85,7 @@ public class DiagramCounterexampleExecutor implements DiagramExecutor {
                 ValueHolder cxValue = this.cursor.getCurState().getVarByName(varName).getValue();
                 ValueHolder calculatedValue = outGate.getValue();
                 if (!cxValue.equals(calculatedValue)) {
-              //      System.out.println(String.format("%s has value %s in cx and %s after evaluation", varName, cxValue, calculatedValue));
+                    System.out.println(String.format("%s has value %s in cx and %s after evaluation", varName, cxValue, calculatedValue));
                 }
             }
         }

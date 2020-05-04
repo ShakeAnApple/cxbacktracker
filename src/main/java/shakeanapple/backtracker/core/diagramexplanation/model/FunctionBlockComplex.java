@@ -24,6 +24,17 @@ public class FunctionBlockComplex extends FunctionBlockBase {
         this.getClocks().onTick(this::tickChildrenTime);
         this.getClocks().onTick(this::releaseDelays);
         this.getClocks().onTick(this::releaseUnconnectedBlocks);
+        this.getClocks().onTick(this::releaseInternalConstGates);
+    }
+
+    private void releaseInternalConstGates() {
+        for (FunctionBlockBase fb: this.internalDiagram.getFunctionBlocks()){
+            for (InputGate inGate: fb.fbInterface().getInputs().values()){
+                if (inGate.getIncomingConnection() == null){
+                    inGate.propagateValue();
+                }
+            }
+        }
     }
 
     private void tickChildrenTime() {

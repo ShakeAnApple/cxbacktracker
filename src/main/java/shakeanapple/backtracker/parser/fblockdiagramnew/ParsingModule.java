@@ -57,11 +57,13 @@ public class ParsingModule {
 
 
     private List<String> readInternals() {
-        return this.contents.subList(this.contents.indexOf("VAR") + 1, this.contents.indexOf("DEFINE"));
+        return this.contents.subList(this.contents.indexOf("VAR") + 1, this.contents.indexOf("DEFINE")).stream().map(str -> str.contains("--") ? str.substring(0, str.indexOf("--")) : str)
+                .collect(Collectors.toList());
     }
 
     private List<String> readOutputsBlock() {
-        return this.contents.subList(this.contents.indexOf("DEFINE") + 1, this.contents.indexOf("ASSIGN"));
+        return this.contents.subList(this.contents.indexOf("DEFINE") + 1, this.contents.indexOf("ASSIGN")).stream().map(str -> str.contains("--") ? str.substring(0, str.indexOf("--")) : str)
+                .collect(Collectors.toList());
     }
 
     public String getModuleType() {

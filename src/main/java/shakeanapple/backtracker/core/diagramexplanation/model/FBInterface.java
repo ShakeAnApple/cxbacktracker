@@ -5,13 +5,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class FBInterface implements InputUpdatedListener {
+public class FBInterface implements InputUpdatedListener, OutputUpdatedListener {
     private Map<String, OutputGate> outputs;
     private Map<String, InputGate> inputs;
 
     private List<InputGate> orderedInputs;
 
-    private InterfaceUpdatedEvent interfaceUpdatedEvent;
+    private InterfaceUpdatedEvent inputInterfaceUpdatedEvent;
+    private InterfaceUpdatedEvent outputInterfaceUpdatedEvent;
 
     public FBInterface(List<InputGate> inputs, List<OutputGate> outputs) {
         this.outputs = outputs.stream().collect(Collectors.toMap(OutputGate::getName, o -> o));
@@ -19,9 +20,11 @@ public class FBInterface implements InputUpdatedListener {
 
         this.orderedInputs = inputs.stream().sorted(Comparator.comparing(inputGate -> inputGate.input().getOrder())).collect(Collectors.toList());
 
-        this.interfaceUpdatedEvent = new InterfaceUpdatedEvent(this.inputs);
+        this.inputInterfaceUpdatedEvent = new InterfaceUpdatedEvent(this.inputs.values().stream().map(in -> (Gate)in).collect(Collectors.toMap(Gate::getName, g -> g)), true);
+        this.outputInterfaceUpdatedEvent = new InterfaceUpdatedEvent(this.outputs.values().stream().map(out -> (Gate)out).collect(Collectors.toMap(Gate::getName, g -> g)), false);
 
         this.orderedInputs.forEach(in -> in.inputUpdatedEvent().addListener(this));
+        this.outputs.values().forEach(out -> out.outputUpdatedEvent().addListener(this));
     }
 
     public List<InputGate> getOrderedInputs(){
@@ -36,13 +39,21 @@ public class FBInterface implements InputUpdatedListener {
         return this.inputs;
     }
 
-    public Event interfaceUpdatedEvent(){
-        return this.interfaceUpdatedEvent;
+    public Event inputInterfaceUpdatedEvent(){
+        return this.inputInterfaceUpdatedEvent;
     }
 
     @Override
     public void onInputUpdated(Gate gate) {
+        this.inputInterfaceUpdatedEvent.tryFire(gate);
+    }
 
-        this.interfaceUpdatedEvent.tryFire(gate);
+    @Override
+    public void onOutputUpdated(Gate gate) {
+        this.outputInterfaceUpdatedEvent.tryFire(gate);
+    }
+
+    public Event outputInterfaceUpdatedEvent() {
+        return this.outputInterfaceUpdatedEvent;
     }
 }

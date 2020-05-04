@@ -37,7 +37,9 @@ public class SystemLexer {
 
     private List<String> extractModuleString(String moduleType){
         String startStr = this.contents.stream()
-                .filter(str -> str.toLowerCase().contains("module " + moduleType.toLowerCase()))
+                .filter(str -> (moduleType.toLowerCase().equals("main") ?
+                        str.toLowerCase().replace(" ", "").contains("modulemain")
+                                : str.toLowerCase().replace(" ", "").contains("module" + moduleType.toLowerCase() + "(")))
                 .findFirst().orElse(null);
 
         if (startStr == null) {

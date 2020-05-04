@@ -22,14 +22,16 @@ public abstract class FunctionBlockBase extends DiagramElement implements Interf
         List<OutputGate> outGates = outputs.stream().map(out -> new OutputGate(out, this)).collect(Collectors.toList());
 
         this.fbInterface = new FBInterface(inGates, outGates);
-        this.fbInterface.interfaceUpdatedEvent().addListener(this);
+        this.fbInterface.inputInterfaceUpdatedEvent().addListener(this);
+        this.fbInterface.outputInterfaceUpdatedEvent().addListener(this);
         this.history = new BlockInterfaceHistory(this.fbInterface);
         this.clocks = new Clocks();
     }
 
     public void execute() {
+//        System.out.println(this.getName() + " exec strated");
         this.executeImpl();
-        this.history.record(this.fbInterface, this.clocks.currentTime());
+//        System.out.println(this.getName() + " exec completed");
     }
 
     public void tickSystemTime(){
@@ -51,9 +53,15 @@ public abstract class FunctionBlockBase extends DiagramElement implements Interf
     public abstract void executeImpl();
 
     @Override
-    public void onInterfaceUpdated() {
+    public void onInputInterfaceUpdated() {
         // System.out.println(this.getName() + ": interface updated");
         this.execute();
+    }
+
+    @Override
+    public void onOutputInterfaceUpdated() {
+        // System.out.println(this.getName() + ": interface updated");
+        this.history.record(this.fbInterface, this.clocks.currentTime());
     }
 
     public FBInterface fbInterface() {

@@ -27,6 +27,7 @@ public class OutputGate extends Gate {
 
     public void assignValue(ValueHolder value){
         this.output.setValue(value);
+        super.outputUpdatedEvent().fire(this);
         super.propagateValue();
     }
 }
