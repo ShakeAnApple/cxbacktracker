@@ -50,6 +50,10 @@ public class ChoiceFunctionBlockBasic extends FunctionBlockBasic {
         return inputs;
     }
 
+    public List<Choice> getChoices(){
+        return this.choices;
+    }
+
     @Override
     public void executeImpl() {
         for (Choice choice : this.choices) {
