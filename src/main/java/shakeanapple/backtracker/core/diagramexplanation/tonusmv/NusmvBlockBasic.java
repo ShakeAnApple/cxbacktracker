@@ -1,16 +1,16 @@
 package shakeanapple.backtracker.core.diagramexplanation.tonusmv;
 
 public class NusmvBlockBasic implements NusmvBlock{
-    private String contents;
+    private String statements;
     private boolean toAssign;
 
-    public NusmvBlockBasic(String contents, boolean toAssign) {
-        this.contents = contents;
+    public NusmvBlockBasic(String statements, boolean toAssign) {
+        this.statements = statements;
         this.toAssign = toAssign;
     }
 
-    public String getContents() {
-        return this.contents;
+    public String getStatements() {
+        return this.statements;
     }
 
     public boolean isToAssign() {
@@ -20,9 +20,9 @@ public class NusmvBlockBasic implements NusmvBlock{
     @Override
     public void writeTo(NusmvStringModelBuilder mb) {
         if (this.toAssign){
-            mb.appendAssignStatement(this.contents);
+            mb.appendAssignStatement(this.statements);
         } else{
-            mb.appendDefineStatement(this.contents, false);
+            mb.appendDefineStatement(this.statements, false);
         }
     }
 }

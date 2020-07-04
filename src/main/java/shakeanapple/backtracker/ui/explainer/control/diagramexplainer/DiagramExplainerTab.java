@@ -13,6 +13,8 @@ import shakeanapple.backtracker.core.diagramexplanation.model.causetree.Explanat
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.DiagramSnapshot;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.FBInterfaceSnapshot;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.FunctionBlockSnapshot;
+import shakeanapple.backtracker.core.diagramexplanation.tonusmv.NusmvBlock;
+import shakeanapple.backtracker.core.diagramexplanation.tonusmv.blocksconverters.ComplexBlockConverter;
 import shakeanapple.backtracker.ui.GraphHelper;
 import shakeanapple.backtracker.ui.explainer.Context;
 import shakeanapple.backtracker.ui.explainer.control.diagramexplainer.model.Cause;
@@ -23,6 +25,7 @@ import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.DiagramCe
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Graph;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Pin;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -77,6 +80,16 @@ public class DiagramExplainerTab extends Tab {
     }
 
     public void init(FunctionBlockComplex diagram) {
+        ComplexBlockConverter converter = new ComplexBlockConverter(diagram);
+        NusmvBlock block = converter.convert(true);
+        try {
+            FileWriter myWriter = new FileWriter("filename.smv");
+            myWriter.write(block.getStatements());
+            myWriter.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
 //        FunctionBlockComplex diagram = FunctionBlockComplex.parse(Context.instance().getDiagramPath());
         this.diagramExecutor = new DiagramCounterexampleExecutor(diagram, Context.instance().getCounterexample());
         this.diagram = diagram;

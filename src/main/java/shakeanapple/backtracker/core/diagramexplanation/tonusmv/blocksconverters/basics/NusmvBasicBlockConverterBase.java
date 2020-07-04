@@ -1,19 +1,20 @@
 package shakeanapple.backtracker.core.diagramexplanation.tonusmv.blocksconverters.basics;
 
-import shakeanapple.backtracker.common.variable.IntegerValueHolder;
-import shakeanapple.backtracker.core.diagramexplanation.model.*;
-import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.DelayFunctionBlockBasic;
+import shakeanapple.backtracker.core.diagramexplanation.model.Connection;
+import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockBase;
+import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockComplex;
+import shakeanapple.backtracker.core.diagramexplanation.model.InputGate;
 import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.FunctionBlockBasic;
-import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
-import shakeanapple.backtracker.core.diagramexplanation.tonusmv.*;
+import shakeanapple.backtracker.core.diagramexplanation.tonusmv.NusmvBlock;
+import shakeanapple.backtracker.core.diagramexplanation.tonusmv.NusmvBlockBasic;
+import shakeanapple.backtracker.core.diagramexplanation.tonusmv.NusmvBlockConverterBase;
+import shakeanapple.backtracker.core.diagramexplanation.tonusmv.NusmvStringModelBuilder;
 
-import java.util.ArrayList;
+public abstract class NusmvBasicBlockConverterBase extends NusmvBlockConverterBase {
 
-public class DelayBasicBlockConverter extends NusmvBlockConverterBase {
+    protected FunctionBlockBasic block;
 
-    protected DelayFunctionBlockBasic block;
-
-    public DelayBasicBlockConverter(DelayFunctionBlockBasic block) {
+    public NusmvBasicBlockConverterBase(FunctionBlockBasic block) {
         this.block = block;
     }
 
@@ -32,17 +33,11 @@ public class DelayBasicBlockConverter extends NusmvBlockConverterBase {
             }
         }
         StringBuilder sb = new StringBuilder();
-        sb.append("next(" + this.block.getOutputs().get(0).getName() + ") := " + this.block.getInput().getName() + ";")
-                .append(System.lineSeparator())
-                .append("init(" + this.block.getOutputs().get(0).getName() + ") := " + this.block.getInputs().get(1).getName() + ";");
-
-        OutputVariable output = this.block.getOutputs().get(0);
-        String var = output.getName() + ": " + (output.getValue() instanceof IntegerValueHolder ? "0..100" : "boolean") + ";";
-        parentModel.appendVarStatement(var);
-
         this.block.fbInterface().getInputs().values().stream().filter(in -> in.getIncomingConnection() == null).forEach(in ->{
             parentModel.appendDefineStatement(in.getName() + " := " + in.input().getValue() + ";" + System.lineSeparator(), true);
         });
-        return new NusmvBlockBasic(sb.toString(), true);
+        return this.convertImpl(sb);
     }
+
+    protected abstract NusmvBlockBasic convertImpl(StringBuilder sb);
 }

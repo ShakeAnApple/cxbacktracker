@@ -9,7 +9,13 @@ public abstract class NusmvBlockConverterBase implements NusmvBlockConverter{
         this.convertersFabric = new ConvertersFabric();
     }
 
-    protected NusmvBlockConverter getConverterFor(FunctionBlockBase block){
+    protected NusmvBlockConverterBase getConverterFor(FunctionBlockBase block){
         return this.convertersFabric.getConverterForBlock(block);
     }
+
+    public NusmvBlock convert(boolean isRoot){
+        return this.convertImpl(null, null);
+    }
+
+    public abstract NusmvBlock convertImpl(FunctionBlockBase parent, NusmvStringModelBuilder parentModel);
 }

@@ -13,7 +13,7 @@ import shakeanapple.backtracker.core.diagramexplanation.tonusmv.blocksconverters
 
 class ConvertersFabric {
 
-    NusmvBlockConverter getConverterForBlock(FunctionBlockBase block){
+    NusmvBlockConverterBase getConverterForBlock(FunctionBlockBase block){
         if (block instanceof FunctionBlockComplex){
             return new ComplexBlockConverter((FunctionBlockComplex) block);
         } else if (block instanceof DivFunctionBlockBasic) {

@@ -15,6 +15,13 @@ public class  NusmvBlockComplex implements NusmvBlock{
         this.inputsFromSystem = inputsFromSystem;
     }
 
+    public NusmvBlockComplex(String name, String type, List<String> inputsFromSystem) {
+        this.name = name;
+        this.type = type;
+        this.stringModel = new NusmvStringModel("");
+        this.inputsFromSystem = inputsFromSystem;
+    }
+
     public String getName() {
         return this.name;
     }
@@ -28,8 +35,14 @@ public class  NusmvBlockComplex implements NusmvBlock{
     }
 
     @Override
+    public String getStatements() {
+        return this.stringModel.getContents();
+    }
+
+    @Override
     public void writeTo(NusmvStringModelBuilder mb) {
-        mb.appendVarStatement(this.name + ":" + this.type + "(" + String.join(",", this.inputsFromSystem) + ")")
+        mb.addModuleType(this.type);
+        mb.appendVarStatement(this.name + ": " + this.type + "(" + String.join(",", this.inputsFromSystem) + ");")
                 .appendModule(this.stringModel.getContents());
 
     }

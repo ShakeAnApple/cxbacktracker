@@ -10,7 +10,9 @@ public class NusmvStringModelBuilder {
     private StringBuilder defineSectionBottomSB = new StringBuilder();
     private StringBuilder moduleSectionSB = new StringBuilder();
     private StringBuilder varSectionSB = new StringBuilder();
+
     private List<String> inputs = new ArrayList<>();
+    private List<String> addedModuleTypes = new ArrayList<>();
 
     private String blockType;
     private boolean isRoot;
@@ -23,6 +25,10 @@ public class NusmvStringModelBuilder {
         this.varSectionSB.append("VAR").append(System.lineSeparator());
     }
 
+    public void addInputs(List<String> inputs){
+        this.inputs = inputs;
+    }
+
     public NusmvStringModel get(){
         return new NusmvStringModel("MODULE " + this.blockType +
                 "(" + (this.isRoot ? "" : String.join(",", this.inputs)) + ")" + System.lineSeparator() +
@@ -30,7 +36,7 @@ public class NusmvStringModelBuilder {
                 this.defineSectionTopSB.toString() + System.lineSeparator() +
                 this.defineSectionBottomSB.toString() + System.lineSeparator() +
                 this.assignSectionSB.toString() + System.lineSeparator() +
-                this.defineSectionBottomSB.toString() + System.lineSeparator());
+                this.moduleSectionSB.toString() + System.lineSeparator());
     }
 
     public NusmvStringModelBuilder appendAssignStatement(String st){
@@ -52,5 +58,13 @@ public class NusmvStringModelBuilder {
     public NusmvStringModelBuilder appendModule(String module){
         this.moduleSectionSB.append(module).append(System.lineSeparator());
         return this;
+    }
+
+    public void addModuleType(String type) {
+        this.addedModuleTypes.add(type);
+    }
+
+    public boolean containsModule(String moduleType){
+        return this.addedModuleTypes.contains(moduleType);
     }
 }
