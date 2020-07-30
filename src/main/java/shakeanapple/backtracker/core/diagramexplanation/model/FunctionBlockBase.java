@@ -15,17 +15,25 @@ public abstract class FunctionBlockBase extends DiagramElement implements Interf
 
     private BlockInterfaceHistory history;
 
-    public FunctionBlockBase(String name, String type, List<InputVariable> inputs, List<OutputVariable> outputs) {
+    private String stringPathInSystem;
+
+    public FunctionBlockBase(String name, String type, List<InputVariable> inputs, List<OutputVariable> outputs, String stringPathInSystem) {
         super(name, type);
 
         List<InputGate> inGates = inputs.stream().map(in -> new InputGate(in, this)).collect(Collectors.toList());
         List<OutputGate> outGates = outputs.stream().map(out -> new OutputGate(out, this)).collect(Collectors.toList());
+
+        this.stringPathInSystem = stringPathInSystem;
 
         this.fbInterface = new FBInterface(inGates, outGates);
         this.fbInterface.inputInterfaceUpdatedEvent().addListener(this);
         this.fbInterface.outputInterfaceUpdatedEvent().addListener(this);
         this.history = new BlockInterfaceHistory(this.fbInterface);
         this.clocks = new Clocks();
+    }
+
+    public String getStringPathInSystem() {
+        return this.stringPathInSystem;
     }
 
     public void execute() {
@@ -75,7 +83,7 @@ public abstract class FunctionBlockBase extends DiagramElement implements Interf
     protected abstract ExplanationItem explainImpl(OutputGate output, Integer timestamp);
 
     public boolean isRoot() {
-        return this.getName().equals("root");
+        return this.getName().equals("main");
     }
 
     @Override

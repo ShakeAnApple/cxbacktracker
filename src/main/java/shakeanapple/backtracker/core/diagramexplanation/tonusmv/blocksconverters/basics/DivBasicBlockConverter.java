@@ -14,7 +14,7 @@ public class DivBasicBlockConverter extends NusmvBasicBlockConverterBase {
 
     @Override
     public NusmvBlockBasic convertImpl(StringBuilder sb) {
-        sb.append(this.block.getOutputs().get(0).getName() + " := " + this.block.getInputs().get(0).getName() + " \\ " + this.block.getInputs().get(1).getName() + ";");
+        sb.append(this.block.getOutputs().get(0).getName() + " := " + this.block.getInputs().get(0).getName() + " / " + this.block.getInputs().get(1).getName() + ";");
         return new NusmvBlockBasic(sb.toString(), false);
     }
 }

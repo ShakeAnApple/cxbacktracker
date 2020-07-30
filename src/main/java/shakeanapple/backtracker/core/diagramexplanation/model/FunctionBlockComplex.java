@@ -17,8 +17,8 @@ public class FunctionBlockComplex extends FunctionBlockBase {
 
     private Diagram internalDiagram;
 
-    public FunctionBlockComplex(String name, String type, List<InputVariable> inputs, List<OutputVariable> outputs, Diagram internalDiagram) {
-        super(name, type, inputs, outputs);
+    public FunctionBlockComplex(String name, String type, List<InputVariable> inputs, List<OutputVariable> outputs, Diagram internalDiagram, String pathInSystem) {
+        super(name, type, inputs, outputs, pathInSystem);
 
         this.internalDiagram = internalDiagram;
         this.getClocks().onTick(this::tickChildrenTime);
@@ -140,7 +140,7 @@ public class FunctionBlockComplex extends FunctionBlockBase {
         List<OutputVariable> outs = this.fbInterface().getOutputs().values().stream().map(outputGate -> outputGate.output().clone()).collect(Collectors.toList());
 
         Diagram diagramClone = this.internalDiagram.clone();
-        FunctionBlockComplex fbCopied = new FunctionBlockComplex(newBlockName, this.getType(),ins,outs,diagramClone);
+        FunctionBlockComplex fbCopied = new FunctionBlockComplex(newBlockName, this.getType(),ins,outs,diagramClone, this.getStringPathInSystem());
         Map<String, FunctionBlockBase> internalBlocksCloned = diagramClone.getFunctionBlocks().stream().collect(Collectors.toMap(FunctionBlockBase::getName, fb -> fb));
         for (InputGate inGate: this.fbInterface().getInputs().values()){
             for (Connection conn: inGate.getOutgoingConnections()){

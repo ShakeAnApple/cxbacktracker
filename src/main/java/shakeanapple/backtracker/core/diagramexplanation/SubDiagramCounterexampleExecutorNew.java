@@ -71,7 +71,7 @@ public class SubDiagramCounterexampleExecutorNew implements DiagramExecutor {
 
     private void evaluateDiagram() {
         for (InputGate inGate : this.diagram.fbInterface().getInputs().values()) {
-            inGate.populateInput(this.inputSource.getCurState().get(inGate.getName()));
+            inGate.populateInput(this.inputSource.getCurState().get(inGate.getFullName()));
         }
 
 //        for (DiagramElement de : this.diagram.getInternalDiagram().getFunctionBlocks()) {

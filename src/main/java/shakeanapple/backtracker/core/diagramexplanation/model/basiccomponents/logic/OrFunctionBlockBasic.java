@@ -19,18 +19,18 @@ public class OrFunctionBlockBasic extends FunctionBlockBasic {
 
     private final OutputVariable result;
 
-    public OrFunctionBlockBasic(boolean generateId, List<InputVariable> inputs, OutputVariable res) {
+    public OrFunctionBlockBasic(boolean generateId, List<InputVariable> inputs, OutputVariable res, String pathInSystem) {
         super("Or"+ (generateId ? BasicBlocksIdGenerator.next("Or") : ""), inputs, new ArrayList<>() {{
             add(res);
-        }});
+        }},pathInSystem);
 
         this.result = res;
     }
 
-    public OrFunctionBlockBasic(String name, List<InputVariable> inputs, OutputVariable res) {
+    public OrFunctionBlockBasic(String name, List<InputVariable> inputs, OutputVariable res, String pathInSystem) {
         super(name, inputs, new ArrayList<>() {{
             add(res);
-        }});
+        }},pathInSystem);
 
         this.result = res;
     }
@@ -50,7 +50,7 @@ public class OrFunctionBlockBasic extends FunctionBlockBasic {
 
     @Override
     public FunctionBlockBase clone() {
-        return new OrFunctionBlockBasic(this.getName(), this.getInputs().stream().map(in -> in.clone()).collect(Collectors.toList()), this.result.clone());
+        return new OrFunctionBlockBasic(this.getName(), this.getInputs().stream().map(in -> in.clone()).collect(Collectors.toList()), this.result.clone(),this.getStringPathInSystem());
     }
 
     @Override

@@ -52,7 +52,7 @@ public class BlockDefinition {
         return this.connections;
     }
 
-    public FunctionBlockComplex instance(String fbName) {
+    public FunctionBlockComplex instance(String fbName, String pathInSystem) {
         Map<Long, InputVariable> inInterfaceVars = this.inputs.stream().collect(Collectors.toMap(InputDefinition::getId, InputDefinition::translate));
         Map<Long, OutputVariable> outInterfaceVars = this.outputs.stream().collect(Collectors.toMap(OutputDefinition::getId, OutputDefinition::translate));
 
@@ -77,7 +77,7 @@ public class BlockDefinition {
                     choices.add(new Choice(chDef.getCondition().translate(), chDef.getOutput().translate(), i));
                 }
 
-                block = FunctionBlockBasic.choiceInstance(choices, choiceDef.getOutput().translate());
+                block = FunctionBlockBasic.choiceInstance(choices, choiceDef.getOutput().translate(), pathInSystem == null || pathInSystem.isEmpty() ? fbName : pathInSystem.concat(".").concat(fbName));
 
                 for (ChoiceDefinition chDef : choiceDef.getChoices()) {
                     compInputs.put(chDef.getCondition().getId(), block.fbInterface().getInputs().get(chDef.getCondition().getName()));
@@ -92,7 +92,7 @@ public class BlockDefinition {
                 InputVariable defValue = delayDef.getDefValue() != null ? delayDef.getDefValue().translate() : null;
                 OutputVariable output = delayDef.getOutput().translate();
 
-                block = FunctionBlockBasic.delayInstance(input, defValue, output, delayDef.getDelay());
+                block = FunctionBlockBasic.delayInstance(input, defValue, output, delayDef.getDelay(),pathInSystem == null || pathInSystem.isEmpty() ? fbName : pathInSystem.concat(".").concat(fbName));
 
                 if (defValue != null) {
                     compInputs.put(delayDef.getDefValue().getId(), block.fbInterface().getInputs().get(delayDef.getDefValue().getName()));
@@ -105,7 +105,7 @@ public class BlockDefinition {
                         .sorted(Comparator.comparing(InputVariable::getOrder)).collect(Collectors.toList());
                 List<OutputVariable> outputs = basicDef.getOutputs().stream().map(OutputDefinition::translate).collect(Collectors.toList());
 
-                block = FunctionBlockBasic.instance(basicDef.getType(), inputs, outputs);
+                block = FunctionBlockBasic.instance(basicDef.getType(), inputs, outputs, pathInSystem == null || pathInSystem.isEmpty() ? fbName : pathInSystem.concat(".").concat(fbName));
 
                 compInputs.putAll(basicDef.getInputs().stream().collect(Collectors.toMap(InputDefinition::getId, in -> block.fbInterface().getInputs().get(in.getName()))));
                 compOutputs.putAll(basicDef.getOutputs().stream().collect(Collectors.toMap(OutputDefinition::getId, out -> block.fbInterface().getOutputs().get(out.getName()))));
@@ -113,8 +113,8 @@ public class BlockDefinition {
             blocks.put(def.getId(), block);
         }
 
-        List<InputVariable> diagramInputs = new ArrayList<>();
-        List<OutputVariable> diagramOutputs = new ArrayList<>();
+        List<Gate> diagramInputs = new ArrayList<>();
+        List<Gate> diagramOutputs = new ArrayList<>();
 
         Map<String, Gate> systemOutputConnections = new HashMap<>();
         Map<String, List<ConnectionDescription>> systemInputConnections = new HashMap<>();
@@ -149,13 +149,13 @@ public class BlockDefinition {
 
             if (fbFrom == null) {
                 systemInputConnections.get(inInterfaceVars.get(conn.getFromVarId()).getName()).add(new ConnectionDescription(toGate, conn.isInverted()));
-                diagramInputs.add(toGate.input());
+                diagramInputs.add(toGate);
                 continue;
             }
 
             if (fbTo == null) {
                 systemOutputConnections.put(outInterfaceVars.get(conn.getToVarId()).getName(), fromGate);
-                diagramOutputs.add(fromGate.output());
+                diagramOutputs.add(fromGate);
                 continue;
             }
 
@@ -165,7 +165,7 @@ public class BlockDefinition {
 
         FunctionBlockComplex resultFb = new FunctionBlockComplex(fbName, this.typeName, new ArrayList<>(inInterfaceVars.values()), new ArrayList<>(outInterfaceVars.values()),
                 new Diagram(blocks.values().stream().map(b -> (FunctionBlockBase) b).collect(Collectors.toList()),
-                        diagramInputs, diagramOutputs));
+                        diagramInputs, diagramOutputs),pathInSystem);
 
         systemOutputConnections.forEach((varName, gate) -> {
             OutputGate systemToGate = resultFb.fbInterface().getOutputs().get(varName);

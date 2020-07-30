@@ -79,7 +79,7 @@ public class ModuleBuilder {
             String moduleName = declaration.getName();
             String moduleTypeName = this.readModuleTypeName(declaration.getValue());
 
-            FunctionBlockComplex block = blockDefinitions.get(moduleTypeName).instance(moduleName);
+            FunctionBlockComplex block = blockDefinitions.get(moduleTypeName).instance(moduleName, "path");
             modules.put(moduleName, block);
 
             List<String> blockInputs = this.readInputs(declaration.getValue());
@@ -136,7 +136,8 @@ public class ModuleBuilder {
 
         FunctionBlockComplex root = new FunctionBlockComplex("root", "DIAGRAM",
                 new ArrayList<>(inputVars.values()), new ArrayList<>(systemOutputs.values()),
-                new Diagram(modules.values().stream().map(m -> (FunctionBlockBase) m).collect(Collectors.toList()), new ArrayList<>(diagramInputs.values()), diagramOutputs));
+//                new Diagram(modules.values().stream().map(m -> (FunctionBlockBase) m).collect(Collectors.toList()), new ArrayList<>(diagramInputs.values()), diagramOutputs), "parent path");
+                new Diagram(modules.values().stream().map(m -> (FunctionBlockBase) m).collect(Collectors.toList()), new ArrayList<>(), new ArrayList<>()), "parent path");
 
         // TODO check cautiously if transition should be to GATE or to BLOCK
         systemOutputConnections.forEach((varName, internalGate) -> {

@@ -11,13 +11,13 @@ public abstract class BinOpFunctionBlockBasic extends FunctionBlockBasic {
 
     private final OutputVariable output;
 
-    protected BinOpFunctionBlockBasic(String name, InputVariable left, InputVariable right, OutputVariable output) {
+    protected BinOpFunctionBlockBasic(String name, InputVariable left, InputVariable right, OutputVariable output, String pathInSystem) {
         super(name, new ArrayList<>() {{
             add(left);
             add(right);
         }}, new ArrayList<>() {{
             add(output);
-        }});
+        }},pathInSystem);
         this.output = output;
         this.right = right;
         this.left = left;

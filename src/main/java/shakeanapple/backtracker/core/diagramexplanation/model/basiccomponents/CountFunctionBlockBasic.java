@@ -16,18 +16,18 @@ import java.util.stream.Collectors;
 public class CountFunctionBlockBasic extends FunctionBlockBasic {
     private OutputVariable output;
 
-    protected CountFunctionBlockBasic(boolean generateId, List<InputVariable> inputs, OutputVariable output) {
+    protected CountFunctionBlockBasic(boolean generateId, List<InputVariable> inputs, OutputVariable output, String pathInSystem) {
         super("count" + (generateId ? BasicBlocksIdGenerator.next("count") : ""), inputs, new ArrayList<>() {{
             add(output);
-        }});
+        }},pathInSystem);
 
         this.output = output;
     }
 
-    private CountFunctionBlockBasic(String name, List<InputVariable> inputs, OutputVariable output) {
+    private CountFunctionBlockBasic(String name, List<InputVariable> inputs, OutputVariable output, String pathInSystem) {
         super(name, inputs, new ArrayList<>() {{
             add(output);
-        }});
+        }},pathInSystem);
 
         this.output = output;
     }
@@ -41,7 +41,7 @@ public class CountFunctionBlockBasic extends FunctionBlockBasic {
 
     @Override
     public FunctionBlockBase clone() {
-        return new CountFunctionBlockBasic(this.getName(), this.getInputs().stream().map(InputVariable::clone).collect(Collectors.toList()), this.output.clone());
+        return new CountFunctionBlockBasic(this.getName(), this.getInputs().stream().map(InputVariable::clone).collect(Collectors.toList()), this.output.clone(),this.getStringPathInSystem());
     }
 
     @Override

@@ -15,12 +15,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class LessFunctionBlockBasic extends BinOpFunctionBlockBasic {
-    public LessFunctionBlockBasic(boolean generateId,InputVariable left, InputVariable right, OutputVariable res) {
-        super("Less"+ (generateId ? BasicBlocksIdGenerator.next("Less") : ""), left, right, res);
+    public LessFunctionBlockBasic(boolean generateId,InputVariable left, InputVariable right, OutputVariable res, String pathInSystem) {
+        super("Less"+ (generateId ? BasicBlocksIdGenerator.next("Less") : ""), left, right, res,pathInSystem);
     }
 
-    public LessFunctionBlockBasic(String name, InputVariable left, InputVariable right, OutputVariable res) {
-        super(name, left, right, res);
+    public LessFunctionBlockBasic(String name, InputVariable left, InputVariable right, OutputVariable res, String pathInSystem) {
+        super(name, left, right, res,pathInSystem);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class LessFunctionBlockBasic extends BinOpFunctionBlockBasic {
 
     @Override
     public FunctionBlockBase clone() {
-        return new LessFunctionBlockBasic(this.getName(), this.getLeft().clone(), this.getRight().clone(), this.getOutput().clone());
+        return new LessFunctionBlockBasic(this.getName(), this.getLeft().clone(), this.getRight().clone(), this.getOutput().clone(),this.getStringPathInSystem());
     }
 
     @Override

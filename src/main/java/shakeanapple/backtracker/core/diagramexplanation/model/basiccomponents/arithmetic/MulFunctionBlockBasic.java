@@ -14,12 +14,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MulFunctionBlockBasic extends BinOpFunctionBlockBasic {
-    public MulFunctionBlockBasic(boolean generateId,InputVariable<IntegerValueHolder> left, InputVariable<IntegerValueHolder> right, OutputVariable<IntegerValueHolder> output) {
-        super("Mul"+ (generateId ? BasicBlocksIdGenerator.next("Mul") : ""), left, right, output);
+    public MulFunctionBlockBasic(boolean generateId,InputVariable<IntegerValueHolder> left, InputVariable<IntegerValueHolder> right, OutputVariable<IntegerValueHolder> output, String pathInSystem) {
+        super("Mul"+ (generateId ? BasicBlocksIdGenerator.next("Mul") : ""), left, right, output,pathInSystem);
     }
 
-    private MulFunctionBlockBasic(String name, InputVariable<IntegerValueHolder> left, InputVariable<IntegerValueHolder> right, OutputVariable<IntegerValueHolder> output) {
-        super(name, left, right, output);
+    private MulFunctionBlockBasic(String name, InputVariable<IntegerValueHolder> left, InputVariable<IntegerValueHolder> right, OutputVariable<IntegerValueHolder> output, String pathInSystem) {
+        super(name, left, right, output,pathInSystem);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class MulFunctionBlockBasic extends BinOpFunctionBlockBasic {
 
     @Override
     public FunctionBlockBase clone() {
-        return new MulFunctionBlockBasic(this.getName(), this.getLeft().clone(), this.getRight().clone(), this.getOutput().clone());
+        return new MulFunctionBlockBasic(this.getName(), this.getLeft().clone(), this.getRight().clone(), this.getOutput().clone(),this.getStringPathInSystem());
     }
 
     @Override

@@ -15,12 +15,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class GreaterEqFunctionBlockBasic extends BinOpFunctionBlockBasic {
-    public GreaterEqFunctionBlockBasic(boolean generateId,InputVariable left, InputVariable right, OutputVariable res) {
-        super("GreaterEq"+ (generateId ? BasicBlocksIdGenerator.next("GreaterEq") : ""), left, right, res);
+    public GreaterEqFunctionBlockBasic(boolean generateId,InputVariable left, InputVariable right, OutputVariable res, String pathInSystem) {
+        super("GreaterEq"+ (generateId ? BasicBlocksIdGenerator.next("GreaterEq") : ""), left, right, res,pathInSystem);
     }
 
-    public GreaterEqFunctionBlockBasic(String name,InputVariable left, InputVariable right, OutputVariable res) {
-        super(name, left, right, res);
+    public GreaterEqFunctionBlockBasic(String name,InputVariable left, InputVariable right, OutputVariable res, String pathInSystem) {
+        super(name, left, right, res,pathInSystem);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class GreaterEqFunctionBlockBasic extends BinOpFunctionBlockBasic {
 
     @Override
     public FunctionBlockBase clone() {
-        return new GreaterEqFunctionBlockBasic(this.getName(), this.getLeft().clone(), this.getRight().clone(), this.getOutput().clone());
+        return new GreaterEqFunctionBlockBasic(this.getName(), this.getLeft().clone(), this.getRight().clone(), this.getOutput().clone(),this.getStringPathInSystem());
     }
 
     @Override

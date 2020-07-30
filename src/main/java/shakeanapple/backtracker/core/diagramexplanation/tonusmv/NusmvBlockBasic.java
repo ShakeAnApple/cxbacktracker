@@ -1,5 +1,7 @@
 package shakeanapple.backtracker.core.diagramexplanation.tonusmv;
 
+import java.util.HashSet;
+
 public class NusmvBlockBasic implements NusmvBlock{
     private String statements;
     private boolean toAssign;
@@ -9,8 +11,8 @@ public class NusmvBlockBasic implements NusmvBlock{
         this.toAssign = toAssign;
     }
 
-    public String getStatements() {
-        return this.statements;
+    public NusmvStringModel getStringModel() {
+        return new NusmvStringModel("", this.statements, new HashSet<>());
     }
 
     public boolean isToAssign() {

@@ -35,7 +35,7 @@ public class InputInterfaceCellView extends NodeView implements DiagramCellView{
         view.setStroke(DiagramStyles.INPUT_CELL_STROKE_COLOR);
 
         this.name = cell.getName();
-        Label label = new Label(cell.getName());
+        Label label = new Label(cell.getShortName());
         label.layoutXProperty().bind(view.layoutXProperty().add(2));
         label.layoutYProperty().bind(view.layoutYProperty()
                 .add(view.heightProperty().divide(2))

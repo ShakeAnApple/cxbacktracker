@@ -15,12 +15,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PlusFunctionBlockBasic extends BinOpFunctionBlockBasic {
-    public PlusFunctionBlockBasic(boolean generateId,InputVariable<IntegerValueHolder> left, InputVariable<IntegerValueHolder> right, OutputVariable<IntegerValueHolder> output) {
-        super("Plus"+ (generateId ? BasicBlocksIdGenerator.next("Plus") : ""), left, right, output);
+    public PlusFunctionBlockBasic(boolean generateId,InputVariable<IntegerValueHolder> left, InputVariable<IntegerValueHolder> right, OutputVariable<IntegerValueHolder> output, String pathInSystem) {
+        super("Plus"+ (generateId ? BasicBlocksIdGenerator.next("Plus") : ""), left, right, output,pathInSystem);
     }
 
-    private PlusFunctionBlockBasic(String name, InputVariable<IntegerValueHolder> left, InputVariable<IntegerValueHolder> right, OutputVariable<IntegerValueHolder> output) {
-        super(name, left, right, output);
+    private PlusFunctionBlockBasic(String name, InputVariable<IntegerValueHolder> left, InputVariable<IntegerValueHolder> right, OutputVariable<IntegerValueHolder> output, String pathInSystem) {
+        super(name, left, right, output,pathInSystem);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class PlusFunctionBlockBasic extends BinOpFunctionBlockBasic {
 
     @Override
     public FunctionBlockBase clone() {
-        return new PlusFunctionBlockBasic(this.getName(), this.getLeft().clone(), this.getRight().clone(), this.getOutput().clone());
+        return new PlusFunctionBlockBasic(this.getName(), this.getLeft().clone(), this.getRight().clone(), this.getOutput().clone(),this.getStringPathInSystem());
     }
 
     @Override

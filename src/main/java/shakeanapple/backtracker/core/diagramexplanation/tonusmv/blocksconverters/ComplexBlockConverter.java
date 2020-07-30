@@ -32,7 +32,7 @@ public class ComplexBlockConverter extends NusmvBlockConverterBase {
 
         List<String> blockSystemInputs = this.block.fbInterface().getOrderedInputs().stream()
                 .map(in -> in.getIncomingConnection() != null ?
-                        (in.getIncomingConnection().fromGate().getOwner().equals(parent) ? "" : (in.getIncomingConnection().fromGate().getOwner().getName() + ".")) + in.getIncomingConnection().fromGate().getName()
+                        (in.getIncomingConnection().isInverted() ? "!" : "") + (in.getIncomingConnection().fromGate().getOwner().equals(parent) ? "" : (in.getIncomingConnection().fromGate().getOwner().getName() + ".")) +  in.getIncomingConnection().fromGate().getName()
                         : in.input().getValue().toString()).collect(Collectors.toList());
 
         if (rootModelBuilder.containsModule(this.block.getType())){
@@ -47,7 +47,7 @@ public class ComplexBlockConverter extends NusmvBlockConverterBase {
         for (OutputGate outGate : this.block.fbInterface().getOutputs().values()) {
             Connection conn = outGate.getIncomingConnection();
             if (conn != null) {
-                stringModelBuilder.appendDefineStatement(conn.toGate().getName() + " := " +
+                stringModelBuilder.appendDefineStatement(conn.toGate().getName() + " := " + (conn.isInverted() ? "!" : "") +
                         (conn.fromGate().getOwner() instanceof FunctionBlockComplex ? conn.fromGate().getOwner().getName() + "." : "")
                         + conn.fromGate().getName() + ";", true);
             }

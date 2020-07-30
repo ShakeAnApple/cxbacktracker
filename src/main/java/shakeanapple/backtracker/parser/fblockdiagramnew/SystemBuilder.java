@@ -26,19 +26,20 @@ public class SystemBuilder {
     }
 
     public FunctionBlockComplex buildRoot(ParsingModule root) {
-        return this.buildComplex(root, rootName);
+        return this.buildComplex(root, rootName, "");
     }
 
-    private FunctionBlockComplex buildComplex(ParsingModule m, String name) {
+    private FunctionBlockComplex buildComplex(ParsingModule m, String name, String parentPath) {
 
-        List<InputVariable> diagramInputs = new ArrayList<>();
-        List<OutputVariable> diagramOutputs = new ArrayList<>();
+        List<Gate> diagramInputs = new ArrayList<>();
+        List<Gate> diagramOutputs = new ArrayList<>();
 
         Map<String, FunctionBlockBase> functionBlocks = new HashMap<>();
         for (ModuleDeclaration declaration : m.getDependencies()) {
             ParsingModule parsingModule = this.systemParsingModules.get(declaration.getTypeName());
-            FunctionBlockBase newBlock = parsingModule.isComplex() ? this.buildComplex(parsingModule, declaration.getName()) :
-                    this.basicDefinitionsCache.parseAndCache(parsingModule.getContents()).instance(declaration.getName());
+            FunctionBlockBase newBlock = parsingModule.isComplex() ? this.buildComplex(parsingModule, declaration.getName(), (m.isRoot() ? "": ( parentPath.isEmpty() ? name: parentPath + "." + name))) :
+                    (this.basicDefinitionsCache.definitionExistsFor(parsingModule.getModuleType()) ? this.basicDefinitionsCache.get(parsingModule.getModuleType()).instance(declaration.getName(), (m.isRoot() ? "": ( parentPath.isEmpty() ? name: parentPath + "." + name))) :
+                    this.basicDefinitionsCache.parseAndCache(parsingModule.getContents()).instance(declaration.getName(), (m.isRoot() ? "": ( parentPath.isEmpty() ? name: parentPath + "." + name))));
             functionBlocks.put(declaration.getName(), newBlock);
         }
 
@@ -50,7 +51,7 @@ public class SystemBuilder {
                 Assignment input = declaration.getInputs().get(i);
                 Gate gateTo = blockTo.fbInterface().getOrderedInputs().get(i);
                 if (input.isFromOuterInterface()) {
-                    diagramInputs.add(gateTo.input());
+                    diagramInputs.add(gateTo);
                     systemInputInterfaceConnections.add(new ConnectionDescription(input.getNotNegatedContent(), null, gateTo, input.isNegated()));
                 } else if (input.isConstBoolean() || input.isConstInteger()) {
                     gateTo.input().setValue(this.parseConstant(input));
@@ -87,6 +88,7 @@ public class SystemBuilder {
                     type = from.input().getValue() instanceof BooleanValueHolder ? VarType.BOOLEAN : VarType.INTEGER;
                 }
             }
+
             OutputVariable outputVariable = new OutputVariable(this.random.nextLong(),
                     type == VarType.BOOLEAN ? new BooleanDynamicVariable(new BooleanValueHolder(false), out.getName())
                             : new IntegerDynamicVariable(new IntegerValueHolder(Integer.MIN_VALUE), out.getName()));
@@ -94,16 +96,16 @@ public class SystemBuilder {
 
             if (!as.isFromOuterInterface() && !as.isConstBoolean() && !as.isConstInteger()) {
                 Gate gateFrom = functionBlocks.get(as.getBlockFromName()).fbInterface().getOutputs().get(as.getVarFromName());
+                diagramOutputs.add(gateFrom);
                 systemOutputInterfaceConnections.add(new ConnectionDescription(out.getName(), gateFrom, null, as.isNegated()));
             }
             if (as.isConstInteger() || as.isConstBoolean()) {
                 outputVariable.setValue(this.parseConstant(as));
             }
-            diagramOutputs.add(outputVariable);
         }
 
         Diagram diagram = new Diagram(new ArrayList<>(functionBlocks.values()), diagramInputs, diagramOutputs);
-        FunctionBlockComplex fb = new FunctionBlockComplex(name, m.getModuleType(), interfaceInputs, interfaceOutputs, diagram);
+        FunctionBlockComplex fb = new FunctionBlockComplex(name, m.getModuleType(), interfaceInputs, interfaceOutputs, diagram, parentPath);
 
         for (ConnectionDescription connDescr : systemInputInterfaceConnections) {
             Gate fromGate = fb.fbInterface().getInputs().get(connDescr.getInterfaceVarName());

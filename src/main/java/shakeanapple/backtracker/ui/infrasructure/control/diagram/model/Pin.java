@@ -21,6 +21,8 @@ public abstract class Pin {
 
     private Function<Pin, Boolean> pinClickHandler;
 
+    private String shortName;
+
     public Pin(DiagramCell owner, String name, Function<Pin, Boolean> pinClickHandler, ValueHolder initialValue) {
         this.owner = owner;
         this.name = name;
@@ -28,6 +30,9 @@ public abstract class Pin {
         this.causes = FXCollections.observableArrayList(new ArrayList<>());
         this.valueProperty = new SimpleObjectProperty<>(initialValue);
         this.pinClickHandler = pinClickHandler;
+
+        String[] nameParts = this.name.split("\\.");
+        this.shortName = nameParts.length > 0 ? nameParts[nameParts.length - 1] : this.name;
     }
 
     public Property<ValueHolder> valueProperty(){
@@ -52,6 +57,10 @@ public abstract class Pin {
 
     public String getName() {
         return name;
+    }
+
+    public String getShortName() {
+        return this.shortName;
     }
 
     public abstract void updateValue(ValueHolder value);

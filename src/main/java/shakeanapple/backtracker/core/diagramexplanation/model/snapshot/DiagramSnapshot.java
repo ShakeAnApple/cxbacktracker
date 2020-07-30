@@ -40,19 +40,19 @@ public class DiagramSnapshot {
 
         Map<String, FunctionBlockSnapshot> blockSnapshots = new HashMap<>();
 
-        Map<String, ValueHolder> inputs = diagram.fbInterface().getInputs().values().stream().collect(Collectors.toMap(InputGate::getName, InputGate::getValue));
-        Map<String, ValueHolder> outputs = diagram.fbInterface().getOutputs().values().stream().collect(Collectors.toMap(OutputGate::getName, OutputGate::getValue));
+        Map<String, ValueHolder> inputs = diagram.fbInterface().getInputs().values().stream().collect(Collectors.toMap(InputGate::getFullName, InputGate::getValue));
+        Map<String, ValueHolder> outputs = diagram.fbInterface().getOutputs().values().stream().collect(Collectors.toMap(OutputGate::getFullName, OutputGate::getValue));
 
         for (DiagramElement fblock : diagram.getInternalDiagram().getFunctionBlocks()) {
             blockSnapshots.put(fblock.getName(), FunctionBlockSnapshot.fromFunctionBlock((FunctionBlockBase) fblock));
         }
 
-        for (DiagramElement gate: diagram.fbInterface().getInputs().values()){
-            blockSnapshots.put(gate.getName(), FunctionBlockSnapshot.fromGate((Gate)gate));
+        for (Gate gate: diagram.fbInterface().getInputs().values()){
+            blockSnapshots.put(gate.getFullName(), FunctionBlockSnapshot.fromGate((Gate)gate));
         }
 
-        for (DiagramElement gate: diagram.fbInterface().getOutputs().values()){
-            blockSnapshots.put(gate.getName(), FunctionBlockSnapshot.fromGate((Gate)gate));
+        for (Gate gate: diagram.fbInterface().getOutputs().values()){
+            blockSnapshots.put(gate.getFullName(), FunctionBlockSnapshot.fromGate((Gate)gate));
         }
 
         List<ConnectionSnapshot> connections = new ArrayList<>();
@@ -62,7 +62,7 @@ public class DiagramSnapshot {
                 FunctionBlockSnapshot from = blockSnapshots.get(connection.from().getName());
                 FunctionBlockSnapshot to = blockSnapshots.get(connection.to().getName());
 
-                connections.add(new ConnectionSnapshot(from, connection.fromGate().getName(), to, connection.toGate().getName(), connection.isInverted(), connection.fromGate().getValue()));
+                connections.add(new ConnectionSnapshot(from, connection.fromGate().getFullName(), to, connection.toGate().getFullName(), connection.isInverted(), connection.fromGate().getValue()));
             }
         }
 
@@ -74,7 +74,7 @@ public class DiagramSnapshot {
                     FunctionBlockSnapshot to = blockSnapshots.get(connection.to().getName());
 
                     if (connection.fromGate() != null && connection.toGate() != null) {
-                        connections.add(new ConnectionSnapshot(from, connection.fromGate().getName(), to, connection.toGate().getName(), connection.isInverted(), connection.fromGate().getValue()));
+                        connections.add(new ConnectionSnapshot(from, connection.fromGate().getFullName(), to, connection.toGate().getFullName(), connection.isInverted(), connection.fromGate().getValue()));
                     }
                 }
             }

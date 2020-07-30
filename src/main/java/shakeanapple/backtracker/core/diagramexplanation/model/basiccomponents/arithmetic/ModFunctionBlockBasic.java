@@ -14,12 +14,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ModFunctionBlockBasic extends BinOpFunctionBlockBasic {
-    public ModFunctionBlockBasic(boolean generateId,InputVariable<IntegerValueHolder> left, InputVariable<IntegerValueHolder> right, OutputVariable<IntegerValueHolder> output) {
-        super("Mod"+ (generateId ? BasicBlocksIdGenerator.next("Mod") : ""), left, right, output);
+    public ModFunctionBlockBasic(boolean generateId,InputVariable<IntegerValueHolder> left, InputVariable<IntegerValueHolder> right, OutputVariable<IntegerValueHolder> output, String pathInSystem) {
+        super("Mod"+ (generateId ? BasicBlocksIdGenerator.next("Mod") : ""), left, right, output,pathInSystem);
     }
 
-    private ModFunctionBlockBasic(String name, InputVariable<IntegerValueHolder> left, InputVariable<IntegerValueHolder> right, OutputVariable<IntegerValueHolder> output) {
-        super(name, left, right, output);
+    private ModFunctionBlockBasic(String name, InputVariable<IntegerValueHolder> left, InputVariable<IntegerValueHolder> right, OutputVariable<IntegerValueHolder> output, String pathInSystem) {
+        super(name, left, right, output,pathInSystem);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class ModFunctionBlockBasic extends BinOpFunctionBlockBasic {
 
     @Override
     public FunctionBlockBase clone() {
-        return new ModFunctionBlockBasic(this.getName(), this.getLeft().clone(), this.getRight().clone(), this.getOutput().clone());
+        return new ModFunctionBlockBasic(this.getName(), this.getLeft().clone(), this.getRight().clone(), this.getOutput().clone(),this.getStringPathInSystem());
     }
 
     @Override

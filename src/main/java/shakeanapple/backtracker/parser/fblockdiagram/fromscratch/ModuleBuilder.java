@@ -75,7 +75,7 @@ public class ModuleBuilder {
         for (ModuleDeclaration declaration : moduleDeclarations.values()) {
 
             FunctionBlockComplex block;
-            block = this.blockDefinitionsCache.parseAndCache(this.extractModule(declaration.getTypeName())).instance(declaration.getName());
+            block = this.blockDefinitionsCache.parseAndCache(this.extractModule(declaration.getTypeName())).instance(declaration.getName(), "path");
 
 //            if (this.blockDefinitionsCache.definitionExists(declaration.getTypeName())) {
 //                block = this.blockDefinitionsCache.get(declaration.getTypeName()).instance(declaration.getName());
@@ -85,7 +85,7 @@ public class ModuleBuilder {
             modules.put(declaration.getName(), block);
         }
 
-        Map<Long, InputVariable> diagramInputs = new HashMap<>();
+        Map<String, Gate> diagramInputs = new HashMap<>();
         Map<String, List<ConnectionDescription>> systemInputConnections = new HashMap<>();
         for (ModuleDeclaration declaration: moduleDeclarations.values()){
 
@@ -105,8 +105,8 @@ public class ModuleBuilder {
                     if (inSystemVar == null) {
                         inModuleGate.input().setValue(this.parseConstant(varName, isInverted));
                     } else {
-                        if (!diagramInputs.containsKey(inModuleGate.input().getId())){
-                            diagramInputs.put(inModuleGate.input().getId(), inModuleGate.input());
+                        if (!diagramInputs.containsKey(inModuleGate.getFullName())){
+                            diagramInputs.put(inModuleGate.getFullName(), inModuleGate);
                         }
                         if (!systemInputConnections.containsKey(inSystemVar.getName())){
                             systemInputConnections.put(inSystemVar.getName(), new ArrayList<>());
@@ -124,7 +124,7 @@ public class ModuleBuilder {
             }
         }
 
-        List<OutputVariable> diagramOutputs = new ArrayList<>();
+        List<Gate> diagramOutputs = new ArrayList<>();
         Map<String, OutputGate> systemOutputConnections = new HashMap<>();
         Map<String, OutputVariable> systemOutputs = this.readOutputs(moduleContents).stream().filter(str -> str.contains(":="))
                 .map(str -> {
@@ -137,7 +137,7 @@ public class ModuleBuilder {
                     OutputVariable systemOutput = new OutputVariable(r. nextLong(), blockOutput.getValue() instanceof BooleanValueHolder
                             ? new BooleanDynamicVariable(new BooleanValueHolder(false), parts[0])
                             : new IntegerDynamicVariable(new IntegerValueHolder(Integer.MIN_VALUE), parts[0]));
-                    diagramOutputs.add(blockOutput);
+                    diagramOutputs.add(blockOutputGate);
                     systemOutputConnections.put(systemOutput.getName(), blockOutputGate);
                     return systemOutput;
                 })
@@ -145,7 +145,7 @@ public class ModuleBuilder {
 
         FunctionBlockComplex root = new FunctionBlockComplex("root", "DIAGRAM",
                 new ArrayList<>(inputVars.values()), new ArrayList<>(systemOutputs.values()),
-                new Diagram(modules.values().stream().map(m -> (FunctionBlockBase) m).collect(Collectors.toList()), new ArrayList<>(diagramInputs.values()), diagramOutputs));
+                new Diagram(modules.values().stream().map(m -> (FunctionBlockBase) m).collect(Collectors.toList()), new ArrayList<>(diagramInputs.values()), diagramOutputs), "parent path");
 
         // TODO check cautiously if transition should be to GATE or to BLOCK
         systemOutputConnections.forEach((varName, internalGate) -> {

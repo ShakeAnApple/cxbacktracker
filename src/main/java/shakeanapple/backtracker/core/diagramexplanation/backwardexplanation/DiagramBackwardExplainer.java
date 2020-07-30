@@ -1,11 +1,21 @@
-package shakeanapple.backtracker.core.diagramexplanation;
+package shakeanapple.backtracker.core.diagramexplanation.backwardexplanation;
 
+import shakeanapple.backtracker.core.diagramexplanation.DiagramOutputExplainer;
 import shakeanapple.backtracker.core.diagramexplanation.model.*;
+import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.FunctionBlockBasic;
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CausePathTree;
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
+import shakeanapple.backtracker.core.diagramexplanation.tonusmv.NusmvBlock;
+import shakeanapple.backtracker.core.diagramexplanation.tonusmv.NusmvBlockConverter;
+import shakeanapple.backtracker.core.diagramexplanation.tonusmv.NusmvStringModel;
+import shakeanapple.backtracker.core.diagramexplanation.tonusmv.blocksconverters.ComplexBlockConverter;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DiagramBackwardExplainer implements DiagramOutputExplainer {
 
@@ -120,8 +130,83 @@ public class DiagramBackwardExplainer implements DiagramOutputExplainer {
     }
 
     @Override
-    public ExplanationItem explain(String varName, String blockName, int timestamp, boolean inContext) {
-        return null;
+    public List<Gate> extractNonObviousConstants(ExplanationItem explanationResult) {
+        CauseNode root = explanationResult.getTree().getRoots().get(0);
+        Map<String, CauseGateEvaluation> suspiciousGates = this.extractSuspiciousGates(root);
+        List<String> propertiesToCheck = suspiciousGates.entrySet().stream()
+                .filter(entry -> entry.getValue().getEvaluations().size() == 1)
+                .map(entry -> "LTLSPEC G " + entry.getKey() + " = " + entry.getValue().getEvaluations().iterator().next() + ";" + System.lineSeparator())
+                .collect(Collectors.toList());
+
+        if (propertiesToCheck.size() == 0) {
+            return new ArrayList<>();
+        }
+
+        NusmvBlockConverter converter = new ComplexBlockConverter(this.diagram);
+        NusmvBlock nusmvBlock = converter.convert(true);
+        NusmvStringModel model = nusmvBlock.getStringModel();
+        model.addSpecifications(propertiesToCheck);
+
+        try {
+            NusmvRunner nusmvRunner = new NusmvRunner(model);
+            nusmvRunner.run( true, "-dcx", "-bmc");
+
+            List<String> output = Arrays.stream(new String(nusmvRunner.getInputStream().readAllBytes()).split(System.lineSeparator()))
+                    .filter(line -> line.contains("specification") && line.contains("is true"))
+                    .map(line -> line
+                            .substring(0, line.indexOf(" ="))
+                            .replace("-- specification  G", "")
+                            .replace("is true", "")
+                            .trim()
+                            )
+                    .collect(Collectors.toList());
+
+            List<Gate> res = new ArrayList<>();
+            for(String gateName: output){
+                System.out.println(gateName);
+                res.add(suspiciousGates.get(gateName).getGate());
+            }
+            return res;
+
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            throw new RuntimeException(Arrays.toString(e.getStackTrace()));
+        }
     }
 
+    private Map<String, CauseGateEvaluation> extractSuspiciousGates(CauseNode parent) {
+        Map<String, CauseGateEvaluation> gatesValues = new HashMap<>();
+        if (parent.getGate().getIncomingConnection() != null) {
+            gatesValues.put(parent.getGate().getFullNameInContext(this.diagram.getName()), new CauseGateEvaluation(parent.getGate(), parent.getValue().toString()));
+        }
+        for (CauseNode child : parent.getChildren()) {
+            Map<String, CauseGateEvaluation> childValues = this.extractSuspiciousGates(child);
+            for (String key : childValues.keySet()) {
+                if (!gatesValues.containsKey(key)) {
+                    gatesValues.put(key, new CauseGateEvaluation(child.getGate()));
+                }
+                gatesValues.get(key).addEvaluations(childValues.get(key).getEvaluations());
+            }
+        }
+        return gatesValues;
+    }
+
+    private Map<String, HashSet<String>> extractNonConstantGatesNames(CauseNode parent) {
+        Map<String, HashSet<String>> gatesValues = new HashMap<>();
+        if (parent.getGate().getIncomingConnection() != null && parent.getGate().getIncomingConnection().fromGate().getIncomingConnection() != null) {
+            gatesValues.put(parent.getGate().getFullName(), new HashSet<>() {{
+                add(parent.getValue().toString());
+            }});
+        }
+        for (CauseNode child : parent.getChildren()) {
+            Map<String, HashSet<String>> childValues = this.extractNonConstantGatesNames(child);
+            for (String key : childValues.keySet()) {
+                if (!gatesValues.containsKey(key)) {
+                    gatesValues.put(key, new HashSet<>());
+                }
+                gatesValues.get(key).addAll(childValues.get(key));
+            }
+        }
+        return gatesValues;
+    }
 }

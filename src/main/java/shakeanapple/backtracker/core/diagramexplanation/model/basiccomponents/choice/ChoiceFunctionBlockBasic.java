@@ -22,23 +22,23 @@ public class ChoiceFunctionBlockBasic extends FunctionBlockBasic {
 
     private final Map<Integer, Choice> executedChoices = new HashMap<>();
 
-    public ChoiceFunctionBlockBasic(boolean generateId,List<Choice> choices, OutputVariable output) {
+    public ChoiceFunctionBlockBasic(boolean generateId,List<Choice> choices, OutputVariable output, String pathInSystem) {
         super("Choice"+ (generateId ? BasicBlocksIdGenerator.next("Choice") : ""),
                 inferInputs(choices),
                 new ArrayList<>() {{
                     add(output);
-                }}
+                }},pathInSystem
         );
         this.choices = choices;
         this.output = output;
     }
 
-    private ChoiceFunctionBlockBasic(String name,List<Choice> choices, OutputVariable output) {
+    private ChoiceFunctionBlockBasic(String name,List<Choice> choices, OutputVariable output, String pathInSystem) {
         super(name,
                 inferInputs(choices),
                 new ArrayList<>() {{
                     add(output);
-                }}
+                }},pathInSystem
         );
         this.choices = choices;
         this.output = output;
@@ -71,7 +71,7 @@ public class ChoiceFunctionBlockBasic extends FunctionBlockBasic {
 
     @Override
     public FunctionBlockBase clone() {
-        return new ChoiceFunctionBlockBasic(this.getName(), this.choices.stream().map(Choice::clone).collect(Collectors.toList()), this.output.clone());
+        return new ChoiceFunctionBlockBasic(this.getName(), this.choices.stream().map(Choice::clone).collect(Collectors.toList()), this.output.clone(),this.getStringPathInSystem());
     }
 
     @Override

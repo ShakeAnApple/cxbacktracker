@@ -1,6 +1,8 @@
 package shakeanapple.backtracker.core.diagramexplanation.tonusmv;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class  NusmvBlockComplex implements NusmvBlock{
     private String name;
@@ -18,7 +20,7 @@ public class  NusmvBlockComplex implements NusmvBlock{
     public NusmvBlockComplex(String name, String type, List<String> inputsFromSystem) {
         this.name = name;
         this.type = type;
-        this.stringModel = new NusmvStringModel("");
+        this.stringModel = new NusmvStringModel("", "", new HashSet<>());
         this.inputsFromSystem = inputsFromSystem;
     }
 
@@ -30,20 +32,19 @@ public class  NusmvBlockComplex implements NusmvBlock{
         return this.type;
     }
 
+    @Override
     public NusmvStringModel getStringModel() {
         return this.stringModel;
     }
 
     @Override
-    public String getStatements() {
-        return this.stringModel.getContents();
-    }
-
-    @Override
     public void writeTo(NusmvStringModelBuilder mb) {
         mb.addModuleType(this.type);
+        for (String type: this.stringModel.getInternalModulesTypes()){
+            mb.addModuleType(type);
+        }
         mb.appendVarStatement(this.name + ": " + this.type + "(" + String.join(",", this.inputsFromSystem) + ");")
-                .appendModule(this.stringModel.getContents());
+                .appendModule(this.stringModel.getString());
 
     }
 }

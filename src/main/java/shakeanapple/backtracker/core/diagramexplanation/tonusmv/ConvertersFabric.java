@@ -9,6 +9,7 @@ import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.ar
 import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.choice.ChoiceFunctionBlockBasic;
 import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.logic.*;
 import shakeanapple.backtracker.core.diagramexplanation.tonusmv.blocksconverters.ComplexBlockConverter;
+import shakeanapple.backtracker.core.diagramexplanation.tonusmv.blocksconverters.DelayBasicBlockConverter;
 import shakeanapple.backtracker.core.diagramexplanation.tonusmv.blocksconverters.basics.*;
 
 class ConvertersFabric {

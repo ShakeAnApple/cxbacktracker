@@ -37,12 +37,12 @@ public class FunctionBlockSnapshot {
 //                functionBlock.fbInterface().getOutputs().values().stream().map(out -> out.output().getName()).collect(Collectors.toList()));
 
         return new FunctionBlockSnapshot(functionBlock.getName(), functionBlock.getType(),
-                functionBlock.fbInterface().getInputs().values().stream().collect(Collectors.toMap(InputGate::getName, InputGate::getValue)),
-                functionBlock.fbInterface().getOutputs().values().stream().collect(Collectors.toMap(OutputGate::getName, OutputGate::getValue)));
+                functionBlock.fbInterface().getInputs().values().stream().collect(Collectors.toMap(InputGate::getFullName, InputGate::getValue)),
+                functionBlock.fbInterface().getOutputs().values().stream().collect(Collectors.toMap(OutputGate::getFullName, OutputGate::getValue)));
     }
 
     public static FunctionBlockSnapshot fromGate(Gate gate) {
-        return new FunctionBlockSnapshot(gate.getName(), gate.getType(), new ArrayList<>(){{add(gate.input().getName());}}, new ArrayList<>(){{add(gate.output().getName());}});
+        return new FunctionBlockSnapshot(gate.getFullName(), gate.getType(), new ArrayList<>(){{add(gate.input().getName());}}, new ArrayList<>(){{add(gate.output().getName());}});
     }
 
     public String getName() {

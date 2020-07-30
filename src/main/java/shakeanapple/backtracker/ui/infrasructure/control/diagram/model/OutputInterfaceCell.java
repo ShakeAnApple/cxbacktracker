@@ -13,11 +13,20 @@ public class OutputInterfaceCell implements DiagramCell {
 
     private String diagramOwnerName;
 
+    private String shortName;
+
     public OutputInterfaceCell(String name, String diagramOwnerName, Function<Pin, Boolean> pinClickHandler, ValueHolder initialValue) {
         this.name = name;
         this.inputPin = new InputPin(this, name, pinClickHandler, initialValue);
 
         this.diagramOwnerName = diagramOwnerName;
+
+        String[] nameParts = this.name.split("\\.");
+        this.shortName = nameParts.length > 0 ? nameParts[nameParts.length - 1] : this.name;
+    }
+
+    public String getShortName() {
+        return this.shortName;
     }
 
     public String getName() {

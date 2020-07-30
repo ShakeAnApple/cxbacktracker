@@ -25,7 +25,7 @@ public class CauseNodeUI {
     }
 
     public static CauseNodeUI parse(CauseNode causeNode){
-        Cause cause = new Cause(causeNode.getTimestamp(), causeNode.getGate().getName(),
+        Cause cause = new Cause(causeNode.getTimestamp(), causeNode.getGate().getFullName(),
                 causeNode.getGate().getOwner().getName(), causeNode.getValue());
 
         List<CauseNodeUI> children = new ArrayList<>();
@@ -37,7 +37,8 @@ public class CauseNodeUI {
     }
 
     public String constructConnectionId(String fromBlock, String fromVarName, String toBlock, String  toVarName){
-        return (fromBlock == null || fromBlock.equals("root") ? "root" : fromBlock) + fromVarName + (toBlock == null || toBlock.equals("root") ? "root" : toBlock) + toVarName;
+//        return (fromBlock == null || fromBlock.equals("root") ? "root" : fromBlock) + fromVarName + (toBlock == null || toBlock.equals("root") ? "root" : toBlock) + toVarName;
+        return (fromBlock == null || fromBlock.equals("root") ? "root" : "") + fromVarName + (toBlock == null || toBlock.equals("root") ? "root" : "") + toVarName;
     }
 
     public List<String> inferConnectionsIds() {
@@ -78,9 +79,11 @@ public class CauseNodeUI {
         return res;
     }
 
+    // TODO operate with gates full names
     public Map<String, List<Cause>> getCausesForPins(){
         Map<String, List<Cause>> pins = new HashMap<>();
-        pins.put(this.cause.getBlockName() + this.cause.getVarName(), new ArrayList<>(){{add(cause);}});
+//        pins.put(this.cause.getBlockName() + this.cause.getVarName(), new ArrayList<>(){{add(cause);}});
+        pins.put(this.cause.getVarName(), new ArrayList<>(){{add(cause);}});
         for (CauseNodeUI child: this.children){
             Map<String, List<Cause>> childPins = child.getCausesForPins();
             for (String pinName: childPins.keySet()){

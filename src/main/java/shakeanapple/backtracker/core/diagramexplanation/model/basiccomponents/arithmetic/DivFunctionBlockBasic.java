@@ -14,12 +14,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class DivFunctionBlockBasic extends BinOpFunctionBlockBasic {
-    public DivFunctionBlockBasic(boolean generateId,InputVariable<IntegerValueHolder> left, InputVariable<IntegerValueHolder> right, OutputVariable<IntegerValueHolder> output) {
-        super("Div"+ (generateId ? BasicBlocksIdGenerator.next("Div") : ""), left, right, output);
+    public DivFunctionBlockBasic(boolean generateId,InputVariable<IntegerValueHolder> left, InputVariable<IntegerValueHolder> right, OutputVariable<IntegerValueHolder> output, String pathInSystem) {
+        super("Div"+ (generateId ? BasicBlocksIdGenerator.next("Div") : ""), left, right, output,pathInSystem);
     }
 
-    private DivFunctionBlockBasic(String name, InputVariable<IntegerValueHolder> left, InputVariable<IntegerValueHolder> right, OutputVariable<IntegerValueHolder> output) {
-        super(name, left, right, output);
+    private DivFunctionBlockBasic(String name, InputVariable<IntegerValueHolder> left, InputVariable<IntegerValueHolder> right, OutputVariable<IntegerValueHolder> output, String pathInSystem) {
+        super(name, left, right, output,pathInSystem);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class DivFunctionBlockBasic extends BinOpFunctionBlockBasic {
 
     @Override
     public FunctionBlockBase clone() {
-        return new DivFunctionBlockBasic(this.getName(), this.getLeft().clone(), this.getRight().clone(), this.getOutput().clone());
+        return new DivFunctionBlockBasic(this.getName(), this.getLeft().clone(), this.getRight().clone(), this.getOutput().clone(), this.getStringPathInSystem());
     }
 
     @Override

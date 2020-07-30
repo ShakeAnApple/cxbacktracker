@@ -2,6 +2,7 @@ package shakeanapple.backtracker.core.diagramexplanation.model;
 
 import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.core.diagramexplanation.Clocks;
+import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.FunctionBlockBasic;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
@@ -17,6 +18,8 @@ public abstract class Gate extends DiagramElement {
 
     private int gateTime;
 
+    private String fullName;
+
     private InputUpdatedEvent inputUpdatedEvent;
     private OutputUpdatedEvent outputUpdatedEvent;
 
@@ -28,6 +31,9 @@ public abstract class Gate extends DiagramElement {
         this.inputUpdatedEvent = new InputUpdatedEvent();
         this.outputUpdatedEvent = new OutputUpdatedEvent();
         this.owner = owner;
+
+        this.fullName = (this.owner.getStringPathInSystem() == null || this.owner.getStringPathInSystem().isEmpty() ? "" : (this.owner.getStringPathInSystem() + "."))
+                + (this.owner.isRoot() || this.owner instanceof FunctionBlockBasic ? "" : (this.owner.getName() + ".")) + this.getName();
     }
 
     public FunctionBlockBase getOwner(){
@@ -91,5 +97,18 @@ public abstract class Gate extends DiagramElement {
 
     public OutputUpdatedEvent outputUpdatedEvent() {
         return this.outputUpdatedEvent;
+    }
+
+    public String getFullName(){
+        this.fullName = (this.owner.getStringPathInSystem() == null || this.owner.getStringPathInSystem().isEmpty() ? "" : (this.owner.getStringPathInSystem() + "."))
+                + (this.owner.isRoot() || this.owner instanceof FunctionBlockBasic ? "" : (this.owner.getName() + ".")) + this.getName();
+        return this.fullName;
+    }
+
+    public String getFullNameInContext(String contextBlockName) {
+        if (!contextBlockName.equals("main")) {
+            return this.fullName.substring(this.fullName.indexOf(contextBlockName) + contextBlockName.length() + 1);
+        }
+        return this.fullName;
     }
 }

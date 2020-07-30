@@ -31,19 +31,22 @@ public class Connection {
     }
 
     private String makeId() {
-        String id = "";
-        if (!this.from.getOwner().getName().equals(this.from.getName())){
-            id += this.from.getOwner().getName();
-        } else{
-            id += ((InputInterfaceCell)this.from.getOwner()).getDiagramOwnerName();
-        }
-        id += this.from.getName();
-        if (!this.to.getOwner().getName().equals(this.to.getName())){
-            id += this.to.getOwner().getName();
-        } else{
-            id += ((OutputInterfaceCell)this.to.getOwner()).getDiagramOwnerName();
-        }
-        id += this.to.getName();
+
+        String id = this.from.getName() + this.to.getName();
+
+//        String id = "";
+//        if (!this.from.getOwner().getName().equals(this.from.getName())){
+//            id += this.from.getOwner().getName();
+//        } else{
+//            id += ((InputInterfaceCell)this.from.getOwner()).getDiagramOwnerName();
+//        }
+//        id += this.from.getName();
+//        if (!this.to.getOwner().getName().equals(this.to.getName())){
+//            id += this.to.getOwner().getName();
+//        } else{
+//            id += ((OutputInterfaceCell)this.to.getOwner()).getDiagramOwnerName();
+//        }
+//        id += this.to.getName();
         return id;
     }
 

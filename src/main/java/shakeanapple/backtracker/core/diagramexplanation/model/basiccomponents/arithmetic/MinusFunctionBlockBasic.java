@@ -15,12 +15,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MinusFunctionBlockBasic extends BinOpFunctionBlockBasic {
-    public MinusFunctionBlockBasic(boolean generateId, InputVariable<IntegerValueHolder> left, InputVariable<IntegerValueHolder> right, OutputVariable<IntegerValueHolder> output) {
-        super("Minus" + (generateId ? BasicBlocksIdGenerator.next("Minus") : ""), left, right, output);
+    public MinusFunctionBlockBasic(boolean generateId, InputVariable<IntegerValueHolder> left, InputVariable<IntegerValueHolder> right, OutputVariable<IntegerValueHolder> output, String pathInSystem) {
+        super("Minus" + (generateId ? BasicBlocksIdGenerator.next("Minus") : ""), left, right, output,pathInSystem);
     }
 
-    private MinusFunctionBlockBasic(String name, InputVariable<IntegerValueHolder> left, InputVariable<IntegerValueHolder> right, OutputVariable<IntegerValueHolder> output) {
-        super(name, left, right, output);
+    private MinusFunctionBlockBasic(String name, InputVariable<IntegerValueHolder> left, InputVariable<IntegerValueHolder> right, OutputVariable<IntegerValueHolder> output, String pathInSystem) {
+        super(name, left, right, output,pathInSystem);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class MinusFunctionBlockBasic extends BinOpFunctionBlockBasic {
 
     @Override
     public FunctionBlockBase clone() {
-        return new MinusFunctionBlockBasic(this.getName(), this.getLeft().clone(), this.getRight().clone(), this.getOutput().clone());
+        return new MinusFunctionBlockBasic(this.getName(), this.getLeft().clone(), this.getRight().clone(), this.getOutput().clone(),this.getStringPathInSystem());
     }
 
     @Override

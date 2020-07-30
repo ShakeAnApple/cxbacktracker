@@ -26,7 +26,7 @@ public abstract class NusmvBasicBlockConverterBase extends NusmvBlockConverterBa
                 parentModel.appendDefineStatement((conn.toGate().getOwner() instanceof FunctionBlockComplex
                         ? conn.toGate().getOwner().getName() + "." : "")
                         + conn.toGate().getName()
-                        + " := " +
+                        + " := " + (conn.isInverted() ? "!" : "") +
                         (conn.fromGate().getOwner() instanceof FunctionBlockComplex &&
                                 !(conn.fromGate().getOwner().equals(parent)) ? conn.fromGate().getOwner().getName() + "." : "")
                         + conn.fromGate().getName() + ";", true);

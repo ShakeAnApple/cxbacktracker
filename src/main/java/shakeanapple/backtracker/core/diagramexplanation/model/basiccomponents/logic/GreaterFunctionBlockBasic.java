@@ -15,12 +15,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class GreaterFunctionBlockBasic extends BinOpFunctionBlockBasic {
-    public GreaterFunctionBlockBasic(boolean generateId, InputVariable left, InputVariable right, OutputVariable res) {
-        super("Greater" + (generateId ? BasicBlocksIdGenerator.next("Greater") : ""), left, right, res);
+    public GreaterFunctionBlockBasic(boolean generateId, InputVariable left, InputVariable right, OutputVariable res, String pathInSystem) {
+        super("Greater" + (generateId ? BasicBlocksIdGenerator.next("Greater") : ""), left, right, res,pathInSystem);
     }
 
-    public GreaterFunctionBlockBasic(String name, InputVariable left, InputVariable right, OutputVariable res) {
-        super(name, left, right, res);
+    public GreaterFunctionBlockBasic(String name, InputVariable left, InputVariable right, OutputVariable res, String pathInSystem) {
+        super(name, left, right, res,pathInSystem);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class GreaterFunctionBlockBasic extends BinOpFunctionBlockBasic {
 
     @Override
     public FunctionBlockBase clone() {
-        return new GreaterFunctionBlockBasic(this.getName(), this.getLeft().clone(), this.getRight().clone(), this.getOutput().clone());
+        return new GreaterFunctionBlockBasic(this.getName(), this.getLeft().clone(), this.getRight().clone(), this.getOutput().clone(),this.getStringPathInSystem());
     }
 
     @Override

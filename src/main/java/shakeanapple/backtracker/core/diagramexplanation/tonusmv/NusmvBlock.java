@@ -1,6 +1,6 @@
 package shakeanapple.backtracker.core.diagramexplanation.tonusmv;
 
 public interface NusmvBlock {
-    String getStatements();
+    NusmvStringModel getStringModel();
     void writeTo(NusmvStringModelBuilder mb);
 }

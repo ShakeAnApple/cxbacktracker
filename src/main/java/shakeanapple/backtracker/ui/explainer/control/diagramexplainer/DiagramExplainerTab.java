@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import shakeanapple.backtracker.core.diagramexplanation.*;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.DiagramBackwardExplainer;
 import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockBase;
 import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockComplex;
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
@@ -75,21 +76,31 @@ public class DiagramExplainerTab extends Tab {
         this.diagram = diagram;
         this.diagramCausesList.setItems(this.diagramCausesListObservable);
 
-
-        this.diagramOutputExplainer = new DiagramBackwardExplainer(diagram);
-    }
-
-    public void init(FunctionBlockComplex diagram) {
         ComplexBlockConverter converter = new ComplexBlockConverter(diagram);
         NusmvBlock block = converter.convert(true);
         try {
             FileWriter myWriter = new FileWriter("filename.smv");
-            myWriter.write(block.getStatements());
+            myWriter.write(block.getStringModel().getString());
             myWriter.close();
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
+
+        this.diagramOutputExplainer = new DiagramBackwardExplainer(diagram);
+    }
+
+    public void init(FunctionBlockComplex diagram) {
+//        ComplexBlockConverter converter = new ComplexBlockConverter(diagram);
+//        NusmvBlock block = converter.convert(true);
+//        try {
+//            FileWriter myWriter = new FileWriter("filename.smv");
+//            myWriter.write(block.getStringModel().getString());
+//            myWriter.close();
+//        } catch (IOException e) {
+//            System.out.println("An error occurred.");
+//            e.printStackTrace();
+//        }
 //        FunctionBlockComplex diagram = FunctionBlockComplex.parse(Context.instance().getDiagramPath());
         this.diagramExecutor = new DiagramCounterexampleExecutor(diagram, Context.instance().getCounterexample());
         this.diagram = diagram;
@@ -99,18 +110,21 @@ public class DiagramExplainerTab extends Tab {
         this.diagramOutputExplainer = new DiagramBackwardExplainer(diagram);
     }
 
-    private void clearConnections() {
+    private void clearDiagram() {
         for (Connection conn : this.connections.values()) {
             conn.isCauseTreeEdge(false);
+        }
+        for (String pinName: this.diagramPins.keySet()){
+            this.diagramPins.get(pinName).getCausesObservable().clear();
         }
     }
 
     public List<Cause> explainCause(String varName, String blockName, int timestamp) {
-        this.clearConnections();
+        this.clearDiagram();
 
         ExplanationItem expRes = this.diagramOutputExplainer.explain(varName, blockName, timestamp);
+        //List<Gate> gates = this.diagramOutputExplainer.extractNonObviousConstants(expRes);
         CauseNodeUI causesTree = CauseNodeUI.parse(expRes.getTree().getRoots().get(0));
-
 
         Map<String, Map<String, List<Cause>>> connectionsCauses = causesTree.inferConnectionCauses();
         for (String connId : connectionsCauses.keySet()) {
@@ -136,14 +150,14 @@ public class DiagramExplainerTab extends Tab {
     }
 
     private Boolean diagramPinPressHandler(Pin pin) {
-        List<Cause> causes = this.explainCause(pin.getName(), pin.getOwner().getName(), Context.instance().getCurrentStep() + 1);
+        List<Cause> causes = this.explainCause(pin.getShortName(), pin.getOwner().getName(), Context.instance().getCurrentStep() + 1);
         this.diagramCausesListObservable.clear();
         this.diagramCausesListObservable.addAll(causes);
         return true;
     }
 
     private void updateDiagram(DiagramSnapshot snapshot) {
-        this.clearConnections();
+        this.clearDiagram();
         this.diagramCausesListObservable.clear();
         if (this.diagramControl.isClear()) {
             Graph diagram = GraphHelper.convertToDiagramGraphNew(snapshot, this::diagramPinPressHandler, this::onBlockDoubleClicked);
@@ -183,17 +197,17 @@ public class DiagramExplainerTab extends Tab {
     private void updateBlockInterfaces(List<FunctionBlockSnapshot> blockSnapshots, FBInterfaceSnapshot diagramInterface) {
         for (FunctionBlockSnapshot fb : blockSnapshots) {
             for (String varName : fb.getFbInterface().getInputsValues().keySet()) {
-                this.diagramPins.get(fb.getName() + varName).updateValue(fb.getFbInterface().getInputsValues().get(varName));
+                this.diagramPins.get(varName).updateValue(fb.getFbInterface().getInputsValues().get(varName));
             }
             for (String varName : fb.getFbInterface().getOutputsValues().keySet()) {
-                this.diagramPins.get(fb.getName() + varName).updateValue(fb.getFbInterface().getOutputsValues().get(varName));
+                this.diagramPins.get(varName).updateValue(fb.getFbInterface().getOutputsValues().get(varName));
             }
         }
         for (String varName : diagramInterface.getInputsValues().keySet()) {
-            this.diagramPins.get(this.diagram.getName() + varName).updateValue(diagramInterface.getInputsValues().get(varName));
+            this.diagramPins.get(varName).updateValue(diagramInterface.getInputsValues().get(varName));
         }
         for (String varName : diagramInterface.getOutputsValues().keySet()) {
-            this.diagramPins.get(this.diagram.getName() + varName).updateValue(diagramInterface.getOutputsValues().get(varName));
+            this.diagramPins.get(varName).updateValue(diagramInterface.getOutputsValues().get(varName));
         }
     }
 
@@ -205,10 +219,12 @@ public class DiagramExplainerTab extends Tab {
     private void recordPins(List<DiagramCell> cells) {
         for (DiagramCell cell : cells) {
             for (Pin pin : cell.getInputPins().values()) {
-                this.diagramPins.put((pin.belongsToSystemInterface() ? this.diagram.getName() : pin.getOwner().getName()) + pin.getName(), pin);
+//                this.diagramPins.put((pin.belongsToSystemInterface() ? this.diagram.getName() : pin.getOwner().getName()) + pin.getName(), pin);
+                this.diagramPins.put(pin.getName(), pin);
             }
             for (Pin pin : cell.getOutputPins().values()) {
-                this.diagramPins.put((pin.belongsToSystemInterface() ? this.diagram.getName() : pin.getOwner().getName()) + pin.getName(), pin);
+//                this.diagramPins.put((pin.belongsToSystemInterface() ? this.diagram.getName() : pin.getOwner().getName()) + pin.getName(), pin);
+                this.diagramPins.put(pin.getName(), pin);
             }
         }
     }

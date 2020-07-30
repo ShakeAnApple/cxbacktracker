@@ -17,23 +17,23 @@ public class AssignFunctionBlockBasic extends FunctionBlockBasic {
     private final OutputVariable output;
 
 
-    protected AssignFunctionBlockBasic(boolean generateId, InputVariable input, OutputVariable output) {
+    protected AssignFunctionBlockBasic(boolean generateId, InputVariable input, OutputVariable output, String pathInSystem) {
         super("Assign"+ (generateId ? BasicBlocksIdGenerator.next("Assign") : ""), new ArrayList<>() {{
             add(input);
         }}, new ArrayList<>() {{
             add(output);
-        }});
+        }},pathInSystem);
 
         this.input = input;
         this.output = output;
     }
 
-    private AssignFunctionBlockBasic(String name, InputVariable input, OutputVariable output) {
+    private AssignFunctionBlockBasic(String name, InputVariable input, OutputVariable output, String pathInSystem) {
         super(name, new ArrayList<>() {{
             add(input);
         }}, new ArrayList<>() {{
             add(output);
-        }});
+        }},pathInSystem);
 
         this.input = input;
         this.output = output;
@@ -48,7 +48,7 @@ public class AssignFunctionBlockBasic extends FunctionBlockBasic {
 
     @Override
     public FunctionBlockBase clone() {
-        return new AssignFunctionBlockBasic(this.getName(), this.input.clone(), this.output.clone());
+        return new AssignFunctionBlockBasic(this.getName(), this.input.clone(), this.output.clone(),this.getStringPathInSystem());
     }
 
     @Override

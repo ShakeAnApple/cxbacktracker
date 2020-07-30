@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.core.diagramexplanation.tonusmv.blocksconverters.basics;
+package shakeanapple.backtracker.core.diagramexplanation.tonusmv.blocksconverters;
 
 import shakeanapple.backtracker.common.variable.IntegerValueHolder;
 import shakeanapple.backtracker.core.diagramexplanation.model.*;
@@ -25,7 +25,7 @@ public class DelayBasicBlockConverter extends NusmvBlockConverterBase {
                 parentModel.appendDefineStatement((conn.toGate().getOwner() instanceof FunctionBlockComplex
                         ? conn.toGate().getOwner().getName() + "." : "")
                         + conn.toGate().getName()
-                        + " := " +
+                        + " := " + (conn.isInverted() ? "!" : "") +
                         (conn.fromGate().getOwner() instanceof FunctionBlockComplex &&
                                 !(conn.fromGate().getOwner().equals(parent)) ? conn.fromGate().getOwner().getName() + "." : "")
                         + conn.fromGate().getName() + ";", true);
@@ -37,7 +37,8 @@ public class DelayBasicBlockConverter extends NusmvBlockConverterBase {
                 .append("init(" + this.block.getOutputs().get(0).getName() + ") := " + this.block.getInputs().get(1).getName() + ";");
 
         OutputVariable output = this.block.getOutputs().get(0);
-        String var = output.getName() + ": " + (output.getValue() instanceof IntegerValueHolder ? "0..100" : "boolean") + ";";
+//        String var = output.getName() + ": " + (output.getValue() instanceof IntegerValueHolder ? "-2147483647..2147483647" : "boolean") + ";";
+        String var = output.getName() + ": " + (output.getValue() instanceof IntegerValueHolder ? "-100..100" : "boolean") + ";";
         parentModel.appendVarStatement(var);
 
         this.block.fbInterface().getInputs().values().stream().filter(in -> in.getIncomingConnection() == null).forEach(in ->{

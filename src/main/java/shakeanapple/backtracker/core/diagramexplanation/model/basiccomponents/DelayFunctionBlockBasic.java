@@ -28,12 +28,12 @@ public class DelayFunctionBlockBasic extends FunctionBlockBasic {
 
     private List<ValueHolder> inputsSeq = new ArrayList<>();
 
-    public DelayFunctionBlockBasic(boolean generateId,InputVariable input, OutputVariable output, int delay) {
+    public DelayFunctionBlockBasic(boolean generateId,InputVariable input, OutputVariable output, int delay, String pathInSystem) {
         super("Delay"+ (generateId ? BasicBlocksIdGenerator.next("Delay") : ""), new ArrayList<>() {{
             add(input);
         }}, new ArrayList<>() {{
             add(output);
-        }});
+        }},pathInSystem);
 
         this.input = input;
         this.output = output;
@@ -42,12 +42,12 @@ public class DelayFunctionBlockBasic extends FunctionBlockBasic {
         this.ticksPassed = 0;
     }
 
-    private DelayFunctionBlockBasic(String name, InputVariable input, OutputVariable output, int delay) {
+    private DelayFunctionBlockBasic(String name, InputVariable input, OutputVariable output, int delay, String pathInSystem) {
         super(name, new ArrayList<>() {{
             add(input);
         }}, new ArrayList<>() {{
             add(output);
-        }});
+        }},pathInSystem);
 
         this.input = input;
         this.output = output;
@@ -63,18 +63,18 @@ public class DelayFunctionBlockBasic extends FunctionBlockBasic {
     @Override
     public FunctionBlockBase clone() {
         if (this.defValue != null) {
-            return new DelayFunctionBlockBasic(this.getName(), this.input.clone(), this.defValue.clone(), this.output.clone(), this.delay);
+            return new DelayFunctionBlockBasic(this.getName(), this.input.clone(), this.defValue.clone(), this.output.clone(), this.delay, this.getStringPathInSystem());
         }
-        return new DelayFunctionBlockBasic(this.getName(), this.input.clone(), this.output.clone(), this.delay);
+        return new DelayFunctionBlockBasic(this.getName(), this.input.clone(), this.output.clone(), this.delay, this.getStringPathInSystem());
     }
 
-    public DelayFunctionBlockBasic(boolean generateId,InputVariable input, InputVariable defValue, OutputVariable output, int delay) {
+    public DelayFunctionBlockBasic(boolean generateId,InputVariable input, InputVariable defValue, OutputVariable output, int delay, String pathInSystem) {
         super("Delay"+ (generateId ? BasicBlocksIdGenerator.next("Delay") : ""), new ArrayList<>() {{
             add(input);
             add(defValue);
         }}, new ArrayList<>() {{
             add(output);
-        }});
+        }},pathInSystem);
 
         this.input = input;
         this.output = output;
@@ -83,13 +83,13 @@ public class DelayFunctionBlockBasic extends FunctionBlockBasic {
         this.ticksPassed = 0;
     }
 
-    private DelayFunctionBlockBasic(String name, InputVariable input, InputVariable defValue, OutputVariable output, int delay) {
+    private DelayFunctionBlockBasic(String name, InputVariable input, InputVariable defValue, OutputVariable output, int delay, String pathInSystem) {
         super(name, new ArrayList<>() {{
             add(input);
             add(defValue);
         }}, new ArrayList<>() {{
             add(output);
-        }});
+        }},pathInSystem);
 
         this.input = input;
         this.output = output;

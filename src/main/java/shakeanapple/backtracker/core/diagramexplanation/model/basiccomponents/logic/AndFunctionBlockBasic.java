@@ -19,18 +19,18 @@ public class AndFunctionBlockBasic extends FunctionBlockBasic {
 
     private final OutputVariable result;
 
-    public AndFunctionBlockBasic(boolean generateId, List<InputVariable> inputs, OutputVariable res) {
+    public AndFunctionBlockBasic(boolean generateId, List<InputVariable> inputs, OutputVariable res, String pathInSystem) {
         super("And" + (generateId ? BasicBlocksIdGenerator.next("And") : ""), inputs, new ArrayList<OutputVariable>() {{
             add(res);
-        }});
+        }}, pathInSystem);
 
         this.result = res;
     }
 
-    private AndFunctionBlockBasic(String name, List<InputVariable> inputs, OutputVariable res) {
+    private AndFunctionBlockBasic(String name, List<InputVariable> inputs, OutputVariable res, String pathInSystem) {
         super(name, inputs, new ArrayList<OutputVariable>() {{
             add(res);
-        }});
+        }},pathInSystem);
 
         this.result = res;
     }
@@ -50,7 +50,7 @@ public class AndFunctionBlockBasic extends FunctionBlockBasic {
 
     @Override
     public FunctionBlockBase clone() {
-        return new AndFunctionBlockBasic(this.getName(), this.getInputs().stream().map(InputVariable::clone).collect(Collectors.toList()), this.getOutputs().get(0).clone());
+        return new AndFunctionBlockBasic(this.getName(), this.getInputs().stream().map(InputVariable::clone).collect(Collectors.toList()), this.getOutputs().get(0).clone(),this.getStringPathInSystem());
     }
 
     @Override

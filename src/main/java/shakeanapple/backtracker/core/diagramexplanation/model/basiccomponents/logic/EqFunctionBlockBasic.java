@@ -16,12 +16,12 @@ import java.util.stream.Collectors;
 
 public class EqFunctionBlockBasic extends BinOpFunctionBlockBasic {
 
-    public EqFunctionBlockBasic(boolean generateId,InputVariable left, InputVariable right, OutputVariable res) {
-        super("Eq"+ (generateId ? BasicBlocksIdGenerator.next("Eq") : ""), left, right, res);
+    public EqFunctionBlockBasic(boolean generateId,InputVariable left, InputVariable right, OutputVariable res, String pathInSystem) {
+        super("Eq"+ (generateId ? BasicBlocksIdGenerator.next("Eq") : ""), left, right, res,pathInSystem);
     }
 
-    private EqFunctionBlockBasic(String name, InputVariable left, InputVariable right, OutputVariable res) {
-        super(name, left, right, res);
+    private EqFunctionBlockBasic(String name, InputVariable left, InputVariable right, OutputVariable res, String pathInSystem) {
+        super(name, left, right, res,pathInSystem);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class EqFunctionBlockBasic extends BinOpFunctionBlockBasic {
 
     @Override
     public FunctionBlockBase clone() {
-        return new EqFunctionBlockBasic(this.getName(), this.getLeft().clone(), this.getRight().clone(), this.getOutput().clone());
+        return new EqFunctionBlockBasic(this.getName(), this.getLeft().clone(), this.getRight().clone(), this.getOutput().clone(),this.getStringPathInSystem());
     }
 
     @Override

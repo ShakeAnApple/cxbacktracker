@@ -63,7 +63,7 @@ public class PinView extends NodeView {
             this.view.applyCss();
         });
 
-        this.tooltipText = new SimpleObjectProperty<>(this.pin.getName());
+        this.tooltipText = new SimpleObjectProperty<>(this.pin.getShortName());
 
         Tooltip tooltip = new Tooltip(this.tooltipText.getValue());
         tooltip.setShowDelay(Duration.ZERO);
@@ -89,7 +89,7 @@ public class PinView extends NodeView {
     }
 
     private String generateTooltipText(List<String> causesString){
-        String text = this.pin.getName();
+        String text = this.pin.getShortName();
         if (!causesString.isEmpty()){
             text += "\n";
             text += String.join("\n", causesString);
