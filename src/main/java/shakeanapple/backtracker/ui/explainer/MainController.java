@@ -7,6 +7,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import shakeanapple.backtracker.Config;
@@ -16,8 +18,9 @@ import shakeanapple.backtracker.core.counterexample.State;
 import shakeanapple.backtracker.core.ltl.explanation.model.FormulaCause;
 import shakeanapple.backtracker.ui.explainer.control.diagramexplainer.DiagramExplainer;
 import shakeanapple.backtracker.ui.explainer.control.ltlexplainer.LtlFormulaExplainer;
-import shakeanapple.backtracker.ui.explainer.control.menubar.model.CustomConfig;
+import shakeanapple.backtracker.ui.explainer.control.projectinitializer.model.CustomConfig;
 import shakeanapple.backtracker.ui.explainer.control.menubar.MenuBarCustom;
+import shakeanapple.backtracker.ui.explainer.control.projectinitializer.ProjectInitializer;
 import shakeanapple.backtracker.ui.explainer.control.valuetable.ValueTable;
 import shakeanapple.backtracker.ui.explainer.control.valuetable.model.VarValueForStep;
 import shakeanapple.backtracker.ui.explainer.model.Step;
@@ -35,10 +38,14 @@ public class MainController implements Initializable {
     public ListView<FormulaCause> formulaCausesList;
     @FXML
     private ListView<Step> stepsList;
-        @FXML
-    private MenuBarCustom menuBarCustom;
+    @FXML
+    private ProjectInitializer projectInitializer;
 
     ////// layout
+    @FXML
+    private TabPane mainTabs;
+    @FXML
+    private Tab workspaceTab;
     @FXML
     private GridPane mainLayout;
     private ObjectProperty<Boolean> isReadonly = new SimpleObjectProperty<>(false);
@@ -75,10 +82,18 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.mainLayout.disableProperty().bind(this.isReadonly);
+        this.workspaceTab.disableProperty().bind(this.isReadonly);
 
-        this.menuBarCustom.init();
-        this.menuBarCustom.setOnConfigCompleted(this::initMainView);
-        this.menuBarCustom.setOnFileChosen(this::cleanMainView);
+        this.projectInitializer.init();
+        this.projectInitializer.setOnConfigCompleted(config -> {
+            try {
+                return initMainView(config);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        });
+        this.projectInitializer.setOnFileChosen(this::cleanMainView);
 
         this.valueTable.setOnTableCellClicked(this::onTableCellClicked);
 
@@ -113,10 +128,14 @@ public class MainController implements Initializable {
                 Context.instance().getCounterexample().getPath().values().stream().sorted(Comparator.comparing(State::getOrder))
                         .map(state -> new Step(state.getOrder(), Context.instance().getCounterexample().getLoopStart() == state.getOrder())).collect(Collectors.toList())
         ));
+        this.isInitialState = true;
         return true;
     }
 
     private void cleanMainView(){
+        if (this.isReadonly.getValue()){
+            return;
+        }
         this.isReadonly.setValue(true);
 
         this.valueTable.reset();
@@ -129,9 +148,10 @@ public class MainController implements Initializable {
         Context.instance().reset();
     }
 
-    private boolean initMainView(CustomConfig config){
+    private boolean initMainView(CustomConfig config) throws IOException {
         if (config.useFullCx()) {
-            List<SpecVerified> specs = Counterexample.loadFromNusmvOutput(config.getCxPathCustom());
+            List<SpecVerified> specs = Counterexample.loadFromNusmvOutput(Config.instance().getCxPath()).stream()
+                    .filter(spec -> spec.getCx() != null).collect(Collectors.toList());
             Context.instance().setSpecsVerified(specs);
         } else {
             SpecVerified spec = new SpecVerified(config.getFormulaCustom(), Counterexample.load(config.getCxPathCustom()));
@@ -148,8 +168,12 @@ public class MainController implements Initializable {
         this.diagramExplainer.init();
         this.ltlExplainer.init();
 
+        this.stepsList.setOnMouseClicked(this::handleStepChosen);
+        this.ltlExplainer.setOnExplainedFormulaChanged(this::changeFormula);
+
         this.isInitialState = true;
         this.isReadonly.setValue(false);
+        this.mainTabs.getSelectionModel().select(this.workspaceTab);
         return true;
     }
 

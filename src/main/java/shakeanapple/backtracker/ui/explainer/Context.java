@@ -46,11 +46,11 @@ public class Context {
     }
 
     public Counterexample getCounterexample() {
-        return this.activeSpecVerified.getCx();
+        return this.activeSpecVerified != null ? this.activeSpecVerified.getCx() : null;
     }
 
     public String getFormulaStr() {
-        return this.activeSpecVerified.getFormulaStr();
+        return this.activeSpecVerified != null ? this.activeSpecVerified.getFormulaStr() : null;
     }
 
     public String getDiagramPath() {

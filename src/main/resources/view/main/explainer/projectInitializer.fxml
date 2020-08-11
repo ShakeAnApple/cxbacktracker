@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml">
+    <VBox style="-fx-padding: 5 5 5 5;">
+        <HBox style="-fx-padding: 0 0 5 0;">
+            <VBox>
+                <Label text="System model *.smv"/>
+                <HBox style="-fx-padding: 5 5 5 5;">
+                    <Button text="Choose system model" onAction="#handleOpenModel"/>
+                </HBox>
+                <Label text="LTL property and counterexample"/>
+                <HBox>
+                    <HBox style="-fx-padding: 5 5 5 5;">
+                        <Button text="Read from NuSMV output file" onAction="#handleReadFromNuSMVOutput"/>
+                    </HBox>
+
+                    <VBox>
+                        <HBox style="-fx-padding: 5 5 5 5;">
+                            <Button text="Choose LTL property file" onAction="#handleOpenFormulaFile"/>
+                        </HBox>
+                        <HBox style="-fx-padding: 5 5 5 5;">
+                            <Button text="Choose counterexample file" onAction="#handleOpenCounterexample"/>
+                        </HBox>
+                    </VBox>
+                </HBox>
+            </VBox>
+            <VBox style="-fx-padding: 0 0 0 20;">
+                <Label style="-fx-padding: 5 5 5 5;" text="Info:"/>
+                <HBox style="-fx-padding: 0 0 2 0;">
+                    <Label text="System model path: "/>
+                    <Label fx:id="systemModelLabel"/>
+                </HBox>
+                <HBox style="-fx-padding: 0 0 2 0;">
+                    <Label text="LTL property (path or formula): "/>
+                    <Label fx:id="ltlPropertyLabel"/>
+                </HBox>
+                <HBox style="-fx-padding: 0 0 2 0;">
+                    <Label text="Counterexample path: "/>
+                    <Label fx:id="cxLabel"/>
+                </HBox>
+            </VBox>
+        </HBox>
+        <Button fx:id="loadButton" text="Load" onAction="#handleLoadSystem"/>
+    </VBox>
+</fx:root>

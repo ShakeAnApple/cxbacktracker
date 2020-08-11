@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.ui.explainer.control.menubar.model;
+package shakeanapple.backtracker.ui.explainer.control.projectinitializer.model;
 
 public class CustomConfig {
     private String diagramPathCustom;

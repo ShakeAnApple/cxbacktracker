@@ -11,49 +11,124 @@
 <?import shakeanapple.backtracker.ui.explainer.control.valuetable.ValueTable?>
 <?import shakeanapple.backtracker.ui.infrasructure.FxmlListCellFactory?>
 <?import shakeanapple.backtracker.ui.explainer.control.menubar.MenuBarCustom?>
+<?import shakeanapple.backtracker.ui.explainer.control.projectinitializer.ProjectInitializer?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="shakeanapple.backtracker.ui.explainer.MainController"
-      maxWidth="1200" maxHeight="800" >
-    <MenuBarCustom fx:id="menuBarCustom"/>
+      maxWidth="1200" maxHeight="800">
 
-    <GridPane fx:id="mainLayout" disable="${isReadonly}">
-        <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" percentWidth="100.0"/>
-        </columnConstraints>
-        <rowConstraints>
-            <RowConstraints percentHeight="100.0" vgrow="ALWAYS"/>
-        </rowConstraints>
+<!--    <MenuBarCustom fx:id="menuBarCustom"/>-->
 
-        <SplitPane GridPane.rowIndex="0" GridPane.columnIndex="0" dividerPositions="0.8" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
-            <SplitPane dividerPositions="0.75" orientation="VERTICAL" >
-                <SplitPane dividerPositions="0.4">
-                    <VBox>
-                        <LtlFormulaExplainer fx:id="ltlExplainer" VBox.vgrow="ALWAYS"/>
-                    </VBox>
-                    <VBox>
-                        <DiagramExplainer fx:id="diagramExplainer" VBox.vgrow="ALWAYS" prefHeight="1000"/>
-                    </VBox>
-                </SplitPane>
-                <ValueTable fx:id="valueTable" SplitPane.resizableWithParent="false"/>
-            </SplitPane>
 
-            <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" SplitPane.resizableWithParent="false">
-                <Label text="Counterexample steps:"/>
-                <ListView fx:id="stepsList">
-                    <cellFactory>
-                        <FxmlListCellFactory fxmlSource="@listcell/stepsListCell.fxml"/>
-                    </cellFactory>
-                </ListView>
-                <Label text="LTL formula explanation result:"/>
-                <ListView fx:id="formulaCausesList">
-                    <cellFactory>
-                        <FxmlListCellFactory fxmlSource="@listcell/formulaCausesListCell.fxml"/>
-                    </cellFactory>
-                </ListView>
+    <TabPane fx:id="mainTabs">
+        <tabs>
+            <Tab text="Project">
+                <ProjectInitializer fx:id="projectInitializer"/>
+            </Tab>
+            <Tab fx:id="workspaceTab" text="Workspace">
+                <GridPane>
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" percentWidth="100.0"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints percentHeight="100.0" vgrow="ALWAYS"/>
+                    </rowConstraints>
 
-                <Button text="explain formula" onAction="#explainFormula"/>
-            </VBox>
-        </SplitPane>
-    </GridPane>
+                    <GridPane fx:id="mainLayout" disable="${isReadonly}" GridPane.rowIndex="0" GridPane.columnIndex="0"
+                              GridPane.hgrow="ALWAYS"
+                              GridPane.vgrow="ALWAYS">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" percentWidth="100.0"/>
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints percentHeight="100.0" vgrow="ALWAYS"/>
+                        </rowConstraints>
+
+                        <SplitPane GridPane.rowIndex="0" GridPane.columnIndex="0" dividerPositions="0.8"
+                                   GridPane.hgrow="ALWAYS"
+                                   GridPane.vgrow="ALWAYS">
+                            <SplitPane dividerPositions="0.75" orientation="VERTICAL">
+                                <SplitPane dividerPositions="0.4">
+
+
+                                    <VBox>
+                                        <LtlFormulaExplainer fx:id="ltlExplainer" VBox.vgrow="ALWAYS"/>
+                                    </VBox>
+                                    <VBox>
+                                        <DiagramExplainer fx:id="diagramExplainer" VBox.vgrow="ALWAYS"
+                                                          prefHeight="1000"/>
+                                    </VBox>
+                                </SplitPane>
+                                <ValueTable fx:id="valueTable" SplitPane.resizableWithParent="false"/>
+                            </SplitPane>
+
+                            <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS"
+                                  GridPane.vgrow="ALWAYS"
+                                  SplitPane.resizableWithParent="false">
+                                <Label text="Counterexample steps:"/>
+                                <ListView fx:id="stepsList">
+                                    <cellFactory>
+                                        <FxmlListCellFactory fxmlSource="@listcell/stepsListCell.fxml"/>
+                                    </cellFactory>
+                                </ListView>
+                                <Label text="LTL formula explanation result:"/>
+                                <ListView fx:id="formulaCausesList">
+                                    <cellFactory>
+                                        <FxmlListCellFactory fxmlSource="@listcell/formulaCausesListCell.fxml"/>
+                                    </cellFactory>
+                                </ListView>
+
+                                <Button text="explain formula" onAction="#explainFormula"/>
+                            </VBox>
+                        </SplitPane>
+                    </GridPane>
+                </GridPane>
+            </Tab>
+        </tabs>
+    </TabPane>
+
+
+    <!--    <GridPane fx:id="mainLayout" disable="${isReadonly}">-->
+    <!--        <columnConstraints>-->
+    <!--            <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" percentWidth="100.0"/>-->
+    <!--        </columnConstraints>-->
+    <!--        <rowConstraints>-->
+    <!--            <RowConstraints percentHeight="100.0" vgrow="ALWAYS"/>-->
+    <!--        </rowConstraints>-->
+    <!--        -->
+    <!--        <SplitPane GridPane.rowIndex="0" GridPane.columnIndex="0" dividerPositions="0.8" GridPane.hgrow="ALWAYS"-->
+    <!--                   GridPane.vgrow="ALWAYS">-->
+    <!--            <SplitPane dividerPositions="0.75" orientation="VERTICAL">-->
+    <!--                <SplitPane dividerPositions="0.4">-->
+    <!--                   -->
+
+    <!--                    <VBox>-->
+    <!--                        <LtlFormulaExplainer fx:id="ltlExplainer" VBox.vgrow="ALWAYS"/>-->
+    <!--                    </VBox>-->
+    <!--                    <VBox>-->
+    <!--                        <DiagramExplainer fx:id="diagramExplainer" VBox.vgrow="ALWAYS" prefHeight="1000"/>-->
+    <!--                    </VBox>-->
+    <!--                </SplitPane>-->
+    <!--                <ValueTable fx:id="valueTable" SplitPane.resizableWithParent="false"/>-->
+    <!--            </SplitPane>-->
+
+    <!--            <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"-->
+    <!--                  SplitPane.resizableWithParent="false">-->
+    <!--                <Label text="Counterexample steps:"/>-->
+    <!--                <ListView fx:id="stepsList">-->
+    <!--                    <cellFactory>-->
+    <!--                        <FxmlListCellFactory fxmlSource="@listcell/stepsListCell.fxml"/>-->
+    <!--                    </cellFactory>-->
+    <!--                </ListView>-->
+    <!--                <Label text="LTL formula explanation result:"/>-->
+    <!--                <ListView fx:id="formulaCausesList">-->
+    <!--                    <cellFactory>-->
+    <!--                        <FxmlListCellFactory fxmlSource="@listcell/formulaCausesListCell.fxml"/>-->
+    <!--                    </cellFactory>-->
+    <!--                </ListView>-->
+
+    <!--                <Button text="explain formula" onAction="#explainFormula"/>-->
+    <!--            </VBox>-->
+    <!--        </SplitPane>-->
+    <!--    </GridPane>-->
 </VBox>
