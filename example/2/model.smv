@@ -1,0 +1,292 @@
+
+--# Description: 
+MODULE main()
+	VAR
+		--# INPUTS / VARIABLES:
+		PRESSURE: 0..15;
+		PRESSURE_FAULT: boolean;
+		RESET: boolean;
+		RESET_FAULT: boolean;
+		INHIBIT: boolean;
+		INHIBIT_FAULT: boolean;
+
+		--# MODULE CONNECTIONS:
+		AND_3003 : AND_3(!AND_3002.AND_OUTPUT_SIGN, AND_3002.AND_OUTPUT_SIGN_FAULT, TRUE, FALSE, FALSE, FALSE, LV_CHECKER001.LVC_OUTPUT_SIGN_2, LV_CHECKER001.LVC_OUTPUT_SIGN_2_FAULT, TRUE);
+		LV_CHECKER001 : LV_CHECKER(0, FALSE, FALSE, PRESSURE, PRESSURE_FAULT, TRUE, 0, 3, 0);
+		AND_3001 : AND_3(AND_3002.AND_OUTPUT_SIGN, AND_3002.AND_OUTPUT_SIGN_FAULT, TRUE, FALSE, FALSE, FALSE, !INHIBIT, INHIBIT_FAULT, TRUE);
+		AND_3002 : AND_3(CLOSE_LOGIC001.CLOSE, CLOSE_LOGIC001.CLOSE_FAULT, TRUE, FALSE, FALSE, FALSE, INHIBIT, INHIBIT_FAULT, TRUE);
+		CLOSE_LOGIC001 : CLOSE_LOGIC(PRESSURE, PRESSURE_FAULT, TRUE, RESET, RESET_FAULT, TRUE);
+
+	DEFINE
+		--# EXTERNALS:
+		CLOSE := AND_3001.AND_OUTPUT_SIGN;
+		CLOSE_FAULT := AND_3001.AND_OUTPUT_SIGN_FAULT;
+		OPEN := AND_3003.AND_OUTPUT_SIGN;
+		OPEN_FAULT := AND_3003.AND_OUTPUT_SIGN_FAULT;
+
+		--# OUTPUTS:
+		
+	ASSIGN
+
+--# Description: 
+MODULE CLOSE_LOGIC(PRESSURE : 0..15, PRESSURE_FAULT : boolean, PRESSURE_CONNECTED : boolean, RESET : boolean, RESET_FAULT : boolean, RESET_CONNECTED : boolean)
+	VAR
+		--# INPUTS / VARIABLES:
+
+		--# MODULE CONNECTIONS:
+		OR_3002 : OR_3(!LV_CHECKER001.LVC_OUTPUT_SIGN_1, LV_CHECKER001.LVC_OUTPUT_SIGN_1_FAULT, TRUE, FALSE, FALSE, FALSE, RESET, RESET_FAULT, TRUE);
+		FLIP_FLOP002 : FLIP_FLOP(PULSE002.PULSE_OUTPUT_SIGN, PULSE002.PULSE_OUTPUT_SIGN_FAULT, TRUE, LV_CHECKER001.LVC_OUTPUT_SIGN_1, LV_CHECKER001.LVC_OUTPUT_SIGN_1_FAULT, TRUE, FALSE, TRUE);
+		PULSE002 : PULSE(1, FALSE, FALSE, OR_3002.OR_OUTPUT_SIGN, OR_3002.OR_OUTPUT_SIGN_FAULT, TRUE, 1, 1);
+		LV_CHECKER001 : LV_CHECKER(0, FALSE, FALSE, PRESSURE, PRESSURE_FAULT, TRUE, 2, 10, 0);
+
+	DEFINE
+		--# OUTPUTS:
+		CLOSE:=FLIP_FLOP002.FF_OUTPUT_SIGN;
+		CLOSE_FAULT:=FLIP_FLOP002.FF_OUTPUT_SIGN_FAULT;
+	
+	ASSIGN
+
+--# =============================
+--# Or-3
+--# Author Antti Pakonen (VTT)
+--# Version 1.12.2015
+--# Checked by  
+--#
+--# =============================
+MODULE OR_3(OR_INPUT_SIGN1 : boolean, OR_INPUT_SIGN1_FAULT : boolean, OR_INPUT_SIGN1_CONNECTED : boolean, OR_INPUT_SIGN2 : boolean, OR_INPUT_SIGN2_FAULT : boolean, OR_INPUT_SIGN2_CONNECTED : boolean, OR_INPUT_SIGN3 : boolean, OR_INPUT_SIGN3_FAULT : boolean, OR_INPUT_SIGN3_CONNECTED : boolean)
+	VAR
+
+	DEFINE
+		OR_OUTPUT_SIGN:= (OR_INPUT_SIGN1_CONNECTED & OR_INPUT_SIGN1) | (OR_INPUT_SIGN2_CONNECTED & OR_INPUT_SIGN2) |
+						(OR_INPUT_SIGN3_CONNECTED & OR_INPUT_SIGN3);
+		OR_OUTINV_SIGN:= !OR_OUTPUT_SIGN;
+
+		OR_OUTINV_SIGN_FAULT:= FALSE;
+		OR_OUTPUT_SIGN_FAULT:= FALSE;
+
+	ASSIGN
+
+
+
+--# =============================
+--# Flip-flop
+--# Author Antti Pakonen (VTT)
+--# Version 1.12.2015
+--# Checked by  
+--#
+--# =============================
+MODULE FLIP_FLOP(FF_RESET_SIGN : boolean, FF_RESET_SIGN_FAULT : boolean, FF_RESET_SIGN_CONNECTED : boolean, FF_SET_SIGN : boolean, FF_SET_SIGN_FAULT : boolean, FF_SET_SIGN_CONNECTED : boolean, FF_OUTPUT_VALUE : boolean, FF_RESET_DOMINATES : boolean)
+VAR
+	
+	memory: boolean;
+	
+DEFINE	
+	
+	FF_OUTPUT_SIGN :=
+	case
+		FF_RESET_SIGN & FF_SET_SIGN : !FF_RESET_DOMINATES;
+		FF_SET_SIGN : TRUE;
+		FF_RESET_SIGN : FALSE;
+		TRUE : memory;
+	esac;
+	
+	FF_OUTINV_SIGN := !FF_OUTPUT_SIGN;
+	
+	FF_OUTPUT_SIGN_FAULT := FALSE;
+	FF_OUTINV_SIGN_FAULT := FALSE;
+		
+ASSIGN
+	init(memory) := FF_OUTPUT_VALUE;
+	next(memory) := FF_OUTPUT_SIGN;
+
+--# =============================
+--# Pulse
+--# Author Antti Pakonen (VTT)
+--# Version 1.12.2015
+--# Checked by  
+--#
+--# =============================
+MODULE PULSE(PULSE_LENGTH_S : 0..100, PULSE_LENGTH_S_FAULT : boolean, PULSE_LENGTH_S_CONNECTED : boolean, PULSE_INPUT_SIGN : boolean, PULSE_INPUT_SIGN_FAULT : boolean, PULSE_INPUT_SIGN_CONNECTED : boolean, PULSE_LENGTH : 0..100, PULSE_MODE : 0..100)
+VAR
+	timeLeft: 0..200;
+	lastInput : boolean;
+	lastOutput : boolean;
+
+DEFINE
+
+	length := PULSE_LENGTH_S_CONNECTED ? PULSE_LENGTH_S : PULSE_LENGTH;
+
+	PULSE_OUTPUT_SIGN :=
+	case
+		(PULSE_MODE = 0) : (!lastInput & PULSE_INPUT_SIGN) ? TRUE : FALSE;
+		
+		(PULSE_MODE = 1) :
+		case
+			 (!lastInput & PULSE_INPUT_SIGN) : TRUE;
+			 (timeLeft > 0) : TRUE;
+			 TRUE : FALSE;
+		esac;
+		
+		(PULSE_MODE = 2) :
+		case
+			(!lastOutput & !lastInput & PULSE_INPUT_SIGN) : TRUE;
+			(timeLeft > 0) : TRUE;
+			TRUE : FALSE;			
+		esac;
+		
+		TRUE : --# PULSE MODE = 3
+		case
+			(!lastOutput & !lastInput & PULSE_INPUT_SIGN) : TRUE;
+			PULSE_INPUT_SIGN & (timeLeft > 0) : TRUE;
+			TRUE : FALSE;
+		esac;
+		
+		
+	esac;
+	
+	PULSE_REMAINING_TIME :=
+	case
+		(PULSE_MODE = 0) : 0;
+		
+		(PULSE_MODE = 1) :
+		case
+			 (!lastInput & PULSE_INPUT_SIGN) : PULSE_LENGTH;
+			 TRUE : timeLeft;
+		esac;
+		
+		(PULSE_MODE = 2) :
+		case
+			(!lastOutput & !lastInput & PULSE_INPUT_SIGN) : PULSE_LENGTH;
+			 TRUE : timeLeft;			
+		esac;
+		
+		TRUE : --# PULSE MODE = 3
+		case
+			(!lastOutput & !lastInput & PULSE_INPUT_SIGN) : PULSE_LENGTH;
+			TRUE : timeLeft;	
+		esac;	
+	
+	esac;
+	
+	
+	PULSE_OUTPUT_SIGN_FAULT := FALSE;
+	PULSE_REMAINING_TIME_FAULT := FALSE;
+	
+ASSIGN
+	init(lastInput) := FALSE;
+	next(lastInput) := PULSE_INPUT_SIGN;
+	
+	init(lastOutput) := FALSE;
+	next(lastOutput) := PULSE_OUTPUT_SIGN;
+
+	init(timeLeft) := 0;
+	next(timeLeft) :=
+	case
+		(PULSE_MODE = 0) : 0;
+		
+		(PULSE_MODE = 1) :
+		case
+			(!lastInput & PULSE_INPUT_SIGN) : PULSE_LENGTH - 1;
+			(timeLeft > 0 ) : timeLeft - 1;
+			TRUE : 0;
+		esac;
+		
+		(PULSE_MODE = 2) :
+		case
+			(!lastOutput & !lastInput & PULSE_INPUT_SIGN) : PULSE_LENGTH - 1;
+			(timeLeft > 0 ) : timeLeft - 1;
+			TRUE : 0;
+		esac;
+			
+		
+		TRUE : --# PULSE MODE = 3
+		case
+			(!lastOutput & !lastInput & PULSE_INPUT_SIGN) : PULSE_LENGTH - 1;
+			!PULSE_INPUT_SIGN : 0;
+			(timeLeft > 0 ) : timeLeft - 1;
+			TRUE : 0;
+		esac;
+	esac;
+	
+
+--# =============================
+--# Limit Value Checker
+--# Author Antti Pakonen (VTT)
+--# Version 1.12.2015
+--# Checked by  
+--#
+--# =============================
+MODULE LV_CHECKER(LVC_LIMIT_VALUE_S : 0..100, LVC_LIMIT_VALUE_S_FAULT : boolean, LVC_LIMIT_VALUE_S_CONNECTED : boolean, LVC_INPUT_SIGN : 0..15, LVC_INPUT_SIGN_FAULT : boolean, LVC_INPUT_SIGN_CONNECTED : boolean, LVC_HYSTERESIS : 0..100, LVC_LIMIT_VALUE : 0..100, LVC_OUTPUT_OPTION : 0..100)
+VAR
+	lastOut1 : boolean;
+	lastOut2 : boolean;
+	
+DEFINE
+	
+	limit := LVC_LIMIT_VALUE_S_CONNECTED ? LVC_LIMIT_VALUE_S : LVC_LIMIT_VALUE;
+	
+ 	LVC_OUTPUT_SIGN_1 := 
+	case
+		LVC_OUTPUT_OPTION = 0 :
+		case
+			LVC_INPUT_SIGN > (limit + (LVC_HYSTERESIS/2)) : TRUE;
+			LVC_INPUT_SIGN < (limit - (LVC_HYSTERESIS/2)) : FALSE;
+			TRUE : lastOut1;
+		esac;
+		LVC_OUTPUT_OPTION = 1 : FALSE;
+		LVC_OUTPUT_OPTION = 2 : TRUE;
+		LVC_OUTPUT_OPTION = 3 : TRUE;
+		LVC_OUTPUT_OPTION = 4 : FALSE;
+		TRUE : lastOut1;
+	esac;
+
+ 	LVC_OUTPUT_SIGN_2 := 
+	case
+		LVC_OUTPUT_OPTION = 0 :
+		case
+			LVC_INPUT_SIGN > (limit + (LVC_HYSTERESIS/2)) : FALSE;
+			LVC_INPUT_SIGN < (limit - (LVC_HYSTERESIS/2)) : TRUE;
+			TRUE : lastOut2;
+		esac;
+		LVC_OUTPUT_OPTION = 1 : FALSE;
+		LVC_OUTPUT_OPTION = 2 : TRUE;
+		LVC_OUTPUT_OPTION = 3 : FALSE;
+		LVC_OUTPUT_OPTION = 4 : TRUE;
+		TRUE : lastOut2;
+	esac;
+
+	LVC_OUTPUT_SIGN_1_FAULT := FALSE;
+	LVC_OUTPUT_SIGN_2_FAULT := FALSE; 
+
+ASSIGN
+	init(lastOut1) := FALSE;
+	next(lastOut1) := LVC_OUTPUT_SIGN_1;
+	
+	init(lastOut2) := FALSE;
+	next(lastOut2) := LVC_OUTPUT_SIGN_2;
+
+
+--# =============================
+--# And-3
+--# Author Antti Pakonen (VTT)
+--# Version 1.12.2015
+--# Checked by  
+--#
+--# =============================
+MODULE AND_3(AND_INPUT_SIGN1 : boolean, AND_INPUT_SIGN1_FAULT : boolean, AND_INPUT_SIGN1_CONNECTED : boolean, AND_INPUT_SIGN2 : boolean, AND_INPUT_SIGN2_FAULT : boolean, AND_INPUT_SIGN2_CONNECTED : boolean, AND_INPUT_SIGN3 : boolean, AND_INPUT_SIGN3_FAULT : boolean, AND_INPUT_SIGN3_CONNECTED : boolean)
+	VAR
+
+	DEFINE
+		AND_OUTPUT_SIGN:=
+		case
+			(count(AND_INPUT_SIGN1_CONNECTED, AND_INPUT_SIGN2_CONNECTED, AND_INPUT_SIGN3_CONNECTED) = 0 ) : FALSE;
+			TRUE : (!AND_INPUT_SIGN1_CONNECTED | AND_INPUT_SIGN1) & 
+					(!AND_INPUT_SIGN2_CONNECTED | AND_INPUT_SIGN2) &
+					(!AND_INPUT_SIGN3_CONNECTED | AND_INPUT_SIGN3);  
+		esac;
+		AND_OUTINV_SIGN:= !AND_OUTPUT_SIGN;
+
+		AND_OUTINV_SIGN_FAULT:= FALSE;
+		AND_OUTPUT_SIGN_FAULT:= FALSE;
+
+	ASSIGN

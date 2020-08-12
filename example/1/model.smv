@@ -1,0 +1,58 @@
+
+--# Description: 
+MODULE main()
+	VAR
+		--# INPUTS / VARIABLES:
+		ACK: boolean;
+		ACK_FAULT: boolean;
+		CRITERIA: boolean;
+		CRITERIA_FAULT: boolean;
+
+		--# MODULE CONNECTIONS:
+		RS : FLIP_FLOP(SR.FF_OUTPUT_SIGN, SR.FF_OUTPUT_SIGN_FAULT, TRUE, CRITERIA, CRITERIA_FAULT, TRUE, FALSE, TRUE);
+		SR : FLIP_FLOP(!CRITERIA, CRITERIA_FAULT, TRUE, ACK, ACK_FAULT, TRUE, FALSE, FALSE);
+
+	DEFINE
+		--# EXTERNALS:
+		ALARM := RS.FF_OUTPUT_SIGN;
+		ALARM_FAULT := RS.FF_OUTPUT_SIGN_FAULT;
+
+		--# OUTPUTS:
+
+		--# REQS:
+		-- LTLSPEC G ((!ALARM & !CRITERIA) & X (CRITERIA & !ACK) -> X ALARM);
+
+	ASSIGN
+		--# INTERNAL STATE:
+
+
+--# =============================
+--# Flip-flop
+--# Author Antti Pakonen (VTT)
+--# Version 1.12.2015
+--# Checked by  
+--#
+--# =============================
+MODULE FLIP_FLOP(FF_RESET_SIGN: boolean, FF_RESET_SIGN_FAULT: boolean, FF_RESET_SIGN_CONNECTED: boolean, FF_SET_SIGN: boolean, FF_SET_SIGN_FAULT: boolean, FF_SET_SIGN_CONNECTED: boolean, FF_OUTPUT_VALUE: boolean, FF_RESET_DOMINATES: boolean)
+VAR
+	
+	memory: boolean;
+	
+DEFINE	
+	
+	FF_OUTPUT_SIGN :=
+	case
+		FF_RESET_SIGN & FF_SET_SIGN : !FF_RESET_DOMINATES;
+		FF_SET_SIGN : TRUE;
+		FF_RESET_SIGN : FALSE;
+		TRUE : memory;
+	esac;
+	
+	FF_OUTINV_SIGN := !FF_OUTPUT_SIGN;
+	
+	FF_OUTPUT_SIGN_FAULT := FALSE;
+	FF_OUTINV_SIGN_FAULT := FALSE;
+		
+ASSIGN
+	init(memory) := FF_OUTPUT_VALUE;
+	next(memory) := FF_OUTPUT_SIGN;

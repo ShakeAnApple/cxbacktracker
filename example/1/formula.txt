@@ -1,0 +1,1 @@
+G ((!ALARM & !CRITERIA) & X (CRITERIA & !ACK) -> X ALARM)
