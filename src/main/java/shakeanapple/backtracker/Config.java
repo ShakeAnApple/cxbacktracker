@@ -67,7 +67,7 @@ public class Config {
             this.formula = prop.getProperty("formula");
             this.diagramPath = prop.getProperty("diagram");
             this.cxPath = prop.getProperty("counterexample");
-            this.useFullCx = prop.getProperty("useFullCx").toLowerCase().trim().equals("true");
+            this.useFullCx = prop.getProperty("useFullCx") != null && prop.getProperty("useFullCx").toLowerCase().trim().equals("true");
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

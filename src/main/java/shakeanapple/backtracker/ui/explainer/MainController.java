@@ -150,7 +150,7 @@ public class MainController implements Initializable {
 
     private boolean initMainView(CustomConfig config) throws IOException {
         if (config.useFullCx()) {
-            List<SpecVerified> specs = Counterexample.loadFromNusmvOutput(Config.instance().getCxPath()).stream()
+            List<SpecVerified> specs = Counterexample.loadFromNusmvOutput(config.getCxPathCustom()).stream()
                     .filter(spec -> spec.getCx() != null).collect(Collectors.toList());
             Context.instance().setSpecsVerified(specs);
         } else {
