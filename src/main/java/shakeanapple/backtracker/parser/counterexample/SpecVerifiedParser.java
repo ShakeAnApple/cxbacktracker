@@ -94,6 +94,9 @@ public class SpecVerifiedParser {
             e.printStackTrace();
         }
 
+        if (loopStart == -1){
+            loopStart = states.size() - 1;
+        }
         return new Counterexample(states, loopStart);
     }
 

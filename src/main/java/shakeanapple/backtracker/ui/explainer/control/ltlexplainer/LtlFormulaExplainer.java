@@ -1,7 +1,6 @@
 package shakeanapple.backtracker.ui.explainer.control.ltlexplainer;
 
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,7 +15,6 @@ import shakeanapple.backtracker.core.ltl.explanation.model.FormulaCause;
 import shakeanapple.backtracker.core.ltl.formula.model.LtlFormula;
 import shakeanapple.backtracker.ui.GraphHelper;
 import shakeanapple.backtracker.ui.explainer.Context;
-import shakeanapple.backtracker.ui.explainer.control.menubar.model.CustomConfig;
 import shakeanapple.backtracker.ui.infrasructure.control.visgraph.VisGraphControl;
 import shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.graph.VisGraph;
 
@@ -34,7 +32,7 @@ public class LtlFormulaExplainer extends VBox {
     private LtlEvaluator calculationWalker;
     private ILtlFormulaExplainer ltlExplainer;
 
-    private Function<SpecVerified, Boolean> onExplainedFormulaChanged;
+    ChangeListener formulaChangedListener;
 
     public LtlFormulaExplainer() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("view/main/explainer/ltlexplainer.fxml"));
@@ -54,6 +52,9 @@ public class LtlFormulaExplainer extends VBox {
         this.calculationWalker = new LtlWithCounterexampleEvaluator(Context.instance().getCounterexample(), formula);
         this.ltlExplainer = new shakeanapple.backtracker.core.ltl.explanation.LtlFormulaExplainer(formula, Context.instance().getCounterexample(), this.calculationWalker);
 
+        if (this.formulaChangedListener != null) {
+            this.failedFormulas.valueProperty().removeListener(this.formulaChangedListener);
+        }
         this.failedFormulas.setItems(FXCollections.observableArrayList(Context.instance().getSpecsVerified()));
         this.failedFormulas.getSelectionModel().select(
                 this.failedFormulas.getItems().indexOf(
@@ -63,12 +64,12 @@ public class LtlFormulaExplainer extends VBox {
     }
 
     public void setOnExplainedFormulaChanged(Function<SpecVerified, Boolean> onExplainedFormulaChanged) {
-        this.onExplainedFormulaChanged = onExplainedFormulaChanged;
-        this.failedFormulas.valueProperty().addListener((obs, oldItem, newItem) -> {
+        this.formulaChangedListener = (obs, oldItem, newItem) -> {
             if (newItem != null && !newItem.equals(oldItem)) {
-                onExplainedFormulaChanged.apply(newItem);
+                onExplainedFormulaChanged.apply((SpecVerified) newItem);
             }
-        });
+        };
+        this.failedFormulas.valueProperty().addListener(this.formulaChangedListener);
     }
 
     public List<FormulaCause> explainFormulaFor(int stepNum) {

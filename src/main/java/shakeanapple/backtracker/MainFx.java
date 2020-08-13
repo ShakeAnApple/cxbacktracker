@@ -28,6 +28,7 @@ public class MainFx  extends Application {
 //        URL res = getClass().getClassLoader().getResource("view/main/index.fxml");
         Parent root = FXMLLoader.load(res);
         stage.setScene(new Scene(root));
+        stage.setTitle("Oeritte");
         stage.show();
     }
 

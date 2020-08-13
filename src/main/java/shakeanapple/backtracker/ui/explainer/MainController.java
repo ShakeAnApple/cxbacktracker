@@ -27,10 +27,7 @@ import shakeanapple.backtracker.ui.explainer.model.Step;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MainController implements Initializable {
@@ -71,7 +68,7 @@ public class MainController implements Initializable {
                 Context.instance().setSpecsVerified(specs);
             } else {
                 SpecVerified spec = new SpecVerified(Config.instance().getFormula(), Counterexample.load(Config.instance().getCxPath()));
-                Context.instance().setSpecsVerified(Arrays.asList(spec));
+                Context.instance().setSpecsVerified(new ArrayList<>(){{add(spec);}});
             }
             Context.instance().setDiagramPath(Config.instance().getDiagramPath());
         } else{
@@ -124,6 +121,7 @@ public class MainController implements Initializable {
         this.valueTable.init();
         this.diagramExplainer.init();
         this.ltlExplainer.init();
+        this.ltlExplainer.setOnExplainedFormulaChanged(this::changeFormula);
         this.stepsList.setItems(FXCollections.observableArrayList(
                 Context.instance().getCounterexample().getPath().values().stream().sorted(Comparator.comparing(State::getOrder))
                         .map(state -> new Step(state.getOrder(), Context.instance().getCounterexample().getLoopStart() == state.getOrder())).collect(Collectors.toList())
@@ -155,7 +153,7 @@ public class MainController implements Initializable {
             Context.instance().setSpecsVerified(specs);
         } else {
             SpecVerified spec = new SpecVerified(config.getFormulaCustom(), Counterexample.load(config.getCxPathCustom()));
-            Context.instance().setSpecsVerified(Arrays.asList(spec));
+            Context.instance().setSpecsVerified(new ArrayList<>(){{add(spec);}});
         }
         Context.instance().setDiagramPath(config.getDiagramPathCustom());
 

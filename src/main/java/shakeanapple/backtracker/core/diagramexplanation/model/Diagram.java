@@ -20,7 +20,7 @@ public class Diagram {
 //        this.outputs = outputs.stream().collect(Collectors.toMap(OutputVariable::getId, out -> out));
 
         this.inputs = inputs.stream().collect(Collectors.toMap(Gate::getFullName, in -> in));
-        this.outputs = outputs.stream().collect(Collectors.toMap(Gate::getFullName, in -> in));
+//        this.outputs = outputs.stream().collect(Collectors.toMap(Gate::getFullName, in -> in));
     }
 
     public List<FunctionBlockBase> getFunctionBlocks() {

@@ -97,6 +97,10 @@ public class FunctionBlockComplex extends FunctionBlockBase {
     @Override
     protected ExplanationItem explainImpl(OutputGate output, Integer timestamp) {
        // System.out.println(String.format("Upper Block: %s, Gate: %s, Timestamp: %s", this.getName(), output.getName(), timestamp));
+        if (output.getIncomingConnection() == null){
+            return this.emptyExplanation(output, timestamp);
+        }
+
         OutputGate gateToExplain = (OutputGate) output.getIncomingConnection().fromGate();
 
         CausePathTree causesTree = new CausePathTree();
@@ -127,6 +131,14 @@ public class FunctionBlockComplex extends FunctionBlockBase {
         }
 
      //   System.out.println(String.format("Upper Block Processed: %s, Gate: %s, Timestamp: %s", this.getName(), output.getName(), timestamp));
+        return result;
+    }
+
+    private ExplanationItem emptyExplanation(OutputGate output, int timestamp) {
+        CausePathTree causesTree = new CausePathTree();
+        CauseNode rootNode = new CauseNode(output, this.history().getVariableValueForStep(output.getName(), timestamp), timestamp);
+        causesTree.addRoot(rootNode);
+        ExplanationItem result = new ExplanationItem(causesTree, new HashSet<>());
         return result;
     }
 
