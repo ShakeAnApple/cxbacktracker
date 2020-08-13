@@ -17,6 +17,8 @@ To run the tool double click the oeritte.jar or run it from the console
 - LTL property (past-time operators and arrays are not supported);
 - a file containing NuSMV verification output in the batch mode _or_ a file with the LTL formula and a file with the full verbose counterexample produced by NuSMV model checker for the provided LTL property.
 
+Examples of input data can be found in `example/`
+
 ## How to use:
 
 When program is running:
