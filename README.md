@@ -30,3 +30,6 @@ When program is running:
 6) To investigate contents of any module, double click on it and the module will be opened in another tab in the diagram area. Explanation here works the same way as described in 5.
 7) Diagram variables' names can be found in tooltips that are triggered by hovering pins. In explanation mode if variable is a cause, information about it is added to its pin in form `stepNumber: varValue`.
 8) To open another model repeat step 1.
+
+## Oeritte main view
+![Main view](https://github.com/ShakeAnApple/cxbacktracker/blob/master/img/mainview.png)
