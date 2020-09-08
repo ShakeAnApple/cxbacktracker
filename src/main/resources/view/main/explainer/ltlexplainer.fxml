@@ -9,5 +9,12 @@
 <?import shakeanapple.backtracker.ui.infrasructure.control.visgraph.VisGraphControl?>
 <fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml">
     <ComboBox fx:id="failedFormulas" focusTraversable="false"/>
-    <VisGraphControl resource="ltlGraph.html" fx:id="ltlGraph" VBox.vgrow="ALWAYS" />
+    <TabPane>
+        <Tab text="Tree view">
+            <VisGraphControl resource="ltlGraph.html" fx:id="ltlGraph" VBox.vgrow="ALWAYS" />
+        </Tab>
+        <Tab text="">
+
+        </Tab>
+    </TabPane>
 </fx:root>
