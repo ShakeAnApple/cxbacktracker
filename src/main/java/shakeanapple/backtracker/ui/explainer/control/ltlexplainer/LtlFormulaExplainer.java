@@ -15,6 +15,7 @@ import shakeanapple.backtracker.core.ltl.explanation.model.FormulaCause;
 import shakeanapple.backtracker.core.ltl.formula.model.LtlFormula;
 import shakeanapple.backtracker.ui.GraphHelper;
 import shakeanapple.backtracker.ui.explainer.Context;
+import shakeanapple.backtracker.ui.infrasructure.control.ltl.StepsViewTable;
 import shakeanapple.backtracker.ui.infrasructure.control.visgraph.VisGraphControl;
 import shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.graph.VisGraph;
 
@@ -28,6 +29,8 @@ public class LtlFormulaExplainer extends VBox {
     private ComboBox<SpecVerified> failedFormulas;
     @FXML
     private VisGraphControl ltlGraph;
+    @FXML
+    private StepsViewTable formulaByStepsTable;
 
     private LtlEvaluator calculationWalker;
     private ILtlFormulaExplainer ltlExplainer;
@@ -35,7 +38,7 @@ public class LtlFormulaExplainer extends VBox {
     ChangeListener formulaChangedListener;
 
     public LtlFormulaExplainer() {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("view/main/explainer/ltlexplainer.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("view/main/explainer/ltl/ltlexplainer.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
 
@@ -61,6 +64,8 @@ public class LtlFormulaExplainer extends VBox {
                         Context.instance().getActiveSpecVerified()
                 )
         );
+
+        this.formulaByStepsTable.init(this.calculationWalker, this.ltlExplainer, formula);
     }
 
     public void setOnExplainedFormulaChanged(Function<SpecVerified, Boolean> onExplainedFormulaChanged) {

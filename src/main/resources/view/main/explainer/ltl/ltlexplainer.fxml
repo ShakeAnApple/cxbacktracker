@@ -7,14 +7,15 @@
 <?import javafx.scene.layout.*?>
 
 <?import shakeanapple.backtracker.ui.infrasructure.control.visgraph.VisGraphControl?>
+<?import shakeanapple.backtracker.ui.infrasructure.control.ltl.StepsViewTable?>
 <fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml">
     <ComboBox fx:id="failedFormulas" focusTraversable="false"/>
     <TabPane>
         <Tab text="Tree view">
             <VisGraphControl resource="ltlGraph.html" fx:id="ltlGraph" VBox.vgrow="ALWAYS" />
         </Tab>
-        <Tab text="">
-
+        <Tab text="Steps view">
+            <StepsViewTable fx:id="formulaByStepsTable" VBox.vgrow="ALWAYS"/>
         </Tab>
     </TabPane>
 </fx:root>
