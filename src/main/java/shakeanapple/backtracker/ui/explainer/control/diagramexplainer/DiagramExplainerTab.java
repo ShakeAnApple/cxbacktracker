@@ -64,13 +64,13 @@ public class DiagramExplainerTab extends Tab {
         }
     }
 
-    private DiagramExplainerTab(LinkedList<String> currentPath, String currentBlockTitle, DiagramExplainer parent) {
+    public DiagramExplainerTab(LinkedList<String> currentPath, String currentBlockTitle, DiagramExplainer parent) {
         this(currentBlockTitle, parent);
         this.pathInDiagram = currentPath;
         this.pathInDiagram.addLast(currentBlockTitle);
     }
 
-    private void init(FunctionBlockComplex diagram, DiagramExecutor parentExecutor) {
+    public void init(FunctionBlockComplex diagram, DiagramExecutor parentExecutor) {
 //        FunctionBlockComplex diagram = FunctionBlockComplex.parse(Context.instance().getDiagramPath());
         this.diagramExecutor = new SubDiagramCounterexampleExecutorNew(diagram, parentExecutor);
         this.diagram = diagram;
@@ -119,10 +119,10 @@ public class DiagramExplainerTab extends Tab {
         }
     }
 
-    public List<Cause> explainCause(String varName, String blockName, int timestamp) {
+    public List<Cause> explainCause(String varName, List<String> blockPath, int timestamp) {
         this.clearDiagram();
 
-        ExplanationItem expRes = this.diagramOutputExplainer.explain(varName, blockName, timestamp);
+        ExplanationItem expRes = this.diagramOutputExplainer.explain(varName, blockPath, timestamp);
         //List<Gate> gates = this.diagramOutputExplainer.extractNonObviousConstants(expRes);
         CauseNodeUI causesTree = CauseNodeUI.parse(expRes.getTree().getRoots().get(0));
 
@@ -150,7 +150,7 @@ public class DiagramExplainerTab extends Tab {
     }
 
     private Boolean diagramPinPressHandler(Pin pin) {
-        List<Cause> causes = this.explainCause(pin.getShortName(), pin.getOwner().getName(), Context.instance().getCurrentStep() + 1);
+        List<Cause> causes = this.explainCause(pin.getShortName(), Collections.singletonList(pin.getOwner().getName()), Context.instance().getCurrentStep() + 1);
         this.diagramCausesListObservable.clear();
         this.diagramCausesListObservable.addAll(causes);
         return true;

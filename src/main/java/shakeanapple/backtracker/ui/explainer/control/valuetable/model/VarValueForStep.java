@@ -17,8 +17,8 @@ public class VarValueForStep {
         this.isCause = new SimpleObjectProperty<>(isCause);
         this.stepNum = stepNum;
 
-        this.varName = this.fullVarName.contains(".") ? this.fullVarName.split("\\.")[1] : this.fullVarName;
-        this.blockName = this.fullVarName.contains(".") ? this.fullVarName.split("\\.")[0] : "";
+        String[] nameParts = this.fullVarName.split("\\.");
+        this.varName = this.fullVarName.contains(".") ? nameParts[nameParts.length - 1] : this.fullVarName;
     }
 
     public String getFullVarName() {

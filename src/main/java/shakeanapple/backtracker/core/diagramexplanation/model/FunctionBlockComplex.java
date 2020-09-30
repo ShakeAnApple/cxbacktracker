@@ -63,7 +63,7 @@ public class FunctionBlockComplex extends FunctionBlockBase {
         });
     }
 
-    public FunctionBlockBase extractInternal(LinkedList<String> blockPath){
+    public FunctionBlockBase extractInternal(List<String> blockPath){
         FunctionBlockBase parent = this;
 
         for (String s : blockPath) {
@@ -73,7 +73,7 @@ public class FunctionBlockComplex extends FunctionBlockBase {
                 throw new RuntimeException("Can't search in basic block");
             }
         }
-        return parent;
+        return parent.clone();
     }
 
     public FunctionBlockBase extractInternal(String blockName){

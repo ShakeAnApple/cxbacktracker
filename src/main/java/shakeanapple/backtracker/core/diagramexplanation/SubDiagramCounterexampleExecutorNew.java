@@ -65,8 +65,9 @@ public class SubDiagramCounterexampleExecutorNew implements DiagramExecutor {
     @Override
     public Map<String, ValueHolder> extractInputSnapshotFor(int stepNum, String blockName) {
         DiagramSnapshot diagramSnapshot = this.stepsEvaluated.get(stepNum);
-        FunctionBlockSnapshot blockSnapshot = diagramSnapshot.getBlocks().stream().filter(block -> block.getName().equals(blockName)).findFirst().orElse(null);
-        return blockSnapshot.getFbInterface().getInputsValues();
+//        FunctionBlockSnapshot blockSnapshot = diagramSnapshot.getBlocks().stream().filter(block -> block.getName().equals(blockName)).findFirst().orElse(null);
+//        return blockSnapshot.getFbInterface().getInputsValues();
+        return diagramSnapshot.getDiagramInterface().getInputsValues();
     }
 
     private void evaluateDiagram() {

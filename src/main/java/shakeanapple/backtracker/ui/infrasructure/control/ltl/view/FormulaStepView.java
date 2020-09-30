@@ -9,8 +9,10 @@ import shakeanapple.backtracker.ui.infrasructure.control.ltl.model.FormulaNodeSn
 import shakeanapple.backtracker.ui.infrasructure.control.ltl.model.FormulaStep;
 import shakeanapple.backtracker.ui.infrasructure.control.ltl.model.NodeResultKind;
 
+import java.util.function.Function;
+
 public class FormulaStepView extends HBox {
-    public FormulaStepView(FormulaStep formulaStep) {
+    public FormulaStepView(FormulaStep formulaStep, Function<FormulaNodeSnapshot, Boolean> onCauseClick) {
         for (FormulaNodeSnapshot node: formulaStep.getFormula().getNodes()){
             Label nodeLabel = new Label(node.getNodeName());
             Paint backgroundColor = node.getResultKind() == NodeResultKind.INTEGER ? Paint.valueOf(LtlTableStyles.INT_VALUE_COLOR_DEF) :
@@ -24,6 +26,7 @@ public class FormulaStepView extends HBox {
 
             if (node.isCause()){
                 nodeLabel.setBorder(new Border(new BorderStroke(Paint.valueOf(LtlTableStyles.CAUSE_BORDER_COLOR_DEF), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+                nodeLabel.setOnMouseClicked((mouseEvent) -> onCauseClick.apply(node));
             }
 
             nodeLabel.setPadding(new Insets(0, 1, 0, 1));

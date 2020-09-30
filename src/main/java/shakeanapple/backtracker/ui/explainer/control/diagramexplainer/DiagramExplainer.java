@@ -1,16 +1,25 @@
 package shakeanapple.backtracker.ui.explainer.control.diagramexplainer;
 
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import shakeanapple.backtracker.core.diagramexplanation.DiagramCounterexampleExecutor;
+import shakeanapple.backtracker.core.diagramexplanation.DiagramExecutor;
+import shakeanapple.backtracker.core.diagramexplanation.SubDiagramCounterexampleExecutorNew;
+import shakeanapple.backtracker.core.diagramexplanation.model.Diagram;
 import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockComplex;
 import shakeanapple.backtracker.ui.explainer.Context;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.DiagramStyles;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.graph.ConnectionView;
+import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.layout.ConnectionLayoutManager;
 
 import java.io.IOException;
+import java.util.*;
 
 public class DiagramExplainer extends TabPane {
     private DiagramExplainerTab systemOverviewTab;
-
+    private FunctionBlockComplex diagram;
 
     public DiagramExplainer() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("view/main/explainer/diagram/diagramExplainer.fxml"));
@@ -26,22 +35,53 @@ public class DiagramExplainer extends TabPane {
         }
     }
 
-    public void init(){
+    public void init() {
         this.systemOverviewTab = new DiagramExplainerTab("System", this);
-
-        this.systemOverviewTab.init(FunctionBlockComplex.parse(Context.instance().getDiagramPath()));
+        this.diagram = FunctionBlockComplex.parse(Context.instance().getDiagramPath());
+        this.systemOverviewTab.init(this.diagram);
         this.systemOverviewTab.closableProperty().setValue(false);
 
         this.getTabs().add(this.systemOverviewTab);
     }
 
-    public void explainCause(String varName, String blockName, int timestamp) {
-        this.systemOverviewTab.explainCause(varName, blockName, timestamp);
+    public void explainCause(String varName, List<String> blockPath, int timestamp) {
+        String tabTitle = blockPath.size() >= 2 ? "System." + String.join(".", blockPath.subList(0, blockPath.size() - 1)) : "System";
+        String[] parts = varName.split("\\.");
+        varName = parts.length > 1 ? parts[parts.length - 1] : parts[0];
+        if (this.getTabs().stream().noneMatch(tab -> tab.getText().equals(tabTitle))) {
+            List<String> parentBlockPath = blockPath.subList(0, blockPath.size() - 1);
+            DiagramExplainerTab newTab = new DiagramExplainerTab(new LinkedList<>(parentBlockPath), tabTitle, this);
+            FunctionBlockComplex block = (FunctionBlockComplex) this.diagram.extractInternal(parentBlockPath);
+            DiagramExecutor executor = this.inferExecutorFor(parentBlockPath);
+            this.addTab(newTab);
+            newTab.init(block, executor);
+            newTab.updateDiagram();
+            String a = varName;
+            Platform.runLater(() -> {
+                newTab.explainCause(a, Collections.singletonList(blockPath.get(blockPath.size() - 1)), timestamp);
+            });
+        } else {
+            DiagramExplainerTab tab = (DiagramExplainerTab) this.getTabs().stream().filter(t -> t.getText().equals(tabTitle)).findFirst().get();
+            this.getSelectionModel().select(tab);
+            tab.explainCause(varName, Collections.singletonList(blockPath.size() > 0 ? blockPath.get(blockPath.size() - 1) : ""), timestamp);
+        }
     }
 
-    public void updateDiagram(){
-        for (Tab tab: this.getTabs()){
-            ((DiagramExplainerTab)tab).updateDiagram();
+    private DiagramExecutor inferExecutorFor(List<String> blockPath) {
+        DiagramExecutor exec = null;
+        DiagramExecutor parentExec = new DiagramCounterexampleExecutor(this.diagram, Context.instance().getCounterexample());
+        FunctionBlockComplex parentBlock = this.diagram;
+        for (String block : blockPath) {
+            parentBlock = (FunctionBlockComplex) parentBlock.extractInternal(block);
+            exec = new SubDiagramCounterexampleExecutorNew(parentBlock, parentExec);
+            parentExec = exec;
+        }
+        return exec;
+    }
+
+    public void updateDiagram() {
+        for (Tab tab : this.getTabs()) {
+            ((DiagramExplainerTab) tab).updateDiagram();
         }
     }
 

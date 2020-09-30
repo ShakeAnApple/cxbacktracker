@@ -14,7 +14,7 @@ public class FormulaCalculatedFlatSnapshot {
 
         for (ICalculatedNode node: calcNodes){
             boolean isNodeCause = explanationResult.getCauses().stream()
-                    .anyMatch(c -> c.getVarName().equals(node.getNode().getName()) && c.getStepNum() == node.getResult().forStep());
+                    .anyMatch(c -> c.getVarName().equals(node.getNode().getName()) && c.getStepNum() == node.getResult().forStep() && c.getNodeId() == node.getNode().getId());
             this.nodes.addLast(new FormulaNodeSnapshot(node, isNodeCause));
         }
     }
