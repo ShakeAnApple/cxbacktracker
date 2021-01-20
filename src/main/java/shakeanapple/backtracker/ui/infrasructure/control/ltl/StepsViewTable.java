@@ -2,7 +2,6 @@ package shakeanapple.backtracker.ui.infrasructure.control.ltl;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TableColumn;
@@ -15,8 +14,6 @@ import shakeanapple.backtracker.core.ltl.explanation.ILtlFormulaExplainer;
 import shakeanapple.backtracker.core.ltl.explanation.model.ExplanationResult;
 import shakeanapple.backtracker.core.ltl.formula.model.LtlFormula;
 import shakeanapple.backtracker.ui.explainer.Context;
-import shakeanapple.backtracker.ui.explainer.control.valuetable.model.VarValueForStep;
-import shakeanapple.backtracker.ui.infrasructure.control.ltl.model.FormulaCalculatedFlatSnapshot;
 import shakeanapple.backtracker.ui.infrasructure.control.ltl.model.FormulaNodeSnapshot;
 import shakeanapple.backtracker.ui.infrasructure.control.ltl.model.FormulaStep;
 import shakeanapple.backtracker.ui.infrasructure.control.ltl.view.FormulaStepView;
@@ -64,7 +61,7 @@ public class StepsViewTable extends VBox {
     private void createColumns() {
         TableColumn<FormulaStep, String> stepNumColumn = new TableColumn<>("#");
         stepNumColumn.setCellValueFactory(param ->
-                new ReadOnlyObjectWrapper<>(param.getValue().getStepNumber() + (param.getValue().isLoop() ? "Loop starts here" : ""))
+                new ReadOnlyObjectWrapper<>(param.getValue().getStepNumber() + (param.getValue().isLoop() ? " loop starts here" : ""))
         );
         this.formulaByStepsTable.getColumns().add(stepNumColumn);
 

@@ -85,7 +85,8 @@ public class CellView extends NodeView implements DiagramCellView {
             InputPinView p = new InputPinView(parent, in, this);
             pins.add(p);
 
-            p.getView().layoutXProperty().bind(view.layoutXProperty().subtract(DiagramStyles.PIN_SIZE));
+//            p.getView().layoutXProperty().bind(view.layoutXProperty().subtract(DiagramStyles.PIN_SIZE));
+            p.getView().layoutXProperty().bind(view.layoutXProperty().subtract(p.getView().widthProperty()));
             p.getView().layoutYProperty().bind(view.layoutYProperty().add(DiagramStyles.PIN_SIZE * order));
 
             order++;

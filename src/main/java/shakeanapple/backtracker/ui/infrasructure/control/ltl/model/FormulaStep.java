@@ -33,7 +33,6 @@ public class FormulaStep {
     }
 
     public static FormulaStep fromCalculatedFormula(ICalculatedFormula calcFormula, boolean stepIsLoop, ExplanationResult explanationResult){
-
         return new FormulaStep(calcFormula, stepIsLoop, explanationResult);
     }
 }

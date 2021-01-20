@@ -11,10 +11,10 @@
 <fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml">
     <ComboBox fx:id="failedFormulas" focusTraversable="false"/>
     <TabPane>
-        <Tab text="Tree view">
+        <Tab text="Tree view" closable="false">
             <VisGraphControl resource="ltlGraph.html" fx:id="ltlGraph" VBox.vgrow="ALWAYS" />
         </Tab>
-        <Tab text="Steps view">
+        <Tab text="Steps view" closable="false">
             <StepsViewTable fx:id="formulaByStepsTable" VBox.vgrow="ALWAYS"/>
         </Tab>
     </TabPane>

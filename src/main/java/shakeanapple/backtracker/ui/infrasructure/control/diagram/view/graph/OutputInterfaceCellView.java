@@ -45,7 +45,7 @@ public class OutputInterfaceCellView extends NodeView implements DiagramCellView
         view.widthProperty().bind(label.widthProperty().add(4));
 
         this.input = new InputPinView(parent, cell.getInputPins().values().stream().findFirst().get(), this);
-        this.input.getView().layoutXProperty().bind(view.layoutXProperty().subtract(DiagramStyles.PIN_SIZE));
+        this.input.getView().layoutXProperty().bind(view.layoutXProperty().subtract(this.input.getView().widthProperty()));
         this.input.getView().layoutYProperty().bind(view.layoutYProperty());
 
         parent.getChildren().add(view);

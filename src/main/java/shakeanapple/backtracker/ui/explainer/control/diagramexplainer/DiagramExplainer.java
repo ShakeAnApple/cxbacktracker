@@ -69,14 +69,17 @@ public class DiagramExplainer extends TabPane {
 
     private DiagramExecutor inferExecutorFor(List<String> blockPath) {
         DiagramExecutor exec = null;
-        DiagramExecutor parentExec = new DiagramCounterexampleExecutor(this.diagram, Context.instance().getCounterexample());
-        FunctionBlockComplex parentBlock = this.diagram;
-        for (String block : blockPath) {
-            parentBlock = (FunctionBlockComplex) parentBlock.extractInternal(block);
-            exec = new SubDiagramCounterexampleExecutorNew(parentBlock, parentExec);
-            parentExec = exec;
+        DiagramExecutor parentExec = new DiagramCounterexampleExecutor((FunctionBlockComplex) this.diagram.clone(), Context.instance().getCounterexample());
+        if (blockPath.size() > 1) {
+            FunctionBlockComplex parentBlock = this.diagram;
+            for (String block : blockPath) {
+                parentBlock = (FunctionBlockComplex) parentBlock.extractInternal(block);
+                exec = new SubDiagramCounterexampleExecutorNew(parentBlock, parentExec);
+                parentExec = exec;
+            }
+            return exec;
         }
-        return exec;
+        return parentExec;
     }
 
     public void updateDiagram() {

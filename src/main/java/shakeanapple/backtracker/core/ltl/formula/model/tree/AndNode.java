@@ -16,6 +16,6 @@ public class AndNode extends BinFormulaNode{
 
     @Override
     public String getName() {
-        return "And";
+        return "&";
     }
 }

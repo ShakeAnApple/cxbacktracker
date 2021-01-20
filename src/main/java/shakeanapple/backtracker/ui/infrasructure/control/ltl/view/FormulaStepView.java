@@ -25,7 +25,7 @@ public class FormulaStepView extends HBox {
             }
 
             if (node.isCause()){
-                nodeLabel.setBorder(new Border(new BorderStroke(Paint.valueOf(LtlTableStyles.CAUSE_BORDER_COLOR_DEF), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+                nodeLabel.setBorder(new Border(new BorderStroke(Paint.valueOf(LtlTableStyles.CAUSE_BORDER_COLOR_DEF), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(2.0))));
                 nodeLabel.setOnMouseClicked((mouseEvent) -> onCauseClick.apply(node));
             }
 
