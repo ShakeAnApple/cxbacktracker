@@ -25,10 +25,15 @@ public class DiagramBackwardExplainer implements DiagramOutputExplainer {
         this.diagram = diagram;
     }
 
-    public ExplanationItem explain(String gateName, String blockName, int timestamp) {
-        FunctionBlockBase fbToExplain = this.diagram.getInternalDiagram().getFunctionBlocks().stream()
-                .filter(fb -> fb.getName().equals(blockName))
-                .findFirst().orElse(null);
+    public ExplanationItem explain(String gateName, List<String> blockPath, int timestamp) {
+        FunctionBlockBase fbToExplain = this.diagram;
+        for (int i = 0; i < blockPath.size(); i++) {
+            String nextName = blockPath.get(i);
+            fbToExplain = ((FunctionBlockComplex)fbToExplain).getInternalDiagram().getFunctionBlocks().stream()
+                    .filter(fb -> fb.getName().equals(nextName))
+                    .findFirst().orElse(null);
+            if (fbToExplain == null) break;
+        }
 
         if (fbToExplain == null) {
             OutputGate outputGate = this.diagram.fbInterface().getOutputs().get(gateName);
@@ -41,15 +46,15 @@ public class DiagramBackwardExplainer implements DiagramOutputExplainer {
                 return new ExplanationItem(new CausePathTree(Collections.singletonList(new CauseNode(inputGate, this.diagram.history().getVariableValueForStep(inputGate.getName(), timestamp), timestamp))), new ArrayList<>());
             }
         } else {
-            return this.explainInternalBlock(gateName, blockName, timestamp);
+            return this.explainInternalBlock(gateName, fbToExplain, timestamp);
         }
-        throw new RuntimeException("can't find gate " + gateName + " for block " + blockName);
+        throw new RuntimeException("can't find gate " + gateName + " for block path" + Arrays.toString(blockPath.toArray()));
     }
 
-    private ExplanationItem explainInternalBlock(String gateName, String blockName, int timestamp) {
-        FunctionBlockBase fbToExplain = this.diagram.getInternalDiagram().getFunctionBlocks().stream()
-                .filter(fb -> fb.getName().equals(blockName))
-                .findFirst().orElse(null);
+    private ExplanationItem explainInternalBlock(String gateName, FunctionBlockBase fbToExplain, int timestamp) {
+//        FunctionBlockBase fbToExplain = this.diagram.getInternalDiagram().getFunctionBlocks().stream()
+//                .filter(fb -> fb.getName().equals(blockName))
+//                .findFirst().orElse(null);
 
         if (fbToExplain == null) {
             throw new RuntimeException("Can't find FBlock for the Gate " + gateName);
@@ -96,14 +101,12 @@ public class DiagramBackwardExplainer implements DiagramOutputExplainer {
                     return new ExplanationItem(new CausePathTree(Collections.singletonList(new CauseNode(in, this.diagram.history().getVariableValueForStep(in.getName(), timestamp), timestamp))), new ArrayList<>());
                 }
             } else {
-                throw new RuntimeException("Can't find the Gate " + gateName + " in Block " + blockName);
+                throw new RuntimeException("Can't find the Gate " + gateName + " in Block " + fbToExplain.getName());
             }
         }
 
         causesTree.addRoot(rootNode);
-        parentNode.addChildren(res.getTree().
-
-                getRoots());
+        parentNode.addChildren(res.getTree().getRoots());
         Collection<CauseNode> causeNodes = res.getFreshNodes();
         Set<CauseNode> outputCauseNodes = new HashSet<>();
 
@@ -118,7 +121,7 @@ public class DiagramBackwardExplainer implements DiagramOutputExplainer {
                 outputCauseNodes.add(childNode);
             } else if (causeNode.getGate().getIncomingConnection() != null) {
                 // System.out.println(String.format("InternalD: cause '%s' will be processed", causeNode.getGate().getName()));
-                ExplanationItem childItem = this.explainInternalBlock(causeNode.getGate().getName(), causeNode.getGate().getOwner().getName(), causeNode.getTimestamp());
+                ExplanationItem childItem = this.explainInternalBlock(causeNode.getGate().getName(), causeNode.getGate().getOwner(), causeNode.getTimestamp());
                 outputCauseNodes.addAll(childItem.getFreshNodes());
 //                causeNode.addChildren(childItem.getFreshNodes());
                 causeNode.addChildren(childItem.getTree().getRoots());

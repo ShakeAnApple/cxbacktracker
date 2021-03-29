@@ -19,11 +19,11 @@ import shakeanapple.backtracker.core.ltl.explanation.model.FormulaCause;
 import shakeanapple.backtracker.ui.explainer.control.diagramexplainer.DiagramExplainer;
 import shakeanapple.backtracker.ui.explainer.control.ltlexplainer.LtlFormulaExplainer;
 import shakeanapple.backtracker.ui.explainer.control.projectinitializer.model.CustomConfig;
-import shakeanapple.backtracker.ui.explainer.control.menubar.MenuBarCustom;
 import shakeanapple.backtracker.ui.explainer.control.projectinitializer.ProjectInitializer;
 import shakeanapple.backtracker.ui.explainer.control.valuetable.ValueTable;
 import shakeanapple.backtracker.ui.explainer.control.valuetable.model.VarValueForStep;
 import shakeanapple.backtracker.ui.explainer.model.Step;
+import shakeanapple.backtracker.ui.infrasructure.control.ltl.model.FormulaNodeSnapshot;
 
 import java.io.IOException;
 import java.net.URL;
@@ -93,6 +93,7 @@ public class MainController implements Initializable {
         this.projectInitializer.setOnFileChosen(this::cleanMainView);
 
         this.valueTable.setOnTableCellClicked(this::onTableCellClicked);
+        this.ltlExplainer.setOnLtlCauseClicked(this::onLtlCauseClicked);
 
         if (!this.isReadonly.getValue()) {
             this.stepsList.setItems(FXCollections.observableArrayList(
@@ -202,16 +203,27 @@ public class MainController implements Initializable {
         this.valueTable.refresh();
     }
 
+    private List<String> getVariableBlockPath(String fullVarName){
+        String[] nameParts = fullVarName.split("\\.");
+        return Arrays.asList(Arrays.copyOfRange(nameParts, 0, nameParts.length - 1));
+    }
 
     private boolean onTableCellClicked(VarValueForStep varValueForStep) {
-
         if (!varValueForStep.isCauseProperty().getValue()) {
             return true;
         }
-        this.stepsList.getSelectionModel().select(this.stepsList.getItems().stream().filter(step -> step.getNumber() == varValueForStep.getStepNum()).findFirst().get());
-        Context.instance().setCurrentStep(varValueForStep.getStepNum());
+        return this.showPathInDiagramFor(varValueForStep.getStepNum(), varValueForStep.getVarName(), this.getVariableBlockPath(varValueForStep.getFullVarName()));
+    }
+
+    private boolean onLtlCauseClicked(FormulaNodeSnapshot node){
+        return this.showPathInDiagramFor(node.getStepNum(), node.getNodeName(), this.getVariableBlockPath(node.getNodeName()));
+    }
+
+    private boolean showPathInDiagramFor(int stepNum, String varName, List<String> blockPath){
+        this.stepsList.getSelectionModel().select(this.stepsList.getItems().stream().filter(step -> step.getNumber() == stepNum).findFirst().get());
+        Context.instance().setCurrentStep(stepNum);
         this.diagramExplainer.updateDiagram();
-        this.diagramExplainer.explainCause(varValueForStep.getVarName(), varValueForStep.getBlockName(), Context.instance().getCurrentStep() + 1);
+        this.diagramExplainer.explainCause(varName, blockPath, Context.instance().getCurrentStep() + 1);
 
         return true;
     }

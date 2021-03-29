@@ -52,9 +52,9 @@ public class HierarchicalLayout extends Layout {
         int maxLevel = 0;
         for (DiagramCellView cell : blockCells) {
             int cellLevel = this.defineLevels(cell, cellLevels);
-            if (!cellLevels.containsKey(((NodeView)cell).getViewId())) {
-                cellLevels.put(((NodeView)cell).getViewId(), cellLevel);
-            }
+//            if (!cellLevels.containsKey(((NodeView)cell).getViewId())) {
+//                cellLevels.put(((NodeView)cell).getViewId(), cellLevel);
+//            }
             if (!hierarchyLevels.containsKey(cellLevel)) {
                 hierarchyLevels.put(cellLevel, new ArrayList<>());
             }
@@ -69,7 +69,6 @@ public class HierarchicalLayout extends Layout {
         double curX = 0;
         for (int i = 0; i <= maxLevel; i++) {
             List<DiagramCellView> levelCells = hierarchyLevels.get(i);
-            int c = 0;
             double cellMaxWidth = 0;
             double curY = 50;
             for (DiagramCellView cell: levelCells){
@@ -110,6 +109,12 @@ public class HierarchicalLayout extends Layout {
             }
             maxParentLevel = Math.max(parentLevel, maxParentLevel);
         }
-        return maxParentLevel + 1;
+        final int cellLevel = maxParentLevel + 1;
+        if (!cellLevels.containsKey(((NodeView)cell).getViewId())) {
+            cellLevels.put(((NodeView)cell).getViewId(), cellLevel);
+        } else{
+            cellLevels.replace(((NodeView)cell).getViewId(), cellLevel);
+        }
+        return cellLevel;
     }
 }

@@ -67,6 +67,7 @@ public class SubDiagramCounterexampleExecutorNew implements DiagramExecutor {
         DiagramSnapshot diagramSnapshot = this.stepsEvaluated.get(stepNum);
         FunctionBlockSnapshot blockSnapshot = diagramSnapshot.getBlocks().stream().filter(block -> block.getName().equals(blockName)).findFirst().orElse(null);
         return blockSnapshot.getFbInterface().getInputsValues();
+//        return diagramSnapshot.getDiagramInterface().getInputsValues();
     }
 
     private void evaluateDiagram() {

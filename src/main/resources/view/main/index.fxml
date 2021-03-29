@@ -22,10 +22,10 @@
 
     <TabPane fx:id="mainTabs">
         <tabs>
-            <Tab text="Project">
+            <Tab text="Project" closable="false">
                 <ProjectInitializer fx:id="projectInitializer"/>
             </Tab>
-            <Tab fx:id="workspaceTab" text="Workspace">
+            <Tab fx:id="workspaceTab" text="Workspace" closable="false">
                 <GridPane>
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" percentWidth="100.0"/>

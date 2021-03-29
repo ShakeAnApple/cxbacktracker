@@ -6,8 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import shakeanapple.backtracker.ui.infrasructure.control.visgraph.VisGraphControl?>
 <fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml">
-    <ComboBox fx:id="failedFormulas" focusTraversable="false"/>
-    <VisGraphControl resource="ltlGraph.html" fx:id="ltlGraph" VBox.vgrow="ALWAYS" />
+    <TableView fx:id="formulaByStepsTable" VBox.vgrow="ALWAYS">
+    </TableView>
 </fx:root>

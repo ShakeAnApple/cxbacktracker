@@ -13,6 +13,7 @@ public class DiagramStyles {
     public static final double CONNECTION_STROKE_WIDTH_SELECTED = 4;
 
     public static final int PIN_SIZE = 26;
+    public static final int PIN_CHAR_MAX_COUNT = 5;
     public static final String PIN_INVERTED_STYLE = String.format("-fx-background-radius: %s", "20px");
     public static final String PIN_IS_CAUSE_STYLE = String.format("-fx-border-color: %s", toHexString(CONNECTION_COLOR_CAUSE));
     public static final String PIN_BACKGROUND_RADIUS_STYLE = "-fx-background-radius:0";

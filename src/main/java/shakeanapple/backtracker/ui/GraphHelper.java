@@ -54,9 +54,11 @@ public class GraphHelper {
             LogicalResult lr = (LogicalResult) res;
             switch (lr.getValue()) {
                 case FALSE:
-                    return "#FF9999";
+                    return "#FFFFFF";
+                    //return "#FF9999";
                 case TRUE:
-                    return "#CCFF99";
+                    return "#FF9999";
+//                    return "#CCFF99";
                 // dark gray for unknown
                 default:
                     return "#A0A0A0";

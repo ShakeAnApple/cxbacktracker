@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import shakeanapple.backtracker.ui.infrasructure.control.visgraph.VisGraphControl?>
+<?import shakeanapple.backtracker.ui.infrasructure.control.ltl.StepsViewTable?>
+<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml">
+    <ComboBox fx:id="failedFormulas" focusTraversable="false"/>
+    <TabPane>
+        <Tab text="Tree view" closable="false">
+            <VisGraphControl resource="ltlGraph.html" fx:id="ltlGraph" VBox.vgrow="ALWAYS" />
+        </Tab>
+        <Tab text="Steps view" closable="false">
+            <StepsViewTable fx:id="formulaByStepsTable" VBox.vgrow="ALWAYS"/>
+        </Tab>
+    </TabPane>
+</fx:root>

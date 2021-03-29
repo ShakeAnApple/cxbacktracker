@@ -227,7 +227,7 @@ public class LtlFormulaExplainer implements ILtlFormulaVisitor<ExplanationResult
         this.registerNodeInHistory(varNode);
 
         return this.addResToHistoryAndReturn(varNode, new ExplanationResult(new FormulaCause(this.cursor.getCurStateNum(), varNode.getName(),
-                this.evaluator.calculateNodeForStep(this.cursor.getCurStateNum(), varNode).toString()), this.cursor.getCurStateNum()));
+                this.evaluator.calculateNodeForStep(this.cursor.getCurStateNum(), varNode).toString(), varNode.getId()), this.cursor.getCurStateNum()));
     }
 
     @Override

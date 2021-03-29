@@ -28,6 +28,11 @@ public class CalculatedNode implements ICalculatedNode {
     }
 
     @Override
+    public boolean isLeaf() {
+        return this.children.isEmpty();
+    }
+
+    @Override
     public FormulaNode getNode() {
         return this.node;
     }

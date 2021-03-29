@@ -11,6 +11,8 @@ public abstract class FormulaNode {
     public abstract List<FormulaNode> getChildren();
 
     public abstract String getName();
+
+    public abstract int getId();
 }
 
 

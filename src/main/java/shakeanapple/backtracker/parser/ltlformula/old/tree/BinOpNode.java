@@ -17,24 +17,24 @@ public class BinOpNode extends Node{
     @Override
     public FormulaNode translate() {
         switch (this.op){
-            case"U": return new UNode(this.left.translate(), this.right.translate());
-            case"R": return new RNode(this.left.translate(), this.right.translate());
-            case"W": return new WNode(this.left.translate(), this.right.translate());
-            case"M": return new MNode(this.left.translate(), this.right.translate());
-            case"&": return new AndNode(this.left.translate(), this.right.translate());
-            case"|": return new OrNode(this.left.translate(), this.right.translate());
-            case"->": return new ImplNode(this.left.translate(), this.right.translate());
-            case"=": return new EqNode(this.left.translate(), this.right.translate());
-            case"<": return new LessNode(this.left.translate(), this.right.translate());
-            case">": return new GreaterNode(this.left.translate(), this.right.translate());
-            case"+": return new PlusNode(this.left.translate(), this.right.translate());
-            case"-": return new MinusNode(this.left.translate(), this.right.translate());
-            case"*": return new MulNode(this.left.translate(), this.right.translate());
-            case"/": return new DivNode(this.left.translate(), this.right.translate());
-            case"!=": return new NotEqNode(this.left.translate(), this.right.translate());
-            case"<>": return new NotEqNode(this.left.translate(), this.right.translate());
-            case"<=": return new LessEqNode(this.left.translate(), this.right.translate());
-            case">=": return new GreaterEqNode(this.left.translate(), this.right.translate());
+//            case"U": return new UNode(this.left.translate(), this.right.translate());
+//            case"R": return new RNode(this.left.translate(), this.right.translate(), pathInTree);
+//            case"W": return new WNode(this.left.translate(), this.right.translate(), pathInTree);
+//            case"M": return new MNode(this.left.translate(), this.right.translate(), pathInTree);
+//            case"&": return new AndNode(this.left.translate(), this.right.translate());
+//            case"|": return new OrNode(this.left.translate(), this.right.translate());
+//            case"->": return new ImplNode(this.left.translate(), this.right.translate());
+//            case"=": return new EqNode(this.left.translate(), this.right.translate());
+//            case"<": return new LessNode(this.left.translate(), this.right.translate());
+//            case">": return new GreaterNode(this.left.translate(), this.right.translate());
+//            case"+": return new PlusNode(this.left.translate(), this.right.translate());
+//            case"-": return new MinusNode(this.left.translate(), this.right.translate());
+//            case"*": return new MulNode(this.left.translate(), this.right.translate());
+//            case"/": return new DivNode(this.left.translate(), this.right.translate());
+//            case"!=": return new NotEqNode(this.left.translate(), this.right.translate());
+//            case"<>": return new NotEqNode(this.left.translate(), this.right.translate());
+//            case"<=": return new LessEqNode(this.left.translate(), this.right.translate());
+//            case">=": return new GreaterEqNode(this.left.translate(), this.right.translate());
             default: throw new RuntimeException("Not implememnted binary operator " + this.op);
         }
     }

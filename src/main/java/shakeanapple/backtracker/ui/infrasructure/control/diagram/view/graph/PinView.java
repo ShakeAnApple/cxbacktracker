@@ -36,8 +36,10 @@ public class PinView extends NodeView {
         this.pin = pin;
         this.owner = owner;
 
-        this.view = new Button();
+        this.view = new Button(pin.getShortName().length() > DiagramStyles.PIN_CHAR_MAX_COUNT ? pin.getShortName().substring(0,DiagramStyles.PIN_CHAR_MAX_COUNT) + "..." : pin.getShortName());
         this.view.setMinSize(DiagramStyles.PIN_SIZE, DiagramStyles.PIN_SIZE);
+        this.view.setMinWidth(47);
+        this.view.setMaxWidth(47);
 //        this.view.getStylesheets().add(DiagramStyles.PIN_BACKGROUND_RADIUS_STYLE);
         this.view.setStyle(DiagramStyles.PIN_BACKGROUND_RADIUS_STYLE);
         this.view.onActionProperty().setValue(

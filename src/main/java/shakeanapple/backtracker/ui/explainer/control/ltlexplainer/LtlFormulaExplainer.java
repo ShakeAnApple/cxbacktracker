@@ -15,6 +15,8 @@ import shakeanapple.backtracker.core.ltl.explanation.model.FormulaCause;
 import shakeanapple.backtracker.core.ltl.formula.model.LtlFormula;
 import shakeanapple.backtracker.ui.GraphHelper;
 import shakeanapple.backtracker.ui.explainer.Context;
+import shakeanapple.backtracker.ui.infrasructure.control.ltl.StepsViewTable;
+import shakeanapple.backtracker.ui.infrasructure.control.ltl.model.FormulaNodeSnapshot;
 import shakeanapple.backtracker.ui.infrasructure.control.visgraph.VisGraphControl;
 import shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.graph.VisGraph;
 
@@ -28,14 +30,16 @@ public class LtlFormulaExplainer extends VBox {
     private ComboBox<SpecVerified> failedFormulas;
     @FXML
     private VisGraphControl ltlGraph;
+    @FXML
+    private StepsViewTable formulaByStepsTable;
 
     private LtlEvaluator calculationWalker;
     private ILtlFormulaExplainer ltlExplainer;
 
-    ChangeListener formulaChangedListener;
+    private ChangeListener formulaChangedListener;
 
     public LtlFormulaExplainer() {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("view/main/explainer/ltlexplainer.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("view/main/explainer/ltl/ltlexplainer.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
 
@@ -44,7 +48,10 @@ public class LtlFormulaExplainer extends VBox {
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
+    }
 
+    public void setOnLtlCauseClicked(Function<FormulaNodeSnapshot, Boolean> onCauseClicked){
+        this.formulaByStepsTable.setOnLtlCauseClicked(onCauseClicked);
     }
 
     public void init() {
@@ -61,6 +68,8 @@ public class LtlFormulaExplainer extends VBox {
                         Context.instance().getActiveSpecVerified()
                 )
         );
+
+        this.formulaByStepsTable.init(this.ltlExplainer, formula);
     }
 
     public void setOnExplainedFormulaChanged(Function<SpecVerified, Boolean> onExplainedFormulaChanged) {
@@ -93,5 +102,6 @@ public class LtlFormulaExplainer extends VBox {
         this.ltlGraph.clear();
         this.calculationWalker = null;
         this.ltlExplainer = null;
+        this.formulaByStepsTable.reset();
     }
 }
