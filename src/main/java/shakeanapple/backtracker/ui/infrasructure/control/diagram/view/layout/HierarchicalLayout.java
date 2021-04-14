@@ -24,7 +24,6 @@ public class HierarchicalLayout extends Layout {
     public void execute() {
         List<DiagramCellView> cells = this.panel.getGraph().getNodes();
         double width = this.panel.getWidth();
-        double height = this.panel.getHeight() - 50;
 
         List<DiagramCellView> inputCells = new ArrayList<>();
         List<DiagramCellView> outputCells = new ArrayList<>();
@@ -52,9 +51,6 @@ public class HierarchicalLayout extends Layout {
         int maxLevel = 0;
         for (DiagramCellView cell : blockCells) {
             int cellLevel = this.defineLevels(cell, cellLevels);
-//            if (!cellLevels.containsKey(((NodeView)cell).getViewId())) {
-//                cellLevels.put(((NodeView)cell).getViewId(), cellLevel);
-//            }
             if (!hierarchyLevels.containsKey(cellLevel)) {
                 hierarchyLevels.put(cellLevel, new ArrayList<>());
             }
@@ -77,20 +73,9 @@ public class HierarchicalLayout extends Layout {
                 curY += (30 + cell.getHeight());
             }
             curX += (prefLevelDistance + cellMaxWidth);
-
-//            for (double y = height / (levelCells.size() + 1); y < height && c <levelCells.size(); y += height / (levelCells.size() + 1)) {
-//                DiagramCellView cell = levelCells.get(c);
-//                cell.getView().relocate(curX, y);
-//                cellMaxWidth = Math.max(cellMaxWidth, cell.getWidth());
-////                Offset offset = this.panel.adjustCoords(cell);
-////                cell.relocate(curX + offset.left, y + offset.top);
-//                c++;
-//            }
-//            curX += (prefLevelDistance + cellMaxWidth);
         }
     }
 
-    // TODO watch cycles!
     private Integer defineLevels(DiagramCellView cell, Map<Long, Integer> cellLevels) {
         if (cellLevels.containsKey(((NodeView)cell).getViewId())) {
             if (cellLevels.get(((NodeView)cell).getViewId()) == Integer.MIN_VALUE) {
