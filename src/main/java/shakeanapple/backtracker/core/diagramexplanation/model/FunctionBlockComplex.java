@@ -4,6 +4,10 @@ import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNod
 import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.DelayFunctionBlockBasic;
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CausePathTree;
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
+import shakeanapple.backtracker.core.diagramexplanation.model.changecausetree.Change;
+import shakeanapple.backtracker.core.diagramexplanation.model.changecausetree.ChangeCauseNode;
+import shakeanapple.backtracker.core.diagramexplanation.model.changecausetree.ChangeCausePathTree;
+import shakeanapple.backtracker.core.diagramexplanation.model.changecausetree.ChangeExplanationItem;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 //import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.Parser;
@@ -89,6 +93,7 @@ public class FunctionBlockComplex extends FunctionBlockBase {
         return this.internalDiagram;
     }
 
+    // FIXME something weird
     @Override
     public void executeImpl() {
         this.internalDiagram.execute();
@@ -96,7 +101,6 @@ public class FunctionBlockComplex extends FunctionBlockBase {
 
     @Override
     protected ExplanationItem explainImpl(OutputGate output, Integer timestamp) {
-       // System.out.println(String.format("Upper Block: %s, Gate: %s, Timestamp: %s", this.getName(), output.getName(), timestamp));
         if (output.getIncomingConnection() == null){
             return this.emptyExplanation(output, timestamp);
         }
@@ -118,19 +122,51 @@ public class FunctionBlockComplex extends FunctionBlockBase {
             if (this.fbInterface().getInputs().get(causeNode.getGate().getName()) != null &&
                     this.fbInterface().getInputs().get(causeNode.getGate().getName()).equals(causeNode.getGate())
             ) {
-              //  System.out.println(String.format("InternalD: cause '%s' added to result", causeNode.getGate().getName()));
                 CauseNode childNode = causeNode;
                 outputCauseNodes.add(childNode);
             } else if (causeNode.getGate().getIncomingConnection() != null) {
-            //    System.out.println(String.format("InternalD: cause '%s' will be processed", causeNode.getGate().getName()));
                 ExplanationItem childItem = this.explain((OutputGate) causeNode.getGate(), causeNode.getTimestamp());
                 outputCauseNodes.addAll(childItem.getFreshNodes());
                 causeNode.addChildren(childItem.getFreshNodes());
-            //    System.out.println(String.format("InternalD: cause '%s' processed", causeNode.getGate().getName()));
             }
         }
 
-     //   System.out.println(String.format("Upper Block Processed: %s, Gate: %s, Timestamp: %s", this.getName(), output.getName(), timestamp));
+        return result;
+    }
+
+    @Override
+    protected ChangeExplanationItem explainChangeImpl(OutputGate output, Integer timestamp) {
+        if (output.getIncomingConnection() == null){
+            return this.emptyChangeExplanation(output, timestamp);
+        }
+
+        OutputGate gateToExplain = (OutputGate) output.getIncomingConnection().fromGate();
+
+        ChangeCausePathTree causesTree = new ChangeCausePathTree();
+
+        ChangeCauseNode rootNode = new ChangeCauseNode(output, this.history().getVariableValueForStep(output.getName(), timestamp), timestamp,
+                this.history().getVariableValueForStep(output.getName(), timestamp), timestamp);
+        causesTree.addRoot(rootNode);
+
+        ChangeExplanationItem item = this.internalDiagram.explainChange(gateToExplain, timestamp);
+        Collection<ChangeCauseNode> causeNodes = item.getFreshNodes();
+        rootNode.addChildren(item.getTree().getRoots());
+        Set<ChangeCauseNode> outputCauseNodes = new HashSet<>();
+
+        ChangeExplanationItem result = new ChangeExplanationItem(causesTree, outputCauseNodes);
+        for (ChangeCauseNode causeNode : causeNodes) {
+            if (this.fbInterface().getInputs().get(causeNode.getGate().getName()) != null &&
+                    this.fbInterface().getInputs().get(causeNode.getGate().getName()).equals(causeNode.getGate())
+            ) {
+                ChangeCauseNode childNode = causeNode;
+                outputCauseNodes.add(childNode);
+            } else if (causeNode.getGate().getIncomingConnection() != null) {
+                ChangeExplanationItem childItem = this.explainChange((OutputGate) causeNode.getGate(), causeNode.getChange().getCurrentStep());
+                outputCauseNodes.addAll(childItem.getFreshNodes());
+                causeNode.addChildren(childItem.getFreshNodes());
+            }
+        }
+
         return result;
     }
 
@@ -139,6 +175,15 @@ public class FunctionBlockComplex extends FunctionBlockBase {
         CauseNode rootNode = new CauseNode(output, this.history().getVariableValueForStep(output.getName(), timestamp), timestamp);
         causesTree.addRoot(rootNode);
         ExplanationItem result = new ExplanationItem(causesTree, new HashSet<>());
+        return result;
+    }
+
+    private ChangeExplanationItem emptyChangeExplanation(OutputGate output, int timestamp) {
+        ChangeCausePathTree causesTree = new ChangeCausePathTree();
+        ChangeCauseNode rootNode = new ChangeCauseNode(output, this.history().getVariableValueForStep(output.getName(), timestamp), timestamp,
+                this.history().getVariableValueForStep(output.getName(), timestamp), timestamp);
+        causesTree.addRoot(rootNode);
+        ChangeExplanationItem result = new ChangeExplanationItem(causesTree, new HashSet<>());
         return result;
     }
 

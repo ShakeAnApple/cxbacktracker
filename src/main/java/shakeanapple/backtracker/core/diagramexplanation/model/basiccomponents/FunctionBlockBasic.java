@@ -1,5 +1,8 @@
 package shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents;
 
+import shakeanapple.backtracker.common.variable.BooleanValueHolder;
+import shakeanapple.backtracker.common.variable.ValueHolder;
+import shakeanapple.backtracker.core.diagramexplanation.model.BlockVariableHistoryItem;
 import shakeanapple.backtracker.core.diagramexplanation.model.OutputGate;
 import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockBase;
 import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.arithmetic.*;
@@ -9,11 +12,16 @@ import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.lo
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CausePathTree;
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
+import shakeanapple.backtracker.core.diagramexplanation.model.changecausetree.ChangeCauseNode;
+import shakeanapple.backtracker.core.diagramexplanation.model.changecausetree.ChangeCausePathTree;
+import shakeanapple.backtracker.core.diagramexplanation.model.changecausetree.ChangeExplanationItem;
 import shakeanapple.backtracker.core.diagramexplanation.model.complexblockdefinition.ComponentDefinitionType;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class FunctionBlockBasic extends FunctionBlockBase {
@@ -87,15 +95,38 @@ public abstract class FunctionBlockBasic extends FunctionBlockBase {
     @Override
     public ExplanationItem explainImpl(OutputGate output, Integer timestamp) {
         CauseNode root = new CauseNode(output, output.getValue(), timestamp);
-        //root.isRoot(true);
         CausePathTree pathTree = new CausePathTree(root);
         List<CauseNode> causes = this.explainBasicImpl(output, timestamp);
         root.addChildren(causes);
         ExplanationItem res = new ExplanationItem(pathTree, causes);
-//        for (CauseNode cause: causes){
-//            res.recordAddChildrenActionForNode(cause, ch -> { cause.addChildren(ch); return true;});
-//        }
         return res;
     }
+
+    @Override
+    public ChangeExplanationItem explainChangeImpl(OutputGate output, Integer timestamp) {
+        ValueHolder val = this.history().getVariableValueForStep(output.getName(), timestamp);
+        Map<Integer, BlockVariableHistoryItem> outputHistory = this.history().ofVariable(output.getName());
+        for(int i = timestamp - 1; i > 0; i --) {
+            final BlockVariableHistoryItem outputHistoryItem = outputHistory.get(i);
+            if (!outputHistoryItem.getValueHolder().getValue().equals(val.getValue())) {
+                final int changeStep = i;
+                ChangeCauseNode root = new ChangeCauseNode(output, this.history().getVariableValueForStep(output.getName(), changeStep + 1), changeStep + 1,
+                        this.history().getVariableValueForStep(output.getName(), changeStep), changeStep);
+                ChangeCausePathTree pathTree = new ChangeCausePathTree(root);
+                List<ChangeCauseNode> causes = this.explainChangeBasicImpl(output, changeStep);
+                root.addChildren(causes);
+                ChangeExplanationItem res = new ChangeExplanationItem(pathTree, causes);
+                return res;
+            }
+        }
+        ChangeCauseNode root = new ChangeCauseNode(output, this.history().getVariableValueForStep(output.getName(), timestamp), timestamp,
+                this.history().getVariableValueForStep(output.getName(), timestamp), timestamp);
+        ChangeCausePathTree pathTree = new ChangeCausePathTree(root);
+        ChangeExplanationItem res = new ChangeExplanationItem(pathTree, new ArrayList<>());
+        res.isTerminating(true);
+        return res;
+    }
+
+    protected abstract List<ChangeCauseNode> explainChangeBasicImpl(OutputGate output, Integer timestamp);
 
 }

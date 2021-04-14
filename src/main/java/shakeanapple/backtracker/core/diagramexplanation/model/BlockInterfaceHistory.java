@@ -5,6 +5,7 @@ import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVari
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BlockInterfaceHistory {
@@ -49,5 +50,12 @@ public class BlockInterfaceHistory {
             return this.inputVariablesHistory.get(varName).getValueForStep(timestamp);
         }
         return this.outputVariablesHistory.get(varName).getValueForStep(timestamp);
+    }
+
+    public Map<Integer, BlockVariableHistoryItem> ofVariable(String varName){
+        if (this.inputVariablesHistory.containsKey(varName)){
+            return this.inputVariablesHistory.get(varName).valuesByStep();
+        }
+        return this.outputVariablesHistory.get(varName).valuesByStep();
     }
 }

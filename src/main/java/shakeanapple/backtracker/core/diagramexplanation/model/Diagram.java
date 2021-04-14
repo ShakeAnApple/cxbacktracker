@@ -2,6 +2,8 @@ package shakeanapple.backtracker.core.diagramexplanation.model;
 
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
+import shakeanapple.backtracker.core.diagramexplanation.model.changecausetree.ChangeCauseNode;
+import shakeanapple.backtracker.core.diagramexplanation.model.changecausetree.ChangeExplanationItem;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
@@ -16,24 +18,12 @@ public class Diagram {
 
     public Diagram(List<FunctionBlockBase> functionBlocks, List<Gate> inputs, List<Gate> outputs) {
         this.functionBlocks = functionBlocks;
-//        this.inputs = inputs.stream().collect(Collectors.toMap(InputVariable::getId, in -> in));
-//        this.outputs = outputs.stream().collect(Collectors.toMap(OutputVariable::getId, out -> out));
-
         this.inputs = inputs.stream().collect(Collectors.toMap(Gate::getFullName, in -> in));
-//        this.outputs = outputs.stream().collect(Collectors.toMap(Gate::getFullName, in -> in));
     }
 
     public List<FunctionBlockBase> getFunctionBlocks() {
         return this.functionBlocks;
     }
-
-//    public Map<Long, InputVariable> getInputs() {
-//        return this.inputs;
-//    }
-//
-//    public Map<Long, OutputVariable> getOutputs() {
-//        return this.outputs;
-//    }
 
     public void execute() {
 //        for (FunctionBlockBase fb: this.functionBlocks){
@@ -54,23 +44,18 @@ public class Diagram {
         ExplanationItem result = new ExplanationItem(item.getTree(), outputCauseNodes);
         for (CauseNode causeNode : causeNodes) {
             if (this.inputs.containsKey(causeNode.getGate().getFullName())) {
-                // System.out.println(String.format("InternalD: cause '%s' added to result", causeNode.getGate().getIncomingConnection().fromGate().getName()));
                 Gate childGate = causeNode.getGate().getIncomingConnection().fromGate();
                 CauseNode childNode = new CauseNode(childGate, childGate.getOwner().history().getVariableValueForStep(childGate.getName(), causeNode.getTimestamp()), causeNode.getTimestamp());
-//                CauseNode childNode = new CauseNode(causeNode.getGate(), causeNode.getValue(), causeNode.getTimestamp());
                 outputCauseNodes.add(childNode);
                 causeNode.addChildNode(childNode);
             } else if (causeNode.getGate().getIncomingConnection() != null) {
-                // System.out.println(String.format("InternalD: cause '%s' will be processed", causeNode.getGate().getName()));
                 ExplanationItem childItem = this.explain((OutputGate) causeNode.getGate().getIncomingConnection().fromGate(), causeNode.getTimestamp());
                 causeNode.addChildren(childItem.getTree().getRoots());
                 outputCauseNodes.addAll(childItem.getFreshNodes());
-                // System.out.println(String.format("InternalD: cause '%s' processed", causeNode.getGate().getName()));
             }
         }
 
         return result;
-//        return new ArrayList<>(outputCauseNodes);
     }
 
     @Override
@@ -111,5 +96,32 @@ public class Diagram {
         return new Diagram(new ArrayList<>(blockClones.values()),
                 newInputs,
                 newOutputs);
+    }
+
+    // TODO what about changed causes for connections? for now, I count start and end as single variable
+    public ChangeExplanationItem explainChange(OutputGate gateToExplain, Integer timestamp) {
+        ChangeExplanationItem item = gateToExplain.getOwner().explainChange(gateToExplain, timestamp);
+        if (item.isTerminating()){
+
+        }
+        Collection<ChangeCauseNode> causeNodes = item.getFreshNodes();
+        Set<ChangeCauseNode> outputCauseNodes = new HashSet<>();
+
+        ChangeExplanationItem result = new ChangeExplanationItem(item.getTree(), outputCauseNodes);
+        for (ChangeCauseNode causeNode : causeNodes) {
+            if (this.inputs.containsKey(causeNode.getGate().getFullName())) {
+                Gate childGate = causeNode.getGate().getIncomingConnection().fromGate();
+                ChangeCauseNode childNode = new ChangeCauseNode(childGate, childGate.getOwner().history().getVariableValueForStep(childGate.getName(), causeNode.getChange().getCurrentStep()), causeNode.getChange().getCurrentStep(),
+                        childGate.getOwner().history().getVariableValueForStep(childGate.getName(), causeNode.getChange().getCurrentStep()), causeNode.getChange().getCurrentStep());
+                outputCauseNodes.add(childNode);
+                causeNode.addChildNode(childNode);
+            } else if (causeNode.getGate().getIncomingConnection() != null) {
+                ChangeExplanationItem childItem = this.explainChange((OutputGate) causeNode.getGate().getIncomingConnection().fromGate(), causeNode.getChange().getCurrentStep());
+                causeNode.addChildren(childItem.getTree().getRoots());
+                outputCauseNodes.addAll(childItem.getFreshNodes());
+            }
+        }
+
+        return result;
     }
 }

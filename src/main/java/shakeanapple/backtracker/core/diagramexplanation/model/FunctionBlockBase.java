@@ -2,6 +2,7 @@ package shakeanapple.backtracker.core.diagramexplanation.model;
 
 import shakeanapple.backtracker.core.diagramexplanation.Clocks;
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
+import shakeanapple.backtracker.core.diagramexplanation.model.changecausetree.ChangeExplanationItem;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
@@ -37,9 +38,7 @@ public abstract class FunctionBlockBase extends DiagramElement implements Interf
     }
 
     public void execute() {
-//        System.out.println(this.getName() + " exec strated");
         this.executeImpl();
-//        System.out.println(this.getName() + " exec completed");
     }
 
     public void tickSystemTime(){
@@ -62,13 +61,11 @@ public abstract class FunctionBlockBase extends DiagramElement implements Interf
 
     @Override
     public void onInputInterfaceUpdated() {
-        // System.out.println(this.getName() + ": interface updated");
         this.execute();
     }
 
     @Override
     public void onOutputInterfaceUpdated() {
-        // System.out.println(this.getName() + ": interface updated");
         this.history.record(this.fbInterface, this.clocks.currentTime());
     }
 
@@ -76,11 +73,18 @@ public abstract class FunctionBlockBase extends DiagramElement implements Interf
         return this.fbInterface;
     }
 
+    // FIXME explanation should be implemented as visitor!
     public ExplanationItem explain(OutputGate output, int timestamp) {
        return this.explainImpl(output, timestamp);
     }
-
     protected abstract ExplanationItem explainImpl(OutputGate output, Integer timestamp);
+
+    // FIXME explanation should be implemented as visitor!
+    public ChangeExplanationItem explainChange(OutputGate output, int timestamp) {
+        return this.explainChangeImpl(output, timestamp);
+    }
+    protected abstract ChangeExplanationItem explainChangeImpl(OutputGate output, Integer timestamp);
+
 
     public boolean isRoot() {
         return this.getName().equals("main");

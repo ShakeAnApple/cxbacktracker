@@ -4,6 +4,7 @@ import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.common.variable.Variable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BlockVariableHistory {
@@ -28,5 +29,9 @@ public class BlockVariableHistory {
 
     public ValueHolder getValueForStep(int timestamp){
         return this.valuesByStep.get(timestamp).getValueHolder();
+    }
+
+    public Map<Integer, BlockVariableHistoryItem> valuesByStep(){
+        return this.valuesByStep;
     }
 }

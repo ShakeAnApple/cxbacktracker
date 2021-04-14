@@ -6,6 +6,7 @@ import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.Fu
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CausePathTree;
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
+import shakeanapple.backtracker.core.diagramexplanation.model.changecausetree.ChangeExplanationItem;
 import shakeanapple.backtracker.core.diagramexplanation.tonusmv.NusmvBlock;
 import shakeanapple.backtracker.core.diagramexplanation.tonusmv.NusmvBlockConverter;
 import shakeanapple.backtracker.core.diagramexplanation.tonusmv.NusmvStringModel;
@@ -49,6 +50,11 @@ public class DiagramBackwardExplainer implements DiagramOutputExplainer {
             return this.explainInternalBlock(gateName, fbToExplain, timestamp);
         }
         throw new RuntimeException("can't find gate " + gateName + " for block path" + Arrays.toString(blockPath.toArray()));
+    }
+
+    @Override
+    public ChangeExplanationItem explainChange(String outputName, List<String> blockPath, int timestamp) {
+        return null;
     }
 
     private ExplanationItem explainInternalBlock(String gateName, FunctionBlockBase fbToExplain, int timestamp) {

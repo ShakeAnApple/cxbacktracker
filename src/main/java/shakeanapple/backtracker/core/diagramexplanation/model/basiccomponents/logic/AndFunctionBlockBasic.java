@@ -1,6 +1,8 @@
 package shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.logic;
 
 import shakeanapple.backtracker.common.variable.BooleanValueHolder;
+import shakeanapple.backtracker.common.variable.ValueHolder;
+import shakeanapple.backtracker.core.diagramexplanation.model.BlockVariableHistoryItem;
 import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockBase;
 import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.BasicBlocksIdGenerator;
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
@@ -8,11 +10,14 @@ import shakeanapple.backtracker.core.diagramexplanation.model.InputGate;
 import shakeanapple.backtracker.core.diagramexplanation.model.OutputGate;
 import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.FunctionBlockBasic;
 import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
+import shakeanapple.backtracker.core.diagramexplanation.model.changecausetree.ChangeCauseNode;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class AndFunctionBlockBasic extends FunctionBlockBasic {
@@ -78,5 +83,17 @@ public class AndFunctionBlockBasic extends FunctionBlockBasic {
             }
         }
         return causeNodes;
+    }
+
+    @Override
+    protected List<ChangeCauseNode> explainChangeBasicImpl(OutputGate output, Integer changeStep) {
+        return this.fbInterface().getInputs().keySet().stream().map(name -> {
+            ValueHolder changeValue = this.history().getVariableValueForStep(name, changeStep);
+            ValueHolder nextValue = this.history().getVariableValueForStep(name, changeStep + 1);
+            if (!changeValue.equals(nextValue)) {
+                return new ChangeCauseNode(this.fbInterface().getInputs().get(name), nextValue, changeStep + 1, changeValue, changeStep);
+            }
+            return null;
+        }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 }
