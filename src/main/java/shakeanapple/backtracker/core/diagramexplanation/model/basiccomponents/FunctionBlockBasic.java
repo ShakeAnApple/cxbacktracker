@@ -64,6 +64,8 @@ public abstract class FunctionBlockBasic extends FunctionBlockBase {
                 return new LessEqFunctionBlockBasic(true, inputs.get(0), inputs.get(1), outputs.get(0),pathInSystem);
             case COUNT:
                 return new CountFunctionBlockBasic(true, inputs, outputs.get(0),pathInSystem);
+            case MAX:
+                return new MaxFunctionBlockBasic(true, inputs, outputs.get(0),pathInSystem);
             default:
                 throw new RuntimeException("Not implemented block type " + type);
         }
@@ -123,10 +125,72 @@ public abstract class FunctionBlockBasic extends FunctionBlockBase {
                 this.history().getVariableValueForStep(output.getName(), timestamp), timestamp);
         ChangeCausePathTree pathTree = new ChangeCausePathTree(root);
         ChangeExplanationItem res = new ChangeExplanationItem(pathTree, new ArrayList<>());
-        res.isTerminating(true);
         return res;
     }
 
     protected abstract List<ChangeCauseNode> explainChangeBasicImpl(OutputGate output, Integer timestamp);
+
+    @Override
+    public ChangeExplanationItem explainHistoryChangeImpl(OutputGate output, Integer timestamp) {
+        ValueHolder val = this.history().getVariableValueForStep(output.getName(), timestamp);
+        Map<Integer, BlockVariableHistoryItem> outputHistory = this.history().ofVariable(output.getName());
+        for(int i = timestamp - 1; i > 0; i --) {
+            final BlockVariableHistoryItem outputHistoryItem = outputHistory.get(i);
+            if (!outputHistoryItem.getValueHolder().getValue().equals(val.getValue())) {
+                final int changeStep = i;
+                ChangeCauseNode root = new ChangeCauseNode(output, this.history().getVariableValueForStep(output.getName(), changeStep + 1), changeStep + 1,
+                        this.history().getVariableValueForStep(output.getName(), changeStep), changeStep);
+                ChangeCausePathTree pathTree = new ChangeCausePathTree(root);
+                List<ChangeCauseNode> causes = this.explainHistoryChangeBasicImpl(output, changeStep + 1);
+                root.addChildren(causes);
+                ChangeExplanationItem res = new ChangeExplanationItem(pathTree, causes);
+                return res;
+            }
+        }
+        if (timestamp == 1){
+            ChangeCauseNode root = new ChangeCauseNode(output, this.history().getVariableValueForStep(output.getName(), timestamp), timestamp,
+                    this.history().getVariableValueForStep(output.getName(), timestamp), timestamp);
+            ChangeCausePathTree pathTree = new ChangeCausePathTree(root);
+            List<ChangeCauseNode> causes = this.explainHistoryChangeBasicImpl(output, timestamp);
+            root.addChildren(causes);
+            ChangeExplanationItem res = new ChangeExplanationItem(pathTree, causes);
+            return res;
+        }
+        ChangeCauseNode root = new ChangeCauseNode(output, this.history().getVariableValueForStep(output.getName(), timestamp), timestamp,
+                this.history().getVariableValueForStep(output.getName(), timestamp), timestamp);
+        ChangeCausePathTree pathTree = new ChangeCausePathTree(root);
+        ChangeExplanationItem res = new ChangeExplanationItem(pathTree, new ArrayList<>());
+        return res;
+    }
+
+    private List<ChangeCauseNode> explainHistoryChangeBasicImpl(OutputGate output, Integer changeStep){
+        List<CauseNode> causes = this.explainBasicImpl(output, changeStep);
+        List<ChangeCauseNode> res = new ArrayList<>();
+        for (CauseNode cause: causes) {
+            ValueHolder val = this.history().getVariableValueForStep(cause.getGate().getName(), cause.getTimestamp());
+            Map<Integer, BlockVariableHistoryItem> causeHistory = this.history().ofVariable(cause.getGate().getName());
+            boolean changeFound = false;
+            for (int i = cause.getTimestamp() - 1; i > 0; i--) {
+                final BlockVariableHistoryItem causeHistoryItem = causeHistory.get(i);
+                if (!causeHistoryItem.getValueHolder().getValue().equals(val.getValue())) {
+                    final int causeChangeStep = i;
+                    res.add(new ChangeCauseNode(cause.getGate(), this.history().getVariableValueForStep(cause.getGate().getName(), causeChangeStep + 1), causeChangeStep + 1,
+                            this.history().getVariableValueForStep(cause.getGate().getName(), causeChangeStep), causeChangeStep));
+                    changeFound = true;
+                    break;
+                }
+            }
+            // explaining block output for the first step or first set of delay
+            if (cause.getTimestamp() == 1){
+                res.add(new ChangeCauseNode(cause.getGate(), this.history().getVariableValueForStep(cause.getGate().getName(), 1), 1,
+                        this.history().getVariableValueForStep(cause.getGate().getName(), 1), 1));
+            }
+//            if (!changeFound){
+//                res.add(new ChangeCauseNode(cause.getGate(), this.history().getVariableValueForStep(cause.getGate().getName(), cause.getTimestamp()), cause.getTimestamp(),
+//                        this.history().getVariableValueForStep(cause.getGate().getName(), cause.getTimestamp()), cause.getTimestamp()));
+//            }
+            }
+        return res;
+    }
 
 }

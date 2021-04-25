@@ -85,6 +85,12 @@ public abstract class FunctionBlockBase extends DiagramElement implements Interf
     }
     protected abstract ChangeExplanationItem explainChangeImpl(OutputGate output, Integer timestamp);
 
+    // FIXME explanation should be implemented as visitor!
+    public ChangeExplanationItem explainHistoryChange(OutputGate output, int timestamp) {
+        return this.explainHistoryChangeImpl(output, timestamp);
+    }
+    protected abstract ChangeExplanationItem explainHistoryChangeImpl(OutputGate output, Integer timestamp);
+
 
     public boolean isRoot() {
         return this.getName().equals("main");

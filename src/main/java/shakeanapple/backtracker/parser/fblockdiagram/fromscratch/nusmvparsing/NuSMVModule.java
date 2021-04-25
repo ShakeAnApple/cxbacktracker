@@ -79,9 +79,12 @@ public class NuSMVModule {
         for (AssignmentInfo key : new LinkedHashSet<>(assignments.keySet())) {
             assignments.put(key, assignments.get(key).propagateNext());
         }
+
         // perform forward type inference based on the types of variables and operators
         for (AssignmentInfo key : new LinkedHashSet<>(assignments.keySet())) {
-            assignments.put(key, assignments.get(key).forwardInferTypes(allVariables));
+            final Assignment newAssignment = assignments.get(key).forwardInferTypes(allVariables);
+            assignments.put(key, newAssignment);
+            allVariables.put(newAssignment.getLeft().name, allVariables.get(newAssignment.getLeft().name).clarifyType(newAssignment.getLeft().type));
         }
         // clarify types of all variables based on assignments
         for (Map<String, Variable> map : Arrays.asList(internalVariables, allVariables)) {

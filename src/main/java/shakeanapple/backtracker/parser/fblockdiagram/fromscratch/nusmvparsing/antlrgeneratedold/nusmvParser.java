@@ -1,17 +1,20 @@
-package shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.antlrgenerated;// Generated from C:/Users/ovsianp1/projects/code/SEARCH/cxbacktracker\nusmv.g4 by ANTLR 4.7.2
+// Generated from /home/buzhinsky/repos/cxbacktracker/nusmv.g4 by ANTLR 4.7.2
+package shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.antlrgeneratedold;
 
-import java.util.*;
-import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.*;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.atn.ATN;
+import org.antlr.v4.runtime.atn.ATNDeserializer;
+import org.antlr.v4.runtime.atn.ParserATNSimulator;
+import org.antlr.v4.runtime.atn.PredictionContextCache;
+import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.tree.ParseTreeListener;
+import org.antlr.v4.runtime.tree.TerminalNode;
+import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.Assignment;
+import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.NuSMVModule;
 import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.expression.*;
 
-import org.antlr.v4.runtime.atn.*;
-import org.antlr.v4.runtime.dfa.DFA;
-import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.*;
-import org.antlr.v4.runtime.tree.*;
-import java.util.List;
-import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class nusmvParser extends Parser {
@@ -26,8 +29,7 @@ public class nusmvParser extends Parser {
 		T__17=18, T__18=19, T__19=20, T__20=21, T__21=22, T__22=23, T__23=24, 
 		T__24=25, T__25=26, T__26=27, T__27=28, WS=29, LINE_COMMENT=30, INT_CONST=31, 
 		TRUE=32, FALSE=33, INIT=34, NEXT=35, MODULE=36, VAR=37, ASSIGN=38, DEFINE=39, 
-		BOOLEAN=40, COUNT=41, MOD=42, XOR=43, XNOR=44, MAX=45, CASE=46, ESAC=47, 
-		ID=48;
+		BOOLEAN=40, COUNT=41, MOD=42, XOR=43, XNOR=44, CASE=45, ESAC=46, ID=47;
 	public static final int
 		RULE_constant = 0, RULE_composite_id = 1, RULE_atom = 2, RULE_unary_operator_sign = 3, 
 		RULE_unary_operator = 4, RULE_binary_operator_sign7 = 5, RULE_binary_operator7 = 6, 
@@ -58,7 +60,7 @@ public class nusmvParser extends Parser {
 			"'&'", "'|'", "'?'", "'<->'", "'->'", "'..'", "'{'", "'}'", "':='", null, 
 			null, null, "'TRUE'", "'FALSE'", "'init'", "'next'", "'MODULE'", "'VAR'", 
 			"'ASSIGN'", "'DEFINE'", "'boolean'", "'count'", "'mod'", "'xor'", "'xnor'", 
-			"'max'", "'case'", "'esac'"
+			"'case'", "'esac'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
@@ -68,7 +70,7 @@ public class nusmvParser extends Parser {
 			null, null, null, null, null, null, null, null, null, null, null, null, 
 			null, null, null, null, null, "WS", "LINE_COMMENT", "INT_CONST", "TRUE", 
 			"FALSE", "INIT", "NEXT", "MODULE", "VAR", "ASSIGN", "DEFINE", "BOOLEAN", 
-			"COUNT", "MOD", "XOR", "XNOR", "MAX", "CASE", "ESAC", "ID"
+			"COUNT", "MOD", "XOR", "XNOR", "CASE", "ESAC", "ID"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -140,11 +142,6 @@ public class nusmvParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitConstant(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitConstant(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ConstantContext constant() throws RecognitionException {
@@ -197,11 +194,6 @@ public class nusmvParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitComposite_id(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitComposite_id(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -270,8 +262,6 @@ public class nusmvParser extends Parser {
 		public Binary_operator1Context o;
 		public Binary_operator1Context a1;
 		public Binary_operator1Context a2;
-		public Binary_operator6Context aint1;
-		public Binary_operator6Context aint2;
 		public List<Binary_operator1Context> binary_operator1() {
 			return getRuleContexts(Binary_operator1Context.class);
 		}
@@ -288,13 +278,6 @@ public class nusmvParser extends Parser {
 		public TerminalNode CASE() { return getToken(nusmvParser.CASE, 0); }
 		public TerminalNode ESAC() { return getToken(nusmvParser.ESAC, 0); }
 		public TerminalNode COUNT() { return getToken(nusmvParser.COUNT, 0); }
-		public TerminalNode MAX() { return getToken(nusmvParser.MAX, 0); }
-		public List<Binary_operator6Context> binary_operator6() {
-			return getRuleContexts(Binary_operator6Context.class);
-		}
-		public Binary_operator6Context binary_operator6(int i) {
-			return getRuleContext(Binary_operator6Context.class,i);
-		}
 		public AtomContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -307,11 +290,6 @@ public class nusmvParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitAtom(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitAtom(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final AtomContext atom() throws RecognitionException {
@@ -319,7 +297,7 @@ public class nusmvParser extends Parser {
 		enterRule(_localctx, 4, RULE_atom);
 		int _la;
 		try {
-			setState(137);
+			setState(120);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__3:
@@ -396,7 +374,7 @@ public class nusmvParser extends Parser {
 					setState(98); 
 					_errHandler.sync(this);
 					_la = _input.LA(1);
-				} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__3) | (1L << T__8) | (1L << T__9) | (1L << INT_CONST) | (1L << TRUE) | (1L << FALSE) | (1L << NEXT) | (1L << COUNT) | (1L << MAX) | (1L << CASE) | (1L << ID))) != 0) );
+				} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__3) | (1L << T__8) | (1L << T__9) | (1L << INT_CONST) | (1L << TRUE) | (1L << FALSE) | (1L << NEXT) | (1L << COUNT) | (1L << CASE) | (1L << ID))) != 0) );
 				setState(100);
 				match(ESAC);
 				 ((AtomContext)_localctx).f =  new CaseOperator(conditions, options); 
@@ -437,41 +415,6 @@ public class nusmvParser extends Parser {
 				 ((AtomContext)_localctx).f =  new CountOperator(arguments); 
 				}
 				break;
-			case MAX:
-				enterOuterAlt(_localctx, 7);
-				{
-				setState(120);
-				match(MAX);
-
-				        List<Expression> arguments = new ArrayList<>();
-				    
-				setState(122);
-				match(T__3);
-				setState(123);
-				((AtomContext)_localctx).aint1 = binary_operator6();
-				 arguments.add(((AtomContext)_localctx).aint1.f); 
-				setState(131);
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-				while (_la==T__7) {
-					{
-					{
-					setState(125);
-					match(T__7);
-					setState(126);
-					((AtomContext)_localctx).aint2 = binary_operator6();
-					 arguments.add(((AtomContext)_localctx).aint2.f); 
-					}
-					}
-					setState(133);
-					_errHandler.sync(this);
-					_la = _input.LA(1);
-				}
-				setState(134);
-				match(T__4);
-				 ((AtomContext)_localctx).f =  new MaxOperator(arguments); 
-				}
-				break;
 			default:
 				throw new NoViableAltException(this);
 			}
@@ -500,11 +443,6 @@ public class nusmvParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitUnary_operator_sign(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitUnary_operator_sign(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Unary_operator_signContext unary_operator_sign() throws RecognitionException {
@@ -514,7 +452,7 @@ public class nusmvParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(139);
+			setState(122);
 			_la = _input.LA(1);
 			if ( !(_la==T__8 || _la==T__9) ) {
 			_errHandler.recoverInline(this);
@@ -540,7 +478,7 @@ public class nusmvParser extends Parser {
 	public static class Unary_operatorContext extends ParserRuleContext {
 		public Expression f;
 		public AtomContext atom;
-		public Unary_operator_signContext op;
+		public Unary_operator_signContext unary_operator_sign;
 		public Unary_operatorContext inside;
 		public AtomContext atom() {
 			return getRuleContext(AtomContext.class,0);
@@ -563,18 +501,13 @@ public class nusmvParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitUnary_operator(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitUnary_operator(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Unary_operatorContext unary_operator() throws RecognitionException {
 		Unary_operatorContext _localctx = new Unary_operatorContext(_ctx, getState());
 		enterRule(_localctx, 8, RULE_unary_operator);
 		try {
-			setState(148);
+			setState(131);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__3:
@@ -583,12 +516,11 @@ public class nusmvParser extends Parser {
 			case FALSE:
 			case NEXT:
 			case COUNT:
-			case MAX:
 			case CASE:
 			case ID:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(141);
+				setState(124);
 				((Unary_operatorContext)_localctx).atom = atom();
 				 ((Unary_operatorContext)_localctx).f =  ((Unary_operatorContext)_localctx).atom.f; 
 				}
@@ -597,11 +529,11 @@ public class nusmvParser extends Parser {
 			case T__9:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(144);
-				((Unary_operatorContext)_localctx).op = unary_operator_sign();
-				setState(145);
+				setState(127);
+				((Unary_operatorContext)_localctx).unary_operator_sign = unary_operator_sign();
+				setState(128);
 				((Unary_operatorContext)_localctx).inside = unary_operator();
-				 ((Unary_operatorContext)_localctx).f =  new UnaryOperator((((Unary_operatorContext)_localctx).op!=null?_input.getText(((Unary_operatorContext)_localctx).op.start,((Unary_operatorContext)_localctx).op.stop):null), ((Unary_operatorContext)_localctx).inside.f); 
+				 ((Unary_operatorContext)_localctx).f =  new UnaryOperator((((Unary_operatorContext)_localctx).unary_operator_sign!=null?_input.getText(((Unary_operatorContext)_localctx).unary_operator_sign.start,((Unary_operatorContext)_localctx).unary_operator_sign.stop):null), ((Unary_operatorContext)_localctx).inside.f); 
 				}
 				break;
 			default:
@@ -633,11 +565,6 @@ public class nusmvParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitBinary_operator_sign7(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitBinary_operator_sign7(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Binary_operator_sign7Context binary_operator_sign7() throws RecognitionException {
@@ -647,7 +574,7 @@ public class nusmvParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(150);
+			setState(133);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__10) | (1L << T__11) | (1L << MOD))) != 0)) ) {
 			_errHandler.recoverInline(this);
@@ -699,11 +626,6 @@ public class nusmvParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitBinary_operator7(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitBinary_operator7(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Binary_operator7Context binary_operator7() throws RecognitionException {
@@ -713,23 +635,23 @@ public class nusmvParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(152);
+			setState(135);
 			((Binary_operator7Context)_localctx).f1 = unary_operator();
 			 ((Binary_operator7Context)_localctx).f =  ((Binary_operator7Context)_localctx).f1.f; 
-			setState(160);
+			setState(143);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__10) | (1L << T__11) | (1L << MOD))) != 0)) {
 				{
 				{
-				setState(154);
+				setState(137);
 				((Binary_operator7Context)_localctx).inside = binary_operator_sign7();
-				setState(155);
+				setState(138);
 				((Binary_operator7Context)_localctx).f2 = unary_operator();
 				 ((Binary_operator7Context)_localctx).f =  new BinaryOperator((((Binary_operator7Context)_localctx).inside!=null?_input.getText(((Binary_operator7Context)_localctx).inside.start,((Binary_operator7Context)_localctx).inside.stop):null), _localctx.f, ((Binary_operator7Context)_localctx).f2.f); 
 				}
 				}
-				setState(162);
+				setState(145);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -759,11 +681,6 @@ public class nusmvParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitBinary_operator_sign6(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitBinary_operator_sign6(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Binary_operator_sign6Context binary_operator_sign6() throws RecognitionException {
@@ -773,7 +690,7 @@ public class nusmvParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(163);
+			setState(146);
 			_la = _input.LA(1);
 			if ( !(_la==T__9 || _la==T__12) ) {
 			_errHandler.recoverInline(this);
@@ -825,11 +742,6 @@ public class nusmvParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitBinary_operator6(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitBinary_operator6(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Binary_operator6Context binary_operator6() throws RecognitionException {
@@ -839,23 +751,23 @@ public class nusmvParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(165);
+			setState(148);
 			((Binary_operator6Context)_localctx).f1 = binary_operator7();
 			 ((Binary_operator6Context)_localctx).f =  ((Binary_operator6Context)_localctx).f1.f; 
-			setState(173);
+			setState(156);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__9 || _la==T__12) {
 				{
 				{
-				setState(167);
+				setState(150);
 				((Binary_operator6Context)_localctx).inside = binary_operator_sign6();
-				setState(168);
+				setState(151);
 				((Binary_operator6Context)_localctx).f2 = binary_operator7();
 				 ((Binary_operator6Context)_localctx).f =  new BinaryOperator((((Binary_operator6Context)_localctx).inside!=null?_input.getText(((Binary_operator6Context)_localctx).inside.start,((Binary_operator6Context)_localctx).inside.stop):null), _localctx.f, ((Binary_operator6Context)_localctx).f2.f); 
 				}
 				}
-				setState(175);
+				setState(158);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -885,11 +797,6 @@ public class nusmvParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitBinary_operator_sign5(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitBinary_operator_sign5(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Binary_operator_sign5Context binary_operator_sign5() throws RecognitionException {
@@ -899,7 +806,7 @@ public class nusmvParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(176);
+			setState(159);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__13) | (1L << T__14) | (1L << T__15) | (1L << T__16) | (1L << T__17) | (1L << T__18))) != 0)) ) {
 			_errHandler.recoverInline(this);
@@ -951,11 +858,6 @@ public class nusmvParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitBinary_operator5(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitBinary_operator5(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Binary_operator5Context binary_operator5() throws RecognitionException {
@@ -965,23 +867,23 @@ public class nusmvParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(178);
+			setState(161);
 			((Binary_operator5Context)_localctx).f1 = binary_operator6();
 			 ((Binary_operator5Context)_localctx).f =  ((Binary_operator5Context)_localctx).f1.f; 
-			setState(186);
+			setState(169);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__13) | (1L << T__14) | (1L << T__15) | (1L << T__16) | (1L << T__17) | (1L << T__18))) != 0)) {
 				{
 				{
-				setState(180);
+				setState(163);
 				((Binary_operator5Context)_localctx).inside = binary_operator_sign5();
-				setState(181);
+				setState(164);
 				((Binary_operator5Context)_localctx).f2 = binary_operator6();
 				 ((Binary_operator5Context)_localctx).f =  new BinaryOperator((((Binary_operator5Context)_localctx).inside!=null?_input.getText(((Binary_operator5Context)_localctx).inside.start,((Binary_operator5Context)_localctx).inside.stop):null), _localctx.f, ((Binary_operator5Context)_localctx).f2.f); 
 				}
 				}
-				setState(188);
+				setState(171);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -1011,11 +913,6 @@ public class nusmvParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitBinary_operator_sign4(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitBinary_operator_sign4(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Binary_operator_sign4Context binary_operator_sign4() throws RecognitionException {
@@ -1024,7 +921,7 @@ public class nusmvParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(189);
+			setState(172);
 			match(T__19);
 			}
 		}
@@ -1068,11 +965,6 @@ public class nusmvParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitBinary_operator4(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitBinary_operator4(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Binary_operator4Context binary_operator4() throws RecognitionException {
@@ -1082,23 +974,23 @@ public class nusmvParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(191);
+			setState(174);
 			((Binary_operator4Context)_localctx).f1 = binary_operator5();
 			 ((Binary_operator4Context)_localctx).f =  ((Binary_operator4Context)_localctx).f1.f; 
-			setState(199);
+			setState(182);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__19) {
 				{
 				{
-				setState(193);
+				setState(176);
 				((Binary_operator4Context)_localctx).inside = binary_operator_sign4();
-				setState(194);
+				setState(177);
 				((Binary_operator4Context)_localctx).f2 = binary_operator5();
 				 ((Binary_operator4Context)_localctx).f =  new BinaryOperator((((Binary_operator4Context)_localctx).inside!=null?_input.getText(((Binary_operator4Context)_localctx).inside.start,((Binary_operator4Context)_localctx).inside.stop):null), _localctx.f, ((Binary_operator4Context)_localctx).f2.f); 
 				}
 				}
-				setState(201);
+				setState(184);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -1130,11 +1022,6 @@ public class nusmvParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitBinary_operator_sign3(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitBinary_operator_sign3(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Binary_operator_sign3Context binary_operator_sign3() throws RecognitionException {
@@ -1144,7 +1031,7 @@ public class nusmvParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(202);
+			setState(185);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__20) | (1L << XOR) | (1L << XNOR))) != 0)) ) {
 			_errHandler.recoverInline(this);
@@ -1196,11 +1083,6 @@ public class nusmvParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitBinary_operator3(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitBinary_operator3(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Binary_operator3Context binary_operator3() throws RecognitionException {
@@ -1210,23 +1092,23 @@ public class nusmvParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(204);
+			setState(187);
 			((Binary_operator3Context)_localctx).f1 = binary_operator4();
 			 ((Binary_operator3Context)_localctx).f =  ((Binary_operator3Context)_localctx).f1.f; 
-			setState(212);
+			setState(195);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__20) | (1L << XOR) | (1L << XNOR))) != 0)) {
 				{
 				{
-				setState(206);
+				setState(189);
 				((Binary_operator3Context)_localctx).inside = binary_operator_sign3();
-				setState(207);
+				setState(190);
 				((Binary_operator3Context)_localctx).f2 = binary_operator4();
 				 ((Binary_operator3Context)_localctx).f =  new BinaryOperator((((Binary_operator3Context)_localctx).inside!=null?_input.getText(((Binary_operator3Context)_localctx).inside.start,((Binary_operator3Context)_localctx).inside.stop):null), _localctx.f, ((Binary_operator3Context)_localctx).f2.f); 
 				}
 				}
-				setState(214);
+				setState(197);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -1266,11 +1148,6 @@ public class nusmvParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitTernary_operator(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitTernary_operator(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Ternary_operatorContext ternary_operator() throws RecognitionException {
@@ -1280,21 +1157,21 @@ public class nusmvParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(215);
+			setState(198);
 			((Ternary_operatorContext)_localctx).f1 = binary_operator3();
 			 ((Ternary_operatorContext)_localctx).f =  ((Ternary_operatorContext)_localctx).f1.f; 
-			setState(223);
+			setState(206);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==T__21) {
 				{
-				setState(217);
+				setState(200);
 				match(T__21);
-				setState(218);
+				setState(201);
 				((Ternary_operatorContext)_localctx).f2 = binary_operator3();
-				setState(219);
+				setState(202);
 				match(T__5);
-				setState(220);
+				setState(203);
 				((Ternary_operatorContext)_localctx).f3 = binary_operator3();
 				 ((Ternary_operatorContext)_localctx).f =  CaseOperator.ternaryOperator(((Ternary_operatorContext)_localctx).f1.f, ((Ternary_operatorContext)_localctx).f2.f, ((Ternary_operatorContext)_localctx).f3.f); 
 				}
@@ -1326,11 +1203,6 @@ public class nusmvParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitBinary_operator_sign2(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitBinary_operator_sign2(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Binary_operator_sign2Context binary_operator_sign2() throws RecognitionException {
@@ -1339,7 +1211,7 @@ public class nusmvParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(225);
+			setState(208);
 			match(T__22);
 			}
 		}
@@ -1383,11 +1255,6 @@ public class nusmvParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitBinary_operator2(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitBinary_operator2(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Binary_operator2Context binary_operator2() throws RecognitionException {
@@ -1397,23 +1264,23 @@ public class nusmvParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(227);
+			setState(210);
 			((Binary_operator2Context)_localctx).f1 = ternary_operator();
 			 ((Binary_operator2Context)_localctx).f =  ((Binary_operator2Context)_localctx).f1.f; 
-			setState(235);
+			setState(218);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__22) {
 				{
 				{
-				setState(229);
+				setState(212);
 				((Binary_operator2Context)_localctx).inside = binary_operator_sign2();
-				setState(230);
+				setState(213);
 				((Binary_operator2Context)_localctx).f2 = ternary_operator();
 				 ((Binary_operator2Context)_localctx).f =  new BinaryOperator((((Binary_operator2Context)_localctx).inside!=null?_input.getText(((Binary_operator2Context)_localctx).inside.start,((Binary_operator2Context)_localctx).inside.stop):null), _localctx.f, ((Binary_operator2Context)_localctx).f2.f); 
 				}
 				}
-				setState(237);
+				setState(220);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -1443,11 +1310,6 @@ public class nusmvParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitBinary_operator_sign1(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitBinary_operator_sign1(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Binary_operator_sign1Context binary_operator_sign1() throws RecognitionException {
@@ -1456,7 +1318,7 @@ public class nusmvParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(238);
+			setState(221);
 			match(T__23);
 			}
 		}
@@ -1497,11 +1359,6 @@ public class nusmvParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitBinary_operator1(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitBinary_operator1(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Binary_operator1Context binary_operator1() throws RecognitionException {
@@ -1511,17 +1368,17 @@ public class nusmvParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(240);
+			setState(223);
 			((Binary_operator1Context)_localctx).f1 = binary_operator2();
 			 ((Binary_operator1Context)_localctx).f =  ((Binary_operator1Context)_localctx).f1.f; 
-			setState(246);
+			setState(229);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==T__23) {
 				{
-				setState(242);
+				setState(225);
 				((Binary_operator1Context)_localctx).inside = binary_operator_sign1();
-				setState(243);
+				setState(226);
 				((Binary_operator1Context)_localctx).f2 = binary_operator1();
 				 ((Binary_operator1Context)_localctx).f =  new BinaryOperator((((Binary_operator1Context)_localctx).inside!=null?_input.getText(((Binary_operator1Context)_localctx).inside.start,((Binary_operator1Context)_localctx).inside.stop):null), _localctx.f, ((Binary_operator1Context)_localctx).f2.f); 
 				}
@@ -1564,11 +1421,6 @@ public class nusmvParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitType(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitType(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final TypeContext type() throws RecognitionException {
@@ -1576,13 +1428,13 @@ public class nusmvParser extends Parser {
 		enterRule(_localctx, 40, RULE_type);
 		int _la;
 		try {
-			setState(263);
+			setState(246);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case BOOLEAN:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(248);
+				setState(231);
 				match(BOOLEAN);
 				}
 				break;
@@ -1590,11 +1442,11 @@ public class nusmvParser extends Parser {
 				enterOuterAlt(_localctx, 2);
 				{
 				{
-				setState(249);
+				setState(232);
 				match(INT_CONST);
-				setState(250);
+				setState(233);
 				match(T__24);
-				setState(251);
+				setState(234);
 				match(INT_CONST);
 				}
 				}
@@ -1603,27 +1455,27 @@ public class nusmvParser extends Parser {
 				enterOuterAlt(_localctx, 3);
 				{
 				{
-				setState(252);
+				setState(235);
 				match(T__25);
-				setState(253);
+				setState(236);
 				constant();
-				setState(258);
+				setState(241);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while (_la==T__7) {
 					{
 					{
-					setState(254);
+					setState(237);
 					match(T__7);
-					setState(255);
+					setState(238);
 					constant();
 					}
 					}
-					setState(260);
+					setState(243);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
-				setState(261);
+				setState(244);
 				match(T__26);
 				}
 				}
@@ -1665,11 +1517,6 @@ public class nusmvParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitInternal_var_declaration(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitInternal_var_declaration(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Internal_var_declarationContext internal_var_declaration() throws RecognitionException {
@@ -1678,11 +1525,11 @@ public class nusmvParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(265);
+			setState(248);
 			((Internal_var_declarationContext)_localctx).composite_id = composite_id();
-			setState(266);
+			setState(249);
 			match(T__5);
-			setState(267);
+			setState(250);
 			((Internal_var_declarationContext)_localctx).type = type();
 			 ((Internal_var_declarationContext)_localctx).v =  new Variable((((Internal_var_declarationContext)_localctx).composite_id!=null?_input.getText(((Internal_var_declarationContext)_localctx).composite_id.start,((Internal_var_declarationContext)_localctx).composite_id.stop):null), (((Internal_var_declarationContext)_localctx).type!=null?_input.getText(((Internal_var_declarationContext)_localctx).type.start,((Internal_var_declarationContext)_localctx).type.stop):null)); 
 			}
@@ -1720,24 +1567,19 @@ public class nusmvParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitPossibly_untyped_declaration(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitPossibly_untyped_declaration(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final Possibly_untyped_declarationContext possibly_untyped_declaration() throws RecognitionException {
 		Possibly_untyped_declarationContext _localctx = new Possibly_untyped_declarationContext(_ctx, getState());
 		enterRule(_localctx, 44, RULE_possibly_untyped_declaration);
 		try {
-			setState(276);
+			setState(259);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,17,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,16,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(270);
+				setState(253);
 				((Possibly_untyped_declarationContext)_localctx).typeless = composite_id();
 				 ((Possibly_untyped_declarationContext)_localctx).v =  new Variable((((Possibly_untyped_declarationContext)_localctx).typeless!=null?_input.getText(((Possibly_untyped_declarationContext)_localctx).typeless.start,((Possibly_untyped_declarationContext)_localctx).typeless.stop):null)); 
 				}
@@ -1745,7 +1587,7 @@ public class nusmvParser extends Parser {
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(273);
+				setState(256);
 				((Possibly_untyped_declarationContext)_localctx).typeful = internal_var_declaration();
 				 ((Possibly_untyped_declarationContext)_localctx).v =  ((Possibly_untyped_declarationContext)_localctx).typeful.v; 
 				}
@@ -1787,11 +1629,6 @@ public class nusmvParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitAssignment(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitAssignment(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final AssignmentContext assignment() throws RecognitionException {
@@ -1801,19 +1638,19 @@ public class nusmvParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			 Assignment.Type type; 
-			setState(283);
+			setState(266);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case INIT:
 				{
-				setState(279);
+				setState(262);
 				match(INIT);
 				 type = Assignment.Type.INIT; 
 				}
 				break;
 			case NEXT:
 				{
-				setState(281);
+				setState(264);
 				match(NEXT);
 				 type = Assignment.Type.NEXT; 
 				}
@@ -1821,17 +1658,17 @@ public class nusmvParser extends Parser {
 			default:
 				throw new NoViableAltException(this);
 			}
-			setState(285);
+			setState(268);
 			match(T__3);
-			setState(286);
+			setState(269);
 			((AssignmentContext)_localctx).left = composite_id();
-			setState(287);
+			setState(270);
 			match(T__4);
-			setState(288);
+			setState(271);
 			match(T__27);
-			setState(289);
+			setState(272);
 			((AssignmentContext)_localctx).right = binary_operator1();
-			setState(290);
+			setState(273);
 			match(T__6);
 			 ((AssignmentContext)_localctx).a =  new Assignment(type, new Variable((((AssignmentContext)_localctx).left!=null?_input.getText(((AssignmentContext)_localctx).left.start,((AssignmentContext)_localctx).left.stop):null)), ((AssignmentContext)_localctx).right.f); 
 			}
@@ -1871,11 +1708,6 @@ public class nusmvParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitDefinition(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitDefinition(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final DefinitionContext definition() throws RecognitionException {
@@ -1884,13 +1716,13 @@ public class nusmvParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(293);
+			setState(276);
 			((DefinitionContext)_localctx).left = possibly_untyped_declaration();
-			setState(294);
+			setState(277);
 			match(T__27);
-			setState(295);
+			setState(278);
 			((DefinitionContext)_localctx).right = binary_operator1();
-			setState(296);
+			setState(279);
 			match(T__6);
 			 ((DefinitionContext)_localctx).v =  ((DefinitionContext)_localctx).left.v;
 			        ((DefinitionContext)_localctx).aInit =  new Assignment(Assignment.Type.INIT, _localctx.v, ((DefinitionContext)_localctx).right.f);
@@ -1919,7 +1751,6 @@ public class nusmvParser extends Parser {
 		public DefinitionContext d;
 		public TerminalNode MODULE() { return getToken(nusmvParser.MODULE, 0); }
 		public TerminalNode ID() { return getToken(nusmvParser.ID, 0); }
-		public TerminalNode EOF() { return getToken(nusmvParser.EOF, 0); }
 		public List<TerminalNode> VAR() { return getTokens(nusmvParser.VAR); }
 		public TerminalNode VAR(int i) {
 			return getToken(nusmvParser.VAR, i);
@@ -1968,11 +1799,6 @@ public class nusmvParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof nusmvListener ) ((nusmvListener)listener).exitModule(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof nusmvVisitor ) return ((nusmvVisitor<? extends T>)visitor).visitModule(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ModuleContext module() throws RecognitionException {
@@ -1982,82 +1808,82 @@ public class nusmvParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(299);
+			setState(282);
 			match(MODULE);
-			setState(300);
+			setState(283);
 			((ModuleContext)_localctx).ID = match(ID);
 
 			        List<Variable> inputVariables = new ArrayList<>();
 			        List<Variable> internalVariables = new ArrayList<>();
 			        List<Assignment> assignments = new ArrayList<>();
 			      
-			setState(317);
+			setState(300);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==T__3) {
 				{
-				setState(302);
+				setState(285);
 				match(T__3);
-				setState(314);
+				setState(297);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==ID) {
 					{
-					setState(303);
+					setState(286);
 					((ModuleContext)_localctx).v1 = possibly_untyped_declaration();
 					 inputVariables.add(((ModuleContext)_localctx).v1.v); 
-					setState(311);
+					setState(294);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 					while (_la==T__7) {
 						{
 						{
-						setState(305);
+						setState(288);
 						match(T__7);
-						setState(306);
+						setState(289);
 						((ModuleContext)_localctx).v2 = possibly_untyped_declaration();
 						 inputVariables.add(((ModuleContext)_localctx).v2.v); 
 						}
 						}
-						setState(313);
+						setState(296);
 						_errHandler.sync(this);
 						_la = _input.LA(1);
 					}
 					}
 				}
 
-				setState(316);
+				setState(299);
 				match(T__4);
 				}
 			}
 
-			setState(349);
+			setState(332);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << VAR) | (1L << ASSIGN) | (1L << DEFINE))) != 0)) {
 				{
-				setState(347);
+				setState(330);
 				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case VAR:
 					{
 					{
-					setState(319);
+					setState(302);
 					match(VAR);
-					setState(326);
+					setState(309);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 					while (_la==ID) {
 						{
 						{
-						setState(320);
+						setState(303);
 						((ModuleContext)_localctx).internal_var_declaration = internal_var_declaration();
-						setState(321);
+						setState(304);
 						match(T__6);
 						 internalVariables.add(((ModuleContext)_localctx).internal_var_declaration.v); 
 						}
 						}
-						setState(328);
+						setState(311);
 						_errHandler.sync(this);
 						_la = _input.LA(1);
 					}
@@ -2067,20 +1893,20 @@ public class nusmvParser extends Parser {
 				case ASSIGN:
 					{
 					{
-					setState(329);
+					setState(312);
 					match(ASSIGN);
-					setState(335);
+					setState(318);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 					while (_la==INIT || _la==NEXT) {
 						{
 						{
-						setState(330);
+						setState(313);
 						((ModuleContext)_localctx).assignment = assignment();
 						 assignments.add(((ModuleContext)_localctx).assignment.a); 
 						}
 						}
-						setState(337);
+						setState(320);
 						_errHandler.sync(this);
 						_la = _input.LA(1);
 					}
@@ -2090,20 +1916,20 @@ public class nusmvParser extends Parser {
 				case DEFINE:
 					{
 					{
-					setState(338);
+					setState(321);
 					match(DEFINE);
-					setState(344);
+					setState(327);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 					while (_la==ID) {
 						{
 						{
-						setState(339);
+						setState(322);
 						((ModuleContext)_localctx).d = definition();
 						 internalVariables.add(((ModuleContext)_localctx).d.v); assignments.add(((ModuleContext)_localctx).d.aInit); assignments.add(((ModuleContext)_localctx).d.aNext); 
 						}
 						}
-						setState(346);
+						setState(329);
 						_errHandler.sync(this);
 						_la = _input.LA(1);
 					}
@@ -2114,13 +1940,11 @@ public class nusmvParser extends Parser {
 					throw new NoViableAltException(this);
 				}
 				}
-				setState(351);
+				setState(334);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
 			 ((ModuleContext)_localctx).m =  new NuSMVModule((((ModuleContext)_localctx).ID!=null?((ModuleContext)_localctx).ID.getText():null), inputVariables, internalVariables, assignments); 
-			setState(353);
-			match(EOF);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2135,7 +1959,7 @@ public class nusmvParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\62\u0166\4\2\t\2"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\61\u0154\4\2\t\2"+
 		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
 		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
@@ -2143,121 +1967,112 @@ public class nusmvParser extends Parser {
 		"\3\3\3\7\3D\n\3\f\3\16\3G\13\3\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4"+
 		"\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\6\4c"+
 		"\n\4\r\4\16\4d\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\7\4s\n"+
-		"\4\f\4\16\4v\13\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\7\4"+
-		"\u0084\n\4\f\4\16\4\u0087\13\4\3\4\3\4\3\4\5\4\u008c\n\4\3\5\3\5\3\6\3"+
-		"\6\3\6\3\6\3\6\3\6\3\6\5\6\u0097\n\6\3\7\3\7\3\b\3\b\3\b\3\b\3\b\3\b\7"+
-		"\b\u00a1\n\b\f\b\16\b\u00a4\13\b\3\t\3\t\3\n\3\n\3\n\3\n\3\n\3\n\7\n\u00ae"+
-		"\n\n\f\n\16\n\u00b1\13\n\3\13\3\13\3\f\3\f\3\f\3\f\3\f\3\f\7\f\u00bb\n"+
-		"\f\f\f\16\f\u00be\13\f\3\r\3\r\3\16\3\16\3\16\3\16\3\16\3\16\7\16\u00c8"+
-		"\n\16\f\16\16\16\u00cb\13\16\3\17\3\17\3\20\3\20\3\20\3\20\3\20\3\20\7"+
-		"\20\u00d5\n\20\f\20\16\20\u00d8\13\20\3\21\3\21\3\21\3\21\3\21\3\21\3"+
-		"\21\3\21\5\21\u00e2\n\21\3\22\3\22\3\23\3\23\3\23\3\23\3\23\3\23\7\23"+
-		"\u00ec\n\23\f\23\16\23\u00ef\13\23\3\24\3\24\3\25\3\25\3\25\3\25\3\25"+
-		"\3\25\5\25\u00f9\n\25\3\26\3\26\3\26\3\26\3\26\3\26\3\26\3\26\7\26\u0103"+
-		"\n\26\f\26\16\26\u0106\13\26\3\26\3\26\5\26\u010a\n\26\3\27\3\27\3\27"+
-		"\3\27\3\27\3\30\3\30\3\30\3\30\3\30\3\30\5\30\u0117\n\30\3\31\3\31\3\31"+
-		"\3\31\3\31\5\31\u011e\n\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3\32"+
-		"\3\32\3\32\3\32\3\32\3\32\3\33\3\33\3\33\3\33\3\33\3\33\3\33\3\33\3\33"+
-		"\3\33\7\33\u0138\n\33\f\33\16\33\u013b\13\33\5\33\u013d\n\33\3\33\5\33"+
-		"\u0140\n\33\3\33\3\33\3\33\3\33\3\33\7\33\u0147\n\33\f\33\16\33\u014a"+
-		"\13\33\3\33\3\33\3\33\3\33\7\33\u0150\n\33\f\33\16\33\u0153\13\33\3\33"+
-		"\3\33\3\33\3\33\7\33\u0159\n\33\f\33\16\33\u015c\13\33\7\33\u015e\n\33"+
-		"\f\33\16\33\u0161\13\33\3\33\3\33\3\33\3\33\2\2\34\2\4\6\b\n\f\16\20\22"+
-		"\24\26\30\32\34\36 \"$&(*,.\60\62\64\2\b\3\2!#\3\2\13\f\4\2\r\16,,\4\2"+
-		"\f\f\17\17\3\2\20\25\4\2\27\27-.\2\u016d\2\66\3\2\2\2\48\3\2\2\2\6\u008b"+
-		"\3\2\2\2\b\u008d\3\2\2\2\n\u0096\3\2\2\2\f\u0098\3\2\2\2\16\u009a\3\2"+
-		"\2\2\20\u00a5\3\2\2\2\22\u00a7\3\2\2\2\24\u00b2\3\2\2\2\26\u00b4\3\2\2"+
-		"\2\30\u00bf\3\2\2\2\32\u00c1\3\2\2\2\34\u00cc\3\2\2\2\36\u00ce\3\2\2\2"+
-		" \u00d9\3\2\2\2\"\u00e3\3\2\2\2$\u00e5\3\2\2\2&\u00f0\3\2\2\2(\u00f2\3"+
-		"\2\2\2*\u0109\3\2\2\2,\u010b\3\2\2\2.\u0116\3\2\2\2\60\u0118\3\2\2\2\62"+
-		"\u0127\3\2\2\2\64\u012d\3\2\2\2\66\67\t\2\2\2\67\3\3\2\2\28=\7\62\2\2"+
-		"9:\7\3\2\2:<\7\62\2\2;9\3\2\2\2<?\3\2\2\2=;\3\2\2\2=>\3\2\2\2>E\3\2\2"+
-		"\2?=\3\2\2\2@A\7\4\2\2AB\7!\2\2BD\7\5\2\2C@\3\2\2\2DG\3\2\2\2EC\3\2\2"+
-		"\2EF\3\2\2\2F\5\3\2\2\2GE\3\2\2\2HI\7\6\2\2IJ\5(\25\2JK\7\7\2\2KL\b\4"+
-		"\1\2L\u008c\3\2\2\2MN\5\2\2\2NO\b\4\1\2O\u008c\3\2\2\2PQ\5\4\3\2QR\b\4"+
-		"\1\2R\u008c\3\2\2\2ST\7%\2\2TU\7\6\2\2UV\5(\25\2VW\7\7\2\2WX\b\4\1\2X"+
-		"\u008c\3\2\2\2YZ\7\60\2\2Zb\b\4\1\2[\\\5(\25\2\\]\b\4\1\2]^\7\b\2\2^_"+
-		"\5(\25\2_`\b\4\1\2`a\7\t\2\2ac\3\2\2\2b[\3\2\2\2cd\3\2\2\2db\3\2\2\2d"+
-		"e\3\2\2\2ef\3\2\2\2fg\7\61\2\2gh\b\4\1\2h\u008c\3\2\2\2ij\7+\2\2jk\b\4"+
-		"\1\2kl\7\6\2\2lm\5(\25\2mt\b\4\1\2no\7\n\2\2op\5(\25\2pq\b\4\1\2qs\3\2"+
-		"\2\2rn\3\2\2\2sv\3\2\2\2tr\3\2\2\2tu\3\2\2\2uw\3\2\2\2vt\3\2\2\2wx\7\7"+
-		"\2\2xy\b\4\1\2y\u008c\3\2\2\2z{\7/\2\2{|\b\4\1\2|}\7\6\2\2}~\5\22\n\2"+
-		"~\u0085\b\4\1\2\177\u0080\7\n\2\2\u0080\u0081\5\22\n\2\u0081\u0082\b\4"+
-		"\1\2\u0082\u0084\3\2\2\2\u0083\177\3\2\2\2\u0084\u0087\3\2\2\2\u0085\u0083"+
-		"\3\2\2\2\u0085\u0086\3\2\2\2\u0086\u0088\3\2\2\2\u0087\u0085\3\2\2\2\u0088"+
-		"\u0089\7\7\2\2\u0089\u008a\b\4\1\2\u008a\u008c\3\2\2\2\u008bH\3\2\2\2"+
-		"\u008bM\3\2\2\2\u008bP\3\2\2\2\u008bS\3\2\2\2\u008bY\3\2\2\2\u008bi\3"+
-		"\2\2\2\u008bz\3\2\2\2\u008c\7\3\2\2\2\u008d\u008e\t\3\2\2\u008e\t\3\2"+
-		"\2\2\u008f\u0090\5\6\4\2\u0090\u0091\b\6\1\2\u0091\u0097\3\2\2\2\u0092"+
-		"\u0093\5\b\5\2\u0093\u0094\5\n\6\2\u0094\u0095\b\6\1\2\u0095\u0097\3\2"+
-		"\2\2\u0096\u008f\3\2\2\2\u0096\u0092\3\2\2\2\u0097\13\3\2\2\2\u0098\u0099"+
-		"\t\4\2\2\u0099\r\3\2\2\2\u009a\u009b\5\n\6\2\u009b\u00a2\b\b\1\2\u009c"+
-		"\u009d\5\f\7\2\u009d\u009e\5\n\6\2\u009e\u009f\b\b\1\2\u009f\u00a1\3\2"+
-		"\2\2\u00a0\u009c\3\2\2\2\u00a1\u00a4\3\2\2\2\u00a2\u00a0\3\2\2\2\u00a2"+
-		"\u00a3\3\2\2\2\u00a3\17\3\2\2\2\u00a4\u00a2\3\2\2\2\u00a5\u00a6\t\5\2"+
-		"\2\u00a6\21\3\2\2\2\u00a7\u00a8\5\16\b\2\u00a8\u00af\b\n\1\2\u00a9\u00aa"+
-		"\5\20\t\2\u00aa\u00ab\5\16\b\2\u00ab\u00ac\b\n\1\2\u00ac\u00ae\3\2\2\2"+
-		"\u00ad\u00a9\3\2\2\2\u00ae\u00b1\3\2\2\2\u00af\u00ad\3\2\2\2\u00af\u00b0"+
-		"\3\2\2\2\u00b0\23\3\2\2\2\u00b1\u00af\3\2\2\2\u00b2\u00b3\t\6\2\2\u00b3"+
-		"\25\3\2\2\2\u00b4\u00b5\5\22\n\2\u00b5\u00bc\b\f\1\2\u00b6\u00b7\5\24"+
-		"\13\2\u00b7\u00b8\5\22\n\2\u00b8\u00b9\b\f\1\2\u00b9\u00bb\3\2\2\2\u00ba"+
-		"\u00b6\3\2\2\2\u00bb\u00be\3\2\2\2\u00bc\u00ba\3\2\2\2\u00bc\u00bd\3\2"+
-		"\2\2\u00bd\27\3\2\2\2\u00be\u00bc\3\2\2\2\u00bf\u00c0\7\26\2\2\u00c0\31"+
-		"\3\2\2\2\u00c1\u00c2\5\26\f\2\u00c2\u00c9\b\16\1\2\u00c3\u00c4\5\30\r"+
-		"\2\u00c4\u00c5\5\26\f\2\u00c5\u00c6\b\16\1\2\u00c6\u00c8\3\2\2\2\u00c7"+
-		"\u00c3\3\2\2\2\u00c8\u00cb\3\2\2\2\u00c9\u00c7\3\2\2\2\u00c9\u00ca\3\2"+
-		"\2\2\u00ca\33\3\2\2\2\u00cb\u00c9\3\2\2\2\u00cc\u00cd\t\7\2\2\u00cd\35"+
-		"\3\2\2\2\u00ce\u00cf\5\32\16\2\u00cf\u00d6\b\20\1\2\u00d0\u00d1\5\34\17"+
-		"\2\u00d1\u00d2\5\32\16\2\u00d2\u00d3\b\20\1\2\u00d3\u00d5\3\2\2\2\u00d4"+
-		"\u00d0\3\2\2\2\u00d5\u00d8\3\2\2\2\u00d6\u00d4\3\2\2\2\u00d6\u00d7\3\2"+
-		"\2\2\u00d7\37\3\2\2\2\u00d8\u00d6\3\2\2\2\u00d9\u00da\5\36\20\2\u00da"+
-		"\u00e1\b\21\1\2\u00db\u00dc\7\30\2\2\u00dc\u00dd\5\36\20\2\u00dd\u00de"+
-		"\7\b\2\2\u00de\u00df\5\36\20\2\u00df\u00e0\b\21\1\2\u00e0\u00e2\3\2\2"+
-		"\2\u00e1\u00db\3\2\2\2\u00e1\u00e2\3\2\2\2\u00e2!\3\2\2\2\u00e3\u00e4"+
-		"\7\31\2\2\u00e4#\3\2\2\2\u00e5\u00e6\5 \21\2\u00e6\u00ed\b\23\1\2\u00e7"+
-		"\u00e8\5\"\22\2\u00e8\u00e9\5 \21\2\u00e9\u00ea\b\23\1\2\u00ea\u00ec\3"+
-		"\2\2\2\u00eb\u00e7\3\2\2\2\u00ec\u00ef\3\2\2\2\u00ed\u00eb\3\2\2\2\u00ed"+
-		"\u00ee\3\2\2\2\u00ee%\3\2\2\2\u00ef\u00ed\3\2\2\2\u00f0\u00f1\7\32\2\2"+
-		"\u00f1\'\3\2\2\2\u00f2\u00f3\5$\23\2\u00f3\u00f8\b\25\1\2\u00f4\u00f5"+
-		"\5&\24\2\u00f5\u00f6\5(\25\2\u00f6\u00f7\b\25\1\2\u00f7\u00f9\3\2\2\2"+
-		"\u00f8\u00f4\3\2\2\2\u00f8\u00f9\3\2\2\2\u00f9)\3\2\2\2\u00fa\u010a\7"+
-		"*\2\2\u00fb\u00fc\7!\2\2\u00fc\u00fd\7\33\2\2\u00fd\u010a\7!\2\2\u00fe"+
-		"\u00ff\7\34\2\2\u00ff\u0104\5\2\2\2\u0100\u0101\7\n\2\2\u0101\u0103\5"+
-		"\2\2\2\u0102\u0100\3\2\2\2\u0103\u0106\3\2\2\2\u0104\u0102\3\2\2\2\u0104"+
-		"\u0105\3\2\2\2\u0105\u0107\3\2\2\2\u0106\u0104\3\2\2\2\u0107\u0108\7\35"+
-		"\2\2\u0108\u010a\3\2\2\2\u0109\u00fa\3\2\2\2\u0109\u00fb\3\2\2\2\u0109"+
-		"\u00fe\3\2\2\2\u010a+\3\2\2\2\u010b\u010c\5\4\3\2\u010c\u010d\7\b\2\2"+
-		"\u010d\u010e\5*\26\2\u010e\u010f\b\27\1\2\u010f-\3\2\2\2\u0110\u0111\5"+
-		"\4\3\2\u0111\u0112\b\30\1\2\u0112\u0117\3\2\2\2\u0113\u0114\5,\27\2\u0114"+
-		"\u0115\b\30\1\2\u0115\u0117\3\2\2\2\u0116\u0110\3\2\2\2\u0116\u0113\3"+
-		"\2\2\2\u0117/\3\2\2\2\u0118\u011d\b\31\1\2\u0119\u011a\7$\2\2\u011a\u011e"+
-		"\b\31\1\2\u011b\u011c\7%\2\2\u011c\u011e\b\31\1\2\u011d\u0119\3\2\2\2"+
-		"\u011d\u011b\3\2\2\2\u011e\u011f\3\2\2\2\u011f\u0120\7\6\2\2\u0120\u0121"+
-		"\5\4\3\2\u0121\u0122\7\7\2\2\u0122\u0123\7\36\2\2\u0123\u0124\5(\25\2"+
-		"\u0124\u0125\7\t\2\2\u0125\u0126\b\31\1\2\u0126\61\3\2\2\2\u0127\u0128"+
-		"\5.\30\2\u0128\u0129\7\36\2\2\u0129\u012a\5(\25\2\u012a\u012b\7\t\2\2"+
-		"\u012b\u012c\b\32\1\2\u012c\63\3\2\2\2\u012d\u012e\7&\2\2\u012e\u012f"+
-		"\7\62\2\2\u012f\u013f\b\33\1\2\u0130\u013c\7\6\2\2\u0131\u0132\5.\30\2"+
-		"\u0132\u0139\b\33\1\2\u0133\u0134\7\n\2\2\u0134\u0135\5.\30\2\u0135\u0136"+
-		"\b\33\1\2\u0136\u0138\3\2\2\2\u0137\u0133\3\2\2\2\u0138\u013b\3\2\2\2"+
-		"\u0139\u0137\3\2\2\2\u0139\u013a\3\2\2\2\u013a\u013d\3\2\2\2\u013b\u0139"+
-		"\3\2\2\2\u013c\u0131\3\2\2\2\u013c\u013d\3\2\2\2\u013d\u013e\3\2\2\2\u013e"+
-		"\u0140\7\7\2\2\u013f\u0130\3\2\2\2\u013f\u0140\3\2\2\2\u0140\u015f\3\2"+
-		"\2\2\u0141\u0148\7\'\2\2\u0142\u0143\5,\27\2\u0143\u0144\7\t\2\2\u0144"+
-		"\u0145\b\33\1\2\u0145\u0147\3\2\2\2\u0146\u0142\3\2\2\2\u0147\u014a\3"+
-		"\2\2\2\u0148\u0146\3\2\2\2\u0148\u0149\3\2\2\2\u0149\u015e\3\2\2\2\u014a"+
-		"\u0148\3\2\2\2\u014b\u0151\7(\2\2\u014c\u014d\5\60\31\2\u014d\u014e\b"+
-		"\33\1\2\u014e\u0150\3\2\2\2\u014f\u014c\3\2\2\2\u0150\u0153\3\2\2\2\u0151"+
-		"\u014f\3\2\2\2\u0151\u0152\3\2\2\2\u0152\u015e\3\2\2\2\u0153\u0151\3\2"+
-		"\2\2\u0154\u015a\7)\2\2\u0155\u0156\5\62\32\2\u0156\u0157\b\33\1\2\u0157"+
-		"\u0159\3\2\2\2\u0158\u0155\3\2\2\2\u0159\u015c\3\2\2\2\u015a\u0158\3\2"+
-		"\2\2\u015a\u015b\3\2\2\2\u015b\u015e\3\2\2\2\u015c\u015a\3\2\2\2\u015d"+
-		"\u0141\3\2\2\2\u015d\u014b\3\2\2\2\u015d\u0154\3\2\2\2\u015e\u0161\3\2"+
-		"\2\2\u015f\u015d\3\2\2\2\u015f\u0160\3\2\2\2\u0160\u0162\3\2\2\2\u0161"+
-		"\u015f\3\2\2\2\u0162\u0163\b\33\1\2\u0163\u0164\7\2\2\3\u0164\65\3\2\2"+
-		"\2\35=Edt\u0085\u008b\u0096\u00a2\u00af\u00bc\u00c9\u00d6\u00e1\u00ed"+
-		"\u00f8\u0104\u0109\u0116\u011d\u0139\u013c\u013f\u0148\u0151\u015a\u015d"+
-		"\u015f";
+		"\4\f\4\16\4v\13\4\3\4\3\4\3\4\5\4{\n\4\3\5\3\5\3\6\3\6\3\6\3\6\3\6\3\6"+
+		"\3\6\5\6\u0086\n\6\3\7\3\7\3\b\3\b\3\b\3\b\3\b\3\b\7\b\u0090\n\b\f\b\16"+
+		"\b\u0093\13\b\3\t\3\t\3\n\3\n\3\n\3\n\3\n\3\n\7\n\u009d\n\n\f\n\16\n\u00a0"+
+		"\13\n\3\13\3\13\3\f\3\f\3\f\3\f\3\f\3\f\7\f\u00aa\n\f\f\f\16\f\u00ad\13"+
+		"\f\3\r\3\r\3\16\3\16\3\16\3\16\3\16\3\16\7\16\u00b7\n\16\f\16\16\16\u00ba"+
+		"\13\16\3\17\3\17\3\20\3\20\3\20\3\20\3\20\3\20\7\20\u00c4\n\20\f\20\16"+
+		"\20\u00c7\13\20\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\5\21\u00d1\n\21"+
+		"\3\22\3\22\3\23\3\23\3\23\3\23\3\23\3\23\7\23\u00db\n\23\f\23\16\23\u00de"+
+		"\13\23\3\24\3\24\3\25\3\25\3\25\3\25\3\25\3\25\5\25\u00e8\n\25\3\26\3"+
+		"\26\3\26\3\26\3\26\3\26\3\26\3\26\7\26\u00f2\n\26\f\26\16\26\u00f5\13"+
+		"\26\3\26\3\26\5\26\u00f9\n\26\3\27\3\27\3\27\3\27\3\27\3\30\3\30\3\30"+
+		"\3\30\3\30\3\30\5\30\u0106\n\30\3\31\3\31\3\31\3\31\3\31\5\31\u010d\n"+
+		"\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3\32\3\32\3\32\3\32\3\32\3"+
+		"\32\3\33\3\33\3\33\3\33\3\33\3\33\3\33\3\33\3\33\3\33\7\33\u0127\n\33"+
+		"\f\33\16\33\u012a\13\33\5\33\u012c\n\33\3\33\5\33\u012f\n\33\3\33\3\33"+
+		"\3\33\3\33\3\33\7\33\u0136\n\33\f\33\16\33\u0139\13\33\3\33\3\33\3\33"+
+		"\3\33\7\33\u013f\n\33\f\33\16\33\u0142\13\33\3\33\3\33\3\33\3\33\7\33"+
+		"\u0148\n\33\f\33\16\33\u014b\13\33\7\33\u014d\n\33\f\33\16\33\u0150\13"+
+		"\33\3\33\3\33\3\33\2\2\34\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&"+
+		"(*,.\60\62\64\2\b\3\2!#\3\2\13\f\4\2\r\16,,\4\2\f\f\17\17\3\2\20\25\4"+
+		"\2\27\27-.\2\u0159\2\66\3\2\2\2\48\3\2\2\2\6z\3\2\2\2\b|\3\2\2\2\n\u0085"+
+		"\3\2\2\2\f\u0087\3\2\2\2\16\u0089\3\2\2\2\20\u0094\3\2\2\2\22\u0096\3"+
+		"\2\2\2\24\u00a1\3\2\2\2\26\u00a3\3\2\2\2\30\u00ae\3\2\2\2\32\u00b0\3\2"+
+		"\2\2\34\u00bb\3\2\2\2\36\u00bd\3\2\2\2 \u00c8\3\2\2\2\"\u00d2\3\2\2\2"+
+		"$\u00d4\3\2\2\2&\u00df\3\2\2\2(\u00e1\3\2\2\2*\u00f8\3\2\2\2,\u00fa\3"+
+		"\2\2\2.\u0105\3\2\2\2\60\u0107\3\2\2\2\62\u0116\3\2\2\2\64\u011c\3\2\2"+
+		"\2\66\67\t\2\2\2\67\3\3\2\2\28=\7\61\2\29:\7\3\2\2:<\7\61\2\2;9\3\2\2"+
+		"\2<?\3\2\2\2=;\3\2\2\2=>\3\2\2\2>E\3\2\2\2?=\3\2\2\2@A\7\4\2\2AB\7!\2"+
+		"\2BD\7\5\2\2C@\3\2\2\2DG\3\2\2\2EC\3\2\2\2EF\3\2\2\2F\5\3\2\2\2GE\3\2"+
+		"\2\2HI\7\6\2\2IJ\5(\25\2JK\7\7\2\2KL\b\4\1\2L{\3\2\2\2MN\5\2\2\2NO\b\4"+
+		"\1\2O{\3\2\2\2PQ\5\4\3\2QR\b\4\1\2R{\3\2\2\2ST\7%\2\2TU\7\6\2\2UV\5(\25"+
+		"\2VW\7\7\2\2WX\b\4\1\2X{\3\2\2\2YZ\7/\2\2Zb\b\4\1\2[\\\5(\25\2\\]\b\4"+
+		"\1\2]^\7\b\2\2^_\5(\25\2_`\b\4\1\2`a\7\t\2\2ac\3\2\2\2b[\3\2\2\2cd\3\2"+
+		"\2\2db\3\2\2\2de\3\2\2\2ef\3\2\2\2fg\7\60\2\2gh\b\4\1\2h{\3\2\2\2ij\7"+
+		"+\2\2jk\b\4\1\2kl\7\6\2\2lm\5(\25\2mt\b\4\1\2no\7\n\2\2op\5(\25\2pq\b"+
+		"\4\1\2qs\3\2\2\2rn\3\2\2\2sv\3\2\2\2tr\3\2\2\2tu\3\2\2\2uw\3\2\2\2vt\3"+
+		"\2\2\2wx\7\7\2\2xy\b\4\1\2y{\3\2\2\2zH\3\2\2\2zM\3\2\2\2zP\3\2\2\2zS\3"+
+		"\2\2\2zY\3\2\2\2zi\3\2\2\2{\7\3\2\2\2|}\t\3\2\2}\t\3\2\2\2~\177\5\6\4"+
+		"\2\177\u0080\b\6\1\2\u0080\u0086\3\2\2\2\u0081\u0082\5\b\5\2\u0082\u0083"+
+		"\5\n\6\2\u0083\u0084\b\6\1\2\u0084\u0086\3\2\2\2\u0085~\3\2\2\2\u0085"+
+		"\u0081\3\2\2\2\u0086\13\3\2\2\2\u0087\u0088\t\4\2\2\u0088\r\3\2\2\2\u0089"+
+		"\u008a\5\n\6\2\u008a\u0091\b\b\1\2\u008b\u008c\5\f\7\2\u008c\u008d\5\n"+
+		"\6\2\u008d\u008e\b\b\1\2\u008e\u0090\3\2\2\2\u008f\u008b\3\2\2\2\u0090"+
+		"\u0093\3\2\2\2\u0091\u008f\3\2\2\2\u0091\u0092\3\2\2\2\u0092\17\3\2\2"+
+		"\2\u0093\u0091\3\2\2\2\u0094\u0095\t\5\2\2\u0095\21\3\2\2\2\u0096\u0097"+
+		"\5\16\b\2\u0097\u009e\b\n\1\2\u0098\u0099\5\20\t\2\u0099\u009a\5\16\b"+
+		"\2\u009a\u009b\b\n\1\2\u009b\u009d\3\2\2\2\u009c\u0098\3\2\2\2\u009d\u00a0"+
+		"\3\2\2\2\u009e\u009c\3\2\2\2\u009e\u009f\3\2\2\2\u009f\23\3\2\2\2\u00a0"+
+		"\u009e\3\2\2\2\u00a1\u00a2\t\6\2\2\u00a2\25\3\2\2\2\u00a3\u00a4\5\22\n"+
+		"\2\u00a4\u00ab\b\f\1\2\u00a5\u00a6\5\24\13\2\u00a6\u00a7\5\22\n\2\u00a7"+
+		"\u00a8\b\f\1\2\u00a8\u00aa\3\2\2\2\u00a9\u00a5\3\2\2\2\u00aa\u00ad\3\2"+
+		"\2\2\u00ab\u00a9\3\2\2\2\u00ab\u00ac\3\2\2\2\u00ac\27\3\2\2\2\u00ad\u00ab"+
+		"\3\2\2\2\u00ae\u00af\7\26\2\2\u00af\31\3\2\2\2\u00b0\u00b1\5\26\f\2\u00b1"+
+		"\u00b8\b\16\1\2\u00b2\u00b3\5\30\r\2\u00b3\u00b4\5\26\f\2\u00b4\u00b5"+
+		"\b\16\1\2\u00b5\u00b7\3\2\2\2\u00b6\u00b2\3\2\2\2\u00b7\u00ba\3\2\2\2"+
+		"\u00b8\u00b6\3\2\2\2\u00b8\u00b9\3\2\2\2\u00b9\33\3\2\2\2\u00ba\u00b8"+
+		"\3\2\2\2\u00bb\u00bc\t\7\2\2\u00bc\35\3\2\2\2\u00bd\u00be\5\32\16\2\u00be"+
+		"\u00c5\b\20\1\2\u00bf\u00c0\5\34\17\2\u00c0\u00c1\5\32\16\2\u00c1\u00c2"+
+		"\b\20\1\2\u00c2\u00c4\3\2\2\2\u00c3\u00bf\3\2\2\2\u00c4\u00c7\3\2\2\2"+
+		"\u00c5\u00c3\3\2\2\2\u00c5\u00c6\3\2\2\2\u00c6\37\3\2\2\2\u00c7\u00c5"+
+		"\3\2\2\2\u00c8\u00c9\5\36\20\2\u00c9\u00d0\b\21\1\2\u00ca\u00cb\7\30\2"+
+		"\2\u00cb\u00cc\5\36\20\2\u00cc\u00cd\7\b\2\2\u00cd\u00ce\5\36\20\2\u00ce"+
+		"\u00cf\b\21\1\2\u00cf\u00d1\3\2\2\2\u00d0\u00ca\3\2\2\2\u00d0\u00d1\3"+
+		"\2\2\2\u00d1!\3\2\2\2\u00d2\u00d3\7\31\2\2\u00d3#\3\2\2\2\u00d4\u00d5"+
+		"\5 \21\2\u00d5\u00dc\b\23\1\2\u00d6\u00d7\5\"\22\2\u00d7\u00d8\5 \21\2"+
+		"\u00d8\u00d9\b\23\1\2\u00d9\u00db\3\2\2\2\u00da\u00d6\3\2\2\2\u00db\u00de"+
+		"\3\2\2\2\u00dc\u00da\3\2\2\2\u00dc\u00dd\3\2\2\2\u00dd%\3\2\2\2\u00de"+
+		"\u00dc\3\2\2\2\u00df\u00e0\7\32\2\2\u00e0\'\3\2\2\2\u00e1\u00e2\5$\23"+
+		"\2\u00e2\u00e7\b\25\1\2\u00e3\u00e4\5&\24\2\u00e4\u00e5\5(\25\2\u00e5"+
+		"\u00e6\b\25\1\2\u00e6\u00e8\3\2\2\2\u00e7\u00e3\3\2\2\2\u00e7\u00e8\3"+
+		"\2\2\2\u00e8)\3\2\2\2\u00e9\u00f9\7*\2\2\u00ea\u00eb\7!\2\2\u00eb\u00ec"+
+		"\7\33\2\2\u00ec\u00f9\7!\2\2\u00ed\u00ee\7\34\2\2\u00ee\u00f3\5\2\2\2"+
+		"\u00ef\u00f0\7\n\2\2\u00f0\u00f2\5\2\2\2\u00f1\u00ef\3\2\2\2\u00f2\u00f5"+
+		"\3\2\2\2\u00f3\u00f1\3\2\2\2\u00f3\u00f4\3\2\2\2\u00f4\u00f6\3\2\2\2\u00f5"+
+		"\u00f3\3\2\2\2\u00f6\u00f7\7\35\2\2\u00f7\u00f9\3\2\2\2\u00f8\u00e9\3"+
+		"\2\2\2\u00f8\u00ea\3\2\2\2\u00f8\u00ed\3\2\2\2\u00f9+\3\2\2\2\u00fa\u00fb"+
+		"\5\4\3\2\u00fb\u00fc\7\b\2\2\u00fc\u00fd\5*\26\2\u00fd\u00fe\b\27\1\2"+
+		"\u00fe-\3\2\2\2\u00ff\u0100\5\4\3\2\u0100\u0101\b\30\1\2\u0101\u0106\3"+
+		"\2\2\2\u0102\u0103\5,\27\2\u0103\u0104\b\30\1\2\u0104\u0106\3\2\2\2\u0105"+
+		"\u00ff\3\2\2\2\u0105\u0102\3\2\2\2\u0106/\3\2\2\2\u0107\u010c\b\31\1\2"+
+		"\u0108\u0109\7$\2\2\u0109\u010d\b\31\1\2\u010a\u010b\7%\2\2\u010b\u010d"+
+		"\b\31\1\2\u010c\u0108\3\2\2\2\u010c\u010a\3\2\2\2\u010d\u010e\3\2\2\2"+
+		"\u010e\u010f\7\6\2\2\u010f\u0110\5\4\3\2\u0110\u0111\7\7\2\2\u0111\u0112"+
+		"\7\36\2\2\u0112\u0113\5(\25\2\u0113\u0114\7\t\2\2\u0114\u0115\b\31\1\2"+
+		"\u0115\61\3\2\2\2\u0116\u0117\5.\30\2\u0117\u0118\7\36\2\2\u0118\u0119"+
+		"\5(\25\2\u0119\u011a\7\t\2\2\u011a\u011b\b\32\1\2\u011b\63\3\2\2\2\u011c"+
+		"\u011d\7&\2\2\u011d\u011e\7\61\2\2\u011e\u012e\b\33\1\2\u011f\u012b\7"+
+		"\6\2\2\u0120\u0121\5.\30\2\u0121\u0128\b\33\1\2\u0122\u0123\7\n\2\2\u0123"+
+		"\u0124\5.\30\2\u0124\u0125\b\33\1\2\u0125\u0127\3\2\2\2\u0126\u0122\3"+
+		"\2\2\2\u0127\u012a\3\2\2\2\u0128\u0126\3\2\2\2\u0128\u0129\3\2\2\2\u0129"+
+		"\u012c\3\2\2\2\u012a\u0128\3\2\2\2\u012b\u0120\3\2\2\2\u012b\u012c\3\2"+
+		"\2\2\u012c\u012d\3\2\2\2\u012d\u012f\7\7\2\2\u012e\u011f\3\2\2\2\u012e"+
+		"\u012f\3\2\2\2\u012f\u014e\3\2\2\2\u0130\u0137\7\'\2\2\u0131\u0132\5,"+
+		"\27\2\u0132\u0133\7\t\2\2\u0133\u0134\b\33\1\2\u0134\u0136\3\2\2\2\u0135"+
+		"\u0131\3\2\2\2\u0136\u0139\3\2\2\2\u0137\u0135\3\2\2\2\u0137\u0138\3\2"+
+		"\2\2\u0138\u014d\3\2\2\2\u0139\u0137\3\2\2\2\u013a\u0140\7(\2\2\u013b"+
+		"\u013c\5\60\31\2\u013c\u013d\b\33\1\2\u013d\u013f\3\2\2\2\u013e\u013b"+
+		"\3\2\2\2\u013f\u0142\3\2\2\2\u0140\u013e\3\2\2\2\u0140\u0141\3\2\2\2\u0141"+
+		"\u014d\3\2\2\2\u0142\u0140\3\2\2\2\u0143\u0149\7)\2\2\u0144\u0145\5\62"+
+		"\32\2\u0145\u0146\b\33\1\2\u0146\u0148\3\2\2\2\u0147\u0144\3\2\2\2\u0148"+
+		"\u014b\3\2\2\2\u0149\u0147\3\2\2\2\u0149\u014a\3\2\2\2\u014a\u014d\3\2"+
+		"\2\2\u014b\u0149\3\2\2\2\u014c\u0130\3\2\2\2\u014c\u013a\3\2\2\2\u014c"+
+		"\u0143\3\2\2\2\u014d\u0150\3\2\2\2\u014e\u014c\3\2\2\2\u014e\u014f\3\2"+
+		"\2\2\u014f\u0151\3\2\2\2\u0150\u014e\3\2\2\2\u0151\u0152\b\33\1\2\u0152"+
+		"\65\3\2\2\2\34=Edtz\u0085\u0091\u009e\u00ab\u00b8\u00c5\u00d0\u00dc\u00e7"+
+		"\u00f3\u00f8\u0105\u010c\u0128\u012b\u012e\u0137\u0140\u0149\u014c\u014e";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

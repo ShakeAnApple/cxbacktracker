@@ -35,6 +35,10 @@ public class ChangeCauseNode {
         return this.change;
     }
 
+    public boolean hasValueChanged(){
+        return this.change.getChangedStep() != this.change.getCurrentStep();
+    }
+
     public List<ChangeCauseNode> getChildren() {
         return this.children;
     }

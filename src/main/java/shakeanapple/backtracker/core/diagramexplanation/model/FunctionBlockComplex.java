@@ -170,6 +170,42 @@ public class FunctionBlockComplex extends FunctionBlockBase {
         return result;
     }
 
+    @Override
+    protected ChangeExplanationItem explainHistoryChangeImpl(OutputGate output, Integer timestamp) {
+        if (output.getIncomingConnection() == null){
+            return this.emptyChangeExplanation(output, timestamp);
+        }
+
+        OutputGate gateToExplain = (OutputGate) output.getIncomingConnection().fromGate();
+
+        ChangeCausePathTree causesTree = new ChangeCausePathTree();
+
+        ChangeCauseNode rootNode = new ChangeCauseNode(output, this.history().getVariableValueForStep(output.getName(), timestamp), timestamp,
+                this.history().getVariableValueForStep(output.getName(), timestamp), timestamp);
+        causesTree.addRoot(rootNode);
+
+        ChangeExplanationItem item = this.internalDiagram.explainHistoryChange(gateToExplain, timestamp);
+        Collection<ChangeCauseNode> causeNodes = item.getFreshNodes();
+        rootNode.addChildren(item.getTree().getRoots());
+        Set<ChangeCauseNode> outputCauseNodes = new HashSet<>();
+
+        ChangeExplanationItem result = new ChangeExplanationItem(causesTree, outputCauseNodes);
+        for (ChangeCauseNode causeNode : causeNodes) {
+            if (this.fbInterface().getInputs().get(causeNode.getGate().getName()) != null &&
+                    this.fbInterface().getInputs().get(causeNode.getGate().getName()).equals(causeNode.getGate())
+            ) {
+                ChangeCauseNode childNode = causeNode;
+                outputCauseNodes.add(childNode);
+            } else if (causeNode.getGate().getIncomingConnection() != null) {
+                ChangeExplanationItem childItem = this.explainChange((OutputGate) causeNode.getGate(), causeNode.getChange().getCurrentStep());
+                outputCauseNodes.addAll(childItem.getFreshNodes());
+                causeNode.addChildren(childItem.getFreshNodes());
+            }
+        }
+
+        return result;
+    }
+
     private ExplanationItem emptyExplanation(OutputGate output, int timestamp) {
         CausePathTree causesTree = new CausePathTree();
         CauseNode rootNode = new CauseNode(output, this.history().getVariableValueForStep(output.getName(), timestamp), timestamp);

@@ -27,6 +27,7 @@ public class Parser {
         return systemBuilder.buildRoot(modules.stream().filter(ParsingModule::isRoot).findFirst().get());
     }
 
+    // FIXME I will duck you up with java.nio.charset.MalformedInputException: Input length = 1 otherwise
     private List<String> readLines() throws IOException {
         return Files.readAllLines(Path.of(path)).stream()
                 .map(String::trim)

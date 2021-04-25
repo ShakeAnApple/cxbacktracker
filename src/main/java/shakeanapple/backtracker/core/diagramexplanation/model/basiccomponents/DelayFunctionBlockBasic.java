@@ -130,7 +130,7 @@ public class DelayFunctionBlockBasic extends FunctionBlockBasic {
         if (timestamp - this.delay >= 1) {
             return Collections.singletonList(new CauseNode(super.fbInterface().getInputs().get(this.input.getName()), super.history().getVariableValueForStep(this.input.getName(), timestamp - this.delay), timestamp - this.delay));
         }
-        // TODO start from zero? or 1? I always forget
+        // TODO start from zero? or 1? I always forget: YES
         return Collections.singletonList(new CauseNode(super.fbInterface().getInputs().get(this.input.getName()), super.history().getVariableValueForStep(this.input.getName(), 1), 1));
     }
 

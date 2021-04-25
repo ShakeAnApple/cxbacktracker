@@ -101,9 +101,7 @@ public class Diagram {
     // TODO what about changed causes for connections? for now, I count start and end as single variable
     public ChangeExplanationItem explainChange(OutputGate gateToExplain, Integer timestamp) {
         ChangeExplanationItem item = gateToExplain.getOwner().explainChange(gateToExplain, timestamp);
-        if (item.isTerminating()){
 
-        }
         Collection<ChangeCauseNode> causeNodes = item.getFreshNodes();
         Set<ChangeCauseNode> outputCauseNodes = new HashSet<>();
 
@@ -117,6 +115,30 @@ public class Diagram {
                 causeNode.addChildNode(childNode);
             } else if (causeNode.getGate().getIncomingConnection() != null) {
                 ChangeExplanationItem childItem = this.explainChange((OutputGate) causeNode.getGate().getIncomingConnection().fromGate(), causeNode.getChange().getCurrentStep());
+                causeNode.addChildren(childItem.getTree().getRoots());
+                outputCauseNodes.addAll(childItem.getFreshNodes());
+            }
+        }
+
+        return result;
+    }
+
+    public ChangeExplanationItem explainHistoryChange(OutputGate gateToExplain, Integer timestamp) {
+        ChangeExplanationItem item = gateToExplain.getOwner().explainHistoryChange(gateToExplain, timestamp);
+
+        Collection<ChangeCauseNode> causeNodes = item.getFreshNodes();
+        Set<ChangeCauseNode> outputCauseNodes = new HashSet<>();
+
+        ChangeExplanationItem result = new ChangeExplanationItem(item.getTree(), outputCauseNodes);
+        for (ChangeCauseNode causeNode : causeNodes) {
+            if (this.inputs.containsKey(causeNode.getGate().getFullName())) {
+                Gate childGate = causeNode.getGate().getIncomingConnection().fromGate();
+                ChangeCauseNode childNode = new ChangeCauseNode(childGate, childGate.getOwner().history().getVariableValueForStep(childGate.getName(), causeNode.getChange().getCurrentStep()), causeNode.getChange().getCurrentStep(),
+                        childGate.getOwner().history().getVariableValueForStep(childGate.getName(), causeNode.getChange().getCurrentStep()), causeNode.getChange().getCurrentStep());
+                outputCauseNodes.add(childNode);
+                causeNode.addChildNode(childNode);
+            } else if (causeNode.getGate().getIncomingConnection() != null) {
+                ChangeExplanationItem childItem = this.explainHistoryChange((OutputGate) causeNode.getGate().getIncomingConnection().fromGate(), causeNode.getChange().getCurrentStep());
                 causeNode.addChildren(childItem.getTree().getRoots());
                 outputCauseNodes.addAll(childItem.getFreshNodes());
             }

@@ -29,8 +29,10 @@ public class DiagramCounterexampleExecutor implements DiagramExecutor {
         if (this.cursor.hasNext()) {
             this.cursor.moveNext();
             if (!this.stepsEvaluated.containsKey(this.cursor.getCurStateNum())) {
-                this.diagram.tickSystemTime();
                 this.evaluateDiagram();
+                this.diagram.tickSystemTime();
+                this.checkConsistencyWithCx();
+                this.diagram.history().record(this.diagram.fbInterface(), this.diagram.getSystemTime());
                 DiagramSnapshot snapshot = DiagramSnapshot.fromDiagram(this.diagram);
                 this.stepsEvaluated.put(this.cursor.getCurStateNum(), snapshot);
                 this.maxEvaluatedStepNum++;
@@ -72,11 +74,7 @@ public class DiagramCounterexampleExecutor implements DiagramExecutor {
         return snapshot.getFbInterface().getInputsValues();
     }
 
-    private void evaluateDiagram() {
-        for (InputGate inGate : this.diagram.fbInterface().getInputs().values()) {
-            inGate.populateInput(this.cursor.getCurState().getVarByName(inGate.getName()).getValue());
-        }
-
+    private void checkConsistencyWithCx(){
         for (DiagramElement de : this.diagram.getInternalDiagram().getFunctionBlocks()) {
             FunctionBlockBase fb = (FunctionBlockBase) de;
             // System.out.println("Block: " + fb.getName() + " ouput records: " + fb.history().outputRecordsCount());
@@ -89,7 +87,11 @@ public class DiagramCounterexampleExecutor implements DiagramExecutor {
                 }
             }
         }
+    }
 
-        this.diagram.history().record(this.diagram.fbInterface(), this.diagram.getSystemTime());
+    private void evaluateDiagram() {
+        for (InputGate inGate : this.diagram.fbInterface().getInputs().values()) {
+            inGate.populateInput(this.cursor.getCurState().getVarByName(inGate.getName()).getValue());
+        }
     }
 }

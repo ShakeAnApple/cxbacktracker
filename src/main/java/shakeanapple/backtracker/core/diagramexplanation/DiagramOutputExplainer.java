@@ -15,5 +15,7 @@ public interface DiagramOutputExplainer {
 
     ChangeExplanationItem explainChange(String outputName, List<String> blockPath, int timestamp);
 
+    ChangeExplanationItem explainChangeHistory(String outputName, List<String> blockPath, int timestamp);
+
     List<Gate> extractNonObviousConstants(ExplanationItem explanationResult);
 }

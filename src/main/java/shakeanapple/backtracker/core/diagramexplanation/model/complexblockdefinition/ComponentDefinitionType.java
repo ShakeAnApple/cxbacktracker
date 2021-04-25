@@ -17,5 +17,6 @@ public enum ComponentDefinitionType {
     COUNT,
     MUL,
     DIV,
-    MOD
+    MOD,
+    MAX
 }

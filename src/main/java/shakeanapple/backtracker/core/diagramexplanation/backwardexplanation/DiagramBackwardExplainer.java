@@ -57,6 +57,11 @@ public class DiagramBackwardExplainer implements DiagramOutputExplainer {
         return null;
     }
 
+    @Override
+    public ChangeExplanationItem explainChangeHistory(String outputName, List<String> blockPath, int timestamp) {
+        return null;
+    }
+
     private ExplanationItem explainInternalBlock(String gateName, FunctionBlockBase fbToExplain, int timestamp) {
 //        FunctionBlockBase fbToExplain = this.diagram.getInternalDiagram().getFunctionBlocks().stream()
 //                .filter(fb -> fb.getName().equals(blockName))

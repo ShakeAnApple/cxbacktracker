@@ -27,7 +27,7 @@ MODULE : 'MODULE'; VAR : 'VAR'; ASSIGN : 'ASSIGN'; DEFINE : 'DEFINE';
 
 BOOLEAN : 'boolean';
 
-COUNT : 'count'; MOD : 'mod'; XOR : 'xor'; XNOR : 'xnor';
+COUNT : 'count'; MOD : 'mod'; XOR : 'xor'; XNOR : 'xnor'; MAX : 'max';
 
 CASE : 'case'; ESAC : 'esac';
 
@@ -57,6 +57,10 @@ atom returns[Expression f]
         List<Expression> arguments = new ArrayList<>();
      } '(' a1=binary_operator1 { arguments.add($a1.f); } (',' a2=binary_operator1 { arguments.add($a2.f); })*')'
      { $f = new CountOperator(arguments); }
+    | MAX {
+        List<Expression> arguments = new ArrayList<>();
+    } '(' aint1=binary_operator6 { arguments.add($aint1.f); } (',' aint2=binary_operator6 { arguments.add($aint2.f); })*')'
+           { $f = new MaxOperator(arguments); }
     ;
 
 unary_operator_sign : '!' | '-';

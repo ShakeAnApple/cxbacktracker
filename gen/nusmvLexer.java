@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.antlrgenerated;// Generated from C:/Users/ovsianp1/projects/code/SEARCH/cxbacktracker\nusmv.g4 by ANTLR 4.7.2
+// Generated from C:/Users/ovsianp1/projects/code/SEARCH/cxbacktracker\nusmv.g4 by ANTLR 4.7.2
 
 import java.util.*;
 import shakeanapple.backtracker.parser.fblockdiagram.fromscratch.nusmvparsing.*;

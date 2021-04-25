@@ -9,21 +9,17 @@ import shakeanapple.backtracker.core.diagramexplanation.model.changecausetree.Ch
 
 import java.util.*;
 
-public class DiagramChangesExplainer implements DiagramOutputExplainer {
+public class DiagramChangeHistoryExplainer implements DiagramOutputExplainer {
 
     private FunctionBlockComplex diagram;
 
-    public DiagramChangesExplainer(FunctionBlockComplex diagram) {
+    public DiagramChangeHistoryExplainer(FunctionBlockComplex diagram) {
         this.diagram = diagram;
     }
 
-    @Override
-    public ExplanationItem explain(String outputName, List<String> blockPath, int timestamp) {
-        return null;
-    }
 
     @Override
-    public ChangeExplanationItem explainChange(String gateName, List<String> blockPath, int timestamp) {
+    public ChangeExplanationItem explainChangeHistory(String gateName, List<String> blockPath, int timestamp) {
         FunctionBlockBase fbToExplain = this.diagram;
         for (int i = 0; i < blockPath.size(); i++) {
             String nextName = blockPath.get(i);
@@ -36,7 +32,7 @@ public class DiagramChangesExplainer implements DiagramOutputExplainer {
         if (fbToExplain == null) {
             OutputGate outputGate = this.diagram.fbInterface().getOutputs().get(gateName);
             if (outputGate != null) {
-                ChangeExplanationItem item = this.diagram.explainChange(outputGate, timestamp);
+                ChangeExplanationItem item = this.diagram.explainHistoryChange(outputGate, timestamp);
                 return item;
             }
             InputGate inputGate = this.diagram.fbInterface().getInputs().get(gateName);
@@ -48,11 +44,6 @@ public class DiagramChangesExplainer implements DiagramOutputExplainer {
             return this.explainInternalBlock(gateName, fbToExplain, timestamp);
         }
         throw new RuntimeException("can't find gate " + gateName + " for block path" + Arrays.toString(blockPath.toArray()));
-    }
-
-    @Override
-    public ChangeExplanationItem explainChangeHistory(String outputName, List<String> blockPath, int timestamp) {
-        return null;
     }
 
     private ChangeExplanationItem explainInternalBlock(String gateName, FunctionBlockBase fbToExplain, int timestamp) {
@@ -70,7 +61,7 @@ public class DiagramChangesExplainer implements DiagramOutputExplainer {
         if (out != null) {
             rootNode = new ChangeCauseNode(out, fbToExplain.history().getVariableValueForStep(out.getName(), timestamp), timestamp,
                     fbToExplain.history().getVariableValueForStep(out.getName(), timestamp), timestamp);
-            res = fbToExplain.explainChange(out, timestamp);
+            res = fbToExplain.explainHistoryChange(out, timestamp);
             parentNode = rootNode;
         } else {
             InputGate in = fbToExplain.fbInterface().getInputs().get(gateName);
@@ -83,7 +74,7 @@ public class DiagramChangesExplainer implements DiagramOutputExplainer {
                             gateToExplain.getOwner().history().getVariableValueForStep(gateToExplain.getName(), timestamp), timestamp);
                     rootNode.addChildNode(childCause);
                     parentNode = childCause;
-                    res = gateToExplain.getOwner().explainChange(gateToExplain, timestamp);
+                    res = gateToExplain.getOwner().explainHistoryChange(gateToExplain, timestamp);
                 } else if (in.getIncomingConnection() != null) {
                     // connected to system input
                     ChangeCausePathTree tree = new ChangeCausePathTree();
@@ -123,20 +114,26 @@ public class DiagramChangesExplainer implements DiagramOutputExplainer {
             if (this.diagram.fbInterface().getInputs().get(causeNode.getGate().getName()) != null &&
                     this.diagram.fbInterface().getInputs().get(causeNode.getGate().getName()).equals(causeNode.getGate())
             ) {
-                // System.out.println(String.format("InternalD: cause '%s' added to result", causeNode.getGate().getName()));
                 ChangeCauseNode childNode = causeNode;
                 outputCauseNodes.add(childNode);
             } else if (causeNode.getGate().getIncomingConnection() != null) {
-                // System.out.println(String.format("InternalD: cause '%s' will be processed", causeNode.getGate().getName()));
-                ChangeExplanationItem childItem = this.explainInternalBlock(causeNode.getGate().getName(), causeNode.getGate().getOwner(), causeNode.getChange().getChangedStep());
+                ChangeExplanationItem childItem = this.explainInternalBlock(causeNode.getGate().getName(), causeNode.getGate().getOwner(), causeNode.getChange().getCurrentStep());
                 outputCauseNodes.addAll(childItem.getFreshNodes());
-//                causeNode.addChildren(childItem.getFreshNodes());
                 causeNode.addChildren(childItem.getTree().getRoots());
-                // System.out.println(String.format("InternalD: cause '%s' processed", causeNode.getGate().getName()));
             }
         }
 
         return result;
+    }
+
+    @Override
+    public ExplanationItem explain(String outputName, List<String> blockPath, int timestamp) {
+        return null;
+    }
+
+    @Override
+    public ChangeExplanationItem explainChange(String outputName, List<String> blockPath, int timestamp) {
+        return null;
     }
 
     @Override

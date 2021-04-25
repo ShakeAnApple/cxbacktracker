@@ -25,8 +25,9 @@ public class SubDiagramCounterexampleExecutorNew implements DiagramExecutor {
         if (this.inputSource.hasNext()) {
             this.inputSource.moveNext();
             if (!this.stepsEvaluated.containsKey(this.inputSource.getCurStateNum())) {
-                this.diagram.tickSystemTime();
                 this.evaluateDiagram();
+                this.diagram.tickSystemTime();
+                this.diagram.history().record(this.diagram.fbInterface(), this.diagram.getSystemTime());
                 DiagramSnapshot snapshot = DiagramSnapshot.fromDiagram(this.diagram);
                 this.stepsEvaluated.put(this.inputSource.getCurStateNum(), snapshot);
                 this.diagram.history().record(this.diagram.fbInterface(), this.diagram.getSystemTime());
@@ -88,6 +89,5 @@ public class SubDiagramCounterexampleExecutorNew implements DiagramExecutor {
 //            }
 //        }
 
-        this.diagram.history().record(this.diagram.fbInterface(), this.diagram.getSystemTime());
     }
 }
