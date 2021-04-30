@@ -17,7 +17,7 @@ import shakeanapple.backtracker.core.counterexample.SpecVerified;
 import shakeanapple.backtracker.core.counterexample.State;
 import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.DiagramChangesExplainer;
 import shakeanapple.backtracker.core.ltl.explanation.model.FormulaCause;
-import shakeanapple.backtracker.ui.explainer.control.diaramhistorychangeexplainer.DiagramExplainer;
+import shakeanapple.backtracker.ui.explainer.control.diagramexplainerfinal.DiagramExplainer;
 import shakeanapple.backtracker.ui.explainer.control.ltlexplainer.LtlFormulaExplainer;
 import shakeanapple.backtracker.ui.explainer.control.projectinitializer.model.CustomConfig;
 import shakeanapple.backtracker.ui.explainer.control.projectinitializer.ProjectInitializer;

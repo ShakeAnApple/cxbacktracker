@@ -1,6 +1,4 @@
-package shakeanapple.backtracker.core.diagramexplanation.model.causetree;
-
-import shakeanapple.backtracker.core.diagramexplanation.model.Gate;
+package shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causetree;
 
 import java.util.ArrayList;
 import java.util.List;

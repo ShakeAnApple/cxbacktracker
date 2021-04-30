@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.core.diagramexplanation.model.causetree;
+package shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causetree;
 
 import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.core.diagramexplanation.model.Gate;

@@ -1,19 +1,14 @@
 package shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents;
 
 import shakeanapple.backtracker.common.variable.ValueHolder;
-import shakeanapple.backtracker.core.diagramexplanation.model.BlockVariableHistoryItem;
 import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockBase;
-import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.logic.AndFunctionBlockBasic;
-import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
-import shakeanapple.backtracker.core.diagramexplanation.Clocks;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causetree.CauseNode;
 import shakeanapple.backtracker.core.diagramexplanation.model.OutputGate;
-import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
-import shakeanapple.backtracker.core.diagramexplanation.model.changecausetree.ChangeCauseNode;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changecausetree.ChangeCauseNode;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 //TODO introduce time into system?
 public class DelayFunctionBlockBasic extends FunctionBlockBasic {
@@ -131,7 +126,7 @@ public class DelayFunctionBlockBasic extends FunctionBlockBasic {
             return Collections.singletonList(new CauseNode(super.fbInterface().getInputs().get(this.input.getName()), super.history().getVariableValueForStep(this.input.getName(), timestamp - this.delay), timestamp - this.delay));
         }
         // TODO start from zero? or 1? I always forget: YES
-        return Collections.singletonList(new CauseNode(super.fbInterface().getInputs().get(this.input.getName()), super.history().getVariableValueForStep(this.input.getName(), 1), 1));
+        return Collections.singletonList(new CauseNode(super.fbInterface().getInputs().get(this.defValue.getName()), super.history().getVariableValueForStep(this.defValue.getName(), 1), 1));
     }
 
     @Override

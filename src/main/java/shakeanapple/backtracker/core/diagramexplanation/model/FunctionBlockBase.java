@@ -1,12 +1,16 @@
 package shakeanapple.backtracker.core.diagramexplanation.model;
 
 import shakeanapple.backtracker.core.diagramexplanation.Clocks;
-import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
-import shakeanapple.backtracker.core.diagramexplanation.model.changecausetree.ChangeExplanationItem;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causefinalgraph.CauseFinalNode;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causefinalgraph.CausePathFinalGraph;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causetree.ExplanationItem;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changecausetree.ChangeExplanationItem;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changestayedcausetree.ChangeStayedExplanationItem;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class FunctionBlockBase extends DiagramElement implements InterfaceUpdatedListener {
@@ -91,6 +95,12 @@ public abstract class FunctionBlockBase extends DiagramElement implements Interf
     }
     protected abstract ChangeExplanationItem explainHistoryChangeImpl(OutputGate output, Integer timestamp);
 
+    // FIXME explanation should be implemented as visitor!
+    public ChangeStayedExplanationItem explainHistoryStayedChanged(OutputGate output, int timestamp, Map<String, ChangeStayedExplanationItem> processedCauses) {
+        return this.explainHistoryStayedChangedImpl(output, timestamp, processedCauses);
+    }
+    protected abstract ChangeStayedExplanationItem explainHistoryStayedChangedImpl(OutputGate output, Integer timestamp, Map<String, ChangeStayedExplanationItem> processedCauses);
+
 
     public boolean isRoot() {
         return this.getName().equals("main");
@@ -98,4 +108,6 @@ public abstract class FunctionBlockBase extends DiagramElement implements Interf
 
     @Override
     public abstract FunctionBlockBase clone();
+
+    public abstract List<CauseFinalNode> explainFinal(Gate gate, int timestamp, CauseFinalNode parent, CausePathFinalGraph resultGraph);
 }

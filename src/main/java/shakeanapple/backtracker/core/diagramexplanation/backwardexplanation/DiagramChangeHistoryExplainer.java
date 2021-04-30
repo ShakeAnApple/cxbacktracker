@@ -1,11 +1,13 @@
 package shakeanapple.backtracker.core.diagramexplanation.backwardexplanation;
 
 import shakeanapple.backtracker.core.diagramexplanation.DiagramOutputExplainer;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causefinalgraph.CausePathFinalGraph;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changestayedcausetree.ChangeStayedExplanationItem;
 import shakeanapple.backtracker.core.diagramexplanation.model.*;
-import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
-import shakeanapple.backtracker.core.diagramexplanation.model.changecausetree.ChangeCauseNode;
-import shakeanapple.backtracker.core.diagramexplanation.model.changecausetree.ChangeCausePathTree;
-import shakeanapple.backtracker.core.diagramexplanation.model.changecausetree.ChangeExplanationItem;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causetree.ExplanationItem;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changecausetree.ChangeCauseNode;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changecausetree.ChangeCausePathTree;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changecausetree.ChangeExplanationItem;
 
 import java.util.*;
 
@@ -138,6 +140,16 @@ public class DiagramChangeHistoryExplainer implements DiagramOutputExplainer {
 
     @Override
     public List<Gate> extractNonObviousConstants(ExplanationItem explanationResult) {
+        return null;
+    }
+
+    @Override
+    public ChangeStayedExplanationItem explainChangedStayedHistory(String gateName, List<String> blockPath, int timestamp) {
+        return null;
+    }
+
+    @Override
+    public CausePathFinalGraph explainFinal(String gateName, List<String> blockPath, int timestamp) {
         return null;
     }
 }

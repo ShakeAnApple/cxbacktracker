@@ -1,19 +1,18 @@
 package shakeanapple.backtracker.core.diagramexplanation.backwardexplanation;
 
 import shakeanapple.backtracker.core.diagramexplanation.DiagramOutputExplainer;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causefinalgraph.CausePathFinalGraph;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changestayedcausetree.ChangeStayedExplanationItem;
 import shakeanapple.backtracker.core.diagramexplanation.model.*;
-import shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents.FunctionBlockBasic;
-import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
-import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CausePathTree;
-import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
-import shakeanapple.backtracker.core.diagramexplanation.model.changecausetree.ChangeExplanationItem;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causetree.CauseNode;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causetree.CausePathTree;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causetree.ExplanationItem;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changecausetree.ChangeExplanationItem;
 import shakeanapple.backtracker.core.diagramexplanation.tonusmv.NusmvBlock;
 import shakeanapple.backtracker.core.diagramexplanation.tonusmv.NusmvBlockConverter;
 import shakeanapple.backtracker.core.diagramexplanation.tonusmv.NusmvStringModel;
 import shakeanapple.backtracker.core.diagramexplanation.tonusmv.blocksconverters.ComplexBlockConverter;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -186,6 +185,16 @@ public class DiagramBackwardExplainer implements DiagramOutputExplainer {
             e.printStackTrace();
             throw new RuntimeException(Arrays.toString(e.getStackTrace()));
         }
+    }
+
+    @Override
+    public ChangeStayedExplanationItem explainChangedStayedHistory(String gateName, List<String> blockPath, int timestamp) {
+        return null;
+    }
+
+    @Override
+    public CausePathFinalGraph explainFinal(String gateName, List<String> blockPath, int timestamp) {
+        return null;
     }
 
     private Map<String, CauseGateEvaluation> extractSuspiciousGates(CauseNode parent) {

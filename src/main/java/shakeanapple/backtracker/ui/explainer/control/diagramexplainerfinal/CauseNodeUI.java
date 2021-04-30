@@ -1,6 +1,7 @@
-package shakeanapple.backtracker.ui.explainer.control.diaramhistorychangeexplainer;
+package shakeanapple.backtracker.ui.explainer.control.diagramexplainerfinal;
 
-import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changecausetree.ChangeCauseNode;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causefinalgraph.CauseFinalNode;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changestayedcausetree.ChangedStayedCauseNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,12 +25,12 @@ public class CauseNodeUI {
         return this.children;
     }
 
-    public static CauseNodeUI parse(ChangeCauseNode causeNode){
-        Cause cause = new Cause(causeNode.getChange().getCurrentStep(), causeNode.getGate().getFullName(),
-                causeNode.getGate().getOwner().getName(), causeNode.getChange().getCurrentValue());
+    public static CauseNodeUI parse(CauseFinalNode causeNode){
+        Cause cause = new Cause(causeNode.getStep(), causeNode.getGate().getFullName(),
+                causeNode.getGate().getOwner().getName(), causeNode.getValue());
 
         List<CauseNodeUI> children = new ArrayList<>();
-        for (ChangeCauseNode child: causeNode.getChildren()) {
+        for (CauseFinalNode child: causeNode.getChildren()) {
             children.add(CauseNodeUI.parse(child));
         }
 

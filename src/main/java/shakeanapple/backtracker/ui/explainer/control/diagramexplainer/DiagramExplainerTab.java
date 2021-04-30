@@ -10,7 +10,7 @@ import shakeanapple.backtracker.core.diagramexplanation.*;
 import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.DiagramBackwardExplainer;
 import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockBase;
 import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockComplex;
-import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causetree.ExplanationItem;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.DiagramSnapshot;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.FBInterfaceSnapshot;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.FunctionBlockSnapshot;

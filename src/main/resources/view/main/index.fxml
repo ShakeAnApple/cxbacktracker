@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 
 <?import shakeanapple.backtracker.ui.explainer.control.ltlexplainer.LtlFormulaExplainer?>
-<?import shakeanapple.backtracker.ui.explainer.control.diaramhistorychangeexplainer.DiagramExplainer?>
+<?import shakeanapple.backtracker.ui.explainer.control.diagramexplainerfinal.DiagramExplainer?>
 <?import shakeanapple.backtracker.ui.explainer.control.valuetable.ValueTable?>
 <?import shakeanapple.backtracker.ui.infrasructure.FxmlListCellFactory?>
 <?import shakeanapple.backtracker.ui.explainer.control.menubar.MenuBarCustom?>

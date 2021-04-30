@@ -4,6 +4,11 @@ import javafx.scene.paint.Color;
 import shakeanapple.backtracker.common.variable.IntegerValueHolder;
 import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.common.variable.BooleanValueHolder;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causefinalgraph.CauseFinalNode;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causefinalgraph.CausePathFinalGraph;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changestayedcausetree.ChangeStayedExplanationItem;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changestayedcausetree.ChangedStayedCauseNode;
+import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockComplex;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.ConnectionSnapshot;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.DiagramSnapshot;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.FunctionBlockSnapshot;
@@ -34,6 +39,105 @@ public class GraphHelper {
         for (ICalculatedNode newChild : child.getChildren()) {
             flatten(visChild, newChild, r, nodes, edges);
         }
+    }
+
+    private static void flattenCausesTree(VisNode parent, ChangedStayedCauseNode child, Random r, List<VisNode> nodes, List<VisEdge> edges){
+        VisNode visChild = null;
+        visChild = new VisNode(r.nextLong(), child.getGate().getFullName() + System.lineSeparator() + child.getChange().getNewStep() + ": " + child.getChange().getNewValue()
+                + System.lineSeparator() + "critical step: " + child.getCriticalStepNumber(), (child.getGate().getOwner() instanceof FunctionBlockComplex ? "red" :
+                (!child.isChangeCause() ? "#E3ECF0" : "#55C9FC")));
+        nodes.add(visChild);
+
+        if (parent != null) {
+            VisEdge edge = new VisEdge(parent, visChild, "to");
+            edges.add(edge);
+        }
+
+        for (ChangedStayedCauseNode newChild : child.getChildren()) {
+            flattenCausesTree(visChild, newChild, r, nodes, edges);
+        }
+    }
+
+
+    public static VisGraph convertToGraph(ChangeStayedExplanationItem expItem){
+        Random r = new Random();
+
+        List<VisNode> nodes = new ArrayList<>();
+        List<VisEdge> edges = new ArrayList<>();
+
+        flattenCausesTree(null, expItem.getTree().getRoots().get(0), r, nodes, edges);
+
+        VisGraph graph = new VisGraph(nodes, edges);
+        return graph;
+    }
+
+//    public static VisGraph convertToGraph(CausePathFinalGraph graph){
+//        Random r = new Random();
+//
+////        List<VisNode> nodes = new ArrayList<>();
+//        List<VisEdge> edges = new ArrayList<>();
+//
+//        Map<Long, VisNode> nodes = new HashMap<>();
+//        Map<CauseFinalNode, Long> nodesVisited = new HashMap<>();
+//        for (CauseFinalNode causeNode: graph.getNodes()) {
+//            long id = r.nextLong();
+//            VisNode visNode = new VisNode(id, causeNode.getGate().getFullName() + System.lineSeparator() + causeNode.getStep() + ": " + causeNode.getValue(),
+//                    (causeNode.getGate().getOwner() instanceof FunctionBlockComplex ? "red" :
+//                            (!causeNode.hasValueChanged() ? "#E3ECF0" : "#55C9FC")));
+//            nodesVisited.put(causeNode, id);
+//            nodes.put(id, visNode);
+//        }
+//
+//        for (CauseFinalNode causeNode: graph.getNodes()) {
+//            VisNode visNode = nodes.get(nodesVisited.get(causeNode));
+//            for (CauseFinalNode child: causeNode.getChildren()) {
+//                VisNode visChild = nodes.get(nodesVisited.get(child));
+//                edges.add(new VisEdge(visNode, visChild, "to"));
+//            }
+//        }
+//
+//        VisGraph visgraph = new VisGraph(new ArrayList<>(nodes.values()), edges);
+//        return visgraph;
+//    }
+
+
+    private static void flattenCausesGraph(VisNode parent, CauseFinalNode child, Random r, Map<Integer, VisNode> nodes, List<VisEdge> edges){
+        VisNode visChild = null;
+        boolean existed = false;
+        String label = child.getGate().getFullName() + System.lineSeparator() + child.getStep() + ": " + child.getValue();
+        if (!nodes.containsKey(child.hashCode())) {
+            visChild = new VisNode(r.nextLong(), label, (child.getGate().getOwner() instanceof FunctionBlockComplex ? "red" :
+                    (!child.hasValueChanged() ? "#E3ECF0" : "#55C9FC")));
+            nodes.put(child.hashCode(), visChild);
+        } else{
+            visChild = nodes.get(child.hashCode());
+            existed = true;
+        }
+
+        if (parent != null) {
+            VisEdge edge = new VisEdge(parent, visChild, "to");
+            edges.add(edge);
+        }
+
+        if (!existed) {
+            for (CauseFinalNode newChild : child.getChildren()) {
+                flattenCausesGraph(visChild, newChild, r, nodes, edges);
+            }
+        }
+    }
+
+
+    public static VisGraph convertToGraph(CausePathFinalGraph graph){
+        Random r = new Random();
+
+        Map<Integer, VisNode> nodes = new HashMap<>();
+        List<VisEdge> edges = new ArrayList<>();
+
+        flattenCausesGraph(null, graph.getRoot(), r, nodes, edges);
+
+        VisGraph visgraph = new VisGraph(new ArrayList<>(nodes.values()), edges);
+
+        return visgraph;
     }
 
 

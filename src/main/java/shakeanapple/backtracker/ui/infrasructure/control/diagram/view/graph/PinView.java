@@ -70,7 +70,6 @@ public class PinView extends NodeView {
         Tooltip tooltip = new Tooltip(this.tooltipText.getValue());
         tooltip.setShowDelay(Duration.ZERO);
         tooltip.textProperty().bind(this.tooltipText);
-
         this.view.setTooltip(tooltip);
 
         ///////////// label

@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.ui.explainer.control.diagramchangeexplainer;
+package shakeanapple.backtracker.ui.explainer.control.diagramexplainerfinal;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,10 +10,10 @@ import shakeanapple.backtracker.core.diagramexplanation.DiagramCounterexampleExe
 import shakeanapple.backtracker.core.diagramexplanation.DiagramExecutor;
 import shakeanapple.backtracker.core.diagramexplanation.DiagramOutputExplainer;
 import shakeanapple.backtracker.core.diagramexplanation.SubDiagramCounterexampleExecutorNew;
-import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.DiagramChangesExplainer;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.DiagramChangeExplainerFinal;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causefinalgraph.CausePathFinalGraph;
 import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockBase;
 import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockComplex;
-import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changecausetree.ChangeExplanationItem;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.DiagramSnapshot;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.FBInterfaceSnapshot;
 import shakeanapple.backtracker.core.diagramexplanation.model.snapshot.FunctionBlockSnapshot;
@@ -21,13 +21,13 @@ import shakeanapple.backtracker.core.diagramexplanation.tonusmv.NusmvBlock;
 import shakeanapple.backtracker.core.diagramexplanation.tonusmv.blocksconverters.ComplexBlockConverter;
 import shakeanapple.backtracker.ui.GraphHelper;
 import shakeanapple.backtracker.ui.explainer.Context;
-import shakeanapple.backtracker.ui.explainer.control.diagramchangeexplainer.model.Cause;
-import shakeanapple.backtracker.ui.explainer.control.diagramchangeexplainer.model.CauseNodeUI;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.DiagramControl;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Connection;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.DiagramCell;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Graph;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Pin;
+import shakeanapple.backtracker.ui.infrasructure.control.visgraph.VisGraphControl;
+import shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.graph.VisGraph;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -40,6 +40,9 @@ public class DiagramExplainerTab extends Tab {
 
     @FXML
     private ListView diagramCausesList;
+
+    @FXML
+    private VisGraphControl causesGraph;
 
     private DiagramExecutor diagramExecutor;
     private DiagramOutputExplainer diagramOutputExplainer;
@@ -90,7 +93,7 @@ public class DiagramExplainerTab extends Tab {
             e.printStackTrace();
         }
 
-        this.diagramOutputExplainer = new DiagramChangesExplainer(diagram);
+        this.diagramOutputExplainer = new DiagramChangeExplainerFinal(diagram);
     }
 
     public void init(FunctionBlockComplex diagram) {
@@ -99,7 +102,7 @@ public class DiagramExplainerTab extends Tab {
         this.diagramCausesList.setItems(this.diagramCausesListObservable);
 
 
-        this.diagramOutputExplainer = new DiagramChangesExplainer(diagram);
+        this.diagramOutputExplainer = new DiagramChangeExplainerFinal(diagram);
     }
 
     private void clearDiagram() {
@@ -114,9 +117,9 @@ public class DiagramExplainerTab extends Tab {
     public List<Cause> explainCause(String varName, List<String> blockPath, int timestamp) {
         this.clearDiagram();
 
-        ChangeExplanationItem expRes = this.diagramOutputExplainer.explainChange(varName, blockPath, timestamp);
-        //List<Gate> gates = this.diagramOutputExplainer.extractNonObviousConstants(expRes);
-        CauseNodeUI causesTree = CauseNodeUI.parse(expRes.getTree().getRoots().get(0));
+        CausePathFinalGraph expRes = this.diagramOutputExplainer.explainFinal(varName, blockPath, timestamp);
+        this.updateCausesGraph(expRes);
+        CauseNodeUI causesTree = CauseNodeUI.parse(expRes.getRoot());
 
         Map<String, Map<String, List<Cause>>> connectionsCauses = causesTree.inferConnectionCauses();
         for (String connId : connectionsCauses.keySet()) {
@@ -134,11 +137,16 @@ public class DiagramExplainerTab extends Tab {
             }
         }
 
-        List<Cause> res = expRes.getFreshNodes().stream()
-                .map(causeNode -> new Cause(causeNode.getChange().getCurrentStep() - 1, causeNode.getGate().getName(), causeNode.getGate().getOwner().getName(), causeNode.getChange().getCurrentValue()))
+        List<Cause> res = expRes.getLeaves().stream()
+                .map(causeNode -> new Cause(causeNode.getStep() - 1, causeNode.getGate().getName(), causeNode.getGate().getOwner().getName(), causeNode.getValue()))
                 .sorted(Comparator.comparing(Cause::getTimestamp).thenComparing(Cause::getBlockName).thenComparing(Cause::getVarName)).collect(Collectors.toList());
         this.diagramCausesListObservable.setAll(res);
         return res;
+    }
+
+    private void updateCausesGraph(CausePathFinalGraph expRes) {
+        VisGraph graph = GraphHelper.convertToGraph(expRes);
+        this.causesGraph.updateGraph(graph);
     }
 
     private Boolean diagramPinPressHandler(Pin pin) {

@@ -1,7 +1,6 @@
-package shakeanapple.backtracker.core.diagramexplanation.model.causetree;
+package shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causetree;
 
 import java.util.*;
-import java.util.function.Function;
 
 public class ExplanationItem {
     private CausePathTree tree;

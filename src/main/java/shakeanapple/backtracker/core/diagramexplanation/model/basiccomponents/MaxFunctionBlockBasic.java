@@ -4,13 +4,12 @@ import shakeanapple.backtracker.common.variable.IntegerValueHolder;
 import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.core.diagramexplanation.model.FunctionBlockBase;
 import shakeanapple.backtracker.core.diagramexplanation.model.OutputGate;
-import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
-import shakeanapple.backtracker.core.diagramexplanation.model.changecausetree.ChangeCauseNode;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causetree.CauseNode;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changecausetree.ChangeCauseNode;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
 import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;

@@ -100,8 +100,11 @@ public abstract class Gate extends DiagramElement {
     }
 
     public String getFullName(){
+//        this.fullName = (this.owner.getStringPathInSystem() == null || this.owner.getStringPathInSystem().isEmpty() ? "" : (this.owner.getStringPathInSystem() + "."))
+//                + (this.owner.isRoot() || this.owner instanceof FunctionBlockBasic ? "" : (this.owner.getName() + ".")) + this.getName();
+//
         this.fullName = (this.owner.getStringPathInSystem() == null || this.owner.getStringPathInSystem().isEmpty() ? "" : (this.owner.getStringPathInSystem() + "."))
-                + (this.owner.isRoot() || this.owner instanceof FunctionBlockBasic ? "" : (this.owner.getName() + ".")) + this.getName();
+                + (this.owner.isRoot() ? "" : (this.owner.getName() + ".")) + this.getName();
         return this.fullName;
     }
 

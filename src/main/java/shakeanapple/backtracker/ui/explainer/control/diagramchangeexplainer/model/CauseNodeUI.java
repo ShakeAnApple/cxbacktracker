@@ -1,7 +1,6 @@
 package shakeanapple.backtracker.ui.explainer.control.diagramchangeexplainer.model;
 
-import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
-import shakeanapple.backtracker.core.diagramexplanation.model.changecausetree.ChangeCauseNode;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changecausetree.ChangeCauseNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;

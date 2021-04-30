@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.core.diagramexplanation.model.changecausetree;
+package shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changecausetree;
 
 import java.util.ArrayList;
 import java.util.List;

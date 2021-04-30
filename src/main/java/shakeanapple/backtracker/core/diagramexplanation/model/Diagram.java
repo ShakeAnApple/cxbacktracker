@@ -1,13 +1,16 @@
 package shakeanapple.backtracker.core.diagramexplanation.model;
 
-import shakeanapple.backtracker.core.diagramexplanation.model.causetree.CauseNode;
-import shakeanapple.backtracker.core.diagramexplanation.model.causetree.ExplanationItem;
-import shakeanapple.backtracker.core.diagramexplanation.model.changecausetree.ChangeCauseNode;
-import shakeanapple.backtracker.core.diagramexplanation.model.changecausetree.ChangeExplanationItem;
-import shakeanapple.backtracker.core.diagramexplanation.model.variable.InputVariable;
-import shakeanapple.backtracker.core.diagramexplanation.model.variable.OutputVariable;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causefinalgraph.CauseFinalNode;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causefinalgraph.CausePathFinalGraph;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causetree.CauseNode;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causetree.ExplanationItem;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changecausetree.ChangeCauseNode;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changecausetree.ChangeExplanationItem;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changestayedcausetree.ChangeStayedExplanationItem;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changestayedcausetree.ChangedStayedCauseNode;
 
 import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class Diagram {
@@ -15,6 +18,7 @@ public class Diagram {
 
     private Map<String, Gate> inputs;
     private Map<String, Gate> outputs;
+    private FunctionBlockComplex owner;
 
     public Diagram(List<FunctionBlockBase> functionBlocks, List<Gate> inputs, List<Gate> outputs) {
         this.functionBlocks = functionBlocks;
@@ -23,6 +27,14 @@ public class Diagram {
 
     public List<FunctionBlockBase> getFunctionBlocks() {
         return this.functionBlocks;
+    }
+
+    public void setOwner(FunctionBlockComplex owner) {
+        this.owner = owner;
+    }
+
+    public FunctionBlockComplex getOwner() {
+        return owner;
     }
 
     public void execute() {
@@ -146,4 +158,106 @@ public class Diagram {
 
         return result;
     }
+
+    private String getStringHash(Gate gate, int timestamp) {
+        return gate.getFullName() + timestamp;
+    }
+
+    public ChangeStayedExplanationItem explainHistoryStayedChanged(OutputGate gateToExplain, Integer timestamp, Map<String, ChangeStayedExplanationItem> processedNodes) {
+//        System.out.println("Entered gate: " + timestamp + ": " + gateToExplain.getFullName() + " " + gateToExplain.getOwner().getName());
+        if (processedNodes.containsKey(this.getStringHash(gateToExplain, timestamp))){
+            return processedNodes.get(this.getStringHash(gateToExplain, timestamp));
+        }
+
+        ChangeStayedExplanationItem item = gateToExplain.getOwner().explainHistoryStayedChanged(gateToExplain, timestamp, processedNodes);
+        if (!processedNodes.containsKey(this.getStringHash(gateToExplain, timestamp))){
+            processedNodes.put(this.getStringHash(gateToExplain, timestamp), item);
+        }
+
+        Collection<ChangedStayedCauseNode> causeNodes = item.getFreshNodes();
+        List<ChangedStayedCauseNode> outputCauseNodes = new ArrayList<>();
+
+        ChangeStayedExplanationItem result = new ChangeStayedExplanationItem(item.getTree(), outputCauseNodes);
+        for (ChangedStayedCauseNode causeNode : causeNodes) {
+            if (this.inputs.containsKey(causeNode.getGate().getFullName())) {
+                Gate childGate = causeNode.getGate().getIncomingConnection().fromGate();
+                ChangedStayedCauseNode childNode = new ChangedStayedCauseNode(childGate, childGate.getOwner().history().getVariableValueForStep(childGate.getName(), causeNode.getChange().getNewStep()), causeNode.getChange().getNewStep(),
+                        childGate.getOwner().history().getVariableValueForStep(childGate.getName(), causeNode.getChange().getNewStep()), causeNode.getChange().getNewStep(), causeNode.getChange().getNewStep());
+                outputCauseNodes.add(childNode);
+                causeNode.addChildNode(childNode);
+            } else if (causeNode.getGate().getIncomingConnection() != null) {
+                ChangeStayedExplanationItem childItem = this.explainHistoryStayedChanged((OutputGate) causeNode.getGate().getIncomingConnection().fromGate(), causeNode.getChange().getNewStep(), processedNodes);
+                if (!processedNodes.containsKey(this.getStringHash(causeNode.getGate().getIncomingConnection().fromGate(), causeNode.getChange().getNewStep()))){
+                    processedNodes.put(this.getStringHash(causeNode.getGate().getIncomingConnection().fromGate(), causeNode.getChange().getNewStep()), childItem);
+                }
+                causeNode.addChildren(childItem.getTree().getRoots());
+                outputCauseNodes.addAll(childItem.getFreshNodes());
+            }
+        }
+        item.getFreshNodes().clear();
+//        System.out.println("Left gate: " + timestamp + ": " + gateToExplain.getFullName() + " " + gateToExplain.getOwner().getName());
+
+        return result;
+    }
+
+    public List<CauseFinalNode> explainFinal(Gate gate, int timestamp, CauseFinalNode parent, CausePathFinalGraph graph) {
+        List<CauseFinalNode> resultNodes = new ArrayList<>();
+        CauseFinalNode existingNode = graph.causeNodeFor(gate, timestamp);
+        if (existingNode != null){
+            parent.addChildNode(existingNode);
+            return new ArrayList<>();
+        }
+
+        if (gate instanceof InputGate){
+
+            CauseFinalNode rootNode = new CauseFinalNode(gate, gate.getOwner().history().getVariableValueForStep(gate.getName(), timestamp), timestamp, parent, graph);
+            // we might enter outer interface with no incoming connections
+            if (gate.getIncomingConnection() == null){
+                resultNodes.add(rootNode);
+            } else {
+                // can be an input gate as well (connected to interface, e.g.)
+                Gate gateToExplain = gate.getIncomingConnection().fromGate();
+                existingNode = graph.causeNodeFor(gateToExplain, timestamp);
+                if (existingNode != null) {
+                    rootNode.addChildNode(existingNode);
+                } else {
+                    //CauseFinalNode childNode = new CauseFinalNode(gateToExplain, gateToExplain.getOwner().history().getVariableValueForStep(gateToExplain.getName(), timestamp), timestamp, rootNode, graph);
+                    resultNodes = gateToExplain.getOwner().explainFinal(gateToExplain, timestamp, rootNode, graph);
+                }
+            }
+        } else {
+            // output of the whole diagram and connected to output of another block
+            if (gate.getIncomingConnection() != null && gate instanceof OutputGate){
+                CauseFinalNode rootNode = new CauseFinalNode(gate, gate.getOwner().history().getVariableValueForStep(gate.getName(), timestamp), timestamp, parent, graph);
+                OutputGate gateToExplain = (OutputGate) gate.getIncomingConnection().fromGate();
+                existingNode = graph.causeNodeFor(gateToExplain, timestamp);
+                if (existingNode != null){
+                    rootNode.addChildNode(existingNode);
+                } else {
+                    resultNodes = gateToExplain.getOwner().explainFinal(gateToExplain, timestamp, rootNode, graph);
+                }
+            } else {
+                // output of internal block
+                resultNodes = gate.getOwner().explainFinal(gate, timestamp, parent, graph);
+            }
+        }
+
+        List<CauseFinalNode> newNodes = new ArrayList<>();
+        for (CauseFinalNode causeNode : resultNodes) {
+            if (this.getOwner().fbInterface().getInputs().containsKey(causeNode.getGate().getName())){
+                newNodes.add(causeNode);
+            } else if (causeNode.getGate().getIncomingConnection() != null){
+                existingNode = graph.causeNodeFor(causeNode.getGate().getIncomingConnection().fromGate(), causeNode.getStep());
+                if (existingNode != null){
+                    causeNode.addChildNode(existingNode);
+                } else {
+                    List<CauseFinalNode> nodes = this.explainFinal(causeNode.getGate().getIncomingConnection().fromGate(), causeNode.getStep(), causeNode, graph);
+                    newNodes.addAll(nodes);
+                }
+            }
+        }
+        return newNodes;
+    }
+
+
 }
