@@ -1,16 +1,16 @@
 package shakeanapple.backtracker.core.diagramexplanation.backwardexplanation;
 
+import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.core.diagramexplanation.DiagramOutputExplainer;
 import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causefinalgraph.CauseFinalNode;
 import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causefinalgraph.CausePathFinalGraph;
 import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causetree.ExplanationItem;
-import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changecausetree.ChangeCauseNode;
-import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changecausetree.ChangeCausePathTree;
 import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changecausetree.ChangeExplanationItem;
 import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changestayedcausetree.ChangeStayedExplanationItem;
 import shakeanapple.backtracker.core.diagramexplanation.model.*;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class DiagramChangeExplainerFinal implements DiagramOutputExplainer {
 
@@ -57,6 +57,8 @@ public class DiagramChangeExplainerFinal implements DiagramOutputExplainer {
         }
         throw new RuntimeException("can't find gate " + gateName + " for block path" + Arrays.toString(blockPath.toArray()));
     }
+
+
 
 
     @Override

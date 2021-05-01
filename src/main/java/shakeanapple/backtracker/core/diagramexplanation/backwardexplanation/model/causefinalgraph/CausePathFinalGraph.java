@@ -34,8 +34,8 @@ public class CausePathFinalGraph {
         return new ArrayList<>(this.nodes.values());
     }
 
-    public CauseFinalNode causeNodeFor(Gate gate, int timestamp) {
-        return this.nodes.getOrDefault(gate.getFullName() + ":" + timestamp + ":" + gate.getOwner().history().getVariableValueForStep(gate.getName(), timestamp), null);
+    public CauseFinalNode causeNodeFor(Gate gate, int timestamp, boolean isRoot) {
+        return this.nodes.getOrDefault(gate.getFullName() + (isRoot ? "(root)" : "") +  ":" + timestamp + ":" + gate.getOwner().history().getVariableValueForStep(gate.getName(), timestamp), null);
     }
 
     public void addLeaf(CauseFinalNode node) {

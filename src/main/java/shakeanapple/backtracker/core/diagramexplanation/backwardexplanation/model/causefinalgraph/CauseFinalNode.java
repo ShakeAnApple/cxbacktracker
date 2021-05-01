@@ -15,6 +15,7 @@ public class CauseFinalNode {
     private int step;
 
     private ValueHolder prevValue;
+    // so change step = prevStep + 1
     private int prevStep;
 
     private CausePathFinalGraph owner;
@@ -22,6 +23,15 @@ public class CauseFinalNode {
 
     private List<CauseFinalNode> children = new ArrayList<>();
 
+    public boolean isTimeNode() {
+        return this.isTimeNode;
+    }
+
+    public void isTimeNode(boolean timeNode) {
+        isTimeNode = timeNode;
+    }
+
+    private boolean isTimeNode;
 
     public CauseFinalNode(Gate gate, ValueHolder value, int step, CauseFinalNode parent, CausePathFinalGraph owner) {
         this.gate = gate;
@@ -43,10 +53,6 @@ public class CauseFinalNode {
         this(gate, value, step, parent, owner);
         this.prevValue = prevValue;
         this.prevStep = prevStep;
-    }
-
-    public void isRoot(boolean isRoot) {
-        this.isRoot = isRoot;
     }
 
     public boolean isRoot() {
@@ -75,6 +81,7 @@ public class CauseFinalNode {
         this.owner.removeLeaf(this);
     }
 
+    // clear parents and dispose childre, but a child can have several parents as we live in a graph!
     public void clearChildren(){
         this.children.clear();
         this.owner.addLeaf(this);
@@ -88,7 +95,7 @@ public class CauseFinalNode {
         }
         return other.getGate().equals(this.gate) && other.value.equals(this.value) && other.step == this.step
                 && ((other.prevValue != null && this.prevValue != null) ? other.prevValue.equals(this.prevValue) : other.prevValue == null && this.prevValue == null)
-                && other.prevStep == this.prevStep;
+                && other.prevStep == this.prevStep && other.isRoot == this.isRoot;
     }
 
 
@@ -99,7 +106,7 @@ public class CauseFinalNode {
 
     @Override
     public String toString() {
-        return this.gate.getFullName() + ":" + this.step + ":" + this.value;
+        return this.gate.getFullName() + (this.isRoot ? "(root)" : "") + ":" + this.step + ":" + this.value;
     }
 
     public int getStep() {

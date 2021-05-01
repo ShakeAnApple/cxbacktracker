@@ -3,6 +3,7 @@ package shakeanapple.backtracker.core.diagramexplanation.model.basiccomponents;
 import shakeanapple.backtracker.common.variable.ValueHolder;
 import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causefinalgraph.CauseFinalNode;
 import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causefinalgraph.CausePathFinalGraph;
+import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changestayedcausetree.Change;
 import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changestayedcausetree.ChangeStayedExplanationItem;
 import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changestayedcausetree.ChangedStayedCauseNode;
 import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changestayedcausetree.ChangedStayedCausePathTree;
@@ -299,18 +300,98 @@ public abstract class FunctionBlockBasic extends FunctionBlockBase {
 
     @Override
     public List<CauseFinalNode> explainFinal(Gate gate, int timestamp, CauseFinalNode parent, CausePathFinalGraph graph){
-        ExplanationItem exp = this.explainImpl((OutputGate) gate, timestamp);
-        CauseNode oldNode = exp.getTree().getRoots().get(0);
-        CauseFinalNode newNode = new CauseFinalNode(oldNode.getGate(), oldNode.getValue(), oldNode.getTimestamp(), parent, graph);
+//        ExplanationItem exp = this.explainImpl((OutputGate) gate, timestamp);
+//        CauseNode oldNode = exp.getTree().getRoots().get(0);
+//        CauseFinalNode newNode = new CauseFinalNode(oldNode.getGate(), oldNode.getValue(), oldNode.getTimestamp(), parent, graph);
+//
+//        List<CauseFinalNode> newNodes = new ArrayList<>();
+//        for (CauseNode node : exp.getFreshNodes()) {
+//            CauseFinalNode existingNode = graph.causeNodeFor(node.getGate(), node.getTimestamp(), parent == null);
+//            if (existingNode != null) {
+//                newNode.addChildNode(existingNode);
+//            } else {
+//                CauseFinalNode childNode = new CauseFinalNode(node.getGate(), node.getValue(), node.getTimestamp(), newNode, graph);
+//                if (exp.getFreshNodes().stream().anyMatch(n -> n.equals(node))){
+//                    newNodes.add(childNode);
+//                }
+//            }
+//        }
+//        return newNodes;
+        return this.explainOnceMore(gate, timestamp, parent, graph);
+    }
 
+
+
+
+    public List<CauseFinalNode> explainOnceMore(Gate gate, int timestamp, CauseFinalNode parent, CausePathFinalGraph graph){
+        // if just changed --> show instant change
+        // if not just changed --> basic + when important values changed
         List<CauseFinalNode> newNodes = new ArrayList<>();
-        for (CauseNode node : exp.getFreshNodes()) {
-            CauseFinalNode childNode = new CauseFinalNode(node.getGate(), node.getValue(), node.getTimestamp(), newNode, graph);
-            if (exp.getFreshNodes().stream().anyMatch(n -> n.equals(node))){
-                newNodes.add(childNode);
+        ValueHolder curValue = this.history().getVariableValueForStep(gate.getName(), timestamp);
+        if (timestamp > 1 && !this.history().getVariableValueForStep(gate.getName(), timestamp - 1).equals(curValue)) {
+            ChangeExplanationItem changeExp = this.explainChangeImpl((OutputGate) gate, timestamp);
+            ChangeCauseNode root = changeExp.getTree().getRoots().get(0);
+            if (!root.hasValueChanged()){
+                System.out.println("Value of" + root.getGate().getFullName() + "hasn't changed but I completed change algorithm for some reason");
             }
+            CauseFinalNode rootNode = new CauseFinalNode(root.getGate(), root.getChange().getCurrentValue(), root.getChange().getCurrentStep(), graph, parent,
+                    root.getChange().getChangedValue(), root.getChange().getChangedStep());
+            List<ChangeCauseNode> children = root.getChildren();
+            for (ChangeCauseNode child: children){
+                CauseFinalNode existingNode = graph.causeNodeFor(child.getGate(), child.getChange().getCurrentStep(), parent == null);
+                if (existingNode != null) {
+                    rootNode.addChildNode(existingNode);
+                } else {
+                    CauseFinalNode newChild;
+                    if (child.hasValueChanged()) {
+                        newChild = new CauseFinalNode(child.getGate(), child.getChange().getCurrentValue(), child.getChange().getCurrentStep(), graph, rootNode, child.getChange().getChangedValue(), child.getChange().getChangedStep());
+                    } else{
+                        newChild = new CauseFinalNode(child.getGate(), child.getChange().getCurrentValue(), child.getChange().getCurrentStep(), rootNode, graph);
+                    }
+                    if (changeExp.getFreshNodes().stream().anyMatch(n -> n.equals(child))){
+                        newNodes.add(newChild);
+                    }
+                }
+            }
+        } else{
+            ExplanationItem exp = this.explainImpl((OutputGate) gate, timestamp);
+            CauseNode root = exp.getTree().getRoots().get(0);
+            int rootChangedStep = this.getChangedStep(root);
+            CauseFinalNode newNode;
+            if (rootChangedStep > 0) {
+                newNode = new CauseFinalNode(root.getGate(), root.getValue(), root.getTimestamp(), graph, parent, this.history().getVariableValueForStep(root.getGate().getName(), rootChangedStep), rootChangedStep);
+            } else{
+                newNode = new CauseFinalNode(root.getGate(), root.getValue(), root.getTimestamp(), parent, graph);
+            }
+
+            List<CauseNode> children = root.getChildren();
+            for (CauseNode child: children){
+                CauseFinalNode existingNode = graph.causeNodeFor(child.getGate(), child.getTimestamp(), parent == null);
+                if (existingNode != null) {
+                    newNode.addChildNode(existingNode);
+                } else {
+                    int childChangedStep = this.getChangedStep(child);
+                    CauseFinalNode newChild;
+                    if (childChangedStep > 0) {
+                        newChild = new CauseFinalNode(child.getGate(), child.getValue(), child.getTimestamp(), graph, newNode, this.history().getVariableValueForStep(child.getGate().getName(), childChangedStep), childChangedStep);
+                    } else{
+                        newChild = new CauseFinalNode(child.getGate(), child.getValue(), child.getTimestamp(), newNode, graph);
+                    }
+                    if (exp.getFreshNodes().stream().anyMatch(n -> n.equals(child))){
+                        newNodes.add(newChild);
+                    }
+                }
+            }
+
         }
         return newNodes;
+    }
+
+    private int getChangedStep(CauseNode node) {
+        BlockVariableHistoryItem changedItem = this.history().ofVariable(node.getGate().getName()).values().stream()
+                .filter(hi -> !hi.getValueHolder().equals(node.getValue()) && hi.getTimestamp() < node.getTimestamp())
+                .max(Comparator.comparing(BlockVariableHistoryItem::getTimestamp)).orElse(null);
+        return changedItem != null ? changedItem.getTimestamp() : Integer.MIN_VALUE;
     }
 
 }

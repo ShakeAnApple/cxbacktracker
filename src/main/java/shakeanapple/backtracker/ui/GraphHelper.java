@@ -106,8 +106,9 @@ public class GraphHelper {
         boolean existed = false;
         String label = child.getGate().getFullName() + System.lineSeparator() + child.getStep() + ": " + child.getValue();
         if (!nodes.containsKey(child.hashCode())) {
-            visChild = new VisNode(r.nextLong(), label, (child.getGate().getOwner() instanceof FunctionBlockComplex ? "red" :
-                    (!child.hasValueChanged() ? "#E3ECF0" : "#55C9FC")));
+//            visChild = new VisNode(r.nextLong(), label, (child.getGate().getOwner() instanceof FunctionBlockComplex ? "red" :
+//                    (!child.hasValueChanged() ? "#E3ECF0" : "#55C9FC")));
+            visChild = new VisNode(r.nextLong(), label, (!child.hasValueChanged() ? "#E3ECF0" : "#55C9FC"));
             nodes.put(child.hashCode(), visChild);
         } else{
             visChild = nodes.get(child.hashCode());

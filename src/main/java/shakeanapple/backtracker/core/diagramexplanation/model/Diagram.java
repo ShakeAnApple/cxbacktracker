@@ -202,43 +202,31 @@ public class Diagram {
 
     public List<CauseFinalNode> explainFinal(Gate gate, int timestamp, CauseFinalNode parent, CausePathFinalGraph graph) {
         List<CauseFinalNode> resultNodes = new ArrayList<>();
-        CauseFinalNode existingNode = graph.causeNodeFor(gate, timestamp);
+        CauseFinalNode existingNode = graph.causeNodeFor(gate, timestamp, parent == null);
         if (existingNode != null){
             parent.addChildNode(existingNode);
             return new ArrayList<>();
         }
 
-        if (gate instanceof InputGate){
+        //FIXME in-out connections should preserve information about changes
 
+        if (gate.getIncomingConnection() == null && gate instanceof OutputGate){
+            // output of internal block
+            resultNodes = gate.getOwner().explainFinal(gate, timestamp, parent, graph);
+        } else {
             CauseFinalNode rootNode = new CauseFinalNode(gate, gate.getOwner().history().getVariableValueForStep(gate.getName(), timestamp), timestamp, parent, graph);
             // we might enter outer interface with no incoming connections
-            if (gate.getIncomingConnection() == null){
+            if (gate instanceof InputGate && gate.getIncomingConnection() == null){
                 resultNodes.add(rootNode);
-            } else {
-                // can be an input gate as well (connected to interface, e.g.)
+            } else{
+                // can be an input gate as well (connected to interface, e.g.) or an output gate
                 Gate gateToExplain = gate.getIncomingConnection().fromGate();
-                existingNode = graph.causeNodeFor(gateToExplain, timestamp);
+                existingNode = graph.causeNodeFor(gateToExplain, timestamp, parent == null);
                 if (existingNode != null) {
                     rootNode.addChildNode(existingNode);
                 } else {
-                    //CauseFinalNode childNode = new CauseFinalNode(gateToExplain, gateToExplain.getOwner().history().getVariableValueForStep(gateToExplain.getName(), timestamp), timestamp, rootNode, graph);
                     resultNodes = gateToExplain.getOwner().explainFinal(gateToExplain, timestamp, rootNode, graph);
                 }
-            }
-        } else {
-            // output of the whole diagram and connected to output of another block
-            if (gate.getIncomingConnection() != null && gate instanceof OutputGate){
-                CauseFinalNode rootNode = new CauseFinalNode(gate, gate.getOwner().history().getVariableValueForStep(gate.getName(), timestamp), timestamp, parent, graph);
-                OutputGate gateToExplain = (OutputGate) gate.getIncomingConnection().fromGate();
-                existingNode = graph.causeNodeFor(gateToExplain, timestamp);
-                if (existingNode != null){
-                    rootNode.addChildNode(existingNode);
-                } else {
-                    resultNodes = gateToExplain.getOwner().explainFinal(gateToExplain, timestamp, rootNode, graph);
-                }
-            } else {
-                // output of internal block
-                resultNodes = gate.getOwner().explainFinal(gate, timestamp, parent, graph);
             }
         }
 
@@ -247,7 +235,7 @@ public class Diagram {
             if (this.getOwner().fbInterface().getInputs().containsKey(causeNode.getGate().getName())){
                 newNodes.add(causeNode);
             } else if (causeNode.getGate().getIncomingConnection() != null){
-                existingNode = graph.causeNodeFor(causeNode.getGate().getIncomingConnection().fromGate(), causeNode.getStep());
+                existingNode = graph.causeNodeFor(causeNode.getGate().getIncomingConnection().fromGate(), causeNode.getStep(), parent == null);
                 if (existingNode != null){
                     causeNode.addChildNode(existingNode);
                 } else {
