@@ -16,6 +16,10 @@ import shakeanapple.backtracker.core.ltl.evaluation.model.CalculationResult;
 import shakeanapple.backtracker.core.ltl.evaluation.model.ICalculatedFormula;
 import shakeanapple.backtracker.core.ltl.evaluation.model.ICalculatedNode;
 import shakeanapple.backtracker.core.ltl.evaluation.model.LogicalResult;
+import shakeanapple.backtracker.ui.infrasructure.control.causegraph.model.CauseGraph;
+import shakeanapple.backtracker.ui.infrasructure.control.causegraph.model.ChangeNode;
+import shakeanapple.backtracker.ui.infrasructure.control.causegraph.model.GraphNode;
+import shakeanapple.backtracker.ui.infrasructure.control.causegraph.model.RemainNode;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.*;
 import shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.graph.VisEdge;
 import shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.graph.VisGraph;
@@ -100,8 +104,46 @@ public class GraphHelper {
 //        return visgraph;
 //    }
 
+    private static void flattenCausesGraph(GraphNode parent, CauseFinalNode child, Random r, Map<Integer, GraphNode> nodes, List<shakeanapple.backtracker.ui.infrasructure.control.causegraph.model.Connection> edges){
+        GraphNode viewChild = null;
+        boolean existed = false;
+        if (!nodes.containsKey(child.hashCode())) {
+            viewChild = child.hasValueChanged() ? new ChangeNode(child.getGate().getFullName(), child.isRoot(), child.getValue(), child.getStep(), child.getPrevValue(), child.getPrevStep()) :
+                    new RemainNode(child.getGate().getFullName(), child.isRoot(), child.getValue(), child.getStep());
+            nodes.put(child.hashCode(), viewChild);
+        } else{
+            viewChild = nodes.get(child.hashCode());
+            existed = true;
+        }
 
-    private static void flattenCausesGraph(VisNode parent, CauseFinalNode child, Random r, Map<Integer, VisNode> nodes, List<VisEdge> edges){
+        if (parent != null) {
+            shakeanapple.backtracker.ui.infrasructure.control.causegraph.model.Connection edge = new shakeanapple.backtracker.ui.infrasructure.control.causegraph.model.Connection(parent, viewChild);
+            edges.add(edge);
+        }
+
+        if (!existed) {
+            for (CauseFinalNode newChild : child.getChildren()) {
+                flattenCausesGraph(viewChild, newChild, r, nodes, edges);
+            }
+        }
+    }
+
+
+    public static CauseGraph convertToGraph(CausePathFinalGraph graph){
+        Random r = new Random();
+
+        Map<Integer, GraphNode> nodes = new HashMap<>();
+        List<shakeanapple.backtracker.ui.infrasructure.control.causegraph.model.Connection> edges = new ArrayList<>();
+
+        flattenCausesGraph(null, graph.getRoot(), r, nodes, edges);
+
+        CauseGraph causeGraph = new CauseGraph(new ArrayList<>(nodes.values()), edges, nodes.values().stream().filter(GraphNode::isRoot).findFirst().orElse(null));
+
+        return causeGraph;
+    }
+
+
+    private static void flattenCausesVisGraph(VisNode parent, CauseFinalNode child, Random r, Map<Integer, VisNode> nodes, List<VisEdge> edges){
         VisNode visChild = null;
         boolean existed = false;
         String label = child.getGate().getFullName() + System.lineSeparator() + child.getStep() + ": " + child.getValue();
@@ -122,19 +164,19 @@ public class GraphHelper {
 
         if (!existed) {
             for (CauseFinalNode newChild : child.getChildren()) {
-                flattenCausesGraph(visChild, newChild, r, nodes, edges);
+                flattenCausesVisGraph(visChild, newChild, r, nodes, edges);
             }
         }
     }
 
 
-    public static VisGraph convertToGraph(CausePathFinalGraph graph){
+    public static VisGraph convertToVisGraph(CausePathFinalGraph graph){
         Random r = new Random();
 
         Map<Integer, VisNode> nodes = new HashMap<>();
         List<VisEdge> edges = new ArrayList<>();
 
-        flattenCausesGraph(null, graph.getRoot(), r, nodes, edges);
+        flattenCausesVisGraph(null, graph.getRoot(), r, nodes, edges);
 
         VisGraph visgraph = new VisGraph(new ArrayList<>(nodes.values()), edges);
 

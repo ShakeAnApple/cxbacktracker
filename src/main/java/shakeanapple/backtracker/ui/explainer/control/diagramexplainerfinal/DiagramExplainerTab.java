@@ -21,13 +21,13 @@ import shakeanapple.backtracker.core.diagramexplanation.tonusmv.NusmvBlock;
 import shakeanapple.backtracker.core.diagramexplanation.tonusmv.blocksconverters.ComplexBlockConverter;
 import shakeanapple.backtracker.ui.GraphHelper;
 import shakeanapple.backtracker.ui.explainer.Context;
+import shakeanapple.backtracker.ui.infrasructure.control.causegraph.CauseGraphControl;
+import shakeanapple.backtracker.ui.infrasructure.control.causegraph.model.CauseGraph;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.DiagramControl;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Connection;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.DiagramCell;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Graph;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.model.Pin;
-import shakeanapple.backtracker.ui.infrasructure.control.visgraph.VisGraphControl;
-import shakeanapple.backtracker.ui.infrasructure.control.visgraph.visfx.graph.VisGraph;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -42,7 +42,7 @@ public class DiagramExplainerTab extends Tab {
     private ListView diagramCausesList;
 
     @FXML
-    private VisGraphControl causesGraph;
+    private CauseGraphControl causesGraph;
 
     private DiagramExecutor diagramExecutor;
     private DiagramOutputExplainer diagramOutputExplainer;
@@ -145,8 +145,9 @@ public class DiagramExplainerTab extends Tab {
     }
 
     private void updateCausesGraph(CausePathFinalGraph expRes) {
-        VisGraph graph = GraphHelper.convertToGraph(expRes);
-        this.causesGraph.updateGraph(graph);
+        CauseGraph graph = GraphHelper.convertToGraph(expRes);
+        this.causesGraph.clear();
+        this.causesGraph.draw(graph);
     }
 
     private Boolean diagramPinPressHandler(Pin pin) {
@@ -231,6 +232,7 @@ public class DiagramExplainerTab extends Tab {
 
     public void reset() {
         this.diagramControl.clear();
+        this.causesGraph.clear();
         this.diagramExecutor = null;
         this.diagramOutputExplainer = null;
         this.connections = new HashMap<>();

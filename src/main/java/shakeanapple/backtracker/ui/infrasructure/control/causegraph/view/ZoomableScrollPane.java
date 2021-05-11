@@ -1,4 +1,4 @@
-package shakeanapple.backtracker.ui.infrasructure.control.diagram.view;
+package shakeanapple.backtracker.ui.infrasructure.control.causegraph.view;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;

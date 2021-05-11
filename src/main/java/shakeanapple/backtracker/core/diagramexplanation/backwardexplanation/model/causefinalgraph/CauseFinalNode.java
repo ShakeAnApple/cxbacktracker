@@ -14,6 +14,7 @@ public class CauseFinalNode {
     private ValueHolder value;
     private int step;
 
+
     private ValueHolder prevValue;
     // so change step = prevStep + 1
     private int prevStep;
@@ -85,6 +86,14 @@ public class CauseFinalNode {
     public void clearChildren(){
         this.children.clear();
         this.owner.addLeaf(this);
+    }
+
+    public ValueHolder getPrevValue() {
+        return this.prevValue;
+    }
+
+    public int getPrevStep() {
+        return this.prevStep;
     }
 
     @Override

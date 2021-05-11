@@ -1,11 +1,12 @@
-package shakeanapple.backtracker.ui.infrasructure.control.diagram.view;
+package shakeanapple.backtracker.ui.infrasructure.control.causegraph.view;
 
 import javafx.scene.Group;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.graph.CellView;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.graph.DiagramCellView;
-import shakeanapple.backtracker.ui.infrasructure.control.diagram.view.graph.GraphView;
+//import shakeanapple.backtracker.ui.infrasructure.control.causegraph.view.graph.DiagramCellView;
+import shakeanapple.backtracker.ui.infrasructure.control.causegraph.view.graph.GraphNodeView;
+import shakeanapple.backtracker.ui.infrasructure.control.causegraph.view.graph.GraphView;
+import shakeanapple.backtracker.ui.infrasructure.control.causegraph.view.graph.NodeView;
 
 
 public class Canvas extends ZoomableScrollPane {
@@ -53,8 +54,8 @@ public class Canvas extends ZoomableScrollPane {
         this.cellPane.getChildren().addAll(this.graphNew);
 
         // enable dragging of cells
-        for (DiagramCellView cell : this.graphNew.getNodes()) {
-            this.mouseGestures.makeDraggable(cell.getView());
+        for (GraphNodeView node : this.graphNew.getNodes()) {
+            this.mouseGestures.makeDraggable(node.getView());
         }
     }
 

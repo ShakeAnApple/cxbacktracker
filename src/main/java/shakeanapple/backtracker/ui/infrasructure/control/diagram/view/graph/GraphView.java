@@ -19,6 +19,7 @@ public class GraphView extends Group {
     private GraphView() {
         this.nodes = new ArrayList<>();
         this.connections = new ArrayList<>();
+        this.setStyle("-fx-background-color:white");
     }
 
     public static GraphView from(Graph graph) {
