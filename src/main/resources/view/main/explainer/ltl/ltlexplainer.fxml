@@ -18,4 +18,5 @@
             <StepsViewTable fx:id="formulaByStepsTable" VBox.vgrow="ALWAYS"/>
         </Tab>
     </TabPane>
+    <Button text="explain formula" onAction="#explainFormula"/>
 </fx:root>

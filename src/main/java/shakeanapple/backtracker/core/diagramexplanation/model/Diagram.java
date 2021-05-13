@@ -214,7 +214,9 @@ public class Diagram {
             // output of internal block
             resultNodes = gate.getOwner().explainFinal(gate, timestamp, parent, graph);
         } else {
-            CauseFinalNode rootNode = new CauseFinalNode(gate, gate.getOwner().history().getVariableValueForStep(gate.getName(), timestamp), timestamp, parent, graph);
+            BlockVariableHistoryItem lastChange = gate.getOwner().history().lastChangeForVarBeforeStep(gate.getName(), timestamp);
+            CauseFinalNode rootNode = new CauseFinalNode(gate, gate.getOwner().history().getVariableValueForStep(gate.getName(), timestamp), timestamp, graph, parent,
+                    lastChange.getValueHolder(), lastChange.getTimestamp());
             // we might enter outer interface with no incoming connections
             if (gate instanceof InputGate && gate.getIncomingConnection() == null){
                 resultNodes.add(rootNode);

@@ -304,7 +304,10 @@ public class FunctionBlockComplex extends FunctionBlockBase {
         if (gate instanceof InputGate) {
             if (gate.getIncomingConnection() != null && gate.getIncomingConnection().fromGate() instanceof InputGate) {
                 // connected to system input
-                CauseFinalNode root = new CauseFinalNode(gate, gate.getOwner().history().getVariableValueForStep(gate.getName(), timestamp), timestamp, parent, graph);
+                BlockVariableHistoryItem lastChange = gate.getOwner().history().lastChangeForVarBeforeStep(gate.getName(), timestamp);
+                CauseFinalNode root = new CauseFinalNode(gate, gate.getOwner().history().getVariableValueForStep(gate.getName(), timestamp), timestamp, graph, parent,
+                        lastChange.getValueHolder(), lastChange.getTimestamp());
+//                CauseFinalNode root = new CauseFinalNode(gate, gate.getOwner().history().getVariableValueForStep(gate.getName(), timestamp), timestamp, parent, graph);
                 Gate childGate = gate.getIncomingConnection().fromGate();
                 CauseFinalNode child = new CauseFinalNode(childGate, childGate.getOwner().history().getVariableValueForStep(childGate.getName(), timestamp), timestamp, root, graph);
                 return new ArrayList<>() {{
@@ -318,8 +321,11 @@ public class FunctionBlockComplex extends FunctionBlockBase {
                         add(cause);
                     }};
                 }
-                //const in the interface diagram
-                CauseFinalNode cause = new CauseFinalNode(gate, this.history().getVariableValueForStep(gate.getName(), timestamp), timestamp, parent, graph);
+                //const OR var in the interface diagram
+                BlockVariableHistoryItem lastChange = gate.getOwner().history().lastChangeForVarBeforeStep(gate.getName(), timestamp);
+                CauseFinalNode cause = new CauseFinalNode(gate, gate.getOwner().history().getVariableValueForStep(gate.getName(), timestamp), timestamp, graph, parent,
+                        lastChange.getValueHolder(), lastChange.getTimestamp());
+//                CauseFinalNode cause = new CauseFinalNode(gate, this.history().getVariableValueForStep(gate.getName(), timestamp), timestamp, parent, graph);
                 return new ArrayList<>() {{
                     add(cause);
                 }};
@@ -330,12 +336,18 @@ public class FunctionBlockComplex extends FunctionBlockBase {
         // or output of this diagram or some input of one of the internal blocks worth explaining
         // and it's an explanation target
         if (parent == null) {
-            int[] stepsToExplain = this.getStepsToExplain(gate, timestamp);
+            BlockVariableHistoryItem lastChange = gate.getOwner().history().lastChangeForVarBeforeStep(gate.getName(), timestamp);
+            int[] stepsToExplain;
+            if (lastChange.getTimestamp() == timestamp){
+                stepsToExplain = IntStream.range(1,timestamp + 1).toArray();
+            } else{
+                stepsToExplain = IntStream.range(lastChange.getTimestamp() + 1, timestamp + 1).toArray();
+            }
             // value stayed for some time
             if (stepsToExplain.length > 1) {
                 CauseFinalNode root = new CauseFinalNode(gate, gate.getOwner().history().getVariableValueForStep(gate.getName(), timestamp), timestamp,
                         graph, null,
-                        gate.getOwner().history().getVariableValueForStep(gate.getName(), stepsToExplain[0]), stepsToExplain[0]);
+                        lastChange.getValueHolder(), lastChange.getTimestamp());
                 root.isTimeNode(true);
                 for (int step : stepsToExplain) {
                     newNodes.addAll(this.explainFinal(gate, step, root, graph));

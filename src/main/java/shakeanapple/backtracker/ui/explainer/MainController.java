@@ -32,8 +32,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class MainController implements Initializable {
-    @FXML
-    public ListView<FormulaCause> formulaCausesList;
+//    @FXML
+//    public ListView<FormulaCause> formulaCausesList;
     @FXML
     private ListView<Step> stepsList;
     @FXML
@@ -106,6 +106,7 @@ public class MainController implements Initializable {
             this.diagramExplainer.init();
             this.ltlExplainer.init();
             this.ltlExplainer.setOnExplainedFormulaChanged(this::changeFormula);
+            this.ltlExplainer.setOnExplanationChanged(this::changeExplanationInTable);
         }
     }
 
@@ -115,7 +116,7 @@ public class MainController implements Initializable {
         this.ltlExplainer.reset();
         this.stepsList.getItems().clear();
 
-        this.formulaCausesList.setItems(FXCollections.observableArrayList());
+//        this.formulaCausesList.setItems(FXCollections.observableArrayList());
         this.stepsList.setItems(FXCollections.observableArrayList());
 
         Context.instance().setActiveSpecVerified(newFormula);
@@ -124,6 +125,7 @@ public class MainController implements Initializable {
         this.diagramExplainer.init();
         this.ltlExplainer.init();
         this.ltlExplainer.setOnExplainedFormulaChanged(this::changeFormula);
+        this.ltlExplainer.setOnExplanationChanged(this::changeExplanationInTable);
         this.stepsList.setItems(FXCollections.observableArrayList(
                 Context.instance().getCounterexample().getPath().values().stream().sorted(Comparator.comparing(State::getOrder))
                         .map(state -> new Step(state.getOrder(), Context.instance().getCounterexample().getLoopStart() == state.getOrder())).collect(Collectors.toList())
@@ -142,7 +144,7 @@ public class MainController implements Initializable {
         this.diagramExplainer.reset();
         this.ltlExplainer.reset();
 
-        this.formulaCausesList.setItems(FXCollections.observableArrayList());
+//        this.formulaCausesList.setItems(FXCollections.observableArrayList());
         this.stepsList.setItems(FXCollections.observableArrayList());
 
         Context.instance().reset();
@@ -170,6 +172,7 @@ public class MainController implements Initializable {
 
         this.stepsList.setOnMouseClicked(this::handleStepChosen);
         this.ltlExplainer.setOnExplainedFormulaChanged(this::changeFormula);
+        this.ltlExplainer.setOnExplanationChanged(this::changeExplanationInTable);
 
         this.isInitialState = true;
         this.isReadonly.setValue(false);
@@ -182,7 +185,7 @@ public class MainController implements Initializable {
         Context.instance().setCurrentStep(step.getNumber());
 
         if (this.isInitialState) {
-            this.explainFormulaFor(0);
+            this.ltlExplainer.explainFormulaFor(0);
             this.isInitialState = false;
         }
 
@@ -190,18 +193,19 @@ public class MainController implements Initializable {
         this.ltlExplainer.updateLtlTree();
     }
 
-    public void explainFormula(ActionEvent actionEvent) {
-        this.explainFormulaFor(Context.instance().getCurrentStep());
-    }
+//    public void explainFormula(ActionEvent actionEvent) {
+//        this.explainFormulaFor(Context.instance().getCurrentStep());
+//    }
 
-    private void explainFormulaFor(int stepNum){
-        List<FormulaCause> causes = this.ltlExplainer.explainFormulaFor(stepNum);
+    private Boolean changeExplanationInTable(List<FormulaCause> causes){
+//        List<FormulaCause> causes = this.ltlExplainer.explainFormulaFor(stepNum);
 
-        this.formulaCausesList.getItems().clear();
-        this.formulaCausesList.setItems(FXCollections.observableArrayList(causes));
+//        this.formulaCausesList.getItems().clear();
+//        this.formulaCausesList.setItems(FXCollections.observableArrayList(causes));
 
         this.valueTable.highlightCauses(causes);
         this.valueTable.refresh();
+        return true;
     }
 
     private List<String> getVariableBlockPath(String fullVarName){

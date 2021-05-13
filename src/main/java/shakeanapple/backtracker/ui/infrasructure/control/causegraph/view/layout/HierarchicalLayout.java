@@ -54,6 +54,7 @@ public class HierarchicalLayout extends Layout {
         }
     }
 
+    // children should be displayed after the last parent! (so you need to move the existing node and its children forward)
     private void addChildren(Map<Integer, Map<Integer, GraphNodeView>> hierarchyLevels, int lastLevelNum, Set<GraphNodeView> processedNodes) {
         Map<Integer, GraphNodeView> lastLevelNodes = hierarchyLevels.get(lastLevelNum);
         Map<Integer, GraphNodeView> newLevelNodes = new HashMap<>();

@@ -13,15 +13,15 @@
 <?import shakeanapple.backtracker.ui.infrasructure.FxmlListCellFactory?>
 <?import shakeanapple.backtracker.ui.infrasructure.control.causegraph.CauseGraphControl?>
 <fx:root type="javafx.scene.control.Tab" xmlns:fx="http://javafx.com/fxml">
-    <SplitPane dividerPositions="0.8" >
+    <SplitPane dividerPositions="0.8" orientation="VERTICAL" >
         <DiagramControl fx:id="diagramControl" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" prefHeight="1000" prefWidth="1000"/>
         <VBox SplitPane.resizableWithParent="false">
 <!--            <Label text="Diagram explanation result"/>-->
-            <ListView visible="false" fx:id="diagramCausesList">
-                <cellFactory>
-                    <FxmlListCellFactory fxmlSource="@../../listcell/diagramCausesListCell.fxml"/>
-                </cellFactory>
-            </ListView>
+<!--            <ListView visible="false" fx:id="diagramCausesList">-->
+<!--                <cellFactory>-->
+<!--                    <FxmlListCellFactory fxmlSource="@../../listcell/diagramCausesListCell.fxml"/>-->
+<!--                </cellFactory>-->
+<!--            </ListView>-->
             <Label text="Diagram explanation graph"/>
             <CauseGraphControl fx:id="causesGraph" VBox.vgrow="ALWAYS" />
 

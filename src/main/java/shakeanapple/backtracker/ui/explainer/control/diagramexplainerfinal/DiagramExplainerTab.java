@@ -38,8 +38,8 @@ public class DiagramExplainerTab extends Tab {
     @FXML
     private DiagramControl diagramControl;
 
-    @FXML
-    private ListView diagramCausesList;
+//    @FXML
+//    private ListView diagramCausesList;
 
     @FXML
     private CauseGraphControl causesGraph;
@@ -53,7 +53,7 @@ public class DiagramExplainerTab extends Tab {
     private DiagramExplainer parent;
     private FunctionBlockComplex diagram;
 
-    private ObservableList<Cause> diagramCausesListObservable = FXCollections.observableArrayList();
+//    private ObservableList<Cause> diagramCausesListObservable = FXCollections.observableArrayList();
 
     DiagramExplainerTab(String title, DiagramExplainer parent) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("view/main/explainer/diagram/diagramExplainerTab.fxml"));
@@ -80,7 +80,7 @@ public class DiagramExplainerTab extends Tab {
 //        FunctionBlockComplex diagram = FunctionBlockComplex.parse(Context.instance().getDiagramPath());
         this.diagramExecutor = new SubDiagramCounterexampleExecutorNew(diagram, parentExecutor);
         this.diagram = diagram;
-        this.diagramCausesList.setItems(this.diagramCausesListObservable);
+//        this.diagramCausesList.setItems(this.diagramCausesListObservable);
 
         ComplexBlockConverter converter = new ComplexBlockConverter(diagram);
         NusmvBlock block = converter.convert(true);
@@ -99,7 +99,7 @@ public class DiagramExplainerTab extends Tab {
     public void init(FunctionBlockComplex diagram) {
         this.diagramExecutor = new DiagramCounterexampleExecutor(diagram, Context.instance().getCounterexample());
         this.diagram = diagram;
-        this.diagramCausesList.setItems(this.diagramCausesListObservable);
+//        this.diagramCausesList.setItems(this.diagramCausesListObservable);
 
 
         this.diagramOutputExplainer = new DiagramChangeExplainerFinal(diagram);
@@ -140,7 +140,7 @@ public class DiagramExplainerTab extends Tab {
         List<Cause> res = expRes.getLeaves().stream()
                 .map(causeNode -> new Cause(causeNode.getStep() - 1, causeNode.getGate().getName(), causeNode.getGate().getOwner().getName(), causeNode.getValue()))
                 .sorted(Comparator.comparing(Cause::getTimestamp).thenComparing(Cause::getBlockName).thenComparing(Cause::getVarName)).collect(Collectors.toList());
-        this.diagramCausesListObservable.setAll(res);
+//        this.diagramCausesListObservable.setAll(res);
         return res;
     }
 
@@ -152,14 +152,14 @@ public class DiagramExplainerTab extends Tab {
 
     private Boolean diagramPinPressHandler(Pin pin) {
         List<Cause> causes = this.explainCause(pin.getShortName(), Collections.singletonList(pin.getOwner().getName()), Context.instance().getCurrentStep() + 1);
-        this.diagramCausesListObservable.clear();
-        this.diagramCausesListObservable.addAll(causes);
+//        this.diagramCausesListObservable.clear();
+//        this.diagramCausesListObservable.addAll(causes);
         return true;
     }
 
     private void updateDiagram(DiagramSnapshot snapshot) {
         this.clearDiagram();
-        this.diagramCausesListObservable.clear();
+//        this.diagramCausesListObservable.clear();
         if (this.diagramControl.isClear()) {
             Graph diagram = GraphHelper.convertToDiagramGraphNew(snapshot, this::diagramPinPressHandler, this::onBlockDoubleClicked);
             this.diagramControl.draw(diagram);
@@ -239,7 +239,7 @@ public class DiagramExplainerTab extends Tab {
         this.diagramPins = new HashMap<>();
     }
 
-    public ObservableList<Cause> getDiagramCausesList() {
-        return this.diagramCausesListObservable;
-    }
+//    public ObservableList<Cause> getDiagramCausesList() {
+//        return this.diagramCausesListObservable;
+//    }
 }

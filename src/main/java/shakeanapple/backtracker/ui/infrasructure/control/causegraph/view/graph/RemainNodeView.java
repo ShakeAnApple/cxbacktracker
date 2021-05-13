@@ -33,6 +33,7 @@ public class RemainNodeView extends NodeView implements GraphNodeView{
                 .subtract(label.heightProperty().divide(2)));
         label.addEventHandler(MouseEvent.ANY, e -> this.view.fireEvent(e));
         view.widthProperty().bind(label.widthProperty().add(4));
+        view.heightProperty().bind(label.heightProperty().add(4));
 
         parent.getChildren().add(view);
         parent.getChildren().add(label);

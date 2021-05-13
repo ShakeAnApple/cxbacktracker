@@ -34,4 +34,8 @@ public class BlockVariableHistory {
     public Map<Integer, BlockVariableHistoryItem> valuesByStep(){
         return this.valuesByStep;
     }
+
+    public BlockVariableHistoryItem getItem(int timestamp) {
+        return this.valuesByStep.get(timestamp);
+    }
 }
