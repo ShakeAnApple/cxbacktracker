@@ -25,10 +25,12 @@ public abstract class GraphNodeView extends NodeView {
         this.getParent().getChildren().add(button);
         button.onActionProperty().setValue(
                 actionEvent -> {
-                    selectCausesSubGraph.apply(gateFullName + " " + timestamp);
+                    selectCausesSubGraph.apply(gateFullName + " " + timestamp + " " + (this.isRoot() ? "+" : "-" ));
                     internalSelectCauseHandler();
                 });
     }
+
+    protected abstract boolean isRoot();
 
     private void internalSelectCauseHandler() {
         this.getParent().clearHighlighting();

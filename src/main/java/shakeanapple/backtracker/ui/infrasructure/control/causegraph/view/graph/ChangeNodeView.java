@@ -28,7 +28,7 @@ public class ChangeNodeView extends GraphNodeView {
         view.setFill(DiagramStyles.CHANGE_NODE_COLOR);
         view.setStroke(DiagramStyles.NODE_STROKE_COLOR);
 
-        this.name = node.getGateFullName() + (node.isRoot() ? " (root)" : "") + '\n' + (node.getStep()-1) + ": " + node.getValue() + '\n' + "Last updated at: " + node.getLastUpdatedStep();
+        this.name = node.getGateFullName() + (node.isRoot() ? " (root)" : "") + '\n' + (node.getStep()-1) + ": " + node.getValue() + '\n' + "Last updated at: " + (node.getLastUpdatedStep() - 1);
         Label label = new Label(this.name);
         label.layoutXProperty().bind(view.layoutXProperty().add(2));
         label.layoutYProperty().bind(view.layoutYProperty()
@@ -42,6 +42,11 @@ public class ChangeNodeView extends GraphNodeView {
         parent.getChildren().add(label);
 
         super.addButton(this.node.getSelectCausesSubGraphHandler(), node.getGateFullName(), node.getStep());
+    }
+
+    @Override
+    protected boolean isRoot() {
+        return this.node.isRoot();
     }
 
     @Override

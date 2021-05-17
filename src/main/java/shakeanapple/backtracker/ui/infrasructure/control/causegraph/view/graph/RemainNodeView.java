@@ -42,6 +42,11 @@ public class RemainNodeView extends GraphNodeView{
     }
 
     @Override
+    protected boolean isRoot() {
+        return this.node.isRoot();
+    }
+
+    @Override
     public Rectangle getView() {
         return this.view;
     }

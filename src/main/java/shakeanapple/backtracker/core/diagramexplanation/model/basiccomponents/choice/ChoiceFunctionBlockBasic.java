@@ -139,18 +139,9 @@ public class ChoiceFunctionBlockBasic extends FunctionBlockBasic {
                             }).filter(Objects::nonNull).collect(Collectors.toList())
             );
         } else {
-            result.addAll(
-                    this.choices.stream().filter(choice -> choice.getOrder() >= changeExecutedChoice.getOrder() && choice.getOrder() <= nextExecutedChoice.getOrder())
-                            .map(choice -> {
-                                ValueHolder changeCondition = history().getVariableValueForStep(choice.getCondition().getName(), changeStep);
-                                ValueHolder nextCondition = history().getVariableValueForStep(choice.getCondition().getName(), changeStep + 1);
-                                if (!changeCondition.getValue().equals(nextCondition.getValue())) {
-                                    return new ChangeCauseNode(fbInterface().getInputs().get(choice.getCondition().getName()),
-                                            nextCondition, changeStep + 1, changeCondition, changeStep);
-                                }
-                                return null;
-                            }).filter(Objects::nonNull).collect(Collectors.toList())
-            );
+            result.add(new ChangeCauseNode(fbInterface().getInputs().get(nextExecutedChoice.getCondition().getName()),
+                    history().getVariableValueForStep(nextExecutedChoice.getCondition().getName(), changeStep + 1),
+                    changeStep + 1, history().getVariableValueForStep(nextExecutedChoice.getCondition().getName(), changeStep), changeStep));
         }
         ValueHolder changeChoiceOutput = this.history().getVariableValueForStep(nextExecutedChoice.getOutput().getName(), changeStep);
         ValueHolder changeChoiceNextOutput = this.history().getVariableValueForStep(nextExecutedChoice.getOutput().getName(), changeStep + 1);

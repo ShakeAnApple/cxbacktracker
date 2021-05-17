@@ -151,10 +151,13 @@ public class DiagramExplainerTab extends Tab {
         return null;
     }
 
-    private Boolean selectCausesSubGraphHandler(String gateFullNameTimestamp){
-        String gateFullName = gateFullNameTimestamp.substring(0, gateFullNameTimestamp.indexOf(" "));
-        int timestamp = Integer.parseInt(gateFullNameTimestamp.substring(gateFullNameTimestamp.indexOf(" ") + 1));
-        CauseNodeUI subTree = this.causesTreeCurrent.getSubTree(gateFullName, timestamp);
+    private Boolean selectCausesSubGraphHandler(String gateFullNameTimestampRoot){
+        String[] parts = gateFullNameTimestampRoot.split(" ");
+        String gateFullName = parts[0];
+        int timestamp = Integer.parseInt(parts[1]);
+        boolean isRoot = parts[2].equals("+");
+
+        CauseNodeUI subTree = this.causesTreeCurrent.getSubTree(gateFullName, timestamp, isRoot);
         this.displayCauseTree(subTree);
         return true;
     }

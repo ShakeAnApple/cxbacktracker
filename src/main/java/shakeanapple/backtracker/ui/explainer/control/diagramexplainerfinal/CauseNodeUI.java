@@ -8,10 +8,12 @@ import java.util.*;
 public class CauseNodeUI {
     private Cause cause;
     private List<CauseNodeUI> children;
+    private boolean isRoot;
 
-    public CauseNodeUI(Cause cause, List<CauseNodeUI> children) {
+    public CauseNodeUI(Cause cause, List<CauseNodeUI> children, boolean isRoot) {
         this.cause = cause;
         this.children = children;
+        this.isRoot = isRoot;
     }
 
     public Cause getCause() {
@@ -31,7 +33,7 @@ public class CauseNodeUI {
             children.add(CauseNodeUI.parse(child));
         }
 
-        return new CauseNodeUI(cause, children);
+        return new CauseNodeUI(cause, children, causeNode.isRoot());
     }
 
     public String constructConnectionId(String fromBlock, String fromVarName, String toBlock, String  toVarName){
@@ -127,19 +129,23 @@ public class CauseNodeUI {
         return causes;
     }
 
-    public CauseNodeUI getSubTree(String gateFullName, int timestamp) {
+    public CauseNodeUI getSubTree(String gateFullName, int timestamp, boolean isRoot) {
+        if (this.cause.getVarName().equals(gateFullName) && this.cause.getTimestamp() == timestamp && this.isRoot == isRoot) {
+            return this;
+        }
         Set<CauseNodeUI> processedNodes = new HashSet<>();
-        return this.findChild(gateFullName, timestamp, processedNodes);
+        processedNodes.add(this);
+        return this.findChild(gateFullName, timestamp, isRoot, processedNodes);
     }
 
-    private CauseNodeUI findChild(String gateFullName, int timestamp, Set<CauseNodeUI> processedNodes){
+    private CauseNodeUI findChild(String gateFullName, int timestamp, boolean isRoot, Set<CauseNodeUI> processedNodes){
         for (CauseNodeUI child: this.children) {
             if (!processedNodes.contains(child)) {
-                if (child.getCause().getVarName().equals(gateFullName) && child.getCause().getTimestamp() == timestamp) {
+                if (child.getCause().getVarName().equals(gateFullName) && child.getCause().getTimestamp() == timestamp && child.isRoot == isRoot) {
                     return child;
                 } else{
                     processedNodes.add(child);
-                    CauseNodeUI nodeFound = child.findChild(gateFullName, timestamp, processedNodes);
+                    CauseNodeUI nodeFound = child.findChild(gateFullName, timestamp, isRoot, processedNodes);
                     if (nodeFound != null){
                         return nodeFound;
                     }
