@@ -2,6 +2,7 @@ package shakeanapple.backtracker.ui.infrasructure.control.causegraph.view.graph;
 
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Ellipse;
@@ -11,14 +12,15 @@ import shakeanapple.backtracker.ui.infrasructure.control.causegraph.view.Diagram
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
-public class ChangeNodeView extends NodeView implements GraphNodeView {
+public class ChangeNodeView extends GraphNodeView {
     private ChangeNode node;
     private Rectangle view;
     private String name;
     private List<GraphNodeView> children = new ArrayList<>();
 
-    public ChangeNodeView(Group parent, ChangeNode node) {
+    public ChangeNodeView(GraphView parent, ChangeNode node) {
         super(parent);
         this.node = node;
 
@@ -26,7 +28,7 @@ public class ChangeNodeView extends NodeView implements GraphNodeView {
         view.setFill(DiagramStyles.CHANGE_NODE_COLOR);
         view.setStroke(DiagramStyles.NODE_STROKE_COLOR);
 
-        this.name = node.getGateFullName() + (node.isRoot() ? " (root)" : "") + '\n' + node.getStep() + ": " + node.getValue() + '\n' + "Last updated at: " + node.getLastUpdatedStep();
+        this.name = node.getGateFullName() + (node.isRoot() ? " (root)" : "") + '\n' + (node.getStep()-1) + ": " + node.getValue() + '\n' + "Last updated at: " + node.getLastUpdatedStep();
         Label label = new Label(this.name);
         label.layoutXProperty().bind(view.layoutXProperty().add(2));
         label.layoutYProperty().bind(view.layoutYProperty()
@@ -38,10 +40,12 @@ public class ChangeNodeView extends NodeView implements GraphNodeView {
 
         parent.getChildren().add(view);
         parent.getChildren().add(label);
+
+        super.addButton(this.node.getSelectCausesSubGraphHandler(), node.getGateFullName(), node.getStep());
     }
 
     @Override
-    public Node getView() {
+    public Rectangle getView() {
         return this.view;
     }
 

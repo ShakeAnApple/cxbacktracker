@@ -3,10 +3,7 @@ package shakeanapple.backtracker.ui.explainer.control.diagramexplainerfinal;
 import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.causefinalgraph.CauseFinalNode;
 import shakeanapple.backtracker.core.diagramexplanation.backwardexplanation.model.changestayedcausetree.ChangedStayedCauseNode;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CauseNodeUI {
     private Cause cause;
@@ -128,5 +125,27 @@ public class CauseNodeUI {
             }
         }
         return causes;
+    }
+
+    public CauseNodeUI getSubTree(String gateFullName, int timestamp) {
+        Set<CauseNodeUI> processedNodes = new HashSet<>();
+        return this.findChild(gateFullName, timestamp, processedNodes);
+    }
+
+    private CauseNodeUI findChild(String gateFullName, int timestamp, Set<CauseNodeUI> processedNodes){
+        for (CauseNodeUI child: this.children) {
+            if (!processedNodes.contains(child)) {
+                if (child.getCause().getVarName().equals(gateFullName) && child.getCause().getTimestamp() == timestamp) {
+                    return child;
+                } else{
+                    processedNodes.add(child);
+                    CauseNodeUI nodeFound = child.findChild(gateFullName, timestamp, processedNodes);
+                    if (nodeFound != null){
+                        return nodeFound;
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

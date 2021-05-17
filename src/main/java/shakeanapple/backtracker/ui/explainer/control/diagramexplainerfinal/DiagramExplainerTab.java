@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
+import shakeanapple.backtracker.common.variable.BooleanValueHolder;
 import shakeanapple.backtracker.core.diagramexplanation.DiagramCounterexampleExecutor;
 import shakeanapple.backtracker.core.diagramexplanation.DiagramExecutor;
 import shakeanapple.backtracker.core.diagramexplanation.DiagramOutputExplainer;
@@ -53,6 +54,7 @@ public class DiagramExplainerTab extends Tab {
     private DiagramExplainer parent;
     private FunctionBlockComplex diagram;
 
+    private CauseNodeUI causesTreeCurrent;
 //    private ObservableList<Cause> diagramCausesListObservable = FXCollections.observableArrayList();
 
     DiagramExplainerTab(String title, DiagramExplainer parent) {
@@ -114,21 +116,17 @@ public class DiagramExplainerTab extends Tab {
         }
     }
 
-    public List<Cause> explainCause(String varName, List<String> blockPath, int timestamp) {
+    private void displayCauseTree(CauseNodeUI root){
         this.clearDiagram();
 
-        CausePathFinalGraph expRes = this.diagramOutputExplainer.explainFinal(varName, blockPath, timestamp);
-        this.updateCausesGraph(expRes);
-        CauseNodeUI causesTree = CauseNodeUI.parse(expRes.getRoot());
-
-        Map<String, Map<String, List<Cause>>> connectionsCauses = causesTree.inferConnectionCauses();
+        Map<String, Map<String, List<Cause>>> connectionsCauses = root.inferConnectionCauses();
         for (String connId : connectionsCauses.keySet()) {
             if (this.connections.containsKey(connId)) {
                 Connection conn = this.connections.get(connId);
                 conn.isCauseTreeEdge(true);
             }
         }
-        Map<String, List<Cause>> causesForPins = causesTree.getCausesForPins();
+        Map<String, List<Cause>> causesForPins = root.getCausesForPins();
         for (String pinName : this.diagramPins.keySet()) {
             if (causesForPins.containsKey(pinName)) {
                 this.diagramPins.get(pinName).getCausesObservable().addAll(causesForPins.get(pinName).stream().map(c ->
@@ -137,15 +135,32 @@ public class DiagramExplainerTab extends Tab {
             }
         }
 
-        List<Cause> res = expRes.getLeaves().stream()
-                .map(causeNode -> new Cause(causeNode.getStep() - 1, causeNode.getGate().getName(), causeNode.getGate().getOwner().getName(), causeNode.getValue()))
-                .sorted(Comparator.comparing(Cause::getTimestamp).thenComparing(Cause::getBlockName).thenComparing(Cause::getVarName)).collect(Collectors.toList());
+//        List<Cause> res = expRes.getLeaves().stream()
+//                .map(causeNode -> new Cause(causeNode.getStep() - 1, causeNode.getGate().getName(), causeNode.getGate().getOwner().getName(), causeNode.getValue()))
+//                .sorted(Comparator.comparing(Cause::getTimestamp).thenComparing(Cause::getBlockName).thenComparing(Cause::getVarName)).collect(Collectors.toList());
 //        this.diagramCausesListObservable.setAll(res);
-        return res;
+    }
+
+    public List<Cause> explainCause(String varName, List<String> blockPath, int timestamp) {
+        this.clearDiagram();
+
+        CausePathFinalGraph expRes = this.diagramOutputExplainer.explainFinal(varName, blockPath, timestamp);
+        this.updateCausesGraph(expRes);
+        this.causesTreeCurrent = CauseNodeUI.parse(expRes.getRoot());
+        this.displayCauseTree(this.causesTreeCurrent);
+        return null;
+    }
+
+    private Boolean selectCausesSubGraphHandler(String gateFullNameTimestamp){
+        String gateFullName = gateFullNameTimestamp.substring(0, gateFullNameTimestamp.indexOf(" "));
+        int timestamp = Integer.parseInt(gateFullNameTimestamp.substring(gateFullNameTimestamp.indexOf(" ") + 1));
+        CauseNodeUI subTree = this.causesTreeCurrent.getSubTree(gateFullName, timestamp);
+        this.displayCauseTree(subTree);
+        return true;
     }
 
     private void updateCausesGraph(CausePathFinalGraph expRes) {
-        CauseGraph graph = GraphHelper.convertToGraph(expRes);
+        CauseGraph graph = GraphHelper.convertToGraph(expRes, this::selectCausesSubGraphHandler);
         this.causesGraph.clear();
         this.causesGraph.draw(graph);
     }

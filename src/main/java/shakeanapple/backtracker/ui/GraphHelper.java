@@ -104,12 +104,12 @@ public class GraphHelper {
 //        return visgraph;
 //    }
 
-    private static void flattenCausesGraph(GraphNode parent, CauseFinalNode child, Random r, Map<Integer, GraphNode> nodes, List<shakeanapple.backtracker.ui.infrasructure.control.causegraph.model.Connection> edges){
+    private static void flattenCausesGraph(GraphNode parent, CauseFinalNode child, Random r, Map<Integer, GraphNode> nodes, List<shakeanapple.backtracker.ui.infrasructure.control.causegraph.model.Connection> edges, Function<String, Boolean> selectCausesSubGraphHandler){
         GraphNode viewChild = null;
         boolean existed = false;
         if (!nodes.containsKey(child.hashCode())) {
-            viewChild = child.hasValueChanged() ? new ChangeNode(child.getGate().getFullName(), child.isRoot(), child.getValue(), child.getStep(), child.getPrevValue(), child.getPrevStep()) :
-                    new RemainNode(child.getGate().getFullName(), child.isRoot(), child.getValue(), child.getStep());
+            viewChild = child.hasValueChanged() ? new ChangeNode(child.getGate().getFullName(), child.isRoot(), child.getValue(), child.getStep(), child.getPrevValue(), child.getPrevStep(), selectCausesSubGraphHandler) :
+                    new RemainNode(child.getGate().getFullName(), child.isRoot(), child.getValue(), child.getStep(), selectCausesSubGraphHandler);
             nodes.put(child.hashCode(), viewChild);
         } else{
             viewChild = nodes.get(child.hashCode());
@@ -123,19 +123,19 @@ public class GraphHelper {
 
         if (!existed) {
             for (CauseFinalNode newChild : child.getChildren()) {
-                flattenCausesGraph(viewChild, newChild, r, nodes, edges);
+                flattenCausesGraph(viewChild, newChild, r, nodes, edges, selectCausesSubGraphHandler);
             }
         }
     }
 
 
-    public static CauseGraph convertToGraph(CausePathFinalGraph graph){
+    public static CauseGraph convertToGraph(CausePathFinalGraph graph, Function<String, Boolean> selectCausesSubGraphHandler){
         Random r = new Random();
 
         Map<Integer, GraphNode> nodes = new HashMap<>();
         List<shakeanapple.backtracker.ui.infrasructure.control.causegraph.model.Connection> edges = new ArrayList<>();
 
-        flattenCausesGraph(null, graph.getRoot(), r, nodes, edges);
+        flattenCausesGraph(null, graph.getRoot(), r, nodes, edges, selectCausesSubGraphHandler);
 
         CauseGraph causeGraph = new CauseGraph(new ArrayList<>(nodes.values()), edges, nodes.values().stream().filter(GraphNode::isRoot).findFirst().orElse(null));
 

@@ -1,7 +1,6 @@
 package shakeanapple.backtracker.ui.infrasructure.control.causegraph.view.graph;
 
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
@@ -10,14 +9,15 @@ import shakeanapple.backtracker.ui.infrasructure.control.causegraph.view.Diagram
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
-public class RemainNodeView extends NodeView implements GraphNodeView{
+public class RemainNodeView extends GraphNodeView{
     private RemainNode node;
     private Rectangle view;
     private String name;
     private List<GraphNodeView> children = new ArrayList<>();
 
-    public RemainNodeView(Group parent, RemainNode node) {
+    public RemainNodeView(GraphView parent, RemainNode node) {
         super(parent);
         this.node = node;
 
@@ -25,7 +25,7 @@ public class RemainNodeView extends NodeView implements GraphNodeView{
         view.setFill(DiagramStyles.REMAIN_NODE_COLOR);
         view.setStroke(DiagramStyles.NODE_STROKE_COLOR);
 
-        this.name = node.getGateFullName() + (node.isRoot() ? " (root)" : "") + '\n' + node.getStep() + ": " + node.getValue();
+        this.name = node.getGateFullName() + (node.isRoot() ? " (root)" : "") + '\n' + (node.getStep()-1) + ": " + node.getValue();
         Label label = new Label(this.name);
         label.layoutXProperty().bind(view.layoutXProperty().add(2));
         label.layoutYProperty().bind(view.layoutYProperty()
@@ -37,10 +37,12 @@ public class RemainNodeView extends NodeView implements GraphNodeView{
 
         parent.getChildren().add(view);
         parent.getChildren().add(label);
+        super.addButton(this.node.getSelectCausesSubGraphHandler(), node.getGateFullName(), node.getStep());
+
     }
 
     @Override
-    public Node getView() {
+    public Rectangle getView() {
         return this.view;
     }
 

@@ -4,6 +4,7 @@ import shakeanapple.backtracker.common.variable.ValueHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class RemainNode implements GraphNode {
     private final String gateFullName;
@@ -26,13 +27,20 @@ public class RemainNode implements GraphNode {
     private final ValueHolder value;
     private final int step;
 
-    public RemainNode(String gateFullName, boolean isRoot, ValueHolder value, int step) {
+    private Function<String, Boolean> selectCausesSubGraphHandler;
+
+    public RemainNode(String gateFullName, boolean isRoot, ValueHolder value, int step, Function<String, Boolean> selectCausesSubGraphHandler) {
         this.gateFullName = gateFullName;
         this.isRoot = isRoot;
         this.value = value;
         this.step = step;
 
         this.children = new ArrayList<>();
+        this.selectCausesSubGraphHandler = selectCausesSubGraphHandler;
+    }
+
+    public Function<String, Boolean> getSelectCausesSubGraphHandler() {
+        return this.selectCausesSubGraphHandler;
     }
 
     @Override

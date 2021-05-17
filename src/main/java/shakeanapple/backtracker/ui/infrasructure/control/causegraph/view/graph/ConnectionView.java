@@ -30,7 +30,9 @@ public class ConnectionView extends NodeView {
     private DoubleBinding endX;
     private DoubleBinding endY;
 
-    public ConnectionView(Group parent, Connection connection, GraphNodeView from, GraphNodeView to) {
+    private Path path;
+
+    public ConnectionView(GraphView parent, Connection connection, GraphNodeView from, GraphNodeView to) {
         super(parent);
         this.connection = connection;
 
@@ -38,7 +40,7 @@ public class ConnectionView extends NodeView {
         this.to = to;
 
 //        this.endX = this.to.getView().layoutXProperty().add(this.to.getWidth());
-        this.endY = this.to.getView().layoutYProperty().add(this.to.getHeight() / 2);
+        this.endY = this.to.getView().layoutYProperty().add(this.to.getView().heightProperty().divide(2));
         this.endX = new DoubleBinding() {
             {
                 super.bind(to.getView().layoutXProperty());
@@ -60,7 +62,7 @@ public class ConnectionView extends NodeView {
                 return from.getView().layoutXProperty().get();
             }
         };
-        this.startY = this.from.getView().layoutYProperty().add(this.from.getHeight() / 2);
+        this.startY = this.from.getView().layoutYProperty().add(this.from.getView().heightProperty().divide(2));
     }
 
 
@@ -126,7 +128,7 @@ public class ConnectionView extends NodeView {
         List<PathElement> els = new ArrayList<>();
         els.add(moveTo);
         els.addAll(pathsLines);
-        Path path = new Path(els);
+        this.path = new Path(els);
 
         path.setStroke(DiagramStyles.CONNECTION_COLOR_DEFAULT);
         path.setStrokeWidth(DiagramStyles.CONNECTION_STROKE_WIDTH_DEFAULT);
@@ -152,5 +154,29 @@ public class ConnectionView extends NodeView {
         });
 
         super.getParent().getChildren().add(path);
+    }
+
+    public void isSelected(Boolean selected){
+        if (selected){
+            path.setStroke(shakeanapple.backtracker.ui.infrasructure.control.diagram.view.DiagramStyles.CONNECTION_COLOR_CAUSE);
+        }
+        else{
+            path.setStroke(shakeanapple.backtracker.ui.infrasructure.control.diagram.view.DiagramStyles.CONNECTION_COLOR_DEFAULT);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return (this.from.getName() + this.to.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return this.toString().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof ConnectionView && this.toString().equals(obj.toString());
     }
 }

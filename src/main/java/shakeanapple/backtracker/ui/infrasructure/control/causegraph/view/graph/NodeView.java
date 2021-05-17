@@ -5,10 +5,10 @@ import javafx.scene.Node;
 import shakeanapple.backtracker.ui.infrasructure.control.diagram.IdGenerator;
 
 public abstract class NodeView {
-    private Group parent;
+    private GraphView parent;
     private long id;
 
-    public NodeView(Group parent){
+    public NodeView(GraphView parent){
         this.parent = parent;
         id = IdGenerator.next();
     }
@@ -17,7 +17,7 @@ public abstract class NodeView {
         return id;
     }
 
-    public Group getParent() {
+    public GraphView getParent() {
         return this.parent;
     }
 
