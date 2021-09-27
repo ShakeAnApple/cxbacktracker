@@ -32,4 +32,4 @@ When program is running:
 8) To open another model repeat step 1.
 
 ## Oeritte main view
-![Main view](https://github.com/ShakeAnApple/cxbacktracker/blob/master/img/main_view.pdf)
+![Main view](https://github.com/ShakeAnApple/cxbacktracker/blob/master/img/main_view.jpg)
