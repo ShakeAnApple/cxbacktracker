@@ -1,0 +1,140 @@
+--######################### CONFIDENTIAL #################################################
+--# SEARCH / SAFIR2022
+--# Example logic
+--#
+--# Used in publication:
+--# Pakonen, A., Buzhinsky I., Björkman K. Model checking reveals design issues leading to spurious actuation of nuclear instrumentation and control systems.
+--# Reliability Engineering & System Safety, Volume 205, January 2021, 107237.
+--# 10.1016/J.RESS.2020.107237 
+
+--######################### CONFIDENTIAL #################################################
+
+
+--# Description: 
+MODULE main()
+	VAR
+		--# INPUTS / VARIABLES:
+		MEAS_2: 0..20;
+		MEAS_2_FAULT: boolean;
+		CONTROL_OFF: boolean;
+		CONTROL_OFF_FAULT: boolean;
+		MEAS_3: 0..20;
+		MEAS_3_FAULT: boolean;
+		CONTROL_ON: boolean;
+		CONTROL_ON_FAULT: boolean;
+		MEAS_4: 0..20;
+		MEAS_4_FAULT: boolean;
+		MEAS_1: 0..20;
+		MEAS_1_FAULT: boolean;
+
+		--# MODULE CONNECTIONS:
+		PID_dummy001 : PID_dummy(_MAX001.AO1, _MAX001.AO1_FAULT, TRUE, MEM_ANA001.AO1, MEM_ANA001.AO1_FAULT, TRUE, RS001.OUT, RS001.OUT_FAULT, TRUE);
+		_MAX001 : _MAX(MEAS_1, MEAS_1_FAULT, TRUE, MEAS_2, MEAS_2_FAULT, TRUE, MEAS_3, MEAS_3_FAULT, TRUE, MEAS_4, MEAS_4_FAULT, TRUE, 0);
+		RS001 : RS(CONTROL_ON, CONTROL_ON_FAULT, TRUE, OR_2001.BO1, OR_2001.BO1_FAULT, TRUE);
+		OR_2001 : OR_2(CONTROL_OFF, CONTROL_OFF_FAULT, TRUE, _MAX001.FAIL, _MAX001.FAIL_FAULT, TRUE);
+		MEM_ANA001 : MEM_ANA(_MAX001.AO1, _MAX001.AO1_FAULT, TRUE, RS001.OUT, RS001.OUT_FAULT, TRUE);
+
+	DEFINE
+		--# EXTERNALS:
+		OPEN := PID_dummy001.OPEN;
+		OPEN_FAULT := PID_dummy001.OPEN_FAULT;
+		MEASUREMENT := _MAX001.AO1;
+		MEASUREMENT_FAULT := _MAX001.AO1_FAULT;
+		SETPOINT := MEM_ANA001.AO1;
+		SETPOINT_FAULT := MEM_ANA001.AO1_FAULT;
+		CLOSE := PID_dummy001.CLOSE;
+		CLOSE_FAULT := PID_dummy001.CLOSE_FAULT;
+
+		--# OUTPUTS:
+
+		--# REQS:
+		--LTLSPEC G !((MEASUREMENT = 0) & !MEASUREMENT_FAULT) -> G !(SETPOINT = 0 & RS001.OUT);
+		--LTLSPEC G (((SETPOINT = 0) & RS001.OUT) -> O ((MEASUREMENT = 0) & !MEASUREMENT_FAULT));
+
+	ASSIGN
+		--# INTERNAL STATE:
+
+
+MODULE PID_dummy(MEASURE : 0..100, MEASURE_FAULT : boolean, MEASURE_CONNECTED : boolean, SETPOINT : 0..100, SETPOINT_FAULT : boolean, SETPOINT_CONNECTED : boolean, ENABLE : boolean, ENABLE_FAULT : boolean, ENABLE_CONNECTED : boolean)
+	VAR
+
+	DEFINE
+		OPEN:= MEASURE < SETPOINT;
+		OPEN_FAULT:= MEASURE_FAULT | SETPOINT_FAULT | ENABLE_FAULT;
+		
+		CLOSE:= MEASURE > SETPOINT;
+		CLOSE_FAULT:= MEASURE_FAULT | SETPOINT_FAULT | ENABLE_FAULT;
+
+	ASSIGN
+
+
+MODULE OR_2(BI1 : boolean, BI1_FAULT : boolean, BI1_CONNECTED : boolean, BI2 : boolean, BI2_FAULT : boolean, BI2_CONNECTED : boolean)
+	VAR
+
+	DEFINE
+		BO1:= BI1 | BI2;
+		BO1_FAULT:= BI1_FAULT | BI2_FAULT; 
+
+	ASSIGN
+
+
+MODULE RS(SET : boolean, SET_FAULT : boolean, SET_CONNECTED : boolean, RESET : boolean, RESET_FAULT : boolean, RESET_CONNECTED : boolean)
+	VAR
+		mem : boolean;
+
+	DEFINE
+		OUT:= 
+		case
+			RESET : FALSE;
+			SET : TRUE;
+			TRUE: mem;
+		esac;
+		OUT_FAULT:= FALSE;
+
+	ASSIGN
+		init(mem) := FALSE;
+		next(mem) := OUT;
+
+
+MODULE _MAX(AI1 : 0..100, AI1_FAULT : boolean, AI1_CONNECTED : boolean, AI2 : 0..100, AI2_FAULT : boolean, AI2_CONNECTED : boolean, AI3 : 0..100, AI3_FAULT : boolean, AI3_CONNECTED : boolean, AI4 : 0..100, AI4_FAULT : boolean, AI4_CONNECTED : boolean, InitVal : 0..100)
+	VAR
+		lastValid : 0..20;
+
+	DEFINE
+		
+		vAI1 := AI1_FAULT ? -1 : AI1;
+		vAI2 := AI2_FAULT ? -1 : AI1;
+		vAI3 := AI3_FAULT ? -1 : AI1;
+		vAI4 := AI4_FAULT ? -1 : AI1;
+		
+		vMax := max(vAI1,max(vAI2,max(vAI3,vAI4)));
+					
+		AO1_FAULT:= AI1_FAULT & AI2_FAULT & AI3_FAULT & AI4_FAULT;
+		
+		AO1 := AO1_FAULT ? lastValid : vMax;
+		
+		FAIL:= AO1_FAULT;
+		FAIL_FAULT:= FALSE;
+
+	ASSIGN
+		init(lastValid) := InitVal;
+		next(lastValid) := AO1;
+
+
+MODULE MEM_ANA(AI1 : 0..100, AI1_FAULT : boolean, AI1_CONNECTED : boolean, HOLD : boolean, HOLD_FAULT : boolean, HOLD_CONNECTED : boolean)
+	VAR
+		lastValue : 0..20;
+		lastValid : boolean;
+
+	DEFINE
+	
+		AO1:= HOLD ? lastValue : AI1;
+		AO1_FAULT:= HOLD ? lastValid : AI1_FAULT;
+
+	ASSIGN
+		init(lastValue) := 0;
+		next(lastValue) := AO1;
+		
+		init(lastValid) := FALSE;
+		next(lastValid) := AI1_FAULT;
+	

@@ -1,0 +1,205 @@
+*** This is NuSMV 2.6.0 (compiled on Wed Oct 14 15:37:51 2015)
+*** Enabled addons are: compass
+*** For more information on NuSMV see <http://nusmv.fbk.eu>
+*** or email to <nusmv-users@list.fbk.eu>.
+*** Please report bugs to <Please report bugs to <nusmv-users@fbk.eu>>
+
+*** Copyright (c) 2010-2014, Fondazione Bruno Kessler
+
+*** This version of NuSMV is linked to the CUDD library version 2.4.1
+*** Copyright (c) 1995-2004, Regents of the University of Colorado
+
+*** This version of NuSMV is linked to the MiniSat SAT solver. 
+*** See http://minisat.se/MiniSat.html
+*** Copyright (c) 2003-2006, Niklas Een, Niklas Sorensson
+*** Copyright (c) 2007-2010, Niklas Sorensson
+
+-- specification ( G !(MEASUREMENT = 0 & !MEASUREMENT_FAULT) ->  G !(SETPOINT = 0 & RS001.OUT))  is false
+-- as demonstrated by the following execution sequence
+Trace Description: LTL Counterexample 
+Trace Type: Counterexample 
+  -> State: 1.1 <-
+    MEAS_2 = 0
+    MEAS_2_FAULT = TRUE
+    CONTROL_OFF = TRUE
+    CONTROL_OFF_FAULT = FALSE
+    MEAS_3 = 0
+    MEAS_3_FAULT = TRUE
+    CONTROL_ON = FALSE
+    CONTROL_ON_FAULT = FALSE
+    MEAS_4 = 0
+    MEAS_4_FAULT = TRUE
+    MEAS_1 = 0
+    MEAS_1_FAULT = TRUE
+    _MAX001.lastValid = 0
+    RS001.mem = FALSE
+    MEM_ANA001.lastValue = 0
+    MEM_ANA001.lastValid = FALSE
+    CLOSE_FAULT = TRUE
+    CLOSE = FALSE
+    SETPOINT_FAULT = TRUE
+    SETPOINT = 0
+    MEASUREMENT_FAULT = TRUE
+    MEASUREMENT = 0
+    OPEN_FAULT = TRUE
+    OPEN = FALSE
+    PID_dummy001.CLOSE_FAULT = TRUE
+    PID_dummy001.CLOSE = FALSE
+    PID_dummy001.OPEN_FAULT = TRUE
+    PID_dummy001.OPEN = FALSE
+    _MAX001.FAIL_FAULT = FALSE
+    _MAX001.FAIL = TRUE
+    _MAX001.AO1 = 0
+    _MAX001.AO1_FAULT = TRUE
+    _MAX001.vMax = -1
+    _MAX001.vAI4 = -1
+    _MAX001.vAI3 = -1
+    _MAX001.vAI2 = -1
+    _MAX001.vAI1 = -1
+    RS001.OUT_FAULT = FALSE
+    RS001.OUT = FALSE
+    OR_2001.BO1_FAULT = FALSE
+    OR_2001.BO1 = TRUE
+    MEM_ANA001.AO1_FAULT = TRUE
+    MEM_ANA001.AO1 = 0
+  -> State: 1.2 <-
+    CONTROL_OFF = FALSE
+    CONTROL_ON = TRUE
+    MEAS_1 = 1
+    MEAS_1_FAULT = FALSE
+    MEM_ANA001.lastValid = TRUE
+    CLOSE = TRUE
+    MEASUREMENT_FAULT = FALSE
+    MEASUREMENT = 1
+    PID_dummy001.CLOSE = TRUE
+    _MAX001.FAIL = FALSE
+    _MAX001.AO1 = 1
+    _MAX001.AO1_FAULT = FALSE
+    _MAX001.vMax = 1
+    _MAX001.vAI1 = 1
+    RS001.OUT = TRUE
+    OR_2001.BO1 = FALSE
+  -> State: 1.3 <-
+    CONTROL_OFF = TRUE
+    CONTROL_ON = FALSE
+    _MAX001.lastValid = 1
+    RS001.mem = TRUE
+    MEM_ANA001.lastValid = FALSE
+    CLOSE_FAULT = FALSE
+    CLOSE = FALSE
+    SETPOINT_FAULT = FALSE
+    SETPOINT = 1
+    OPEN_FAULT = FALSE
+    PID_dummy001.CLOSE_FAULT = FALSE
+    PID_dummy001.CLOSE = FALSE
+    PID_dummy001.OPEN_FAULT = FALSE
+    RS001.OUT = FALSE
+    OR_2001.BO1 = TRUE
+    MEM_ANA001.AO1_FAULT = FALSE
+    MEM_ANA001.AO1 = 1
+  -- Loop starts here
+  -> State: 1.4 <-
+    CONTROL_OFF = FALSE
+    RS001.mem = FALSE
+    MEM_ANA001.lastValue = 1
+    OR_2001.BO1 = FALSE
+  -> State: 1.5 <-
+-- specification  G ((SETPOINT = 0 & RS001.OUT) ->  O (MEASUREMENT = 0 & !MEASUREMENT_FAULT))  is false
+-- as demonstrated by the following execution sequence
+Trace Description: LTL Counterexample 
+Trace Type: Counterexample 
+  -> State: 2.1 <-
+    MEAS_2 = 0
+    MEAS_2_FAULT = TRUE
+    CONTROL_OFF = TRUE
+    CONTROL_OFF_FAULT = FALSE
+    MEAS_3 = 0
+    MEAS_3_FAULT = TRUE
+    CONTROL_ON = FALSE
+    CONTROL_ON_FAULT = FALSE
+    MEAS_4 = 0
+    MEAS_4_FAULT = TRUE
+    MEAS_1 = 0
+    MEAS_1_FAULT = TRUE
+    _MAX001.lastValid = 0
+    RS001.mem = FALSE
+    MEM_ANA001.lastValue = 0
+    MEM_ANA001.lastValid = FALSE
+    CLOSE_FAULT = TRUE
+    CLOSE = FALSE
+    SETPOINT_FAULT = TRUE
+    SETPOINT = 0
+    MEASUREMENT_FAULT = TRUE
+    MEASUREMENT = 0
+    OPEN_FAULT = TRUE
+    OPEN = FALSE
+    PID_dummy001.CLOSE_FAULT = TRUE
+    PID_dummy001.CLOSE = FALSE
+    PID_dummy001.OPEN_FAULT = TRUE
+    PID_dummy001.OPEN = FALSE
+    _MAX001.FAIL_FAULT = FALSE
+    _MAX001.FAIL = TRUE
+    _MAX001.AO1 = 0
+    _MAX001.AO1_FAULT = TRUE
+    _MAX001.vMax = -1
+    _MAX001.vAI4 = -1
+    _MAX001.vAI3 = -1
+    _MAX001.vAI2 = -1
+    _MAX001.vAI1 = -1
+    RS001.OUT_FAULT = FALSE
+    RS001.OUT = FALSE
+    OR_2001.BO1_FAULT = FALSE
+    OR_2001.BO1 = TRUE
+    MEM_ANA001.AO1_FAULT = TRUE
+    MEM_ANA001.AO1 = 0
+  -> State: 2.2 <-
+    CONTROL_OFF = FALSE
+    CONTROL_ON = TRUE
+    MEAS_1 = 1
+    MEAS_1_FAULT = FALSE
+    MEM_ANA001.lastValid = TRUE
+    CLOSE = TRUE
+    MEASUREMENT_FAULT = FALSE
+    MEASUREMENT = 1
+    PID_dummy001.CLOSE = TRUE
+    _MAX001.FAIL = FALSE
+    _MAX001.AO1 = 1
+    _MAX001.AO1_FAULT = FALSE
+    _MAX001.vMax = 1
+    _MAX001.vAI1 = 1
+    RS001.OUT = TRUE
+    OR_2001.BO1 = FALSE
+  -> State: 2.3 <-
+    CONTROL_OFF = TRUE
+    MEAS_3_FAULT = FALSE
+    CONTROL_ON = FALSE
+    MEAS_4_FAULT = FALSE
+    MEAS_1 = 0
+    _MAX001.lastValid = 1
+    RS001.mem = TRUE
+    MEM_ANA001.lastValid = FALSE
+    CLOSE_FAULT = FALSE
+    CLOSE = FALSE
+    SETPOINT_FAULT = FALSE
+    MEASUREMENT = 0
+    OPEN_FAULT = FALSE
+    PID_dummy001.CLOSE_FAULT = FALSE
+    PID_dummy001.CLOSE = FALSE
+    PID_dummy001.OPEN_FAULT = FALSE
+    _MAX001.AO1 = 0
+    _MAX001.vMax = 0
+    _MAX001.vAI4 = 0
+    _MAX001.vAI3 = 0
+    _MAX001.vAI1 = 0
+    RS001.OUT = FALSE
+    OR_2001.BO1 = TRUE
+    MEM_ANA001.AO1_FAULT = FALSE
+  -- Loop starts here
+  -> State: 2.4 <-
+    MEAS_2_FAULT = FALSE
+    CONTROL_OFF = FALSE
+    _MAX001.lastValid = 0
+    RS001.mem = FALSE
+    _MAX001.vAI2 = 0
+    OR_2001.BO1 = FALSE
+  -> State: 2.5 <-

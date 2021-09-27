@@ -1,0 +1,204 @@
+*** This is NuSMV 2.6.0 (compiled on Wed Oct 14 15:37:51 2015)
+*** Enabled addons are: compass
+*** For more information on NuSMV see <http://nusmv.fbk.eu>
+*** or email to <nusmv-users@list.fbk.eu>.
+*** Please report bugs to <Please report bugs to <nusmv-users@fbk.eu>>
+
+*** Copyright (c) 2010-2014, Fondazione Bruno Kessler
+
+*** This version of NuSMV is linked to the CUDD library version 2.4.1
+*** Copyright (c) 1995-2004, Regents of the University of Colorado
+
+*** This version of NuSMV is linked to the MiniSat SAT solver. 
+*** See http://minisat.se/MiniSat.html
+*** Copyright (c) 2003-2006, Niklas Een, Niklas Sorensson
+*** Copyright (c) 2007-2010, Niklas Sorensson
+
+-- specification  G ((((ACTUATE & HIGH_SETPOINT) & !RESET) &  X (NORMAL_TEMP & RESET)) ->  X LOW_SETPOINT)  is false
+-- as demonstrated by the following execution sequence
+Trace Description: LTL Counterexample 
+Trace Type: Counterexample 
+  -> State: 1.1 <-
+    ZZ_TEMP = 109
+    ZZ_TEMP_FAULT = FALSE
+    RESET = TRUE
+    RESET_FAULT = FALSE
+    ACTUATE = FALSE
+    ACTUATE_FAULT = FALSE
+    SR001.mem = FALSE
+    LOW_TRESH002.mem = FALSE
+    RS001.mem = FALSE
+    LOW_TRESH003.mem = FALSE
+    HIGH_SETPOINT_FAULT = FALSE
+    HIGH_SETPOINT = FALSE
+    ALLOW_FAULT = FALSE
+    ALLOW = FALSE
+    NORMAL_TEMP_FAULT = FALSE
+    NORMAL_TEMP = FALSE
+    LOW_SETPOINT_FAULT = FALSE
+    LOW_SETPOINT = FALSE
+    LOW_TEMP_FAULT = FALSE
+    LOW_TEMP = FALSE
+    SR001.O2_FAULT = FALSE
+    SR001.O1_FAULT = FALSE
+    SR001.O2 = TRUE
+    SR001.O1 = FALSE
+    LOW_TRESH002.O1 = FALSE
+    LOW_TRESH002.O1_FAULT = FALSE
+    RS001.O2_FAULT = FALSE
+    RS001.O1_FAULT = FALSE
+    RS001.O2 = TRUE
+    RS001.O1 = FALSE
+    LOW_TRESH003.O1 = FALSE
+    LOW_TRESH003.O1_FAULT = FALSE
+    AND_2008.O1_FAULT = FALSE
+    AND_2008.O1 = FALSE
+    AND_2001.O1_FAULT = FALSE
+    AND_2001.O1 = FALSE
+    AND_2002.O1_FAULT = FALSE
+    AND_2002.O1 = FALSE
+  -> State: 1.2 <-
+    RESET = FALSE
+    ACTUATE = TRUE
+    HIGH_SETPOINT = TRUE
+    ALLOW = TRUE
+    RS001.O2 = FALSE
+    RS001.O1 = TRUE
+    AND_2001.O1 = TRUE
+  -- Loop starts here
+  -> State: 1.3 <-
+    ZZ_TEMP = 45
+    RESET = TRUE
+    ACTUATE = FALSE
+    RS001.mem = TRUE
+    ALLOW = FALSE
+    NORMAL_TEMP = TRUE
+    LOW_TEMP = TRUE
+    SR001.O2 = FALSE
+    SR001.O1 = TRUE
+    LOW_TRESH002.O1 = TRUE
+    LOW_TRESH003.O1 = TRUE
+    AND_2001.O1 = FALSE
+    AND_2002.O1 = TRUE
+  -> State: 1.4 <-
+    ZZ_TEMP = 18
+    RESET = FALSE
+    SR001.mem = TRUE
+    LOW_TRESH002.mem = TRUE
+    LOW_TRESH003.mem = TRUE
+    SR001.O2 = TRUE
+    SR001.O1 = FALSE
+    AND_2002.O1 = FALSE
+  -> State: 1.5 <-
+    ZZ_TEMP = 109
+    RESET = TRUE
+    SR001.mem = FALSE
+    NORMAL_TEMP = FALSE
+    LOW_TEMP = FALSE
+    LOW_TRESH002.O1 = FALSE
+    LOW_TRESH003.O1 = FALSE
+  -> State: 1.6 <-
+    ZZ_TEMP = 45
+    LOW_TRESH002.mem = FALSE
+    LOW_TRESH003.mem = FALSE
+    NORMAL_TEMP = TRUE
+    LOW_TEMP = TRUE
+    SR001.O2 = FALSE
+    SR001.O1 = TRUE
+    LOW_TRESH002.O1 = TRUE
+    LOW_TRESH003.O1 = TRUE
+    AND_2002.O1 = TRUE
+-- specification ( G !(ACTUATE & RESET) ->  G ((((ACTUATE & HIGH_SETPOINT) & !RESET) &  X (NORMAL_TEMP & RESET)) ->  X LOW_SETPOINT))  is false
+-- as demonstrated by the following execution sequence
+Trace Description: LTL Counterexample 
+Trace Type: Counterexample 
+  -> State: 2.1 <-
+    ZZ_TEMP = 109
+    ZZ_TEMP_FAULT = FALSE
+    RESET = TRUE
+    RESET_FAULT = FALSE
+    ACTUATE = FALSE
+    ACTUATE_FAULT = FALSE
+    SR001.mem = FALSE
+    LOW_TRESH002.mem = FALSE
+    RS001.mem = FALSE
+    LOW_TRESH003.mem = FALSE
+    HIGH_SETPOINT_FAULT = FALSE
+    HIGH_SETPOINT = FALSE
+    ALLOW_FAULT = FALSE
+    ALLOW = FALSE
+    NORMAL_TEMP_FAULT = FALSE
+    NORMAL_TEMP = FALSE
+    LOW_SETPOINT_FAULT = FALSE
+    LOW_SETPOINT = FALSE
+    LOW_TEMP_FAULT = FALSE
+    LOW_TEMP = FALSE
+    SR001.O2_FAULT = FALSE
+    SR001.O1_FAULT = FALSE
+    SR001.O2 = TRUE
+    SR001.O1 = FALSE
+    LOW_TRESH002.O1 = FALSE
+    LOW_TRESH002.O1_FAULT = FALSE
+    RS001.O2_FAULT = FALSE
+    RS001.O1_FAULT = FALSE
+    RS001.O2 = TRUE
+    RS001.O1 = FALSE
+    LOW_TRESH003.O1 = FALSE
+    LOW_TRESH003.O1_FAULT = FALSE
+    AND_2008.O1_FAULT = FALSE
+    AND_2008.O1 = FALSE
+    AND_2001.O1_FAULT = FALSE
+    AND_2001.O1 = FALSE
+    AND_2002.O1_FAULT = FALSE
+    AND_2002.O1 = FALSE
+  -> State: 2.2 <-
+    RESET = FALSE
+    ACTUATE = TRUE
+    HIGH_SETPOINT = TRUE
+    ALLOW = TRUE
+    RS001.O2 = FALSE
+    RS001.O1 = TRUE
+    AND_2001.O1 = TRUE
+  -- Loop starts here
+  -> State: 2.3 <-
+    ZZ_TEMP = 45
+    RESET = TRUE
+    ACTUATE = FALSE
+    RS001.mem = TRUE
+    ALLOW = FALSE
+    NORMAL_TEMP = TRUE
+    LOW_TEMP = TRUE
+    SR001.O2 = FALSE
+    SR001.O1 = TRUE
+    LOW_TRESH002.O1 = TRUE
+    LOW_TRESH003.O1 = TRUE
+    AND_2001.O1 = FALSE
+    AND_2002.O1 = TRUE
+  -> State: 2.4 <-
+    ZZ_TEMP = 18
+    RESET = FALSE
+    SR001.mem = TRUE
+    LOW_TRESH002.mem = TRUE
+    LOW_TRESH003.mem = TRUE
+    SR001.O2 = TRUE
+    SR001.O1 = FALSE
+    AND_2002.O1 = FALSE
+  -> State: 2.5 <-
+    ZZ_TEMP = 109
+    SR001.mem = FALSE
+    NORMAL_TEMP = FALSE
+    LOW_TEMP = FALSE
+    LOW_TRESH002.O1 = FALSE
+    LOW_TRESH003.O1 = FALSE
+  -> State: 2.6 <-
+    ZZ_TEMP = 45
+    RESET = TRUE
+    LOW_TRESH002.mem = FALSE
+    LOW_TRESH003.mem = FALSE
+    NORMAL_TEMP = TRUE
+    LOW_TEMP = TRUE
+    SR001.O2 = FALSE
+    SR001.O1 = TRUE
+    LOW_TRESH002.O1 = TRUE
+    LOW_TRESH003.O1 = TRUE
+    AND_2002.O1 = TRUE

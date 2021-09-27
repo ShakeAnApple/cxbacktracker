@@ -1,0 +1,139 @@
+--######################### CONFIDENTIAL #################################################
+--# SEARCH / SAFIR2022
+--# Example logic
+--#
+--# Used in publication:
+--# Pakonen, A. Model-checking of I&C logics — insights from over a decade of projects in Finland.
+--# 12th ANS International Topical Meeting on Nuclear Plant Instrumentation, Control, and Human-Machine Interface Technologies (NPIC & HMIT 2021), June 14-17, 2021, Providence, RI, USA
+
+--######################### CONFIDENTIAL #################################################
+
+--# Description: 
+MODULE main()
+	VAR
+		--# INPUTS / VARIABLES:
+		ZZ_TEMP: 0..200;
+		ZZ_TEMP_FAULT: boolean;
+		RESET: boolean;
+		RESET_FAULT: boolean;
+		ACTUATE: boolean;
+		ACTUATE_FAULT: boolean;
+
+		--# MODULE CONNECTIONS:
+		SR001 : SR(AND_2002.O1, AND_2002.O1_FAULT, TRUE, LOW_TRESH002.O1, LOW_TRESH002.O1_FAULT, TRUE);
+		LOW_TRESH002 : LOW_TRESH(ZZ_TEMP, ZZ_TEMP_FAULT, TRUE, 50);
+		RS001 : RS(AND_2001.O1, AND_2001.O1_FAULT, TRUE, AND_2008.O1, AND_2008.O1_FAULT, TRUE);
+		LOW_TRESH003 : LOW_TRESH(ZZ_TEMP, ZZ_TEMP_FAULT, TRUE, 100);
+		AND_2008 : AND_2(LOW_TRESH003.O1, LOW_TRESH003.O1_FAULT, TRUE, AND_2001.O1, AND_2001.O1_FAULT, TRUE);
+		AND_2001 : AND_2(ACTUATE, ACTUATE_FAULT, TRUE, !SR001.O1, SR001.O1_FAULT, TRUE);
+		AND_2002 : AND_2(LOW_TRESH003.O1, LOW_TRESH003.O1_FAULT, TRUE, RESET, RESET_FAULT, TRUE);
+
+	DEFINE
+		--# EXTERNALS:
+		LOW_TEMP := LOW_TRESH002.O1;
+		LOW_TEMP_FAULT := LOW_TRESH002.O1_FAULT;
+		LOW_SETPOINT := AND_2008.O1;
+		LOW_SETPOINT_FAULT := AND_2008.O1_FAULT;
+		NORMAL_TEMP := LOW_TRESH003.O1;
+		NORMAL_TEMP_FAULT := LOW_TRESH003.O1_FAULT;
+		ALLOW := AND_2001.O1;
+		ALLOW_FAULT := AND_2001.O1_FAULT;
+		HIGH_SETPOINT := RS001.O1;
+		HIGH_SETPOINT_FAULT := RS001.O1_FAULT;
+
+		--# OUTPUTS:
+
+		--# REQS:
+		--LTLSPEC G (((ACTUATE & HIGH_SETPOINT & !RESET) & X (NORMAL_TEMP & RESET)) -> X LOW_SETPOINT);
+		
+		--# What if we exclude a RESET when ACTUATE is on?
+		--LTLSPEC G (!(ACTUATE & RESET)) -> G (((ACTUATE & HIGH_SETPOINT & !RESET) & X (NORMAL_TEMP & RESET)) -> X LOW_SETPOINT);
+
+	ASSIGN
+		--# INTERNAL STATE:
+
+
+--# And
+MODULE AND_2(I1 : boolean, I1_FAULT : boolean, I1_CONNECTED : boolean, I2 : boolean, I2_FAULT : boolean, I2_CONNECTED : boolean)
+	VAR
+
+	DEFINE
+		O1:=
+		case
+			!I1_CONNECTED & !I2_CONNECTED : FALSE;
+			TRUE : (I1 | !I1_CONNECTED) & (I2 | !I2_CONNECTED);
+		esac;
+		
+		O1_FAULT:= FALSE;
+
+	ASSIGN
+
+
+--# Low Treshold
+MODULE LOW_TRESH(I1 : 0..100, I1_FAULT : boolean, I1_CONNECTED : boolean, Limit : 0..100)
+	VAR
+		mem : boolean;
+
+	DEFINE
+		
+		O1_FAULT:= FALSE;
+
+		O1:= I1 < Limit ;
+
+	ASSIGN
+        init(mem) := FALSE;
+        next(mem) := O1;
+
+
+--# Flip-flop with priority on the reset side
+MODULE RS(I1 : boolean, I1_FAULT : boolean, I1_CONNECTED : boolean, I2 : boolean, I2_FAULT : boolean, I2_CONNECTED : boolean)
+	VAR
+	
+		mem : boolean;
+
+	DEFINE
+
+		O1:=
+		case
+			I2 : FALSE;
+			I1 : TRUE;
+			TRUE : mem;		
+		esac;
+
+
+		O2 := !O1;
+		
+		O1_FAULT := FALSE;
+		O2_FAULT := FALSE;
+
+	ASSIGN
+
+		init(mem) := FALSE;
+		next(mem) := O1;
+
+
+--# Flip-flop with priority on the set side
+MODULE SR(I1 : boolean, I1_FAULT : boolean, I1_CONNECTED : boolean, I2 : boolean, I2_FAULT : boolean, I2_CONNECTED : boolean)
+	VAR
+	
+		mem : boolean;
+
+	DEFINE
+
+		O1:=
+		case
+			I1 : TRUE;
+			I2 : FALSE;
+			TRUE : mem;		
+		esac;
+
+
+		O2 := !O1;
+		
+		O1_FAULT := FALSE;
+		O2_FAULT := FALSE;
+
+	ASSIGN
+
+		init(mem) := FALSE;
+		next(mem) := O1;
